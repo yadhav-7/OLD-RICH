@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --navbar-height: 60px;
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--secondary-color);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1030;
+            padding: 0 1rem;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1020;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 1.5rem;
+            min-height: calc(100vh - var(--navbar-height));
+            transition: all 0.3s;
+            background-color: var(--secondary-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: var(--secondary-color);
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control.is-invalid {
+            border-color: #e74a3b;
+            background-image: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #5a5c69;
+        }
+
+        .required:after {
+            content: " *";
+            color: #e74a3b;
+        }
+
+        .error-message {
+            color: #e74a3b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .image-uploader {
+            border: 2px dashed #d1d3e2;
+            border-radius: 0.35rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+        .image-uploader:hover {
+            border-color: var(--primary-color);
+            background-color: #f8f9fe;
+        }
+
+        .image-uploader i {
+            font-size: 2rem;
+            color: #dddfeb;
+            margin-bottom: 1rem;
+        }
+
+        .thumbnails-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 0.35rem;
+            overflow: hidden;
+            border: 1px solid #e3e6f0;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail.main-image {
+            border: 2px solid var(--primary-color);
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: 0.6rem;
+        }
+
+        .main-image-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+
+        .cropper-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem;
+            border-top: 1px solid #e3e6f0;
+            gap: 0.5rem;
+        }
+
+        .img-container {
+            height: 500px;
+            max-width: 100%;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+
+            .thumbnails-container {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .image-uploader {
+                padding: 1rem;
+            }
+
+            .thumbnail {
+                width: 80px;
+                height: 80px;
+            }
+
+            .form-group {
+                margin-bottom: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+    
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="header mb-4">
+                    <h1 class="page-title">Add New Product</h1>
+                </div>
+
+                <form id="productForm" method="POST" action="/admin/addProducts" enctype="multipart/form-data">
+                    <!-- Basic Information Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Basic Information</div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label for="product_name" class="form-label required">Product Name</label>
+                                <input type="text" placeholder="Enter product name" name="productName" class="form-control" id="product_name" required>
+                                <div id="productName-error" class="error-message"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Description</label>
+                                <textarea placeholder="Enter detailed product description" id="description" name="description" class="form-control" rows="5" required></textarea>
+                                <div id="description-error" class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing & Inventory Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Pricing & Inventory</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required">Regular Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input placeholder="0.00" name="regularPrice" type="number" class="form-control" min="0" step="0.01" required>
+                                        </div>
+                                        <div id="regularPrice-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Sale Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input placeholder="0.00" name="salePrice" type="number" class="form-control" min="0" step="0.01">
+                                        </div>
+                                        <div id="salePrice-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required">Quantity</label>
+                                        <input placeholder="0" name="quantity" type="number" class="form-control" min="0" step="1" required>
+                                        <div id="quantity-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Details Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Product Details</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required">Color</label>
+                                        <input name="color" type="text" class="form-control" id="color" placeholder="e.g., Red, Blue" required>
+                                        <div id="color-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required">Category</label>
+                                        <select class="form-control" name="category">
+                                            <option value="" disabled selected>Select a category</option>
+                                            <% for(let i = 0; i < cat.length; i++) { %>
+                                            <option value="<%= cat[i].name %>">
+                                                <%= cat[i].name %>
+                                            </option>
+                                            <% } %>
+                                        </select>
+                                        <div id="category-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Images Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Product Images (Exactly 4 Required)</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div id="addedImagesContainer" class="thumbnails-container"></div>
+                                <div class="image-uploader" onclick="document.getElementById('imageUpload').click()" id="imageUploader">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop images here or click to browse</p>
+                                    <small>Recommended size: 800x800px (max 5MB each)</small>
+                                    <input type="file" id="imageUpload" name="images" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
+                                </div>
+                                <div id="images-error" class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-group text-end mt-4">
+                        <button type="button" class="btn btn-light me-2">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save me-2"></i>Publish Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cropper Modal -->
+    <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="aspect-ratio-buttons mb-3 d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn btn-outline-secondary" onclick="setAspectRatio(1/1)">1:1 (Square)</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setAspectRatio(4/3)">4:3</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setAspectRatio(16/9)">16:9</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setAspectRatio(NaN)">Free</button>
+                    </div>
+                    <div class="img-container">
+                        <img id="cropperImage" src="" alt="Image to crop">
+                    </div>
+                </div>
+                <div class="cropper-actions">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCroppedImage">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <scriptinform><script>
+        let currentCropper;
+        let currentFile;
+        let uploadedImages = [];
+        let mainImageIndex = 0;
+        const REQUIRED_IMAGES = 4;
+        const MAX_NAME_LENGTH = 100;
+        const MAX_DESCRIPTION_LENGTH = 5000;
+        const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+        const uploadArea = document.querySelector('.image-uploader');
+
+        // Toast configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('saveCroppedImage').addEventListener('click', saveCroppedImage);
+            setupDragAndDrop();
+            setupInputValidation();
+        });
+
+        function setupInputValidation() {
+            const inputs = {
+                productName: {
+                    element: document.getElementById('product_name'),
+                    error: document.getElementById('productName-error'),
+                    validate: (value) => {
+                        if (!value.trim()) return 'Product name is required';
+                        if (value.length < 3) return 'Product name must be at least 3 characters';
+                        if (value.length > MAX_NAME_LENGTH) return `Product name cannot exceed ${MAX_NAME_LENGTH} characters`;
+                        if (!/^[a-zA-Z0-9\s\-\_\(\)]+$/.test(value)) return 'Product name contains invalid characters';
+                        return '';
+                    }
+                },
+                description: {
+                    element: document.getElementById('description'),
+                    error: document.getElementById('description-error'),
+                    validate: (value) => {
+                        if (!value.trim()) return 'Description is required';
+                        if (value.length < 10) return 'Description must be at least 10 characters';
+                        if (value.length > MAX_DESCRIPTION_LENGTH) return `Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`;
+                        return '';
+                    }
+                },
+                regularPrice: {
+                    element: document.querySelector('input[name="regularPrice"]'),
+                    error: document.getElementById('regularPrice-error'),
+                    validate: (value) => {
+                        if (!value) return 'Regular price is required';
+                        if (isNaN(value) || parseFloat(value) <= 0) return 'Regular price must be greater than 0';
+                        if (parseFloat(value) > 1000000) return 'Regular price is too large';
+                        return '';
+                    }
+                },
+                salePrice: {
+                    element: document.querySelector('input[name="salePrice"]'),
+                    error: document.getElementById('salePrice-error'),
+                    validate: (value, form) => {
+                        if (value) {
+                            const regularPrice = parseFloat(form.querySelector('input[name="regularPrice"]').value);
+                            if (isNaN(value) || parseFloat(value) <= 0) return 'Sale price must be greater than 0';
+                            if (parseFloat(value) >= regularPrice) return 'Sale price must be less than regular price';
+                            if (parseFloat(value) > 1000000) return 'Sale price is too large';
+                        }
+                        return '';
+                    }
+                },
+                quantity: {
+                    element: document.querySelector('input[name="quantity"]'),
+                    error: document.getElementById('quantity-error'),
+                    validate: (value) => {
+                        if (value === '') return 'Quantity is required';
+                        if (isNaN(value) || parseInt(value) < 0) return 'Quantity cannot be negative';
+                        if (parseInt(value) > 1000000) return 'Quantity is too large';
+                        return '';
+                    }
+                },
+                color: {
+                    element: document.getElementById('color'),
+                    error: document.getElementById('color-error'),
+                    validate: (value) => {
+                        if (!value.trim()) return 'Color is required';
+                        if (!/^[a-zA-Z\s,]+$/.test(value)) return 'Color must contain only letters and commas';
+                        if (value.length > 100) return 'Color cannot exceed 100 characters';
+                        return '';
+                    }
+                },
+                category: {
+                    element: document.querySelector('select[name="category"]'),
+                    error: document.getElementById('category-error'),
+                    validate: (value) => {
+                        if (!value) return 'Category is required';
+                        return '';
+                    }
+                }
+            };
+
+            Object.values(inputs).forEach(input => {
+                input.element.addEventListener('input', function() {
+                    const error = input.validate(this.value, this.form);
+                    input.error.textContent = error;
+                    this.classList.toggle('is-invalid', !!error);
+                });
+            });
+        }
+
+        function handleImageSelection(event) {
+            const files = event.target.files;
+            const errorElement = document.getElementById('images-error');
+
+            if (!files || files.length === 0) {
+                errorElement.textContent = 'No files selected';
+                return;
+            }
+
+            if (uploadedImages.length >= REQUIRED_IMAGES) {
+                errorElement.textContent = `Exactly ${REQUIRED_IMAGES} images are required`;
+                Toast.fire({
+                    icon: 'error',
+                    title: `Exactly ${REQUIRED_IMAGES} images are required`
+                });
+                event.target.value = '';
+                return;
+            }
+
+            if (uploadedImages.length + files.length > REQUIRED_IMAGES) {
+                errorElement.textContent = `You can only add ${REQUIRED_IMAGES - uploadedImages.length} more image(s)`;
+                Toast.fire({
+                    icon: 'error',
+                    title: `You can only add ${REQUIRED_IMAGES - uploadedImages.length} more image(s)`
+                });
+                event.target.value = '';
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                if (!file.type.match('image.*')) {
+                    errorElement.textContent = 'Only image files are allowed';
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Only image files are allowed'
+                    });
+                    continue;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    errorElement.textContent = 'Image size should be less than 5MB';
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Image size should be less than 5MB'
+                    });
+                    continue;
+                }
+
+                currentFile = file;
+                previewImageForCropping(file);
+            }
+
+            event.target.value = '';
+        }
+
+        function previewImageForCropping(file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const image = document.getElementById('cropperImage');
+                image.src = e.target.result;
+
+                cropperModal.show();
+
+                document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+                    if (currentCropper) currentCropper.destroy();
+                    currentCropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                        responsive: true
+                    });
+                }, { once: true });
+            };
+
+            reader.onerror = function() {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to read image file'
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function saveCroppedImage() {
+            if (!currentCropper) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Image cropper not initialized'
+                });
+                return;
+            }
+
+            try {
+                const canvas = currentCropper.getCroppedCanvas({
+                    width: 800,
+                    height: 800,
+                    fillColor: '#fff',
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+
+                if (!canvas) {
+                    throw new Error('Failed to create canvas');
+                }
+
+                canvas.toBlob(function(blob) {
+                    if (!blob) {
+                        throw new Error('Failed to process image');
+                    }
+
+                    const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
+                    const croppedFile = new File([blob], fileName, { type: 'image/jpeg', lastModified: Date.now() });
+
+                    const imageData = {
+                        file: croppedFile,
+                        url: URL.createObjectURL(blob),
+                        isMain: uploadedImages.length === 0
+                    };
+
+                    uploadedImages.push(imageData);
+                    if (imageData.isMain) mainImageIndex = uploadedImages.length - 1;
+
+                    updateThumbnails();
+                    updateImageUploaderState();
+                    cropperModal.hide();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Image added successfully'
+                    });
+                }, 'image/jpeg', 0.9);
+            } catch (error) {
+                console.error('Crop Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to process cropped image'
+                });
+            }
+        }
+
+        function updateThumbnails() {
+            const container = document.getElementById('addedImagesContainer');
+            container.innerHTML = '';
+
+            uploadedImages.forEach((image, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
+                thumb.innerHTML = `
+                    <img src="${image.url}" alt="Image ${index + 1}">
+                    <button class="remove-btn" onclick="removeImage(${index})"><i class="fas fa-times"></i></button>
+                    ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
+                `;
+
+                thumb.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('remove-btn') && !e.target.classList.contains('fa-times')) {
+                        setAsMainImage(index);
+                    }
+                });
+
+                container.appendChild(thumb);
+            });
+        }
+
+        function updateImageUploaderState() {
+            const uploader = document.getElementById('imageUploader');
+            const errorElement = document.getElementById('images-error');
+            if (uploadedImages.length >= REQUIRED_IMAGES) {
+                uploader.style.display = 'none';
+                errorElement.textContent = '';
+            } else {
+                uploader.style.display = 'block';
+                errorElement.textContent = `Add ${REQUIRED_IMAGES - uploadedImages.length} more image(s)`;
+            }
+        }
+
+        function removeImage(index) {
+            try {
+                URL.revokeObjectURL(uploadedImages[index].url);
+                uploadedImages.splice(index, 1);
+
+                if (mainImageIndex === index && uploadedImages.length > 0) {
+                    uploadedImages[0].isMain = true;
+                    mainImageIndex = 0;
+                } else if (mainImageIndex > index) {
+                    mainImageIndex--;
+                }
+
+                updateThumbnails();
+                updateImageUploaderState();
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Image removed successfully'
+                });
+            } catch (error) {
+                console.error('Remove Image Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to remove image'
+                });
+            }
+        }
+
+        function setAsMainImage(index) {
+            try {
+                uploadedImages.forEach((img, i) => img.isMain = (i === index));
+                mainImageIndex = index;
+                updateThumbnails();
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Main image updated'
+                });
+            } catch (error) {
+                console.error('Set Main Image Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to set main image'
+                });
+            }
+        }
+
+        function setupDragAndDrop() {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragging');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragging');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragging');
+
+                if (e.dataTransfer.files.length) {
+                    const event = { target: { files: e.dataTransfer.files } };
+                    handleImageSelection(event);
+                }
+            });
+        }
+
+        function setAspectRatio(ratio) {
+            try {
+                if (currentCropper) {
+                    currentCropper.setAspectRatio(ratio);
+                }
+            } catch (error) {
+                console.error('Set Aspect Ratio Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to set aspect ratio'
+                });
+            }
+        }
+
+        function sanitizeInput(value) {
+            const div = document.createElement('div');
+            div.textContent = value;
+            return div.innerHTML;
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const errors = [];
+            const form = document.getElementById('productForm');
+
+            const validations = {
+                productName: {
+                    value: sanitizeInput(document.getElementById('product_name').value.trim()),
+                    errorElement: document.getElementById('productName-error'),
+                    element: document.getElementById('product_name')
+                },
+                description: {
+                    value: sanitizeInput(document.getElementById('description').value.trim()),
+                    errorElement: document.getElementById('description-error'),
+                    element: document.getElementById('description')
+                },
+                regularPrice: {
+                    value: document.querySelector('input[name="regularPrice"]').value,
+                    errorElement: document.getElementById('regularPrice-error'),
+                    element: document.querySelector('input[name="regularPrice"]')
+                },
+                salePrice: {
+                    value: document.querySelector('input[name="salePrice"]').value,
+                    errorElement: document.getElementById('salePrice-error'),
+                    element: document.querySelector('input[name="salePrice"]')
+                },
+                quantity: {
+                    value: document.querySelector('input[name="quantity"]').value,
+                    errorElement: document.getElementById('quantity-error'),
+                    element: document.querySelector('input[name="quantity"]')
+                },
+                color: {
+                    value: sanitizeInput(document.getElementById('color').value.trim()),
+                    errorElement: document.getElementById('color-error'),
+                    element: document.getElementById('color')
+                },
+                category: {
+                    value: document.querySelector('select[name="category"]').value,
+                    errorElement: document.getElementById('category-error'),
+                    element: document.querySelector('select[name="category"]')
+                }
+            };
+
+            // Product Name Validation
+            if (!validations.productName.value) {
+                errors.push('Product name is required');
+                validations.productName.errorElement.textContent = 'Product name is required';
+                validations.productName.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (validations.productName.value.length < 3) {
+                errors.push('Product name must be at least 3 characters');
+                validations.productName.errorElement.textContent = 'Product name must be at least 3 characters';
+                validations.productName.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (validations.productName.value.length > MAX_NAME_LENGTH) {
+                errors.push(`Product name cannot exceed ${MAX_NAME_LENGTH} characters`);
+                validations.productName.errorElement.textContent = `Product name cannot exceed ${MAX_NAME_LENGTH} characters`;
+                validations.productName.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (!/^[a-zA-Z0-9\s\-\_\(\)]+$/.test(validations.productName.value)) {
+                errors.push('Product name contains invalid characters');
+                validations.productName.errorElement.textContent = 'Product name contains invalid characters';
+                validations.productName.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.productName.errorElement.textContent = '';
+                validations.productName.element.classList.remove('is-invalid');
+            }
+
+            // Description Validation
+            if (!validations.description.value) {
+                errors.push('Description is required');
+                validations.description.errorElement.textContent = 'Description is required';
+                validations.description.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (validations.description.value.length < 10) {
+                errors.push('Description must be at least 10 characters');
+                validations.description.errorElement.textContent = 'Description must be at least 10 characters';
+                validations.description.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (validations.description.value.length > MAX_DESCRIPTION_LENGTH) {
+                errors.push(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
+                validations.description.errorElement.textContent = `Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`;
+                validations.description.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.description.errorElement.textContent = '';
+                validations.description.element.classList.remove('is-invalid');
+            }
+
+            // Regular Price Validation
+            if (!validations.regularPrice.value) {
+                errors.push('Regular price is required');
+                validations.regularPrice.errorElement.textContent = 'Regular price is required';
+                validations.regularPrice.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (isNaN(validations.regularPrice.value) || parseFloat(validations.regularPrice.value) <= 0) {
+                errors.push('Regular price must be greater than 0');
+                validations.regularPrice.errorElement.textContent = 'Regular price must be greater than 0';
+                validations.regularPrice.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (parseFloat(validations.regularPrice.value) > 1000000) {
+                errors.push('Regular price is too large');
+                validations.regularPrice.errorElement.textContent = 'Regular price is too large';
+                validations.regularPrice.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.regularPrice.errorElement.textContent = '';
+                validations.regularPrice.element.classList.remove('is-invalid');
+            }
+
+            // Sale Price Validation
+            if (validations.salePrice.value) {
+                const regularPrice = parseFloat(validations.regularPrice.value);
+                if (isNaN(validations.salePrice.value) || parseFloat(validations.salePrice.value) <= 0) {
+                    errors.push('Sale price must be greater than 0');
+                    validations.salePrice.errorElement.textContent = 'Sale price must be greater than 0';
+                    validations.salePrice.element.classList.add('is-invalid');
+                    isValid = false;
+                } else if (parseFloat(validations.salePrice.value) >= regularPrice) {
+                    errors.push('Sale price must be less than regular price');
+                    validations.salePrice.errorElement.textContent = 'Sale price must be less than regular price';
+                    validations.salePrice.element.classList.add('is-invalid');
+                    isValid = false;
+                } else if (parseFloat(validations.salePrice.value) > 1000000) {
+                    errors.push('Sale price is too large');
+                    validations.salePrice.errorElement.textContent = 'Sale price is too large';
+                    validations.salePrice.element.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    validations.salePrice.errorElement.textContent = '';
+                    validations.salePrice.element.classList.remove('is-invalid');
+                }
+            } else {
+                validations.salePrice.errorElement.textContent = '';
+                validations.salePrice.element.classList.remove('is-invalid');
+            }
+
+            // Quantity Validation
+            if (validations.quantity.value === '') {
+                errors.push('Quantity is required');
+                validations.quantity.errorElement.textContent = 'Quantity is required';
+                validations.quantity.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (isNaN(validations.quantity.value) || parseInt(validations.quantity.value) < 0) {
+                errors.push('Quantity cannot be negative');
+                validations.quantity.errorElement.textContent = 'Quantity cannot be negative';
+                validations.quantity.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (parseInt(validations.quantity.value) > 1000000) {
+                errors.push('Quantity is too large');
+                validations.quantity.errorElement.textContent = 'Quantity is too large';
+                validations.quantity.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.quantity.errorElement.textContent = '';
+                validations.quantity.element.classList.remove('is-invalid');
+            }
+
+            // Color Validation
+            if (!validations.color.value) {
+                errors.push('Color is required');
+                validations.color.errorElement.textContent = 'Color is required';
+                validations.color.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s,]+$/.test(validations.color.value)) {
+                errors.push('Color must contain only letters and commas');
+                validations.color.errorElement.textContent = 'Color must contain only letters and commas';
+                validations.color.element.classList.add('is-invalid');
+                isValid = false;
+            } else if (validations.color.value.length > 100) {
+                errors.push('Color cannot exceed 100 characters');
+                validations.color.errorElement.textContent = 'Color cannot exceed 100 characters';
+                validations.color.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.color.errorElement.textContent = '';
+                validations.color.element.classList.remove('is-invalid');
+            }
+
+            // Category Validation
+            if (!validations.category.value) {
+                errors.push('Category is required');
+                validations.category.errorElement.textContent = 'Category is required';
+                validations.category.element.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                validations.category.errorElement.textContent = '';
+                validations.category.element.classList.remove('is-invalid');
+            }
+
+            // Image Validation
+            if (uploadedImages.length !== REQUIRED_IMAGES) {
+                errors.push(`Exactly ${REQUIRED_IMAGES} images are required`);
+                document.getElementById('images-error').textContent = `Exactly ${REQUIRED_IMAGES} images are required`;
+                isValid = false;
+            } else {
+                document.getElementById('images-error').textContent = '';
+            }
+
+            if (!isValid) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Please correct the following errors:',
+                    text: errors.join(', ')
+                });
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Publishing...';
+            submitBtn.disabled = true;
+
+            try {
+                const form = e.target;
+                const formData = new FormData(form);
+
+                // Append sanitized form data
+                formData.set('productName', sanitizeInput(document.getElementById('product_name').value.trim()));
+                formData.set('description', sanitizeInput(document.getElementById('description').value.trim()));
+                formData.set('color', sanitizeInput(document.getElementById('color').value.trim()));
+
+                uploadedImages.forEach((image, index) => {
+                    formData.append('images', image.file);
+                    if (image.isMain) {
+                        formData.append('mainImageIndex', index);
+                    }
+                });
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
+                }
+
+                if (response.redirected) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Product published successfully'
+                    }).then(() => {
+                        window.location.href = response.url;
+                    });
+                } else {
+                    const data = await response.json();
+                    if (data.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Product published successfully'
+                        }).then(() => {
+                            window.location.href = data.redirectUrl || '/admin/products';
+                        });
+                    } else {
+                        throw new Error(data.message || 'Failed to publish product');
+                    }
+                }
+            } catch (error) {
+                console.error('Form Submission Error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to publish product',
+                    text: error.message || 'An unexpected error occurred'
+                });
+            } finally {
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i> Publish Product';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

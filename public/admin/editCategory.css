@@ -1,0 +1,121 @@
+/* Body respects your layout */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* Container that plays nicely with sidebar + navbar */
+.form-container {
+  margin-left: 240px; /* Adjust to match your sidebar width */
+  margin-top: 80px;   /* Adjust based on your navbar height */
+  padding: 30px;
+  max-width: 800px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e2e2;
+}
+
+/* Heading */
+.form-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* Labels */
+.form-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Inputs & Textarea */
+.form-container input[type="text"],
+.form-container textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  margin-bottom: 20px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+  transition: border-color 0.3s;
+}
+
+.form-container input[type="text"]:focus,
+.form-container textarea:focus {
+  border-color: #3c91e6;
+  outline: none;
+}
+
+/* Button layout */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+/* Buttons */
+.form-container button {
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Save Button - Blue */
+.form-container button[type="submit"] {
+  background-color: #3c91e6;
+  color: white;
+}
+
+.form-container button[type="submit"]:hover {
+  background-color: #256dc1;
+}
+
+/* Cancel Button - Grey with red border */
+.form-container button[type="button"] {
+  background-color: #e0e0e0;
+  color: #333;
+  border: 2px solid #e74c3c;
+}
+
+.form-container button[type="button"]:hover {
+  background-color: #f9d6d5;
+  color: #b91c1c;
+}
+
+/* Error Box */
+#error-message {
+  margin-top: 15px;
+  color: #e74c3c;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .form-container {
+    margin: 80px 20px 20px 20px;
+    max-width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-container button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,156 @@
+/* Custom Styles */
+.main-content {
+  
+    margin-left: 250px; /* Space for sidebar */
+    margin-top: 50px;  /* Space for navbar */
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+}
+
+.card {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    padding: 12px 20px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    padding: 0 20px 20px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Image Uploader Styles */
+.image-uploader {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+}
+
+.image-uploader:hover {
+    border-color: #0d6efd;
+    background-color: #e9f0ff;
+}
+
+.image-uploader i {
+    font-size: 48px;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.image-uploader p {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.image-uploader small {
+    color: #6c757d;
+}
+
+/* Thumbnails Container */
+.thumbnails-container {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.thumbnail {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid #eee;
+    cursor: pointer;
+}
+
+.thumbnail:hover {
+    border-color: #0d6efd;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail.main-image {
+    border-color: #0d6efd;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.thumbnail:hover .remove-btn {
+    opacity: 1;
+}
+
+.main-image-badge {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background-color: #0d6efd;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7em;
+}
+
+/* Cropper Modal Styles */
+.img-container {
+    width: 100%;
+    height: 400px;
+    margin-top: 15px;
+}
+
+.cropper-actions {
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.aspect-ratio-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}

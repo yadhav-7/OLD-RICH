@@ -1,0 +1,149 @@
+/* Main Content Styles */
+.main-content {
+    
+    margin-left: 250px; /* Space for sidebar */
+    margin-top: 50px;  /* Space for navbar */
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+}
+
+
+.main-content h1 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+/* Search Container */
+ .search-container {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-container button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+.clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 18px;
+  display: none; /* Hidden by default */
+}
+
+.clear-button:hover {
+  color: #333;
+}
+
+.search-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #3498db;
+    color: white;
+}
+
+th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+td {
+    padding: 1rem;
+    color: #555;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.block-btn,
+.unblock-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.block-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.block-btn:hover {
+    background-color: #c0392b;
+}
+
+.unblock-btn {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.unblock-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+}

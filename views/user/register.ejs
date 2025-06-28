@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6">REGISTER</h1>
+
+
+    <!-- Display server-side error message -->
+
+    <% if(typeof message!=='undefined') {%>
+      <div class="text-red-500 text-sm mt-1"><%=message %></div>
+      <% } %>
+
+    <form method="post" action="/register" id="register-form" novalidate>
+      
+      <!-- FULL NAME -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="fullname">FULL NAME</label>
+        <input type="text" id="fullname" name="username"
+          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+        <div id="register-error1" class="text-red-500 text-sm mt-1"></div>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="email">EMAIL ADDRESS</label>
+        <input type="text" id="email" name="email"
+          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+        <div id="register-error2" class="text-red-500 text-sm mt-1"></div>
+      </div>
+
+      <!-- PHONE -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">PHONE</label>
+        <input type="tel" id="phone" name="phone"
+          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+        <div id="register-error3" class="text-red-500 text-sm mt-1"></div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="password">PASSWORD</label>
+        <input type="password" id="password" name="password"
+          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+      </div>
+
+      <!-- CONFIRM PASSWORD -->
+      <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">CONFIRM PASSWORD</label>
+        <input type="password" id="confirm-password" name="cpassword"
+          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+        <div id="register-error4" class="text-red-500 text-sm mt-1"></div>
+      </div>
+
+      <!-- REGISTER BUTTON -->
+      <button type="submit"
+        class="w-full bg-green-500 text-white font-semibold py-2 rounded-full hover:bg-green-600 transition duration-200 mb-3">
+        REGISTER
+      </button>
+
+      <!-- GOOGLE BUTTON -->
+      <a type="button"
+      href="/auth/google/register"
+      class="w-full flex items-center justify-center bg-white text-gray-800 font-semibold py-2 border rounded-full hover:bg-gray-100 transition duration-200 mb-3">
+        <img src="https://www.google.com/favicon.ico" alt="Google Icon" class="w-5 h-5 mr-2">
+        REGISTER WITH GOOGLE
+    </a>
+
+      <p class="text-center text-sm text-gray-600">
+        ALREADY HAVE AN ACCOUNT? <a href="/login" class="text-blue-500 hover:underline">LOGIN</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    const nameId = document.getElementById('fullname')
+    const emailId = document.getElementById('email')
+    const phoneId = document.getElementById('phone')
+    const passwordId = document.getElementById('password')
+    const cpasswordId = document.getElementById('confirm-password')
+    const registerForm = document.getElementById('register-form')
+
+    const registerError1 = document.getElementById('register-error1')
+    const registerError2 = document.getElementById('register-error2')
+    const registerError3 = document.getElementById('register-error3')
+    const registerError4 = document.getElementById('register-error4')
+
+    document.addEventListener('DOMContentLoaded',()=>{
+         registerForm.addEventListener('submit', function(e) {
+      let isValid = true
+
+      // Name Validation
+      const nameValue = nameId.value.trim()
+      const namePattern = /^[A-Za-z\s]+$/
+      if (!nameValue || !namePattern.test(nameValue)) {
+        registerError1.textContent = 'Please enter a valid name (letters and spaces only)'
+        isValid = false
+      } else {
+        registerError1.textContent = ''
+      }
+
+      // Email Validation
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      if (!emailPattern.test(emailId.value.trim())) {
+        registerError2.textContent = 'Please enter a valid email address'
+        isValid = false
+      } else {
+        registerError2.textContent = ''
+      }
+
+      // Phone Validation
+      const phoneValue = phoneId.value.trim()
+      if (!/^\d{10}$/.test(phoneValue)) {
+        registerError3.textContent = 'Phone number must be exactly 10 digits'
+        isValid = false
+      } else {
+        registerError3.textContent = ''
+      }
+
+      // Password Validation
+      const passwordValue = passwordId.value
+      const confirmPasswordValue = cpasswordId.value
+      const hasAlpha = /[a-zA-Z]/.test(passwordValue)
+      const hasNumber = /\d/.test(passwordValue)
+
+      if (passwordValue.length < 8 || !hasAlpha || !hasNumber) {
+        registerError4.textContent = 'Password must be at least 8 characters long and contain both letters and numbers'
+        isValid = false
+      } else if (passwordValue !== confirmPasswordValue) {
+        registerError4.textContent = 'Passwords do not match'
+        isValid = false
+      } else {
+        registerError4.textContent = ''
+      }
+
+      // Stop form if any validation failed
+      if (!isValid) {
+        e.preventDefault()
+      }
+    })  
+    })
+
+    
+  </script>
+</body>
+</html>

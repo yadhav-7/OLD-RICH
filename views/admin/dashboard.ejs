@@ -1,0 +1,62 @@
+<%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeaders-page'}) %>
+<%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page'}) %>
+<link rel="stylesheet" href="/admin/adminDashboard.css">
+    
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+        </div>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value">$24,780</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Orders</div>
+                <div class="stat-value">1,254</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">New Customers</div>
+                <div class="stat-value">342</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Products Sold</div>
+                <div class="stat-value">5,678</div>
+            </div>
+        </div>
+        
+        <div class="recent-activity">
+            <h2 class="activity-title">Recent Activity</h2>
+            
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="activity-details">
+                    <div>New order #1234 placed</div>
+                    <div class="activity-time">10 minutes ago</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-details">
+                    <div>New customer registered</div>
+                    <div class="activity-time">25 minutes ago</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="activity-details">
+                    <div>Product "Classic Watch" added</div>
+                    <div class="activity-time">1 hour ago</div>
+                </div>
+            </div>
+        </div>
+    </div>

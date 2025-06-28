@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --navbar-height: 60px;
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+            overflow-x: hidden;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1030;
+            padding: 0 20px;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: #fff;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 1020;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 20px;
+            min-height: calc(100vh - var(--navbar-height));
+            transition: all 0.3s;
+            background-color: #f8f9fc;
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+            font-weight: 600;
+            color: #4e73df;
+        }
+        
+        /* Form Styles */
+        .form-control {
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #5a5c69;
+        }
+        
+        .required:after {
+            content: " *";
+            color: #e74a3b;
+        }
+        
+        .error-message {
+            color: #e74a3b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Image Uploader */
+        .image-uploader {
+            border: 2px dashed #d1d3e2;
+            border-radius: 0.35rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #fff;
+        }
+        
+        .image-uploader:hover {
+            border-color: #4e73df;
+            background-color: #f8f9fe;
+        }
+        
+        .image-uploader i {
+            font-size: 2rem;
+            color: #dddfeb;
+            margin-bottom: 1rem;
+        }
+        
+        /* Thumbnails */
+        .thumbnails-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .thumbnail {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 0.35rem;
+            overflow: hidden;
+            border: 1px solid #e3e6f0;
+            transition: all 0.2s;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .thumbnail.main-image {
+            border: 2px solid #4e73df;
+        }
+        
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        .main-image-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: #4e73df;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+        
+        /* Modal Styles */
+        .cropper-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem;
+            border-top: 1px solid #e3e6f0;
+            gap: 10px;
+        }
+        
+        .img-container {
+            height: 500px;
+            max-width: 100%;
+        }
+        
+        .aspect-ratio-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+    
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <div class="header mb-4">
+                    <h1 class="page-title">Add New Product</h1>
+                </div>
+
+                <form id="productForm" method="POST" action="/admin/editProduct/<%= product._id%>" enctype="multipart/form-data">
+                    <!-- Basic Information Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Basic Information</div>
+                        <div class="card-body">
+                            <div class="form-group mb-4">
+                                <label for="product_name" class="form-label required">Product Name</label>
+                                <input type="text" placeholder="Enter product name" name="productName" class="form-control" id="product_name" value="<%= product.productName %>">
+                                <div id="productName-error" class="error-message"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Description</label>
+                                <textarea placeholder="Enter detailed product description" id="description" name="description" class="form-control" rows="5"><%= product.description %></textarea>
+                                <div id="description-error" class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing & Inventory Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Pricing & Inventory</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group price-input">
+                                        <label class="form-label required">Regular Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"></span>
+                                            <input placeholder="0.00" name="regularPrice" type="number" class="form-control" min="0" step="0.01" value="<%= product.regularPrice %>">
+                                        </div>
+                                        <div id="regularPrice-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group price-input">
+                                        <label class="form-label">Sale Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"></span>
+                                            <input placeholder="0.00" name="salePrice" type="number" class="form-control" min="0" step="0.01" value="<%= product.salePrice %>">
+                                        </div>
+                                        <div id="salePrice-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label required">Quantity</label>
+                                        <input placeholder="0" name="quantity" type="number" class="form-control" min="0" value="<%= product.quantity %>">
+                                        <div id="quantity-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Details Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Product Details</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Color</label>
+                                        <input name="color" type="text" class="form-control" placeholder="e.g., Red, Blue" value="<%= product.color %>">
+                                        <div id="color-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required">Category</label>
+                                        <select class="form-control" name="category">
+                                            <% for(let i = 0; i < category.length; i++) { %>
+                                            <option value="<%= category[i].name %>" <%= product.category === category[i].name ? 'selected' : '' %>>
+                                                <%= category[i].name %>
+                                            </option>
+                                            <% } %>
+                                        </select>
+                                        <div id="category-error" class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Images Card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Product Images (Max 4)</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div id="addedImagesContainer" class="thumbnails-container">
+                                    <% if (product.productImage&& product.productImage.length > 0) { %>
+                                        <% product.productImage.forEach((image, index) => { %>
+                                            <div class="thumbnail <%= index === 0 ? 'main-image' : '' %>" 
+                                                 data-type="existing" 
+                                                 data-name="<%= image %>">
+                                                <img src="/uploads/<%= image %>" alt="Product Image">
+                                                <button class="remove-btn">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                                <% if (index === 0) { %>
+                                                    <span class="main-image-badge">Main</span>
+                                                <% } %>
+                                            </div>
+                                        <% }); %>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="image-uploader" id="uploadArea">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop images here or click to browse</p>
+                                    <small>Recommended size: 800x800px (max 5MB each)</small>
+                                    <input type="file" id="imageUpload" name="images" accept="image/*" multiple  style="display: none;">
+                                    <input type="hidden" name="existingImages" id="existingImagesInput" value="<%= product.images ? product.images.join(',') : '' %>">
+                                    <input type="hidden" name="mainImage" id="mainImageInput" value="<%= product.images && product.images.length > 0 ? product.images[0] : '' %>">
+                                </div>
+                                <div id="images-error" class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-group text-end mt-4">
+                        <button type="button" class="btn btn-light me-2">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Publish Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cropper Modal -->
+    <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crop Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="aspect-ratio-buttons mb-3">
+                        <button type="button" class="btn btn-outline-secondary" data-ratio="1">1:1 (Square)</button>
+                        <button type="button" class="btn btn-outline-secondary" data-ratio="0.75">4:3</button>
+                        <button type="button" class="btn btn-outline-secondary" data-ratio="0.5625">16:9</button>
+                        <button type="button" class="btn btn-outline-secondary" data-ratio="free">Free</button>
+                    </div>
+                    <div class="img-container">
+                        <img id="cropperImage" src="" alt="">
+                    </div>
+                </div>
+                <div class="cropper-actions">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCroppedImage">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const imageUpload = document.getElementById('imageUpload');
+            const uploadArea = document.getElementById('uploadArea');
+            const addedImagesContainer = document.getElementById('addedImagesContainer');
+            const existingImagesInput = document.getElementById('existingImagesInput');
+            const mainImageInput = document.getElementById('mainImageInput');
+            const cropperModal = new bootstrap.Modal('#cropperModal');
+            const cropperImage = document.getElementById('cropperImage');
+            const saveCroppedBtn = document.getElementById('saveCroppedImage');
+            const errorElement = document.getElementById('images-error');
+            
+            // Variables
+            let cropper;
+            let currentFile;
+            const uploadedImages = [];
+            let existingImages = existingImagesInput.value ? existingImagesInput.value.split(',') : [];
+            const MAX_IMAGES = 4;
+            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+            const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+            // Initialize existing images
+            initializeExistingImages();
+
+            // Event Listeners
+            imageUpload.addEventListener('change', handleImageSelection);
+            saveCroppedBtn.addEventListener('click', saveCroppedImage);
+            uploadArea.addEventListener('click', () => imageUpload.click());
+            
+            // Setup drag and drop
+            setupDragAndDrop();
+
+            // Initialize cropper when modal is shown
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', initCropper);
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+            });
+
+            // Aspect ratio buttons
+            document.querySelectorAll('.aspect-ratio-buttons button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const ratio = btn.dataset.ratio;
+                    setAspectRatio(ratio);
+                });
+            });
+
+            // Functions
+            function initializeExistingImages() {
+                document.querySelectorAll('#addedImagesContainer .thumbnail[data-type="existing"]').forEach(thumb => {
+                    thumb.querySelector('.remove-btn').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        removeImage(thumb);
+                    });
+                    
+                    thumb.addEventListener('click', function(e) {
+                        if (!e.target.closest('.remove-btn')) {
+                            setAsMainImage(thumb);
+                        }
+                    });
+                });
+            }
+
+            function handleImageSelection(e) {
+                const files = e.target.files;
+                if (!files.length) return;
+
+                const totalImages = existingImages.length + uploadedImages.length + files.length;
+                if (totalImages > MAX_IMAGES) {
+                    showError(`Maximum ${MAX_IMAGES} images allowed (${totalImages - MAX_IMAGES} too many)`);
+                    return;
+                }
+
+                Array.from(files).forEach(file => {
+                    if (!validateImage(file)) return;
+                    currentFile = file;
+                    previewImageForCropping(file);
+                });
+
+                e.target.value = ''; // Reset input
+            }
+
+            function validateImage(file) {
+                if (!ACCEPTED_TYPES.includes(file.type)) {
+                    showError('Only JPG, PNG, and WebP images are allowed');
+                    return false;
+                }
+                if (file.size > MAX_FILE_SIZE) {
+                    showError('Image size should be less than 5MB');
+                    return false;
+                }
+                return true;
+            }
+
+            function previewImageForCropping(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    cropperImage.src = e.target.result;
+                    cropperModal.show();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function initCropper() {
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    guides: false
+                });
+            }
+
+            function setAspectRatio(ratio) {
+                if (!cropper) return;
+                cropper.setAspectRatio(ratio === 'free' ? NaN : ratio);
+            }
+
+            function saveCroppedImage() {
+                
+                if (!cropper) return;
+
+                cropper.getCroppedCanvas({
+                    width: 800,
+                    height: 800,
+                    fillColor: '#fff',
+                    imageSmoothingQuality: 'high'
+                }).toBlob(blob => {
+                    const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
+                    const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                    const imageObj = {
+                        type: 'new',
+                        file: croppedFile,
+                        url: URL.createObjectURL(blob),
+                        isMain: existingImages.length + uploadedImages.length === 0
+                    };
+
+                    uploadedImages.push(imageObj);
+                    createThumbnail(imageObj);
+                    cropperModal.hide();
+                }, 'image/jpeg', 0.9);
+            }
+
+            function createThumbnail(image) {
+                const thumb = document.createElement('div');
+                thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
+                thumb.dataset.type = image.type;
+                thumb.dataset.name = image.name || image.file.name;
+                
+                thumb.innerHTML = `
+                    <img src="${image.url}" alt="Product Image">
+                    <button class="remove-btn"><i class="fas fa-times"></i></button>
+                    ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
+                `;
+                
+                thumb.addEventListener('click', function(e) {
+                    if (!e.target.closest('.remove-btn')) {
+                        setAsMainImage(thumb);
+                    }
+                });
+                
+                thumb.querySelector('.remove-btn').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeImage(thumb);
+                });
+                
+                addedImagesContainer.appendChild(thumb);
+                updateHiddenFields();
+            }
+
+            function setAsMainImage(thumbElement) {
+                // Remove main class from all thumbnails
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.remove('main-image');
+                    const badge = thumb.querySelector('.main-image-badge');
+                    if (badge) badge.remove();
+                });
+                
+                // Add main class to clicked thumbnail
+                thumbElement.classList.add('main-image');
+                thumbElement.innerHTML += '<span class="main-image-badge">Main</span>';
+                
+                // Update main image in hidden field
+                mainImageInput.value = thumbElement.dataset.name;
+            }
+
+            function removeImage(thumbElement) {
+                const imageType = thumbElement.dataset.type;
+                const imageName = thumbElement.dataset.name;
+                
+                if (imageType === 'existing') {
+                    // Remove from existing images array
+                    existingImages = existingImages.filter(img => img !== imageName);
+                } else {
+                    // Remove from uploaded images array
+                    const index = uploadedImages.findIndex(img => img.file.name === imageName);
+                    if (index !== -1) {
+                        URL.revokeObjectURL(uploadedImages[index].url);
+                        uploadedImages.splice(index, 1);
+                    }
+                }
+                
+                // Check if we're removing the main image
+                if (thumbElement.classList.contains('main-image')) {
+                    const firstThumb = document.querySelector('.thumbnail');
+                    if (firstThumb) {
+                        setAsMainImage(firstThumb);
+                    } else {
+                        mainImageInput.value = '';
+                    }
+                }
+                
+                thumbElement.remove();
+                updateHiddenFields();
+            }
+
+            function updateHiddenFields() {
+                existingImagesInput.value = existingImages.join(',');
+            }
+
+            function setupDragAndDrop() {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight() {
+                    uploadArea.classList.add('dragover');
+                }
+
+                function unhighlight() {
+                    uploadArea.classList.remove('dragover');
+                }
+
+                uploadArea.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    if (files.length) {
+                        const event = { target: { files } };
+                        handleImageSelection(event);
+                    }
+                }
+            }
+
+            function showError(message) {
+                errorElement.textContent = message;
+                setTimeout(() => errorElement.textContent = '', 5000);
+            }
+
+            // Form submission handler
+            document.getElementById('productForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                // Add new images to FormData
+                uploadedImages.forEach((img, index) => {
+                    formData.append('images', img.file);
+                });
+                
+                // Submit form
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data && data.error) {
+                        showError(data.error);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    showError('Failed to save product');
+                });
+            });
+        });
+
+
+
+        function handleImageSelection(event) {
+            const files = event.target.files;
+            const errorElement = document.getElementById('images-error');
+            errorElement.textContent = '';
+
+            if (!files || files.length === 0) return;
+
+            if (uploadedImages.length + files.length > MAX_IMAGES) {
+                errorElement.textContent = `Maximum ${MAX_IMAGES} images allowed`;
+                event.target.value = '';
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                if (!file.type.match('image.*')) {
+                    errorElement.textContent = 'Only image files are allowed';
+                    continue;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    errorElement.textContent = 'Image size should be less than 5MB';
+                    continue;
+                }
+
+                currentFile = file;
+                previewImageForCropping(file);
+            }
+
+            event.target.value = '';
+        }
+
+        
+    </script>
+</body>
+</html>
