@@ -13,7 +13,6 @@
                     <input type="text" id="search-input" placeholder="Search customers...">
                     <button id="clear-button" aria-label="Clear search">×</button>
                 </div>
-
             </div>
             <table>
                 <thead>
@@ -155,6 +154,7 @@
 
             async function unblockPermission(userId, userName) {
                 const { isConfirmed } = await Swal.fire({
+                    toast:true,
                     title: `UnBlock ${userName}?`,
                     text: "Are you sure.",
                     icon: 'warning',
@@ -181,6 +181,7 @@
 
                         if (response.ok) {
                             Swal.fire({
+                                toast:true,
                                 title: 'Success!',
                                 text: `${userName} has been Unblocked.`,
                                 icon: 'success',

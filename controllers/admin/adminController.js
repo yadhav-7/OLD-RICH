@@ -28,7 +28,7 @@ const login = async (req, res) => {
                 req.session.admin = admin._id
                 return res.redirect('/admin/dashboard')
             } else {
-                return res.render('admin-login', { message: 'Incorrect Password' })
+                return res.render('admin-login', { message: 'Invalid credentials' })
             }
         } else {
             return res.render('admin-login', { message: 'User does not exists' })

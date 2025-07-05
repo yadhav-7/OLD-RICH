@@ -10,143 +10,298 @@
   <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
     <h1 class="text-2xl font-bold text-center mb-6">REGISTER</h1>
 
-
     <!-- Display server-side error message -->
-
     <% if(typeof message!=='undefined') {%>
-      <div class="text-red-500 text-sm mt-1"><%=message %></div>
-      <% } %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline"><%=message %></span>
+      </div>
+    <% } %>
 
     <form method="post" action="/register" id="register-form" novalidate>
       
       <!-- FULL NAME -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1" for="fullname">FULL NAME</label>
         <input type="text" id="fullname" name="username"
-          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+          required
+          minlength="3"
+          maxlength="50"/>
         <div id="register-error1" class="text-red-500 text-sm mt-1"></div>
       </div>
 
       <!-- EMAIL -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1" for="email">EMAIL ADDRESS</label>
-        <input type="text" id="email" name="email"
-          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+        <input type="email" id="email" name="email"
+          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+          required/>
         <div id="register-error2" class="text-red-500 text-sm mt-1"></div>
       </div>
 
       <!-- PHONE -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">PHONE</label>
         <input type="tel" id="phone" name="phone"
-          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+          required
+          pattern="[0-9]{10}"
+          maxlength="10"/>
         <div id="register-error3" class="text-red-500 text-sm mt-1"></div>
       </div>
 
       <!-- PASSWORD -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1" for="password">PASSWORD</label>
         <input type="password" id="password" name="password"
-          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+          required
+          minlength="8"/>
+        <div id="password-strength" class="text-xs mt-1">
+          <div class="flex items-center mt-1">
+            <div id="strength-meter" class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div id="strength-meter-fill" class="h-full w-0 transition-all duration-300"></div>
+            </div>
+          </div>
+          <ul class="list-disc list-inside text-gray-600 mt-1">
+            <li id="length-requirement">At least 8 characters</li>
+            <li id="number-requirement">Contains a number</li>
+            <li id="letter-requirement">Contains a letter</li>
+            <li id="special-requirement">Contains a special character (optional)</li>
+          </ul>
+        </div>
       </div>
 
       <!-- CONFIRM PASSWORD -->
-      <div class="mb-3">
+      <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">CONFIRM PASSWORD</label>
         <input type="password" id="confirm-password" name="cpassword"
-          class="w-full px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"/>
+          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+          required/>
         <div id="register-error4" class="text-red-500 text-sm mt-1"></div>
       </div>
 
       <!-- REGISTER BUTTON -->
       <button type="submit"
-        class="w-full bg-green-500 text-white font-semibold py-2 rounded-full hover:bg-green-600 transition duration-200 mb-3">
+        class="w-full bg-green-500 text-white font-semibold py-2 rounded-lg hover:bg-green-600 transition duration-200 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
         REGISTER
       </button>
 
       <!-- GOOGLE BUTTON -->
       <a type="button"
       href="/auth/google/register"
-      class="w-full flex items-center justify-center bg-white text-gray-800 font-semibold py-2 border rounded-full hover:bg-gray-100 transition duration-200 mb-3">
+      class="w-full flex items-center justify-center bg-white text-gray-800 font-semibold py-2 border rounded-lg hover:bg-gray-100 transition duration-200 mb-3 focus:outline-none focus:ring-2 focus:ring-gray-300">
         <img src="https://www.google.com/favicon.ico" alt="Google Icon" class="w-5 h-5 mr-2">
         REGISTER WITH GOOGLE
-    </a>
+      </a>
 
       <p class="text-center text-sm text-gray-600">
-        ALREADY HAVE AN ACCOUNT? <a href="/login" class="text-blue-500 hover:underline">LOGIN</a>
+        ALREADY HAVE AN ACCOUNT? <a href="/login" class="text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded">LOGIN</a>
       </p>
     </form>
   </div>
 
   <script>
-    const nameId = document.getElementById('fullname')
-    const emailId = document.getElementById('email')
-    const phoneId = document.getElementById('phone')
-    const passwordId = document.getElementById('password')
-    const cpasswordId = document.getElementById('confirm-password')
-    const registerForm = document.getElementById('register-form')
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('register-form');
+      const nameInput = document.getElementById('fullname');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirm-password');
+      
+      const nameError = document.getElementById('register-error1');
+      const emailError = document.getElementById('register-error2');
+      const phoneError = document.getElementById('register-error3');
+      const passwordError = document.getElementById('register-error4');
+      
+      // Password strength elements
+      const strengthMeterFill = document.getElementById('strength-meter-fill');
+      const lengthRequirement = document.getElementById('length-requirement');
+      const numberRequirement = document.getElementById('number-requirement');
+      const letterRequirement = document.getElementById('letter-requirement');
+      const specialRequirement = document.getElementById('special-requirement');
 
-    const registerError1 = document.getElementById('register-error1')
-    const registerError2 = document.getElementById('register-error2')
-    const registerError3 = document.getElementById('register-error3')
-    const registerError4 = document.getElementById('register-error4')
+      // Real-time validation for each field
+      nameInput.addEventListener('input', validateName);
+      emailInput.addEventListener('input', validateEmail);
+      phoneInput.addEventListener('input', validatePhone);
+      passwordInput.addEventListener('input', validatePassword);
+      confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+      
+      // Password strength indicator
+      passwordInput.addEventListener('input', updatePasswordStrength);
 
-    document.addEventListener('DOMContentLoaded',()=>{
-         registerForm.addEventListener('submit', function(e) {
-      let isValid = true
+      form.addEventListener('submit', function(e) {
+        // Validate all fields before submission
+        const isNameValid = validateName();
+        const isEmailValid = validateEmail();
+        const isPhoneValid = validatePhone();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        
+        if (!isNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid) {
+          e.preventDefault();
+          // Scroll to the first error
+          const firstErrorElement = [
+            nameError.textContent && nameInput,
+            emailError.textContent && emailInput,
+            phoneError.textContent && phoneInput,
+            passwordError.textContent && passwordInput
+          ].find(el => el);
+          
+          if (firstErrorElement) {
+            firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstErrorElement.focus();
+          }
+        }
+      });
 
-      // Name Validation
-      const nameValue = nameId.value.trim()
-      const namePattern = /^[A-Za-z\s]+$/
-      if (!nameValue || !namePattern.test(nameValue)) {
-        registerError1.textContent = 'Please enter a valid name (letters and spaces only)'
-        isValid = false
-      } else {
-        registerError1.textContent = ''
+      function validateName() {
+        const value = nameInput.value.trim();
+        const namePattern = /^[A-Za-z\s'-]+$/;
+        
+        if (!value) {
+          nameError.textContent = 'Full name is required';
+          nameInput.classList.add('border-red-500');
+          return false;
+        } else if (value.length < 3) {
+          nameError.textContent = 'Name must be at least 3 characters';
+          nameInput.classList.add('border-red-500');
+          return false;
+        } else if (!namePattern.test(value)) {
+          nameError.textContent = 'Name can only contain letters, spaces, hyphens, and apostrophes';
+          nameInput.classList.add('border-red-500');
+          return false;
+        } else {
+          nameError.textContent = '';
+          nameInput.classList.remove('border-red-500');
+          return true;
+        }
       }
 
-      // Email Validation
-      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-      if (!emailPattern.test(emailId.value.trim())) {
-        registerError2.textContent = 'Please enter a valid email address'
-        isValid = false
-      } else {
-        registerError2.textContent = ''
+      function validateEmail() {
+        const value = emailInput.value.trim();
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        if (!value) {
+          emailError.textContent = 'Email is required';
+          emailInput.classList.add('border-red-500');
+          return false;
+        } else if (!emailPattern.test(value)) {
+          emailError.textContent = 'Please enter a valid email address';
+          emailInput.classList.add('border-red-500');
+          return false;
+        } else {
+          emailError.textContent = '';
+          emailInput.classList.remove('border-red-500');
+          return true;
+        }
       }
 
-      // Phone Validation
-      const phoneValue = phoneId.value.trim()
-      if (!/^\d{10}$/.test(phoneValue)) {
-        registerError3.textContent = 'Phone number must be exactly 10 digits'
-        isValid = false
-      } else {
-        registerError3.textContent = ''
+      function validatePhone() {
+        const value = phoneInput.value.trim();
+        const phonePattern = /^\d{10}$/;
+        
+        if (!value) {
+          phoneError.textContent = 'Phone number is required';
+          phoneInput.classList.add('border-red-500');
+          return false;
+        } else if (!phonePattern.test(value)) {
+          phoneError.textContent = 'Phone number must be exactly 10 digits';
+          phoneInput.classList.add('border-red-500');
+          return false;
+        } else {
+          phoneError.textContent = '';
+          phoneInput.classList.remove('border-red-500');
+          return true;
+        }
       }
 
-      // Password Validation
-      const passwordValue = passwordId.value
-      const confirmPasswordValue = cpasswordId.value
-      const hasAlpha = /[a-zA-Z]/.test(passwordValue)
-      const hasNumber = /\d/.test(passwordValue)
-
-      if (passwordValue.length < 8 || !hasAlpha || !hasNumber) {
-        registerError4.textContent = 'Password must be at least 8 characters long and contain both letters and numbers'
-        isValid = false
-      } else if (passwordValue !== confirmPasswordValue) {
-        registerError4.textContent = 'Passwords do not match'
-        isValid = false
-      } else {
-        registerError4.textContent = ''
+      function validatePassword() {
+        const value = passwordInput.value;
+        const hasLetter = /[a-zA-Z]/.test(value);
+        const hasNumber = /\d/.test(value);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+        
+        if (!value) {
+          passwordError.textContent = 'Password is required';
+          passwordInput.classList.add('border-red-500');
+          return false;
+        } else if (value.length < 8) {
+          passwordError.textContent = 'Password must be at least 8 characters';
+          passwordInput.classList.add('border-red-500');
+          return false;
+        } else if (!hasLetter || !hasNumber) {
+          passwordError.textContent = 'Password must contain both letters and numbers';
+          passwordInput.classList.add('border-red-500');
+          return false;
+        } else {
+          passwordError.textContent = '';
+          passwordInput.classList.remove('border-red-500');
+          return true;
+        }
       }
 
-      // Stop form if any validation failed
-      if (!isValid) {
-        e.preventDefault()
+      function validateConfirmPassword() {
+        const passwordValue = passwordInput.value;
+        const confirmValue = confirmPasswordInput.value;
+        
+        if (!confirmValue) {
+          passwordError.textContent = 'Please confirm your password';
+          confirmPasswordInput.classList.add('border-red-500');
+          return false;
+        } else if (confirmValue !== passwordValue) {
+          passwordError.textContent = 'Passwords do not match';
+          confirmPasswordInput.classList.add('border-red-500');
+          return false;
+        } else {
+          passwordError.textContent = '';
+          confirmPasswordInput.classList.remove('border-red-500');
+          return true;
+        }
       }
-    })  
-    })
 
-    
+      function updatePasswordStrength() {
+        const value = passwordInput.value;
+        const hasLetter = /[a-zA-Z]/.test(value);
+        const hasNumber = /\d/.test(value);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+        const length = value.length;
+        
+        // Update requirement indicators
+        lengthRequirement.style.color = length >= 8 ? 'green' : 'inherit';
+        lengthRequirement.innerHTML = length >= 8 ? '✓ At least 8 characters' : 'At least 8 characters';
+        
+        numberRequirement.style.color = hasNumber ? 'green' : 'inherit';
+        numberRequirement.innerHTML = hasNumber ? '✓ Contains a number' : 'Contains a number';
+        
+        letterRequirement.style.color = hasLetter ? 'green' : 'inherit';
+        letterRequirement.innerHTML = hasLetter ? '✓ Contains a letter' : 'Contains a letter';
+        
+        specialRequirement.style.color = hasSpecial ? 'green' : 'gray';
+        specialRequirement.innerHTML = hasSpecial ? '✓ Contains a special character' : 'Contains a special character (optional)';
+        
+        // Calculate strength score (0-100)
+        let strength = 0;
+        if (length >= 8) strength += 25;
+        if (hasLetter) strength += 25;
+        if (hasNumber) strength += 25;
+        if (hasSpecial) strength += 25;
+        
+        // Update strength meter
+        strengthMeterFill.style.width = `${strength}%`;
+        
+        // Change color based on strength
+        if (strength < 50) {
+          strengthMeterFill.style.backgroundColor = '#ef4444'; // red
+        } else if (strength < 75) {
+          strengthMeterFill.style.backgroundColor = '#f59e0b'; // amber
+        } else {
+          strengthMeterFill.style.backgroundColor = '#10b981'; // green
+        }
+      }
+    });
   </script>
 </body>
 </html>

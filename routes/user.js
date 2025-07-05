@@ -14,7 +14,7 @@ router.get('/register',userController.loadRegister)
 router.post('/register',userController.register)
 router.get('/register-OTP',userController.registerOTP)
 router.post("/verify-otp",userController.verifyOtp)
-router.post('/reSendOtp',userController.reSendOtp)
+router.get('/reSendOtp',userController.reSendOtp)
 // For Google Sign In
 router.get('/auth/google/login',passport.authenticate('google', {scope: ['profile', 'email'],state: 'login',prompt: 'select_account'}));
 // For Google Register

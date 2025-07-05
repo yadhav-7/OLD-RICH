@@ -29,8 +29,10 @@ const loadHomePage = async (req, res) => {
             {
                 isBlocked: false,
                 category: { $in: categoryData.map(category => category._id) },
-                quantity: { $gt: 0 }
+                
             })
+
+            console.log('product data first',productData)
 
             productData.sort((a,b)=>{
                 new Date(b.createdOn)-new Date(a.createdOn)
@@ -38,7 +40,8 @@ const loadHomePage = async (req, res) => {
             
             
             productData = productData.slice(0,4)
-            
+            console.warn('productData length',productData.lenght)
+            console.warn('productData',productData)
         if (user&&!userData.isBlock) {
             const userData = await User.findOne({ _id: user })
             res.render('home', { user: userData , products:productData })
@@ -144,8 +147,7 @@ const register = async (req, res) => {
         // Store OTP and user data in session
         req.session.userOTP = otp;
         req.session.userData = { username, email, phone, password, cpassword };
-
-
+        
         res.render('register-OTP');
     } catch (error) {
         console.error('register error:', error);
@@ -212,23 +214,28 @@ const verifyOtp = async (req, res) => {
     try {
 
         const { otp } = req.body;
-        console.log('verify otp function received:', otp);
+        console.log(1)
 
         if (!req.session.userData || !req.session.userOTP) {
             return res.status(400).json({ success: false, message: 'Session expired. Please try registering again.' });
         }
-
+        console.log(2)
+        if(!otp.trim()){
+            return res.status(400).json({success:false,message:'Enter OTP for verification'})
+        }
+        console.log(3)
         if (otp === req.session.userOTP) {
             const user = req.session.userData;
-
+console.log(4)
             // Re-check if email already exists
             const findUser = await User.findOne({ email: user.email });
-
+console.log(5)
             if (findUser) {
-
+console.log(6)
                 return res.status(400).json({ success: false, message: 'User with this email already exists' });
 
             }
+            console.log(7)
 
             const passwordHash = await securePassword(user.password);
             const saveUserData = new User({
@@ -237,19 +244,24 @@ const verifyOtp = async (req, res) => {
                 phone: user.phone,
                 password: passwordHash
             });
-
+console.log(8)
             await saveUserData.save();
-
+console.log(9)
             req.session.user = saveUserData._id;
             res.json({ success: true, redirectUrl: '/home' });
+            console.log(9)
         } else {
-            res.status(400).json({ success: false, message: 'Invalid OTP. Please try again.' });
+            console.log(10)
+            return res.status(400).json({ success: false, message: 'Invalid OTP. Please try again.' });
         }
     } catch (error) {
+        console.log(11)
         console.error('verify OTP error:', error);
         if (error.code === 11000) {
+            console.log(12)
             return res.status(400).json({ success: false, message: 'User with this email already exists' });
         }
+        console.log(13)
         res.status(500).json({ success: false, message: 'An error occurred during OTP verification' });
     }
 };
@@ -295,12 +307,12 @@ const login = async (req, res) => {
         const findUser = await User.findOne({ isAdmin: 0, email: email });
 
         if (!findUser) {
-            console.log('userNot found ');
+            
             return res.render('login', { message: 'User not found' });
         }
 
         if (findUser.isBlock) {
-            console.log('user Is blocked');
+            
             return res.render('login', { message: 'User is blocked by admin' });
         }
 
@@ -308,7 +320,7 @@ const login = async (req, res) => {
 
         if (!passwordMatch) {
             console.log('Incorrect password');
-            return res.render('login', { message: 'Incorrect Password' });
+            return res.render('login', { message: 'Invalid Information' });
         }
 
         req.session.user = findUser._id;
@@ -353,13 +365,12 @@ const loadShopingPage = async(req,res)=>{
         const products = await Product.find({
             isBlocked:false,
             category:{$in:categoryIds},
-            quantity:{$gt:0}
+            
         }).sort({createdAt:-1}).skip(skip).limit(limit)
 
         const totalProducts = await Product.countDocuments({
             isBlocked:false,
             category:{$in:categoryIds},
-            quantity:{$gt:0}
         })
 
         const totalPages = Math.ceil(totalProducts/limit)
@@ -392,104 +403,82 @@ const loadShopingPage = async(req,res)=>{
 
 const sortAndFilter = async (req, res) => {
   try {
-console.warn(1)
-    let page = parseInt(req.query.page)||1
- console.warn(2)
-    const { category, priceFilter ,sort} = req.query;
+    let page = parseInt(req.query.page) || 1;
+    const { category, priceFilter, sort } = req.query;
+    const limit = 6;
+    let skip = (page - 1) * limit;
 
-  console.warn(3)
+    // Build filter object
+    let filter = {};
+
+    // Handle categories
+    if (category) {
+      const categoryArray = Array.isArray(category) ? category : [category];
+      const validateCategory = categoryArray
+        .filter(catId => ObjectId.isValid(catId))
+        .map(catId => new ObjectId(catId));
+      
+      if (validateCategory.length > 0) {
+        filter.category = { $in: validateCategory };
+      }
+    }
+
+    // Handle price ranges
+    if (priceFilter) {
+      const ranges = Array.isArray(priceFilter) ? priceFilter : [priceFilter];
+      filter.$or = ranges.map(range => {
+        const [min, max] = range.split('-').map(Number);
+        return { 'variants.salePrice': { $gte: min, $lte: max } };
+      });
+    }
+
     // Build sort object
-    let sortOption = {};    
+    let sortOption = {};
 
     if (sort) {
       switch (sort) {
         case 'priceLowHigh':
-          sortOption = { salePrice: 1 };
+          sortOption = { 'variants.0.salePrice': 1 }; // Sort by first variant's price
           break;
         case 'priceHighLow':
-          sortOption = { salePrice: -1 };
+          sortOption = { 'variants.0.salePrice': -1 }; // Sort by first variant's price
           break;
         case 'nameAZ':
-          sortOption = { productName: 1 };
+          sortOption = { 'productName': 1 }; // Explicit string field
           break;
         case 'nameZA':
-          sortOption = { productName: -1 };
+          sortOption = { 'productName': -1 }; // Explicit string field
           break;
         default:
           sortOption = { createdAt: -1 };
       }
     }
 
-
-     console.warn(3)
-    // Build filter object
-    let filter = {};
-
-    // Handle categories
-    if (category) {
- console.warn(4)
-      categoryArray =  Array.isArray(category) ? category : [category] 
- console.warn(5)
-      const validateCategory = categoryArray.filter((catId)=>ObjectId.isValid(catId)).map((catId)=>new ObjectId(catId))
-
-       console.warn(6)
-
-      if(validateCategory.length>0){
-        filter.category = {$in:validateCategory}
-        console.warn('Filtered Category IDs',typeof validateCategory)
-      }
-
-       console.warn(7)
-      
-    }
-console.log(8)
-    // Handle price ranges
-    
-    if (priceFilter) {
-        
-      const ranges = Array.isArray(priceFilter) ? priceFilter : [priceFilter];
-      filter.$or = ranges.map(range => {
-        const [min, max] = range.split('-').map(Number);
-        return { salePrice: { $gte: min, $lte: max } };
-      });
-    }
-
- console.warn(9)
-
-
-    // Fetch categories and products
-
-    const categories = await Category.find({})
-    console.log('categories',categories)
-    
-     console.warn(10)
-
- const limit = 6
-
-    let skip = (page-1)*limit
-
+    const categories = await Category.find({});
     const products = await Product.find(filter)
-    .sort(sortOption)
-    .skip(skip)
-    .limit(limit)
+      .collation({ locale: 'en', strength: 2 }) // Case-insensitive sorting
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
 
-    let totalProduct = await Product.countDocuments(products);
+    // Get correct total count
+    const totalProduct = await Product.countDocuments(filter);
+    const totalPage = Math.ceil(totalProduct / limit);
 
-    let totalPage = Math.ceil(totalProduct/limit)
-    console.log(sort)
     // Render template
     res.render('shop', {
       products,
       category: categories,
       selectedCategories: category ? (Array.isArray(category) ? category : [category]) : [],
       selectedPriceFilters: priceFilter ? (Array.isArray(priceFilter) ? priceFilter : [priceFilter]) : [],
-      sortBy:[],
-      totalPages:totalPage,
-      currentPage:page
+      sortBy: sort || '',
+      totalPages: totalPage,
+      currentPage: page
     });
+
   } catch (error) {
-    console.error('error from sortAndFilter',error);
-    res.status(500).redirect('/pageNotFound')
+    console.error('error from sortAndFilter', error);
+    res.status(500).redirect('/pageNotFound');
   }
 };
 

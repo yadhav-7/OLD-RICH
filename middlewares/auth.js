@@ -46,6 +46,7 @@ const guestAuth = async (req, res, next) => {
 
 
 const adminAuth = async(req, res, next) => {
+    
         try {
             const userId = req.session.admin
             if(!userId){

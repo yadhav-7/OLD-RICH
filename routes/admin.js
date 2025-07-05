@@ -25,8 +25,8 @@ router.get('/category',adminAuth,catagoryController.categoryInfo)
 router.post('/addCategory',adminAuth,catagoryController.addCategory)
 router.post('/addCategoryOffer',adminAuth,catagoryController.addCategoryOffer)
 router.post('/removeCategoryOffer',adminAuth,catagoryController.removeCategoryOffer)
-router.get('/unListCategory',adminAuth,catagoryController.getUnlistCategory)
-router.get('/ListCategory',adminAuth,catagoryController.getListCategory)
+router.post('/unListCategory',adminAuth,catagoryController.getUnlistCategory)
+router.post('/ListCategory',adminAuth,catagoryController.getListCategory)
 router.get('/getEditCategory',adminAuth,catagoryController.getEditCategory)
 router.post('/editCategory/:id',adminAuth,catagoryController.editCategory)
 
@@ -34,13 +34,16 @@ router.post('/editCategory/:id',adminAuth,catagoryController.editCategory)
 
 router.get('/getAddProduct',adminAuth,prodouctContoller.getAddProducts)
 router.post('/addProducts',adminAuth,upload.array('images', 4),prodouctContoller.addProducts);
+
 router.get('/getAllProducts',adminAuth,prodouctContoller.getAllProducts)
+router.post('/productVarintsModal',adminAuth,prodouctContoller.productVarintsModal)
 router.post('/addProductOffer',adminAuth,prodouctContoller.addProductOffer)
 router.post('/removeProductOffer',adminAuth,prodouctContoller.removeProductOffer)
 router.post('/blockProduct',adminAuth,prodouctContoller.blockProduct)
 router.post('/unBlockProduct',adminAuth,prodouctContoller.unBlockProduct)
 router.get('/getEditProduct',adminAuth,prodouctContoller.getEditProduct)
 router.post('/editProduct/:id',adminAuth,upload.array('images', 4),prodouctContoller.editProduct)
+
 router.post('/deleteImage',adminAuth,prodouctContoller.deleteSingleImage)
 
 module.exports=router

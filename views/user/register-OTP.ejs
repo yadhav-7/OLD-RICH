@@ -15,29 +15,30 @@
             <input class="otp-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
         </div>
 
-        <button type="submit" class="verify-btn">Verify</button>
+        <button type="submit" class="verify-btn" id="verifyBtn">Verify</button>
 
         <div class="countdown" id="countdown">(01:00)</div>
-
-
     </form>
-    <button class="resendOTP" onclick="reSendOtp()">Resend OTP</button>
+    <button class="resendOTP" id="resendBtn" style="display: none;" onclick="reSendOtp()">Resend OTP</button>
 </div>
 
 <script>
     const inputs = document.querySelectorAll('.otp-input');
     const countdownEl = document.getElementById('countdown');
-    const resendBtn = document.querySelector('.resendOTP');
+    const resendBtn = document.getElementById('resendBtn');
+    const verifyBtn = document.getElementById('verifyBtn');
     let timeLeft = 60;
     let timer = null;
     const timerDuration = 60;
 
     // Initialize timer display
     countdownEl.textContent = `(01:00)`;
+    verifyBtn.style.display = 'block'; // Show verify button initially
+    resendBtn.style.display = 'none';  // Hide resend button initially
 
     // Start or restart the timer
     function startTimer() {
-        console.log('startTimer called'); // Debug log
+        console.log('startTimer called');
         if (timer) {
             console.log('Clearing existing timer:', timer);
             clearInterval(timer);
@@ -47,6 +48,8 @@
         timeLeft = timerDuration;
         countdownEl.textContent = `(01:00)`;
         countdownEl.style.display = 'block';
+        verifyBtn.style.display = 'block';  // Show verify button
+        resendBtn.style.display = 'none';  // Hide resend button
         resendBtn.setAttribute('aria-disabled', 'true');
 
         timer = setInterval(() => {
@@ -54,7 +57,7 @@
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             countdownEl.textContent = `(${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
-            console.log('Timer tick:', timeLeft); // Debug log
+            console.log('Timer tick:', timeLeft);
 
             if (timeLeft <= 0) {
                 console.log('Timer expired');
@@ -62,6 +65,8 @@
                 timer = null;
                 countdownEl.style.display = 'none';
                 countdownEl.textContent = 'Timer expired';
+                verifyBtn.style.display = 'none';  // Hide verify button
+                resendBtn.style.display = 'block';  // Show resend button
                 resendBtn.setAttribute('aria-disabled', 'false');
                 resendBtn.focus();
             }
@@ -70,37 +75,38 @@
 
     // Resend OTP
     async function reSendOtp() {
-
-
         try {
             const response = await fetch('/reSendOtp', {
-                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                credentials: 'same-origin',
-
+                
             });
-
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-
             const data = await response.json();
 
             if (data.success) {
-                alert('OTP resent successfully');
-                clearInterval(timer); // Clear the existing timer
-                console.log('Timer cleared:', timer); // Debug log
-                timeLeft = 60; // Reset the timer duration
-                countdownEl.textContent = `(01:00)`; // Reset the display
-                countdownEl.style.display = 'block'; // Ensure display is visible
-                inputs.forEach(input => input.value = ''); // Clear OTP inputs
-                inputs[0].focus(); // Focus on first input
-                startTimer(); // Restart the timer
+                
+                Swal.fire({
+                    toast:true,
+                    icon:'success',
+                    text:'OTP resent successfully'
+                })
+                clearInterval(timer);
+                console.log('Timer cleared:', timer);
+                timeLeft = 60;
+                countdownEl.textContent = `(01:00)`;
+                countdownEl.style.display = 'block';
+                verifyBtn.style.display = 'block';  // Show verify button again
+                resendBtn.style.display = 'none';   // Hide resend button
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+                startTimer();
             } else {
                 alert(data.message || 'Failed to resend OTP');
             }
@@ -143,56 +149,65 @@
     });
 
     // Validate OTP
-    async function validateOtp(e) {
-        e.preventDefault();
-        let otp = '';
-        inputs.forEach(input => {
-            otp += input.value;
+   async function validateOtp(e) {
+    e.preventDefault();
+
+    let otp = '';
+    inputs.forEach(input => otp += input.value);
+
+    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+        Swal.fire({
+            toast: true,
+            icon: 'warning',
+            text: 'Please enter a valid 6-digit OTP'
+        });
+        inputs[0].focus();
+        return;
+    }
+
+    try {
+        const response = await fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ otp }),
+            credentials: 'same-origin',
         });
 
-        if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-            alert('Please enter a valid 6-digit OTP.');
-            inputs[0].focus();
-            return;
-        }
-        console.log('OTP is', otp);
+        const data = await response.json();
 
-        try {
-            const response = await fetch('/verify-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ otp }),
-                credentials: 'same-origin',
+        if (data.success) {
+            await Swal.fire({
+                toast: true,
+                title: "Verified",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-               await Swal.fire({
-                    tost:true,
-                    title: "verified",
-                    icon: "success",
-                    draggable: true
-                });
-                window.location.href = data.redirectUrl || '/dashboard';
-            } else {
-                alert(data.message || 'OTP verification failed');
-                inputs.forEach(input => input.value = '');
-                inputs[0].focus();
-            }
-        } catch (error) {
-            console.error('Error verifying OTP:', error);
-            alert('Something went wrong while verifying the OTP.');
+            window.location.href = data.redirectUrl || '/dashboard';
+        } else {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                text: data.message || 'OTP verification failed'
+            });
+            inputs.forEach(input => input.value = '');
             inputs[0].focus();
         }
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        Swal.fire({
+            toast: true,
+            icon: 'error',
+            title: 'Verification failed',
+            text: error.message || 'Something went wrong. Please try again later.'
+        });
+        inputs.forEach(input => input.value = '');
+        inputs[0].focus();
     }
+}
 
     document.getElementById('otpForm').addEventListener('submit', validateOtp);
 

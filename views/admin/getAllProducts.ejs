@@ -1,369 +1,1076 @@
-<link rel="stylesheet" href="/admin/getAllProducts.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+<!DOCTYPE html>
+<html lang="en">
 
-  <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Products</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-light: #eef2ff;
+      --secondary-color: #3f37c9;
+      --danger-color: #f72585;
+      --danger-light: #fde8ef;
+      --success-color: #4cc9f0;
+      --success-light: #e6f7fd;
+      --warning-color: #ff9e00;
+      --warning-light: #fff4e6;
+      --info-color: #6c757d;
+      --info-light: #f8f9fa;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --border-color: #e0e0e0;
+      --text-light: #6c757d;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
 
-    <div class="content-main">
-      <h1>Products</h1>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-      <div class="search-container">
-        <div class="search-wrapper">
-          <input type="text" id="search-input" placeholder="Search customers...">
-          <button id="clear-button" aria-label="Clear search">×</button>
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+    }
 
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px 30px;
+      margin-left: 250px;
+      transition: all 0.3s;
+      overflow-x: hidden;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .search-input-group {
+      position: relative;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      background-color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-light);
+      transition: color 0.2s;
+      display: none;
+    }
+
+    .clear-btn.visible {
+      display: block;
+    }
+
+    .clear-btn:hover {
+      color: var(--danger-color);
+    }
+
+    .products-table-container {
+      overflow-x: auto;
+      background-color: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 30px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+    }
+
+    .products-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .products-table th,
+    .products-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .products-table th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .products-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .products-table tr:hover {
+      background-color: var(--primary-light);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .status-active {
+      background-color: var(--success-light);
+      color: #28a745;
+    }
+
+    .status-blocked {
+      background-color: var(--danger-light);
+      color: var(--danger-color);
+    }
+
+    .offer-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background-color: var(--warning-light);
+      color: var(--warning-color);
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .add-offer {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .remove-offer {
+      background-color: var(--warning-color);
+      color: white;
+    }
+
+    .block {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .unblock {
+      background-color: #48c774;
+      color: white;
+    }
+
+    .edit {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .view-variants {
+      background-color: var(--info-color);
+      color: white;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .action-btn i {
+      font-size: 0.9rem;
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-link {
+      padding: 8px 16px;
+      text-decoration: none;
+      color: var(--dark-color);
+      background-color: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      transition: all 0.3s;
+      display: inline-block;
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .page-link:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+
+    .page-link.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .variant-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1050;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .variant-modal-content {
+      background-color: white;
+      border-radius: var(--radius-md);
+      width: 90%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .variant-modal-header {
+      padding: 16px 25px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .variant-modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .variant-modal-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.75rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+
+    .variant-modal-close:hover {
+      transform: rotate(90deg);
+    }
+
+    .variant-modal-body {
+      padding: 20px 25px;
+    }
+
+    .variant-table-container {
+      overflow-x: auto;
+      max-height: 60vh;
+    }
+
+    .variant-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .variant-table th {
+      background-color: var(--primary-light);
+      position: sticky;
+      top: 0;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      color: var(--primary-color);
+    }
+
+    .variant-table th,
+    .variant-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .variant-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .variant-table tr:hover {
+      background-color: var(--primary-light);
+    }
+
+    .variant-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .variant-action-btn {
+      padding: 6px 10px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .variant-edit {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .variant-delete {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .variant-action-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: var(--border-color);
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+    }
+
+    .variant-empty-state,
+    .variant-error-state {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .variant-empty-state i,
+    .variant-error-state i {
+      font-size: 2rem;
+      color: #ddd;
+      margin-bottom: 10px;
+    }
+
+    .variant-error-state {
+      color: var(--danger-color);
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading-spinner.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 15px;
+        padding-top: 70px;
+      }
+
+      .header-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-container {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .action-buttons {
+        gap: 6px;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+
+      .variant-modal-content {
+        width: 95%;
+      }
+
+      .products-table th,
+      .products-table td {
+        padding: 10px 12px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-content {
+        padding: 15px;
+      }
+
+      .header-title {
+        font-size: 1.3rem;
+      }
+
+      .action-btn span {
+        display: none;
+      }
+
+      .action-btn i {
+        margin-right: 0;
+      }
+
+      .variant-table th,
+      .variant-table td {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-wrapper">
+    <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+      <div class="main-content">
+        <div class="header">
+          <div class="header-top">
+            <h1 class="header-title">Products Management</h1>
+            <div class="search-container">
+              <div class="search-input-group">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" class="search-input" placeholder="Search products..."
+                  aria-label="Search products">
+                <button class="clear-btn" id="clear-button" aria-label="Clear search">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="loading-spinner" id="loadingSpinner">
+          <div class="spinner"></div>
+          <p>Loading products...</p>
+        </div>
+
+        <div class="products-table-container" id="productsTableContainer">
+          <% if(data && data.length> 0) { %>
+            <table class="products-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Offer</th>
+                  <th>Total Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <% for(let i=0; i < data.length; i++) { %>
+                  <tr>
+                    <td><strong>
+                        <%= data[i].productName %>
+                      </strong></td>
+                    <td>
+                      <%= data[i].category.name %>
+                    </td>
+                    <td>
+                      <% if(data[i].isBlocked) { %>
+                        <span class="status-badge status-blocked">Blocked</span>
+                        <% } else { %>
+                          <span class="status-badge status-active">Active</span>
+                          <% } %>
+                    </td>
+                    <td>
+                      <% if(data[i].productOffer> 0) { %>
+                        <span class="offer-badge">
+                          <%= data[i].productOffer %>% OFF
+                        </span>
+                        <% } else { %>
+                          <span>-</span>
+                          <% } %>
+                    </td>
+                    <td>
+                      <%= data[i].totalQuantity %>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <% if(data[i].productOffer < 1) { %>
+                          <button class="action-btn add-offer" onclick="addOffer('<%= data[i]._id %>')">
+                            <i class="fas fa-tag"></i>
+                            <span>Add Offer</span>
+                          </button>
+                          <% } else { %>
+                            <button class="action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
+                              <i class="fas fa-tag"></i>
+                              <span>Remove Offer</span>
+                            </button>
+                            <% } %>
+                              <% if(data[i].isBlocked) { %>
+                                <button class="action-btn unblock"
+                                  onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                  <i class="fas fa-unlock"></i>
+                                  <span>Unblock</span>
+                                </button>
+                                <% } else { %>
+                                  <button class="action-btn block"
+                                    onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                    <i class="fas fa-ban"></i>
+                                    <span>Block</span>
+                                  </button>
+                                  <% } %>
+                                    <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
+                                      <i class="fas fa-edit"></i>
+                                      <span>Edit</span>
+                                    </a>
+                                    <button class="action-btn view-variants"
+                                      onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                      <i class="fas fa-boxes"></i>
+                                      <span>Variants</span>
+                                    </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <% } %>
+              </tbody>
+
+            </table>
+            <% } else { %>
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>No products found</p>
+              </div>
+              <% } %>
+        </div>
+
+        <% if(data && data.length> 0) { %>
+          <div class="pagination-container">
+            <% if(currentPage> 1) { %>
+              <a href="/admin/getAllProducts?page=<%= currentPage - 1 %>" class="page-link">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+              <% } %>
+                <a href="#" class="page-link active">
+                  <%= currentPage %>
+                </a>
+                <% if(currentPage < totalPages) { %>
+                  <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
+                    <i class="fas fa-chevron-right"></i>
+                  </a>
+                  <% } %>
+          </div>
+          <% } %>
+      </div>
+  </div>
+
+  <div class="variant-modal" id="variantModal">
+    <div class="variant-modal-content">
+      <div class="variant-modal-header">
+        <h3 class="variant-modal-title" id="variantModalTitle">Product Variants</h3>
+        <button class="variant-modal-close" onclick="closeVariantModal()" aria-label="Close variants modal">×</button>
+      </div>
+      <div class="variant-modal-body">
+        <div class="variant-table-container">
+          <table class="variant-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>SKU</th>
+              </tr>
+            </thead>
+            <tbody id="variantTableBody"></tbody>
+          </table>
         </div>
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Product name</th>
-            <th>Category</th>
-            <th>Sale Price</th>
-            <th>Offer</th>
-
-            <th>Quantity</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="product-table">
-          <% for(let i=0 ; i< data.length ; i++){ %>
-            <tr>
-              <td>
-                <%=data[i].productName %>
-              </td>
-              <td>
-                <%=data[i].category.name %>
-              </td>
-              <td>
-                <%= data[i].salePrice %>
-              </td>
-              <td>
-
-                <% if(locals.data[i].productOffer){ %>
-                  <%= data[i].productOffer%>%
-                    <% }else{ %>
-                      0%
-                      <% } %>
-
-              </td>
-
-              <td>
-                <%= data[i].quantity %>
-              </td>
-
-              <td class="action-buttons">
-                <% if(locals.data[i].productOffer===0){ %>
-                  <button class="add-offer" onclick="addOffer('<%=data[i]._id%>')">Add Offer</button>
-                  <% }else{ %>
-                    <button class="remove" onclick="removeOffer('<%=data[i]._id%>')">Remove</button>
-                    <% } %>
-
-                      <% if(locals.data[i].isBlocked){ %>
-                        <button class="block"
-                          onclick="unBockProduct('<%= data[i]._id%>','<%= data[i].producName%>')">Unblock</button>
-                        <% }else{ %>
-                          <button class="unblock"
-                            onclick="blockProduct('<%= data[i]._id%>','<%= data[i].producName%>')">Block</button>
-                          <% } %>
-                            <button class="edit"><a href="/admin/getEditProduct?id=<%= data[i]._id %>"
-                                style="text-decoration: none; color: white;">Edit</a></button>
-              </td>
-            </tr>
-            <% } %>
-        </tbody>
-      </table>
-
-
-      <div id="pagination-container"
-        style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
-
-        <% if(currentPage>1){ %>
-
-          <a href="/admin/getAllProducts?page=<%= currentPage-1%>"
-            style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>
-
-          <% } %>
-
-            <a href="<%= currentPage %>"
-              style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">
-              <%= currentPage %>
-            </a>
-
-
-            <% if(currentPage<totalPages){ %>
-              <a href="/admin/getAllProducts?page=<%= currentPage+1%>"
-                style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>
-              <% } %>
-      </div>
-
     </div>
+  </div>
 
-    <script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // DOM Elements
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-button');
+    const productsTableBody = document.getElementById('productsTableBody');
+    // const productsTableContainer = document.getElementById('productsTableContainer');
 
+    // Show variant modal
+    async function showVariantModal(productId, productName) {
+      try {
+        const modal = document.getElementById('variantModal');
+        const modalTitle = document.getElementById('variantModalTitle');
+        const tableBody = document.getElementById('variantTableBody');
 
-      // SEARCH
-      const searchInput = document.getElementById('search-input');
-      const clearBtn = document.getElementById('clear-button');
-      const pagination = document.getElementById('pagination-container')
-      const table = document.getElementById('product-table');
+        modalTitle.textContent = `${productName} Variants`;
+        tableBody.innerHTML = '<tr><td colspan="5" class="variant-empty-state">Loading variants...</td></tr>';
+        modal.style.display = 'flex';
 
-      // function to fetch & render products
-      const fetchAndRenderProducts = async (search = '') => {
-        try {
-          const res = await fetch(`/admin/getAllProducts?search=${encodeURIComponent(search)}`, {
-            headers: {
-              'Accept': 'application/json'
-            }
-          });
-          const result = await res.json();
-          const product = result.data;
-          const currentPage = result.currentPage
-          const totalPages = result.totalPages
+        const response = await fetch('/admin/productVarintsModal', {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ id: productId })
+        });
 
-          table.innerHTML = '';
-
-          if (product.length === 0) {
-            table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products found</td></tr>';
+        const result = await response.json();
+        if (response.ok && Array.isArray(result.data)) {
+          if (result.data.length > 0) {
+            let rows = '';
+            result.data.forEach(variant => {
+              rows += `
+                <tr>
+                  <td>${variant.size || '-'}</td>
+                  <td>$${variant.salePrice || '0.00'}</td>
+                  <td>${variant.quantity || '0'}</td>
+                  <td>${variant.sku || '-'}</td>
+                </tr>
+              `;
+            });
+            tableBody.innerHTML = rows;
           } else {
-
-
-
-            product.forEach(item => {
-              table.innerHTML += `
+            tableBody.innerHTML = `
+              <tr>
+                <td colspan="5" class="variant-empty-state">
+                  <i class="fas fa-box-open"></i>
+                  <p>No variants found for this product</p>
+                </td>
+              </tr>
+            `;
+          }
+        } else {
+          throw new Error('Failed to load variants');
+        }
+      } catch (err) {
+        console.error('Error loading variants:', err);
+        document.getElementById('variantTableBody').innerHTML = `
           <tr>
-            <td>${item.productName}</td>
-            <td>${item.category?.name || 'No Category'}</td>
-            <td>${item.salePrice}</td>
-            <td>${item.productOffer ? item.productOffer + '%' : '0%'}</td>
-            <td>${item.quantity}</td>
-            <td class="action-buttons">
-              ${item.productOffer === 0
-                  ? `<button class="add-offer" onclick="addOffer('${item._id}')">Add Offer</button>`
-                  : `<button class="remove" onclick="removeOffer('${item._id}')">Remove</button>`}
-              ${item.isBlocked
-                  ? `<button class="block"><a href="/admin/unBlockProduct?id=${item._id}" style="text-decoration: none; color: white;">Unblock</a></button>`
-                  : `<button class="unblock"><a href="/admin/blockProduct?id=${item._id}" style="text-decoration: none; color: white;">Block</a></button>`}
-              <button class="edit"><a href="/admin/getEditProduct?id=${item._id}" style="text-decoration: none; color: white;">Edit</a></button>
+            <td colspan="5" class="variant-error-state">
+              <i class="fas fa-exclamation-circle"></i>
+              <p>Error loading variants. Please try again.</p>
             </td>
           </tr>
         `;
-            });
+      }
+    }
 
-            pagination.innerHTML = `
-  <div id="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
-    ${currentPage > 1 ? `
-      <a href="/admin/getAllProducts?page=${currentPage - 1}" style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>
-    ` : ''}
+    // Close variant modal
+    function closeVariantModal() {
+      document.getElementById('variantModal').style.display = 'none';
+    }
 
-    <a href="${currentPage}" style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">${currentPage}</a>
-
-    ${currentPage < totalPages ? `
-      <a href="/admin/getAllProducts?page=${currentPage + 1}" style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>
-    ` : ''}
-  </div>
-`;
-
-
-          }
-        } catch (err) {
-          console.error('Error fetching products:', err);
+    // Add offer
+    async function addOffer(productId) {
+      
+      const { value: amount } = await Swal.fire({
+        title: 'Add Product Offer',
+        input: 'number',
+        inputLabel: 'Enter offer percentage',
+        inputPlaceholder: '10',
+        inputAttributes: { min: '1', max: '100' },
+        showCancelButton: true,
+        confirmButtonText: 'Add Offer',
+        cancelButtonText: 'Cancel',
+        inputValidator: (value) => {
+          if (!value) return 'Please enter a value';
+          if (value < 1 || value > 100) return 'Please enter a value between 1 and 100';
         }
-      };
-
-      // On keyup search
-      searchInput.addEventListener('keyup', () => {
-        const searchValue = searchInput.value || '';
-        fetchAndRenderProducts(searchValue);
       });
 
-      // On clear button click
+      if (amount) {
+        
+        try {
+          const response = await fetch('/admin/addProductOffer', {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({ productId, percentage: amount })
+          });
+          const result = await response.json();
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Added',
+              text: `Successfully added ${amount}% offer to the product`,
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => location.reload());
+          } else {
+            throw new Error(result.message || 'Failed to add offer');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: err.message || 'Something went wrong'
+          });
+        }
+      }
+    }
+
+    // Remove offer
+    async function removeOffer(productId) {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Remove Offer?',
+        text: 'Are you sure you want to remove this offer?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove it',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (isConfirmed) {
+        try {
+          const response = await fetch('/admin/removeProductOffer', {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({ productId })
+          });
+          const result = await response.json();
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Removed',
+              text: 'Product offer has been removed',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => location.reload());
+          } else {
+            throw new Error(result.message || 'Failed to remove offer');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed',
+            text: err.message || 'Something went wrong'
+          });
+        }
+      }
+    }
+
+    // Block product
+    async function blockProduct(productId, productName) {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Block Product',
+        html: `You are about to block <strong>${productName}</strong>. This product will no longer be visible to customers.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, block it',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (isConfirmed) {
+        try {
+          const response = await fetch('/admin/blockProduct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: productId, productName })
+          });
+          const result = await response.json();
+          if (response.ok) {
+            await Swal.fire({
+              icon: 'success',
+              title: 'Blocked!',
+              text: 'Product has been blocked successfully.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            location.reload();
+          } else {
+            throw new Error(result.message || 'Failed to block product');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Something went wrong!'
+          });
+        }
+      }
+    }
+
+    // Unblock product
+    async function unblockProduct(productId, productName) {
+      
+      const { isConfirmed } = await Swal.fire({
+        title: 'Unblock Product',
+        html: `You are about to unblock <strong>${productName}</strong>. This product will become visible to customers again.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        confirmButtonText: 'Yes, unblock it',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (isConfirmed) {
+        try {
+          const response = await fetch('/admin/unBlockProduct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: productId, productName })
+          });
+          const result = await response.json();
+          if (response.ok) {
+            await Swal.fire({
+              icon: 'success',
+              title: 'Unblocked!',
+              text: 'Product has been unblocked successfully.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            location.reload();
+          } else {
+            throw new Error(result.message || 'Failed to unblock product');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Something went wrong!'
+          });
+        }
+      }
+    }
+
+
+    async function searchAndrender(search) {
+
+      const response = await fetch(`/admin/getAllProducts?search=${encodeURIComponent(search)}`, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+
+      const result = await response.json();
+      const product = result.data;
+      const currentPage = result.currentPage
+      const totalPages = result.totalPages
+
+      if (response.ok) {
+        if (product.length > 0) {
+          productsTableBody.innerHTML = ''
+          for (let i = 0; i < product.length; i++) {
+            productsTableBody.innerHTML += `
+  <tr>
+    <td><strong>${product[i].productName}</strong></td>
+    <td>${product[i].category.name}</td>
+    <td>
+      ${product[i].isBlocked
+                ? '<span class="status-badge status-blocked">Blocked</span>'
+                : '<span class="status-badge status-active">Active</span>'
+              }
+    </td>
+    <td>
+      ${product[i].productOffer > 0
+                ? `<span class="offer-badge">${product[i].productOffer}% OFF</span>`
+                : '<span>-</span>'
+              }
+    </td>
+    <td>${product[i].totalQuantity}</td>
+    <td>
+      <div class="action-buttons">
+        ${product[i].productOffer < 1
+                ? `<button class="action-btn add-offer" onclick="addOffer('${product[i]._id}')">
+              <i class="fas fa-tag"></i><span>Add Offer</span>
+            </button>`
+                : `<button class="action-btn remove-offer" onclick="removeOffer('${product[i]._id}')">
+              <i class="fas fa-tag"></i><span>Remove Offer</span>
+            </button>`
+              }
+
+        ${product[i].isBlocked
+                ? `<button class="action-btn unblock" onclick="unblockProduct('${product[i]._id}', '${product[i].productName}')">
+              <i class="fas fa-unlock"></i><span>Unblock</span>
+            </button>`
+                : `<button class="action-btn block" onclick="blockProduct('${product[i]._id}', '${product[i].productName}')">
+              <i class="fas fa-ban"></i><span>Block</span>
+            </button>`
+              }
+
+        <a href="/admin/getEditProduct?id=${product[i]._id}" class="action-btn edit">
+          <i class="fas fa-edit"></i><span>Edit</span>
+        </a>
+
+        <button class="action-btn view-variants" onclick="showVariantModal('${product[i]._id}', '${product[i].productName}')">
+          <i class="fas fa-boxes"></i><span>Variants</span>
+        </button>
+      </div>
+    </td>
+  </tr>
+`;
+
+          }
+        } else {
+          productsTableBody.innerHTML = `
+    <tr>
+      <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+        <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+        No products found.
+      </td>
+    </tr>
+  `;
+        }
+      } else {
+        alert('no data')
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+
+      searchInput.addEventListener('keyup', function () {
+
+        const search = searchInput.value
+        if (search === '') window.location.reload()
+        searchAndrender(search)
+      })
+
+
+
+      // Clear search
       clearBtn.addEventListener('click', () => {
         searchInput.value = '';
         window.location.reload()
-
       });
+    });
+  </script>
+</body>
 
-
-
-      // ADDOFFER FUNCTION
-      async function addOffer(productId) {
-        try {
-          const { value: amount } = await Swal.fire({
-            title: 'Offer In Percentage',
-            input: 'number',
-            inputLabel: 'Percentage',
-            inputPlaceholder: 'Enter discount %',
-            inputAttributes: {
-              min: 1,
-              max: 99,
-              step: 1
-            },
-            showCancelButton: true
-          });
-
-          if (!amount) return; // if user cancels or leaves empty
-
-          const response = await fetch('/admin/addProductOffer', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              percentage: amount,
-              productId: productId
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            Swal.fire('✅ Success!', data.message || 'Offer updated.', 'success');
-            location.reload()
-          } else {
-            const errorData = await response.json();
-            Swal.fire('❌ Failed!', errorData.message || 'Something went wrong.', 'error');
-          }
-        } catch (error) {
-          Swal.fire('⚠️ Error!', error.message || 'Unexpected error occurred.', 'error');
-        }
-      }
-
-      //REMOVEOFFER FUNCTION
-      async function removeOffer(productId) {
-        try {
-          Swal.fire({
-            title: 'Remove offer',
-            text: 'Are you sure you want to remove this offer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d7',
-            cancelButtonColor: 'd33',
-            confirmButtonText: 'Yes,remove it!',
-            timer: 5000,
-            timerProgressBar: true
-          })
-            .then(async (result) => {
-              if (result.isConfirmed) {
-                const response = await fetch('/admin/removeProductOffer', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    productId: productId
-                  })
-                })
-
-                if (response.ok) {
-                  Swal.fire('Removed', 'The offer has been removed', 'success')
-                  location.reload()
-                } else {
-                  Swal.fire('Failed')
-                }
-              }
-            })
-        } catch (error) {
-          Swal.fire('⚠️ Error!', error.message || 'Unexpected error occurred.', 'error');
-        }
-      }
-
-
-      async function blockProduct(productId, producName) {
-
-        try {
-          const { isConfirmed } = await Swal.fire({
-            title: `Block ${producName}?`,
-            text: "Are you sure.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sure',
-            cancelButtonText: 'No',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-          })
-
-          if (isConfirmed) {
-            const response = await fetch('/admin/blockProduct', {
-              method: 'post',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                id: productId
-              })
-            })
-
-            if (response.ok) {
-              Swal.fire({
-                title: 'Success!',
-                text: `${producName} has been blocked.`,
-                icon: 'success',
-                timer: 1500,
-                timerProgressBar: true,
-                showConfirmButton: false
-              });
-
-              setTimeout(() => {
-                window.location.reload()
-              }, 1500)
-            } else {
-              throw new Error("Failed to block user");
-
-            }
-          }
-        } catch (error) {
-          Swal.fire('Error!', error.message, 'error');
-        }
-      }
-
-
-      async function unBockProduct(productId, producName) {
-        alert('blockProduct')
-        try {
-          const { isConfirmed } = await Swal.fire({
-            title: `Unblock ${producName}?`,
-            text: "Are you sure.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sure',
-            cancelButtonText: 'No',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-          })
-
-          if (isConfirmed) {
-            const response = await fetch('/admin/unBlockProduct', {
-              method: 'post',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                id: productId
-              })
-            })
-
-            if (response.ok) {
-              Swal.fire({
-                title: 'Success!',
-                text: `${producName} has been Unblocked.`,
-                icon: 'success',
-                timer: 1500,
-                timerProgressBar: true,
-                showConfirmButton: false
-              });
-
-              setTimeout(() => {
-                window.location.reload()
-              }, 1500)
-            } else {
-              throw new Error("Failed to Unblock user");
-
-            }
-          }
-        } catch (error) {
-          Swal.fire('Error!', error.message, 'error');
-        }
-      }
-
-    </script>
+</html>

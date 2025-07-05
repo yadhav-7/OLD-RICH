@@ -8,6 +8,7 @@
         --light-gray: #F5F5F5;
         --dark-gray: #333333;
         --medium-gray: #757575;
+        --error-red: #E53935;
     }
     
     * {
@@ -46,16 +47,34 @@
     .login-form {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         margin-bottom: 25px;
     }
     
+    .form-group {
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--dark-gray);
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
     .login-form input {
+        width: 100%;
         padding: 14px 16px;
         border: 1px solid #E0E0E0;
         border-radius: 8px;
         font-size: 16px;
         transition: all 0.3s ease;
+    }
+    
+    .login-form input.error {
+        border-color: var(--error-red);
     }
     
     .login-form input:focus {
@@ -74,10 +93,19 @@
         font-weight: 500;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        margin-top: 10px;
     }
     
     .login-form button:hover {
         background-color: var(--dark-green);
+    }
+    
+    .error-message {
+        color: var(--error-red);
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+        text-align: left;
     }
     
     .google-login {
@@ -134,7 +162,7 @@
     }
     
     .login-message {
-        color: #E53935;
+        color: var(--error-red);
         font-size: 14px;
         margin-top: 15px;
         font-weight: 500;
@@ -143,18 +171,39 @@
 
 <div class="login-container">
   <h2>Login</h2>
-  <form class="login-form" id="loginForm" action="/login" method="POST">
-    <input type="email" id="email" name="email" placeholder="Email" >
-    <span id="emailError" style="color: red;"></span>
+  
+  <% if(typeof message!=='undefined'){ %>
+    <div class="login-message"><%= message %></div>
+  <% } %>
+  
+  <form class="login-form" id="loginForm" action="/login" method="POST" novalidate>
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" 
+             aria-describedby="emailError" required>
+      <span id="emailError" class="error-message" aria-live="polite"></span>
+    </div>
 
-    <input type="password" id="password" name="password" placeholder="Password" >
-    <span id="passwordError" style="color: red;"></span>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" 
+             aria-describedby="passwordError" required minlength="6">
+      <span id="passwordError" class="error-message" aria-live="polite"></span>
+    </div>
 
     <button type="submit">Login</button>
   </form>
 
   <div class="google-login">
-    <a href="/auth/google/login">Login with Google</a>
+    <a href="/auth/google/login">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3635H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2526 17.64 11.9456 17.64 9.2045Z" fill="#4285F4"/>
+        <path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/>
+        <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957273C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
+        <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/>
+      </svg>
+      Login with Google
+    </a>
   </div>
 
   <div class="form-group">
@@ -164,40 +213,106 @@
   <p class="text-center">
     Don't have an account? <a href="/register">Register</a>
   </p>
-
-  <% if(typeof message!=='undefined'){%>
-    <h1 class='login-message'><%= message %></h1>
-  <% } %>
 </div>
 
 <script>
-  document.getElementById("loginForm").addEventListener("submit", function(event) {
-    // Clear old errors
-    document.getElementById("emailError").textContent = "";
-    document.getElementById("passwordError").textContent = "";
-
-    let isValid = true;
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    // Email regex pattern
-    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-    if (!emailPattern.test(email)) {
-      document.getElementById("emailError").textContent = "Please enter a valid email address.";
-      isValid = false;
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    
+    // Validate on form submission
+    form.addEventListener('submit', function(event) {
+      let isValid = true;
+      
+      // Clear previous errors
+      emailError.textContent = '';
+      passwordError.textContent = '';
+      emailInput.classList.remove('error');
+      passwordInput.classList.remove('error');
+      
+      // Email validation
+      const email = emailInput.value.trim();
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      
+      if (!email) {
+        emailError.textContent = 'Email is required';
+        emailInput.classList.add('error');
+        isValid = false;
+      } else if (!emailRegex.test(email)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailInput.classList.add('error');
+        isValid = false;
+      }
+      
+      // Password validation
+      const password = passwordInput.value.trim();
+      
+      if (!password) {
+        passwordError.textContent = 'Password is required';
+        passwordInput.classList.add('error');
+        isValid = false;
+      } else if (password.length < 6) {
+        passwordError.textContent = 'Password must be at least 6 characters';
+        passwordInput.classList.add('error');
+        isValid = false;
+      }
+      
+      if (!isValid) {
+        event.preventDefault();
+        
+        // Focus on first error field
+        if (emailInput.classList.contains('error')) {
+          emailInput.focus();
+        } else if (passwordInput.classList.contains('error')) {
+          passwordInput.focus();
+        }
+      }
+    });
+    
+    // Real-time validation on blur
+    emailInput.addEventListener('blur', validateEmail);
+    passwordInput.addEventListener('blur', validatePassword);
+    
+    function validateEmail() {
+      const email = emailInput.value.trim();
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      
+      emailError.textContent = '';
+      emailInput.classList.remove('error');
+      
+      if (!email) {
+        emailError.textContent = 'Email is required';
+        emailInput.classList.add('error');
+        return false;
+      } else if (!emailRegex.test(email)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailInput.classList.add('error');
+        return false;
+      }
+      
+      return true;
     }
-
-    // Password: At least 6 characters, 1 letter, 1 number
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!passwordPattern.test(password)) {
-      document.getElementById("passwordError").textContent = 
-        "Password must be at least 6 characters and include at least one letter and one number.";
-      isValid = false;
-    }
-
-    if (!isValid) {
-      event.preventDefault(); // Stop form submission
+    
+    function validatePassword() {
+      const password = passwordInput.value.trim();
+      
+      passwordError.textContent = '';
+      passwordInput.classList.remove('error');
+      
+      if (!password) {
+        passwordError.textContent = 'Password is required';
+        passwordInput.classList.add('error');
+        return false;
+      } else if (password.length <=8) {
+        passwordError.textContent = 'Password must be at least 8 characters';
+        passwordInput.classList.add('error');
+        return false;
+      }
+      
+      return true;
     }
   });
 </script>
