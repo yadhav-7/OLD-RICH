@@ -3,50 +3,49 @@ const Product = require('../../models/productSchema')
 const mongoose = require('mongoose');
 
 const categoryInfo = async (req, res) => {
-    try {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const search = req.query.search?.trim() || '';
+    const limit = 5;
+    const skip = (page - 1) * limit;
 
-        const page = parseInt(req.query.page) || 1
-        const search = req.query.search || ''
-        const limit = 4
-        const skip = (page - 1) * limit;
+    const query = {
+      name: { $regex: new RegExp(search, 'i') }
+    };
 
-        
+    const categoryData = await Category.find(query)
+      .sort({ createdOn: -1 })
+      .skip(skip)
+      .limit(limit);
 
-        const query = {
-            $or: [
-                { name: { $regex: ".*" + search + ".*", $options: 'i' } }
-            ]
-        };
+    const totalCategories = await Category.countDocuments(query); 
+    const totalPages = Math.ceil(totalCategories / limit);
 
-
-        const categoryData = await Category.find(query)
-            .sort({ createdOn: -1 })
-            .skip(skip)
-            .limit(limit)
-
-            const isFetch = req.headers.accept?.includes('application/json');
-
-           
-        const totalCategories = await Category.countDocuments();
-        const totalPages = Math.ceil(totalCategories / limit)
+    const isFetch = req.headers.accept?.includes('application/json');
 
 
-        if(isFetch){
-                return res.json({
-                    category:categoryData
-                })
-            }
-        res.render('category', {
-            cat: categoryData,
-            currentPage: page,
-            totalPages: totalPages,
-            totalCategories: totalCategories
-        })
-    } catch (error) {
-        console.error('error from categoryInfo', error)
-        res.redirect('/admin/pageError')
+    if (isFetch) {
+      return res.json({
+        category: categoryData,
+        currentPage: page,
+        totalPages: totalPages,
+        totalCategories: totalCategories
+      });
     }
-}
+
+    res.render('category', {
+      cat: categoryData,
+      currentPage: page,
+      totalPages: totalPages,
+      totalCategories: totalCategories
+    });
+  } catch (error) {
+    console.error('error from categoryInfo', error);
+    res.redirect('/admin/pageError');
+  }
+};
+
+
 
 const addCategory = async (req, res) => {
 
@@ -54,10 +53,10 @@ const addCategory = async (req, res) => {
         console.log('addCategory')
         const { categoryName, categoryDescription } = req.body
         console.log(categoryName)
-        
+
 
         const existingCategory = await Category.findOne({
-                name: { $regex: categoryName, $options: 'i' }
+            name: { $regex: categoryName, $options: 'i' }
         });
 
         if (existingCategory) {
@@ -272,10 +271,10 @@ const getListCategory = async (req, res) => {
         console.log(id);
         console.log(updatedCategory.isListed); // This will log the isListed value of the document
 
-        res.json({status:true})
+        res.json({ status: true })
     } catch (error) {
         console.log('error from getListCategory', error);
-        res.status(500).json({status:false})
+        res.status(500).json({ status: false })
     }
 };
 
@@ -284,10 +283,10 @@ const getUnlistCategory = async (req, res) => {
         console.log('unListCategory')
         let id = req.body.id
         await Category.updateOne({ _id: id }, { $set: { isListed: false } })
-        res.json({status:true})
+        res.json({ status: true })
     } catch (error) {
         console.log('Error from getUnListCategory', error)
-        res.status(500).json({status:false})
+        res.status(500).json({ status: false })
     }
 }
 

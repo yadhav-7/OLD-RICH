@@ -199,24 +199,33 @@
         }
       }
 
-      function validatePhone() {
-        const value = phoneInput.value.trim();
-        const phonePattern = /^\d{10}$/;
-        
-        if (!value) {
-          phoneError.textContent = 'Phone number is required';
-          phoneInput.classList.add('border-red-500');
-          return false;
-        } else if (!phonePattern.test(value)) {
-          phoneError.textContent = 'Phone number must be exactly 10 digits';
-          phoneInput.classList.add('border-red-500');
-          return false;
-        } else {
-          phoneError.textContent = '';
-          phoneInput.classList.remove('border-red-500');
-          return true;
-        }
-      }
+   function validatePhone() {
+  const value = phoneInput.value.trim();
+
+  // Pattern: 10 digits, not all zeros
+  const phonePattern = /^(?!0{10})\d{10}$/;
+
+  // Pattern: Reject if all digits are same (e.g. 1111111111)
+  const repeatedDigitPattern = /^(\d)\1{9}$/;
+
+  if (!value) {
+    phoneError.textContent = 'Phone number is required';
+    phoneInput.classList.add('border-red-500');
+    return false;
+  } else if (!phonePattern.test(value)) {
+    phoneError.textContent = 'Phone number must be exactly 10 digits and not all zeros';
+    phoneInput.classList.add('border-red-500');
+    return false;
+  } else if (repeatedDigitPattern.test(value)) {
+    phoneError.textContent = 'Phone number cannot have all digits the same';
+    phoneInput.classList.add('border-red-500');
+    return false;
+  } else {
+    phoneError.textContent = '';
+    phoneInput.classList.remove('border-red-500');
+    return true;
+  }
+}
 
       function validatePassword() {
         const value = passwordInput.value;

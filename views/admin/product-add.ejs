@@ -132,6 +132,25 @@
                 <div class="container-fluid ">
 
 
+                    <% if(success){ %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  <script>
+    setTimeout(() => {
+      const alert = document.querySelector('.alert-success');
+      if (alert) {
+        // Using Bootstrap's built-in method to close the alert
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+        
+        // Or alternatively with plain JavaScript:
+        // alert.remove();
+      }
+    }, 3000);
+  </script>
+<% } %>
                     <div class="row">
                         <main class="col-md-12 p-4 bg-white">
                             <h2 class="mb-4">ADD ITEMS</h2>
@@ -441,426 +460,464 @@
                 </div>
             </div>
 
-
             <!-- Bootstrap JS Bundle with Popper -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <!-- Cropper.js -->
             <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
 
 
-            <script>
-                // Global variables
-                const MAX_IMAGES = 4;
-                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-                let cropper;
-                let currentFile;
-                let uploadedImages = [];
-                let currentImageIndex = 0;
+        <script>
+    // Global variables
+    const MIN_IMAGES = 3;
+    const MAX_IMAGES = 5;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    let cropper;
+    let currentFile;
+    let uploadedImages = [];
+    let currentImageIndex = 0;
 
-                // Toggle variant inputs
-                function toggleVariantInputs(checkbox, size) {
-                    const inputsDiv = document.getElementById(`inputs-size-${size}`);
-                    if (checkbox.checked) {
-                        inputsDiv.classList.add('show');
-                        inputsDiv.querySelectorAll('input').forEach(input => input.setAttribute('required', 'true'));
-                    } else {
-                        inputsDiv.classList.remove('show');
-                        inputsDiv.querySelectorAll('input').forEach(input => {
-                            input.removeAttribute('required');
-                            input.value = '';
-                        });
+    // Toggle variant inputs
+    function toggleVariantInputs(checkbox, size) {
+        const inputsDiv = document.getElementById(`inputs-size-${size}`);
+        if (checkbox.checked) {
+            inputsDiv.classList.add('show');
+            inputsDiv.querySelectorAll('input').forEach(input => input.setAttribute('required', 'true'));
+        } else {
+            inputsDiv.classList.remove('show');
+            inputsDiv.querySelectorAll('input').forEach(input => {
+                input.removeAttribute('required');
+                input.value = '';
+            });
+        }
+    }
+
+    // Form validation
+    function validateForm() {
+        let isValid = true;
+        let errorFields = [];
+
+        // Reset error states
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.is-invalid').forEach(el => {
+            el.classList.remove('is-invalid');
+        });
+
+        // Validate product name
+        const productName = document.getElementById('productName').value.trim();
+        if (!productName) {
+            displayError('productName', 'Product name is required');
+            errorFields.push('Product Name');
+            isValid = false;
+        } else if (productName.length > 100) {
+            displayError('productName', 'Product name must be less than 100 characters');
+            errorFields.push('Product Name');
+            isValid = false;
+        }
+
+        // Validate description
+        const description = document.getElementById('descriptionid').value.trim();
+        if (!description) {
+            displayError('descriptionid', 'Description is required');
+            errorFields.push('Description');
+            isValid = false;
+        } else if (description.length > 1000) {
+            displayError('descriptionid', 'Description must be less than 1000 characters');
+            errorFields.push('Description');
+            isValid = false;
+        }
+
+        // Validate category
+        const category = document.getElementById('category').value;
+        if (!category) {
+            displayError('category', 'Category is required');
+            errorFields.push('Category');
+            isValid = false;
+        }
+
+        // Validate color
+        const color = document.getElementById('colour').value.trim();
+        if (!color) {
+            displayError('colour', 'Color is required');
+            errorFields.push('Color');
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(color)) {
+            displayError('colour', 'Color should contain only letters');
+            errorFields.push('Color');
+            isValid = false;
+        }
+
+        // Validate variants
+        const checkedSizes = document.querySelectorAll('input[name="sizes"]:checked');
+        if (checkedSizes.length === 0) {
+            displayError('variants-error', 'At least one size variant is required');
+            errorFields.push('Size Variants');
+            isValid = false;
+        } else {
+            checkedSizes.forEach(checkbox => {
+                const size = checkbox.value;
+                const regularPrice = document.getElementById(`regularPrice-${size}`).value;
+                const salePrice = document.getElementById(`salePrice-${size}`).value;
+                const stock = document.getElementById(`stock-${size}`).value;
+
+                // Regular price validation
+                if (!regularPrice || isNaN(regularPrice)) {
+                    displayError(`regularPrice-${size}`, 'Regular price is required');
+                    errorFields.push(`Size ${size} Regular Price`);
+                    isValid = false;
+                } else if (parseFloat(regularPrice) <= 0) {
+                    displayError(`regularPrice-${size}`, 'Regular price must be greater than 0');
+                    errorFields.push(`Size ${size} Regular Price`);
+                    isValid = false;
+                } else if (parseFloat(regularPrice) > 10000) {
+                    displayError(`regularPrice-${size}`, 'Regular price must be less than 10,000');
+                    errorFields.push(`Size ${size} Regular Price`);
+                    isValid = false;
+                }
+
+                // Sale price validation
+                if (salePrice) {
+                    if (isNaN(salePrice) || parseFloat(salePrice) <= 0) {
+                        displayError(`salePrice-${size}`, 'Sale price must be greater than 0');
+                        errorFields.push(`Size ${size} Sale Price`);
+                        isValid = false;
+                    } else if (parseFloat(salePrice) > parseFloat(regularPrice)) {
+                        displayError(`salePrice-${size}`, 'Sale price must be less than regular price');
+                        errorFields.push(`Size ${size} Sale Price`);
+                        isValid = false;
                     }
                 }
 
-                // Form validation
-                function validateForm() {
-                    let isValid = true;
-
-                    // Reset error states
-                    document.querySelectorAll('.error-message').forEach(el => {
-                        el.style.display = 'none';
-                    });
-                    document.querySelectorAll('.is-invalid').forEach(el => {
-                        el.classList.remove('is-invalid');
-                    });
-
-                    // Validate product name
-                    const productName = document.getElementById('productName').value.trim();
-                    if (!productName) {
-                        displayError('productName', 'Product name is required');
-                        isValid = false;
-                    }
-
-                    // Validate description
-                    const description = document.getElementById('descriptionid').value.trim();
-                    if (!description) {
-                        displayError('descriptionid', 'Description is required');
-                        isValid = false;
-                    }
-
-                    // Validate category
-                    const category = document.getElementById('category').value;
-                    if (!category) {
-                        displayError('category', 'Category is required');
-                        isValid = false;
-                    }
-
-                    // Validate color
-                    const color = document.getElementById('colour').value.trim();
-                    if (!color) {
-                        displayError('colour', 'Color is required');
-                        isValid = false;
-                    }
-
-                    // Validate variants
-                    const checkedSizes = document.querySelectorAll('input[name="sizes"]:checked');
-                    if (checkedSizes.length === 0) {
-                        displayError('variants-error', 'At least one size variant is required');
-                        isValid = false;
-                    } else {
-
-                        checkedSizes.forEach(checkbox => {
-                            const size = checkbox.value;
-                            const regularPrice = document.getElementById(`regularPrice-${size}`).value;
-                            const salePrice = document.getElementById(`salePrice-${size}`).value;
-
-                            const stock = document.getElementById(`stock-${size}`).value;
-
-                            if (!regularPrice || isNaN(regularPrice)) {
-                                displayError(`regularPrice-${size}`, 'Regular price is required');
-                                isValid = false;
-                            } else if (parseFloat(regularPrice) <= 0) {
-                                displayError(`regularPrice-${size}`, 'Regular price must be greater than 0');
-                                isValid = false;
-                            }
-
-                            if (salePrice && (isNaN(salePrice) || parseFloat(salePrice) <= 0)) {
-                                displayError(`salePrice-${size}`, 'Sale price must be a valid number greater than 0');
-                                isValid = false;
-                            }
-
-
-
-                            if (!stock || isNaN(stock) || parseInt(stock) < 0) {
-                                displayError(`stock-${size}`, 'Valid stock quantity is required');
-                                isValid = false;
-                            }
-                        });
-                    }
-
-                    // Validate images
-                    if (uploadedImages.length === 0) {
-                        displayError('images-error', 'At least one image is required');
-                        isValid = false;
-                    }
-
-                    // Validate mainImageIndex
-                    const mainImageIndex = parseInt(document.getElementById('mainImageIndex').value);
-                    if (uploadedImages.length > 0 && (isNaN(mainImageIndex) || mainImageIndex < 0 || mainImageIndex >= uploadedImages.length)) {
-                        displayError('images-error', 'Invalid main image selection');
-                        isValid = false;
-                    }
-
-                    return isValid;
+                // Stock validation
+                if (!stock || isNaN(stock) || parseInt(stock) < 0) {
+                    displayError(`stock-${size}`, 'Valid stock quantity is required (minimum 0)');
+                    errorFields.push(`Size ${size} Stock`);
+                    isValid = false;
+                } else if (parseInt(stock) > 10000) {
+                    displayError(`stock-${size}`, 'Stock quantity must be less than 10,000');
+                    errorFields.push(`Size ${size} Stock`);
+                    isValid = false;
                 }
+            });
+        }
 
-                function displayError(fieldId, message) {
-                    const field = document.getElementById(fieldId);
-                    const errorElement = document.getElementById(`${fieldId}-error`);
-                    if (field) {
-                        field.classList.add('is-invalid');
-                    }
-                    if (errorElement) {
-                        errorElement.textContent = message;
-                        errorElement.style.display = 'block';
-                    }
+        // Validate images
+        if (uploadedImages.length < MIN_IMAGES) {
+            displayError('images-error', `Minimum ${MIN_IMAGES} images are required`);
+            errorFields.push('Product Images');
+            isValid = false;
+        } else if (uploadedImages.length > MAX_IMAGES) {
+            displayError('images-error', `Maximum ${MAX_IMAGES} images allowed`);
+            errorFields.push('Product Images');
+            isValid = false;
+        }
+
+        // Validate mainImageIndex
+        const mainImageIndex = parseInt(document.getElementById('mainImageIndex').value);
+        if (uploadedImages.length > 0 && (isNaN(mainImageIndex) || mainImageIndex < 0 || mainImageIndex >= uploadedImages.length)) {
+            displayError('images-error', 'Please select a main image');
+            errorFields.push('Main Image Selection');
+            isValid = false;
+        }
+
+        // Display all error fields in the summary
+        if (errorFields.length > 0) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.innerHTML = `
+                <strong>Please fix the following errors:</strong>
+                <ul>
+                    ${errorFields.map(field => `<li>${field}</li>`).join('')}
+                </ul>
+            `;
+            errorMessage.classList.remove('d-none');
+            window.scrollTo(0, 0);
+        }
+
+        return isValid;
+    }
+
+    function displayError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorElement = document.getElementById(`${fieldId}-error`);
+        if (field) {
+            field.classList.add('is-invalid');
+        }
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    }
+
+    function submitForm() {
+        // Update the file input with cropped images
+        const imageUpload = document.getElementById('imageUpload');
+        const dataTransfer = new DataTransfer();
+        uploadedImages.forEach(image => {
+            dataTransfer.items.add(image.file);
+        });
+        imageUpload.files = dataTransfer.files;
+
+        // Trigger native form submission
+        document.getElementById('add-product-form').submit();
+    }
+
+    function validateAndSubmit() {
+        if (validateForm()) {
+            submitForm();
+        }
+    }
+
+    // Image upload and cropping functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreviews = document.getElementById('imagePreviews');
+        const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+        const cropperImage = document.getElementById('cropperImage');
+        const saveCroppedBtn = document.getElementById('saveCroppedImage');
+        const errorElement = document.getElementById('images-error');
+        const publishBtn = document.getElementById('publishBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        // Event listeners
+        imageUpload.addEventListener('change', handleImageSelection);
+        uploadArea.addEventListener('click', () => imageUpload.click());
+        saveCroppedBtn.addEventListener('click', saveCroppedImage);
+        publishBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            validateAndSubmit();
+        });
+        cancelBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                window.location.href = '/admin/products';
+            }
+        });
+
+        // Setup drag and drop
+        setupDragAndDrop();
+
+        // Initialize cropper when modal is shown
+        document.getElementById('cropperModal').addEventListener('shown.bs.modal', initCropper);
+        document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+
+        // Aspect ratio buttons
+        document.querySelectorAll('.btn-group button[data-ratio]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ratio = btn.dataset.ratio;
+                setAspectRatio(ratio);
+            });
+        });
+
+        function handleImageSelection(event) {
+            const files = event.target.files;
+            errorElement.textContent = '';
+
+            if (!files || files.length === 0) return;
+
+            if (uploadedImages.length + files.length > MAX_IMAGES) {
+                errorElement.textContent = `Maximum ${MAX_IMAGES} images allowed (you already have ${uploadedImages.length})`;
+                event.target.value = '';
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                if (!validateImage(file)) return;
+                currentFile = file;
+                previewImageForCropping(file);
+            });
+
+            event.target.value = '';
+        }
+
+        function validateImage(file) {
+            if (!file.type.match('image.*')) {
+                errorElement.textContent = 'Only image files are allowed (JPEG, PNG, etc.)';
+                return false;
+            }
+            if (file.size > MAX_FILE_SIZE) {
+                errorElement.textContent = 'Image size should be less than 5MB';
+                return false;
+            }
+            return true;
+        }
+
+        function previewImageForCropping(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                cropperImage.src = e.target.result;
+                cropperModal.show();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCropper() {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(cropperImage, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 0.8,
+                responsive: true,
+                guides: false,
+                movable: true,
+                zoomable: true,
+                rotatable: true,
+                scalable: true
+            });
+        }
+
+        function setAspectRatio(ratio) {
+            if (!cropper) return;
+            if (ratio === 'free') {
+                cropper.setAspectRatio(NaN);
+            } else {
+                cropper.setAspectRatio(eval(ratio));
+            }
+        }
+
+        function saveCroppedImage() {
+            if (!cropper) return;
+
+            cropper.getCroppedCanvas({
+                width: 800,
+                height: 800,
+                fillColor: '#fff',
+                imageSmoothingQuality: 'high'
+            }).toBlob(blob => {
+                const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
+                const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                const imageObj = {
+                    file: croppedFile,
+                    url: URL.createObjectURL(blob),
+                    isMain: uploadedImages.length === 0
+                };
+
+                uploadedImages.push(imageObj);
+                createThumbnail(imageObj, uploadedImages.length - 1);
+                cropperModal.hide();
+            }, 'image/jpeg', 0.9);
+        }
+
+        function createThumbnail(image, index) {
+            const thumb = document.createElement('div');
+            thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
+            thumb.dataset.index = index;
+
+            thumb.innerHTML = `
+                <img src="${image.url}" alt="Product Image">
+                <button class="remove-btn"><i class="fas fa-times"></i></button>
+                ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
+            `;
+
+            thumb.addEventListener('click', function (e) {
+                if (!e.target.closest('.remove-btn')) {
+                    setAsMainImage(thumb);
                 }
+            });
 
-                function submitForm() {
-                    // Update the file input with cropped images
-                    const imageUpload = document.getElementById('imageUpload');
-                    const dataTransfer = new DataTransfer();
-                    uploadedImages.forEach(image => {
-                        dataTransfer.items.add(image.file);
-                    });
-                    imageUpload.files = dataTransfer.files;
+            thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
+                e.stopPropagation();
+                removeImage(thumb);
+            });
 
-                    // Debugging: Log form data
-                    const formData = new FormData(document.getElementById('add-product-form'));
-                    for (let pair of formData.entries()) {
-                        console.log(`${pair[0]}: ${pair[1]}`);
-                    }
+            imagePreviews.appendChild(thumb);
 
-                    // Trigger native form submission
-                    document.getElementById('add-product-form').submit();
+            if (image.isMain) {
+                document.getElementById('mainImageIndex').value = index;
+            }
+        }
+
+        function setAsMainImage(thumbElement) {
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('main-image');
+                const badge = thumb.querySelector('.main-image-badge');
+                if (badge) badge.remove();
+            });
+
+            thumbElement.classList.add('main-image');
+            thumbElement.innerHTML += '<span class="main-image-badge">Main</span>';
+
+            const index = thumbElement.dataset.index;
+            document.getElementById('mainImageIndex').value = index;
+
+            uploadedImages.forEach((img, i) => {
+                img.isMain = i == index;
+            });
+        }
+
+        function removeImage(thumbElement) {
+            const index = thumbElement.dataset.index;
+
+            URL.revokeObjectURL(uploadedImages[index].url);
+            uploadedImages.splice(index, 1);
+
+            if (thumbElement.classList.contains('main-image')) {
+                if (uploadedImages.length > 0) {
+                    uploadedImages[0].isMain = true;
+                    document.getElementById('mainImageIndex').value = 0;
+                } else {
+                    document.getElementById('mainImageIndex').value = '';
                 }
+            }
 
-                function validateAndSubmit() {
-                    if (validateForm()) {
-                        submitForm();
-                    } else {
-                        const errorMessage = document.getElementById('error-message');
-                        errorMessage.textContent = "Please fix the errors in the form before submitting.";
-                        errorMessage.classList.remove('d-none');
-                        window.scrollTo(0, 0);
-                    }
+            thumbElement.remove();
+
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.dataset.index = i;
+            });
+
+            if (uploadedImages.some(img => img.isMain)) {
+                const mainIndex = uploadedImages.findIndex(img => img.isMain);
+                document.getElementById('mainImageIndex').value = mainIndex;
+            }
+        }
+
+        function setupDragAndDrop() {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('dragover');
+            }
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length) {
+                    const event = { target: { files } };
+                    handleImageSelection(event);
                 }
-
-                // Image upload and cropping functionality
-                document.addEventListener('DOMContentLoaded', function () {
-                    const imageUpload = document.getElementById('imageUpload');
-                    const uploadArea = document.getElementById('uploadArea');
-                    const imagePreviews = document.getElementById('imagePreviews');
-                    const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
-                    const cropperImage = document.getElementById('cropperImage');
-                    const saveCroppedBtn = document.getElementById('saveCroppedImage');
-                    const errorElement = document.getElementById('images-error');
-                    const publishBtn = document.getElementById('publishBtn');
-                    const cancelBtn = document.getElementById('cancelBtn');
-
-                    // Event listeners
-                    imageUpload.addEventListener('change', handleImageSelection);
-                    uploadArea.addEventListener('click', () => imageUpload.click());
-                    saveCroppedBtn.addEventListener('click', saveCroppedImage);
-                    publishBtn.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        validateAndSubmit();
-                    });
-                    cancelBtn.addEventListener('click', () => {
-                        if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-                            window.location.href = '/admin/products';
-                        }
-                    });
-
-                    // Setup drag and drop
-                    setupDragAndDrop();
-
-                    // Initialize cropper when modal is shown
-                    document.getElementById('cropperModal').addEventListener('shown.bs.modal', initCropper);
-                    document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
-                        if (cropper) {
-                            cropper.destroy();
-                            cropper = null;
-                        }
-                    });
-
-                    // Aspect ratio buttons
-                    document.querySelectorAll('.btn-group button[data-ratio]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const ratio = btn.dataset.ratio;
-                            setAspectRatio(ratio);
-                        });
-                    });
-
-                    function handleImageSelection(event) {
-                        const files = event.target.files;
-                        errorElement.textContent = '';
-
-                        if (!files || files.length === 0) return;
-
-                        if (uploadedImages.length + files.length > MAX_IMAGES) {
-                            errorElement.textContent = `Maximum ${MAX_IMAGES} images allowed (you already have ${uploadedImages.length})`;
-                            event.target.value = '';
-                            return;
-                        }
-
-                        Array.from(files).forEach(file => {
-                            if (!validateImage(file)) return;
-                            currentFile = file;
-                            previewImageForCropping(file);
-                        });
-
-                        event.target.value = '';
-                    }
-
-                    function validateImage(file) {
-                        if (!file.type.match('image.*')) {
-                            errorElement.textContent = 'Only image files are allowed (JPEG, PNG, etc.)';
-                            return false;
-                        }
-                        if (file.size > MAX_FILE_SIZE) {
-                            errorElement.textContent = 'Image size should be less than 5MB';
-                            return false;
-                        }
-                        return true;
-                    }
-
-                    function previewImageForCropping(file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            cropperImage.src = e.target.result;
-                            cropperModal.show();
-                        };
-                        reader.readAsDataURL(file);
-                    }
-
-                    function initCropper() {
-                        if (cropper) cropper.destroy();
-                        cropper = new Cropper(cropperImage, {
-                            aspectRatio: 1,
-                            viewMode: 1,
-                            autoCropArea: 0.8,
-                            responsive: true,
-                            guides: false,
-                            movable: true,
-                            zoomable: true,
-                            rotatable: true,
-                            scalable: true
-                        });
-                    }
-
-                    function setAspectRatio(ratio) {
-                        if (!cropper) return;
-                        if (ratio === 'free') {
-                            cropper.setAspectRatio(NaN);
-                        } else {
-                            cropper.setAspectRatio(eval(ratio));
-                        }
-                    }
-
-                    function saveCroppedImage() {
-                        if (!cropper) return;
-
-                        cropper.getCroppedCanvas({
-                            width: 800,
-                            height: 800,
-                            fillColor: '#fff',
-                            imageSmoothingQuality: 'high'
-                        }).toBlob(blob => {
-                            const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
-                            const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
-
-                            const imageObj = {
-                                file: croppedFile,
-                                url: URL.createObjectURL(blob),
-                                isMain: uploadedImages.length === 0
-                            };
-
-                            uploadedImages.push(imageObj);
-                            createThumbnail(imageObj, uploadedImages.length - 1);
-                            cropperModal.hide();
-                        }, 'image/jpeg', 0.9);
-                    }
-
-                    function createThumbnail(image, index) {
-                        const thumb = document.createElement('div');
-                        thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
-                        thumb.dataset.index = index;
-
-                        thumb.innerHTML = `
-            <img src="${image.url}" alt="Product Image">
-            <button class="remove-btn"><i class="fas fa-times"></i></button>
-            ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
-        `;
-
-                        thumb.addEventListener('click', function (e) {
-                            if (!e.target.closest('.remove-btn')) {
-                                setAsMainImage(thumb);
-                            }
-                        });
-
-                        thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            removeImage(thumb);
-                        });
-
-                        imagePreviews.appendChild(thumb);
-
-                        if (image.isMain) {
-                            document.getElementById('mainImageIndex').value = index;
-                        }
-                    }
-
-                    function setAsMainImage(thumbElement) {
-                        document.querySelectorAll('.thumbnail').forEach(thumb => {
-                            thumb.classList.remove('main-image');
-                            const badge = thumb.querySelector('.main-image-badge');
-                            if (badge) badge.remove();
-                        });
-
-                        thumbElement.classList.add('main-image');
-                        thumbElement.innerHTML += '<span class="main-image-badge">Main</span>';
-
-                        const index = thumbElement.dataset.index;
-                        document.getElementById('mainImageIndex').value = index;
-
-                        uploadedImages.forEach((img, i) => {
-                            img.isMain = i == index;
-                        });
-                    }
-
-                    function removeImage(thumbElement) {
-                        const index = thumbElement.dataset.index;
-
-                        URL.revokeObjectURL(uploadedImages[index].url);
-                        uploadedImages.splice(index, 1);
-
-                        if (thumbElement.classList.contains('main-image')) {
-                            if (uploadedImages.length > 0) {
-                                uploadedImages[0].isMain = true;
-                                document.getElementById('mainImageIndex').value = 0;
-                            } else {
-                                document.getElementById('mainImageIndex').value = '';
-                            }
-                        }
-
-                        thumbElement.remove();
-
-                        document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-                            thumb.dataset.index = i;
-                        });
-
-                        if (uploadedImages.some(img => img.isMain)) {
-                            const mainIndex = uploadedImages.findIndex(img => img.isMain);
-                            document.getElementById('mainImageIndex').value = mainIndex;
-                        }
-                    }
-
-                    function setupDragAndDrop() {
-                        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                            uploadArea.addEventListener(eventName, preventDefaults, false);
-                        });
-
-                        function preventDefaults(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }
-
-                        ['dragenter', 'dragover'].forEach(eventName => {
-                            uploadArea.addEventListener(eventName, highlight, false);
-                        });
-
-                        ['dragleave', 'drop'].forEach(eventName => {
-                            uploadArea.addEventListener(eventName, unhighlight, false);
-                        });
-
-                        function highlight() {
-                            uploadArea.classList.add('dragover');
-                        }
-
-                        function unhighlight() {
-                            uploadArea.classList.remove('dragover');
-                        }
-
-                        uploadArea.addEventListener('drop', handleDrop, false);
-
-                        function handleDrop(e) {
-                            const dt = e.dataTransfer;
-                            const files = dt.files;
-
-                            if (files.length) {
-                                const event = { target: { files } };
-                                handleImageSelection(event);
-                            }
-                        }
-                    }
-                })
-
-
-
-            </script>
-
-
+            }
+        }
+    });
+</script>
 </body>
 
 </html>

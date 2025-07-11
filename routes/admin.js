@@ -7,6 +7,9 @@ let prodouctContoller = require('../controllers/admin/productController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 const upload = require('../middlewares/multer')
 
+//clear flash
+
+
 //login and dashboard
 router.get('/login',adminController.loadlogin)
 router.post('/login',adminController.login)
@@ -33,7 +36,7 @@ router.post('/editCategory/:id',adminAuth,catagoryController.editCategory)
 //product management
 
 router.get('/getAddProduct',adminAuth,prodouctContoller.getAddProducts)
-router.post('/addProducts',adminAuth,upload.array('images', 4),prodouctContoller.addProducts);
+router.post('/addProducts',adminAuth,upload.array('images', 5),prodouctContoller.addProducts);
 
 router.get('/getAllProducts',adminAuth,prodouctContoller.getAllProducts)
 router.post('/productVarintsModal',adminAuth,prodouctContoller.productVarintsModal)
@@ -42,7 +45,7 @@ router.post('/removeProductOffer',adminAuth,prodouctContoller.removeProductOffer
 router.post('/blockProduct',adminAuth,prodouctContoller.blockProduct)
 router.post('/unBlockProduct',adminAuth,prodouctContoller.unBlockProduct)
 router.get('/getEditProduct',adminAuth,prodouctContoller.getEditProduct)
-router.post('/editProduct/:id',adminAuth,upload.array('images', 4),prodouctContoller.editProduct)
+router.post('/editProduct/:id',adminAuth,upload.array('images', 5),prodouctContoller.editProduct)
 
 router.post('/deleteImage',adminAuth,prodouctContoller.deleteSingleImage)
 

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #e8f5e9, #ffffff);
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .container h2 {
+      color: #2e7d32;
+      margin-bottom: 25px;
+      font-size: 26px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 16px 18px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #2e7d32;
+      outline: none;
+      box-shadow: 0 0 6px rgba(46, 125, 50, 0.4);
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      background: white;
+      padding: 0 6px;
+      font-size: 14px;
+      color: #888;
+      pointer-events: none;
+      transition: 0.2s ease;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: -9px;
+      left: 14px;
+      font-size: 12px;
+      color: #2e7d32;
+    }
+
+    .error {
+      color: #d32f2f;
+      font-size: 13px;
+      margin-top: -10px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 14px;
+      width: 100%;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #4caf50;
+    }
+
+    p a {
+      color: #2e7d32;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    p a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="emailForm" action="/change-Email" method="POST">
+      <h2>Email Verification</h2>
+
+      <div class="form-group">
+        <input
+          name="email"
+          type="text"
+          id="emailInput"
+          placeholder=" "
+        />
+        <label for="emailInput">Enter your email</label>
+      </div>
+
+      <% if (message) { %>
+        <div class="error"><%- message %></div>
+      <% } %>
+
+      <button type="submit">Verify Email</button>
+
+      <p>Don't have an account? <a href="#">Sign up</a></p>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.getElementById('emailForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById('emailInput').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        await Swal.fire({
+          toast: true,
+          icon: 'warning',
+          title: 'Enter valid Email',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true
+        });
+        return;
+      }
+
+      event.target.submit();
+    });
+  </script>
+</body>
+</html>

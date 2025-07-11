@@ -20,13 +20,13 @@
             </div>
 
             <div class="row mb-4">
-                 <div class="search-container">
-    <div class="search-wrapper">
-      <input type="text" id="search-input" placeholder="Search customers...">
-      <button id="clear-button" aria-label="Clear search">×</button>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="Search customers...">
+                        <button id="clear-button" aria-label="Clear search">×</button>
 
-    </div>
-  </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card border-0 shadow-sm">
@@ -38,7 +38,7 @@
                                     <th class="text-center" style="width: 50px;">#</th>
                                     <th>Name</th>
                                     <th>Description</th>
-                                    
+
                                     <th class="text-center">Offer</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">List/Unlist</th>
@@ -68,7 +68,7 @@
                                             </p>
                                         </td>
 
-                                        
+
 
                                         <td class="text-center">
                                             <div class="d-flex flex-column align-items-center gap-2">
@@ -100,12 +100,12 @@
 
                                         <td class="text-center">
                                             <% if(category.isListed){ %>
-                                                <a onclick="Unlist('<%= category._id%>')"
+                                                <a onclick="Unlist('<%= category._id%>')" id="btn-<%= category._id %>"
                                                     class="btn btn-sm btn-outline-danger">
                                                     Unlist
                                                 </a>
                                                 <% }else{ %>
-                                                    <a onclick="list('<%= category._id %>')"
+                                                    <a onclick="list('<%= category._id %>')" id="btn-<%= category._id%>"
                                                         class="btn btn-sm btn-outline-success">
                                                         List
                                                     </a>
@@ -155,7 +155,7 @@
                                     class="form-control" id="categoryDescription" rows="3"></textarea>
                                 <div id="description-error" class="text-danger small mt-1"></div>
                             </div>
-                            
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -166,25 +166,26 @@
             </div>
         </div>
 
-         <div id="pagination" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
+        <div id="pagination"
+            style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
 
-                <% if(currentPage>1){ %>
-                    <a href="/admin/category?page=<%= currentPage-1 %>"
-                        style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>
-                    <% } %>
-
-
-                        <a id="currentPage" href="#"
-                            style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">
-                            <%= currentPage %>
-                        </a>
+            <% if(currentPage>1){ %>
+                <a href="/admin/category?page=<%= currentPage-1 %>"
+                    style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>
+                <% } %>
 
 
-                        <% if(currentPage<totalPages){ %>
-                            <a href="/admin/category?page=<%= currentPage+1 %>"
-                                style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>
-                            <% } %>
-            </div>
+                    <a id="currentPage" href="#"
+                        style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">
+                        <%= currentPage %>
+                    </a>
+
+
+                    <% if(currentPage<totalPages){ %>
+                        <a href="/admin/category?page=<%= currentPage+1 %>"
+                            style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>
+                        <% } %>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -233,7 +234,7 @@
                         const categoryName = document.getElementById('categoryName').value;
                         const categoryDescription = document.getElementById('categoryDescription').value
 
-                        
+
                         try {
                             fetch('/admin/addCategory', {
                                 method: 'POST',
@@ -368,160 +369,160 @@
             }
 
 
-             // SEARCH
-const searchInput = document.getElementById('search-input');
-const clearBtn = document.getElementById('clear-button');
-const table = document.getElementById('category-table');
+            // SEARCH
+            const searchInput = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-button');
+            const table = document.getElementById('category-table');
 
-// function to fetch & render products
-const fetchAndRenderProducts = async (search = '') => {
-  try {
-    const res = await fetch(`/admin/category?search=${encodeURIComponent(search)}`, {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    const result = await res.json();
-    const product = result.category;
+            // function to fetch & render products
+            const fetchAndRenderProducts = async (search , page = 1) => {
+                try {
+                    
+                    const res = await fetch(`/admin/category?search=${encodeURIComponent(search)}&page=${page}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
 
-    table.innerHTML = '';
+                    const result = await res.json();
+                    const product = result.category;
+                    const currentPage = result.currentPage;
+                    const totalPages = result.totalPages;
 
-    if (product.length === 0) {
-      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products found</td></tr>';
-    } else {
-      product.forEach((item, index) => {
-  table.innerHTML += `
-    <tr>
-      <td class="text-center fw-bold">
-        ${index + 1}
-      </td>
+                    table.innerHTML = '';
 
-      <td>
-        <div class="d-flex align-items-center">
-          <div>
-            <h6 class="mb-0">
-              ${item.name}
-            </h6>
+                    if (!product || product.length === 0) {
+                        table.innerHTML = '<tr><td colspan="7" class="text-center">No categories found</td></tr>';
+                    } else {
+                        product.forEach((item, index) => {
+                            table.innerHTML += `
+      <tr>
+        <td class="text-center fw-bold">${index + 1}</td>
+
+        <td>
+          <div class="d-flex align-items-center">
+            <div>
+              <h6 class="mb-0">${item.name}</h6>
+            </div>
           </div>
-        </div>
-      </td>
+        </td>
 
-      <td>
-        <p class="mb-0 text-truncate" style="max-width: 200px;">
-          ${item.description || 'No Description'}
-        </p>
-      </td>
+        <td>
+          <p class="mb-0 text-truncate" style="max-width: 200px;">
+            ${item.description || 'No Description'}
+          </p>
+        </td>
 
-      <td class="text-center">
-        <div class="d-flex flex-column align-items-center gap-2">
-          <span class="badge bg-${item.productOffer ? 'success' : 'secondary'}">
-            ${item.isListed ? (item.productOffer + '%') : '0%'}
+        <td class="text-center">
+          <div class="d-flex flex-column align-items-center gap-2">
+            <span class="badge bg-${item.categoryOffer ? 'success' : 'secondary'}">
+              ${item.categoryOffer ? item.categoryOffer + '%' : 'No offer'}
+            </span>
+            ${item.categoryOffer
+                                    ? `<button class="btn btn-sm btn-outline-danger" onclick="removeOffer('${item._id}')">Remove</button>`
+                                    : `<button class="btn btn-sm btn-outline-primary" onclick="addOffer('${item._id}')">Add Offer</button>`}
+          </div>
+        </td>
+
+        <td class="text-center">
+          <span class="badge rounded-pill bg-${item.isListed ? 'success' : 'danger'}">
+            ${item.isListed ? 'Listed' : 'Unlisted'}
           </span>
-          ${item.productOffer === 0
-            ? `<button class="btn btn-sm btn-outline-primary" onclick="addOffer('${item._id}')">Add Offer</button>`
-            : `<button class="btn btn-sm btn-outline-danger" onclick="removeOffer('${item._id}')">Remove</button>`}
-        </div>
-      </td>
+        </td>
 
-      <td class="text-center">
-        <span class="badge rounded-pill bg-${item.isListed ? 'success' : 'danger'}">
-          ${item.isListed ? 'Listed' : 'Unlisted'}
-        </span>
-      </td>
+        <td class="text-center">
+          ${item.isListed
+                                    ? `<a onclick="Unlist('${item._id}')" id="btn-${item._id}" class="btn btn-sm btn-outline-danger">Unlist</a>`
+                                    : `<a onclick="list('${item._id}')" id="btn-${item._id}" class="btn btn-sm btn-outline-success">List</a>`}
+        </td>
 
-      <td class="text-center">
-        ${item.isListed
-          ? `<a href="/admin/unListProduct?id=${item._id}" class="btn btn-sm btn-outline-danger">Unlist</a>`
-          : `<a href="/admin/listProduct?id=${item._id}" class="btn btn-sm btn-outline-success">List</a>`}
-      </td>
+        <td class="text-center">
+          <div class="d-flex justify-content-center gap-2">
+            <button class="btn btn-sm btn-warning text-white">
+              <a href="/admin/getEditCategory?id=${item._id}" style="color: inherit; text-decoration: none;">
+                Edit
+              </a>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
 
-      <td class="text-center">
-        <div class="d-flex justify-content-center gap-2">
-          ${item.isBlocked
-            ? `<a href="/admin/unBlockProduct?id=${item._id}" class="btn btn-sm btn-warning text-white">Unblock</a>`
-            : `<a href="/admin/blockProduct?id=${item._id}" class="btn btn-sm btn-danger text-white">Block</a>`}
-          <a href="/admin/getEditProduct?id=${item._id}" class="btn btn-sm btn-primary text-white">Edit</a>
-        </div>
-      </td>
-    </tr>
-  `;
+                        });
 
 
+                        const pagination = document.getElementById('pagination');
 
-  
-    const pagination = document.getElementById('pagination');
+                        pagination.innerHTML = `
+  <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
+    ${currentPage > 1
+                                ? `<a onclick="fetchAndRenderProducts('${search}', ${currentPage - 1})"
+            style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>`
+                                : ''}
 
-    pagination.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 30px 0;">
+    <a id="currentPage" href="#"
+        style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">
+      ${currentPage}
+    </a>
 
-            ${currentPage > 1
-                ? `<a href="/admin/category?page=${currentPage - 1}"
-                      style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&laquo;</a>`
-                : ''}
+    ${currentPage < totalPages
+                                ? `<a onclick="fetchAndRenderProducts('${search}', ${currentPage + 1})"
+            style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>`
+                                : ''}
+  </div>
+`;
 
-            <a href="#"
-                style="display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; font-weight: bold; transition: all 0.3s ease; cursor: pointer;">
-                ${currentPage}
-            </a>
+                    }
 
-            ${currentPage < totalPages
-                ? `<a href="/admin/category?page=${currentPage + 1}"
-                      style="display: inline-block; padding: 8px 16px; text-decoration: none; color: #333; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; transition: all 0.3s ease; cursor: pointer;">&raquo;</a>`
-                : ''}
+                } catch (err) {
+                    console.error('Error fetching products:', err);
+                }
+            };
 
-        </div>
-    `
+            // On keyup search
+            searchInput.addEventListener('keyup', () => {
+                const searchValue = searchInput.value.trim();
+                fetchAndRenderProducts(searchValue, 1); // Start from page 1 when typing
+            });
 
-});
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                fetchAndRenderProducts('', 1);
+            });
 
-    }
-  } catch (err) {
-    console.error('Error fetching products:', err);
-  }
-};
 
-// On keyup search
-searchInput.addEventListener('keyup', () => {
-    let currentPage = document.getElementById('currentPage').value
-  const searchValue = searchInput.value || '';
-  fetchAndRenderProducts(searchValue);
-});
 
-// On clear button click
-clearBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  window.location.reload()
-  
-});
+            async function list(id) {
+                try {
 
-async function list(id){
-    try {
-        
-        const { isConfirmed } = await Swal.fire({
-                    toast:true,
-                    title: `list product?`,
-                    text: "Are you sure.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sure',
-                    cancelButtonText: 'No',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                });
+                    const { isConfirmed } = await Swal.fire({
+                        toast: true,
+                        title: `list product?`,
+                        text: "Are you sure.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sure',
+                        cancelButtonText: 'No',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                    });
 
-                if(isConfirmed){
-                    const response = await fetch('/admin/ListCategory',{
-                        method:'post',
-                        headers:{
-                            'Content-type':'application/json'
-                        },
-                        body:JSON.stringify({
-                            id:id
+                    if (isConfirmed) {
+                        const response = await fetch('/admin/ListCategory', {
+                            method: 'post',
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: id
+                            })
                         })
-                    })
-                    if(response.ok){
-                         Swal.fire({
-                                toast:true,
+                        if (response.ok) {
+                            const btn = document.querySelector(`#btn-${id}`);
+                            btn.setAttribute('onclick', `Unlist('${id}')`);
+                            btn.textContent = 'Unlist';
+                            btn.classList.remove('btn-outline-success');
+                            btn.classList.add('btn-outline-danger');
+                            Swal.fire({
+                                toast: true,
                                 title: 'Success!',
                                 text: `Category has been listed.`,
                                 icon: 'success',
@@ -530,48 +531,55 @@ async function list(id){
                                 showConfirmButton: false
                             });
 
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 1500)
-                    }else{
-                        throw new Error(result.message || "Failed to unblock user");
+
+                        } else {
+                            throw new Error(result.message || "Failed to unblock user");
+                        }
                     }
+                } catch (error) {
+                    Swal.fire(toast, 'Error!', error.message, 'error');
                 }
-    } catch (error) {
-        Swal.fire(toast, 'Error!', error.message, 'error');
-    }
-}
-  
+            }
 
-async function Unlist(id){
-    try {
-        
-        const { isConfirmed } = await Swal.fire({
-                    toast:true,
-                    title: `Unlist product?`,
-                    text: "Are you sure.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sure',
-                    cancelButtonText: 'No',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                });
 
-                if(isConfirmed){
-                    const response = await fetch('/admin/unListCategory',{
-                        method:'post',
-                        headers:{
-                            'Content-type':'application/json'
-                        },
-                        body:JSON.stringify({
-                            id:id
+            async function Unlist(id) {
+                try {
+
+                    const { isConfirmed } = await Swal.fire({
+                        toast: true,
+                        title: `Unlist product?`,
+                        text: "Are you sure.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sure',
+                        cancelButtonText: 'No',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                    });
+
+                    if (isConfirmed) {
+                        const response = await fetch('/admin/unListCategory', {
+                            method: 'post',
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: id
+                            })
                         })
-                    })
-                    if(response.ok){
-                       
-                        await Swal.fire({
-                                toast:true,
+                        if (response.ok) {
+
+
+                            const btn = document.querySelector(`#btn-${id}`);
+                            btn.setAttribute('onclick', `list('${id}')`);
+                            btn.textContent = 'List';
+                            btn.classList.remove('btn-outline-danger');
+                            btn.classList.add('btn-outline-success');
+
+
+
+                            await Swal.fire({
+                                toast: true,
                                 title: 'Success!',
                                 text: `Category has been Unlisted.`,
                                 icon: 'success',
@@ -580,20 +588,20 @@ async function Unlist(id){
                                 showConfirmButton: false
                             });
 
-                            
-                            
-                                window.location.reload()
-                          
-                    }else{
-                        
-                        throw new Error(result.message || "Failed to unblock user");
+
+
+
+
+                        } else {
+
+                            throw new Error(result.message || "Failed to unblock user");
+                        }
                     }
+                } catch (error) {
+                    Swal.fire(toast, 'Error!', error.message, 'error');
                 }
-    } catch (error) {
-        Swal.fire(toast, 'Error!', error.message, 'error');
-    }
-}
-     
+            }
 
 
-     </script>
+
+        </script>

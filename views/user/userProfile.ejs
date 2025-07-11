@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | <%= user.username %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2e7d32; /* Deep forest green */
+            --secondary-color: #f5f7fa; /* Soft white */
+            --accent-color: #1b5e20; /* Darker green for hover effects */
+            --text-color: #37474f; /* Dark slate for text */
+            --light-gray: #eceff1; /* Light gray for backgrounds */
+            --success-color: #4caf50; /* Bright green for success */
+            --warning-color: #ffb300; /* Amber for warnings */
+            --danger-color: #d32f2f; /* Red for danger */
+            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, white 60%, var(--light-gray));
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-header:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border: 6px solid white;
+            border-radius: 50%;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.08);
+        }
+
+        .profile-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 8px;
+            margin-right: 0.75rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .profile-nav .nav-link.active,
+        .profile-nav .nav-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            background: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .order-item {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--light-gray);
+            padding: 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .order-item:hover {
+            border-left-width: 6px;
+            background: white;
+            box-shadow: var(--card-shadow);
+        }
+
+        .badge-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .badge-delivered {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-shipped {
+            background-color: rgba(255, 179, 0, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-completed {
+            background-color: rgba(120, 144, 156, 0.1);
+            color: #78909c;
+        }
+
+        .verified-badge {
+            color: var(--success-color);
+            font-size: 1.3rem;
+            margin-left: 0.75rem;
+            vertical-align: middle;
+        }
+
+        .address-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .address-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .address-card.default {
+            border: 2px solid var(--primary-color);
+            background: linear-gradient(135deg, white 60%, var(--light-gray));
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-pane {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .profile-img {
+                width: 130px;
+                height: 130px;
+            }
+
+            .profile-nav .nav-link {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.95rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .profile-header {
+                padding: 1.75rem;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem;
+            color: #546e7a;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1.25rem;
+            color: #b0bec5;
+        }
+
+        .modal-content {
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal-header {
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #cfd8dc;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        }
+
+        .progress-bar {
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container py-5">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center">
+                    <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.username + '&background=' + encodeURIComponent('2e7d32') + '&color=fff&size=160' %>" 
+                         alt="Profile Image" 
+                         class="profile-img mb-3"
+                         id="profileImagePreview">
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changeImageModal">
+                        <i class="fas fa-camera me-1"></i> Change
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <h2 class="mb-2 fw-bold"><%= user.username %><i class="fas fa-check-circle verified-badge" title="Verified Account"></i></h2>
+                    <p class="text-muted mb-1"><i class="fas fa-envelope me-2"></i><%= user.email %></p>
+                    <% if(user.phone) { %>
+                    <p class="text-muted mb-1"><i class="fas fa-phone me-2"></i><%= user.phone %></p>
+                    <% } %>
+                    <p class="text-muted mb-0"><i class="fas fa-calendar-alt me-2"></i>Member since <%= new Date(user.createdAt).toLocaleDateString() %></p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <button class="btn btn-primary me-2 mb-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-edit me-1"></i> Edit Profile
+                    </button>
+                   
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Navigation -->
+        <ul class="nav profile-nav mb-4 flex-nowrap overflow-auto pb-2" style="scrollbar-width: none;">
+            <li class="nav-item">
+                <a class="nav-link active" href="#profile" data-bs-toggle="tab"><i class="fas fa-user me-1"></i> Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#address" data-bs-toggle="tab"><i class="fas fa-home me-1"></i> Addresses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#orders" data-bs-toggle="tab"><i class="fas fa-shopping-bag me-1"></i> Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#security" data-bs-toggle="tab"><i class="fas fa-shield-alt me-1"></i> Security</a>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Profile Tab -->
+            <div class="tab-pane fade show active" id="profile">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-info-circle me-2"></i> Personal Information
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-4 fw-bold">Username:</div>
+                                    <div class="col-sm-8"><%= user.username %></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4 fw-bold">Email:</div>
+                                    <div class="col-sm-8">
+                                        <%= user.email %> 
+                                        <span class="badge bg-success ms-2">
+                                            <i class="fas fa-check-circle me-1"></i>Verified
+                                        </span>
+                                    </div>
+                                </div>
+                                <% if(user.phone) { %>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4 fw-bold">Phone:</div>
+                                    <div class="col-sm-8"><%= user.phone %></div>
+                                </div>
+                                <% } else { %>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4 fw-bold">Phone:</div>
+                                    <div class="col-sm-8 text-muted">Not provided</div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line me-2"></i> Account Statistics
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                                <i class="fas fa-shopping-bag text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Total Orders</h6>
+                                                <h4 class="mb-0">12</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success bg-opacity-10 p-3 rounded me-3">
+                                                <i class="fas fa-check-circle text-success"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Completed</h6>
+                                                <h4 class="mb-0">8</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-warning bg-opacity-10 p-3 rounded me-3">
+                                                <i class="fas fa-truck text-warning"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">In Progress</h6>
+                                                <h4 class="mb-0">2</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-danger bg-opacity-10 p-3 rounded me-3">
+                                                <i class="fas fa-times-circle text-danger"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Cancelled</h6>
+                                                <h4 class="mb-0">2</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Tab -->
+            <div class="tab-pane fade" id="address">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-home me-2"></i> Saved Addresses</span>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            <i class="fas fa-plus me-1"></i> Add New Address
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <% if(user.addresses && user.addresses.length > 0) { %>
+                            <div class="row">
+                                <% user.addresses.forEach((address, index) => { %>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 address-card <%= address.isDefault ? 'default border-primary' : '' %>">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="card-title">
+                                                    <%= address.type.charAt(0).toUpperCase() + address.type.slice(1) %> Address
+                                                    <% if(address.isDefault) { %>
+                                                    <span class="badge bg-primary ms-2">Default</span>
+                                                    <% } %>
+                                                </h5>
+                                                <% if(!address.isDefault) { %>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="setDefaultAddress('<%= address._id %>')">
+                                                    Set Default
+                                                </button>
+                                                <% } %>
+                                            </div>
+                                            <p class="card-text mt-3">
+                                                <strong><%= address.fullName %></strong><br>
+                                                <%= address.addressLine1 %><br>
+                                                <% if(address.addressLine2) { %><%= address.addressLine2 %><br><% } %>
+                                                <%= address.city %>, <%= address.state %> <%= address.zipCode %><br>
+                                                <%= address.country %>
+                                            </p>
+                                            <p class="card-text"><strong>Phone:</strong> <%= address.phoneNumber %></p>
+                                        </div>
+                                        <div class="card-footer bg-transparent d-flex justify-content-between">
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editAddressModal"
+                                                     onclick="loadAddressForEdit('<%= encodeURIComponent(JSON.stringify(address)) %>')"></button>
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="confirmDeleteAddress('<%= address._id %>')">
+                                                <i class="fas fa-trash me-1"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <h4>No Saved Addresses</h4>
+                                <p class="mb-4">You haven't saved any addresses yet. Add one to make checkout easier!</p>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                    <i class="fas fa-plus me-1"></i> Add Address
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Tab -->
+            <div class="tab-pane fade" id="orders">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-shopping-bag me-2"></i> Order History</span>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="orderFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="orderFilterDropdown">
+                                <li><a class="dropdown-item active" href="#" data-filter="all">All Orders</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" data-filter="delivered">Delivered</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="shipped">Shipped</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="processing">Processing</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="cancelled">Cancelled</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <% if(user.orders && user.orders.length > 0) { %>
+                            <% user.orders.forEach(order => { %>
+                            <div class="order-item" data-status="<%= order.status.toLowerCase() %>">
+                                <div class="d-flex justify-content-between flex-wrap mb-2">
+                                    <h5>Order #<%= order.orderNumber %></h5>
+                                    <span class="badge <%= getStatusBadgeClass(order.status) %> p-2">
+                                        <%= order.status %>
+                                    </span>
+                                </div>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-calendar-alt me-1"></i>Placed on <%= new Date(order.orderDate).toLocaleDateString() %>
+                                </p>
+                                <div class="d-flex justify-content-between flex-wrap align-items-center">
+                                    <div>
+                                        <p class="mb-2">
+                                            <%= order.items.length %> item<%= order.items.length !== 1 ? 's' : '' %> • 
+                                            Total: $<%= order.totalAmount.toFixed(2) %>
+                                        </p>
+                                        <% if(order.trackingNumber) { %>
+                                        <p class="text-muted small mb-0">
+                                            <i class="fas fa-truck me-1"></i>Tracking: <%= order.trackingNumber %>
+                                        </p>
+                                        <% } %>
+                                    </div>
+                                    <div class="mt-2 mt-sm-0">
+                                        <button class="btn btn-sm btn-outline-primary me-2" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#orderDetailsModal"
+                                                onclick="loadOrderDetails('<%= order._id %>')">
+                                            <i class="fas fa-eye me-1"></i> Details
+                                        </button>
+                                        <% if(order.status === 'Processing') { %>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="confirmCancelOrder('<%= order._id %>')">
+                                            <i class="fas fa-times me-1"></i> Cancel
+                                        </button>
+                                        <% } else { %>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>
+                                            <i class="fas fa-times me-1"></i> Cancel
+                                        </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                            
+                            <nav aria-label="Page navigation" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-bag"></i>
+                                <h4>No Orders Yet</h4>
+                                <p class="mb-4">You haven't placed any orders with us yet. Start shopping to see your order history here!</p>
+                                <a href="/products" class="btn btn-primary">
+                                    <i class="fas fa-store me-1"></i> Start Shopping
+                                </a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Tab -->
+            <div class="tab-pane fade" id="security">
+                <div class="row">
+                   
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-lock me-2"></i> Password & Security
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info d-flex align-items-center mb-4">
+                                    <i class="fas fa-info-circle me-3"></i>
+                                    <div>
+                                        <strong>Security Tip:</strong> Use a strong, unique password and change it regularly to keep your account secure.
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h6 class="mb-0">Password</h6>
+                                    </div>
+                                    <a href="/changePassword?id=<%= user._id %>">
+                                        <button class="btn btn-sm btn-outline-primary">
+                                        Change
+                                    </button>
+                                    </a>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h6 class="mb-0"><%= user.email %></h6>
+                                    </div>
+                                    <a href="/passCheckforEmailchange">
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-key me-1"></i> Change
+                                    </button>
+                                    </a>
+                                </div>
+                                
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" value="<%= user.firstName || '' %>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" value="<%= user.lastName || '' %>" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control" id="username" value="<%= user.username %>" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="email" value="<%= user.email %>" required>
+                                <% if(!user.emailVerified) { %>
+                                <button class="btn btn-outline-secondary" type="button" id="verifyEmailBtn">Verify Email</button>
+                                <% } %>
+                            </div>
+                            <div id="emailVerification" class="mt-2 <%= !user.emailVerified ? 'd-none' : '' %>">
+                                <% if(user.emailVerified) { %>
+                                <div class="alert alert-success d-flex align-items-center">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <div>
+                                        Your email address has been verified.
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                <div class="alert alert-info d-flex align-items-center">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <div>
+                                        We've sent a verification code to your email. Please enter it below.
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="Verification code">
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-primary w-100">Verify</button>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" value="<%= user.phone || '' %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea class="form-control" id="bio" rows="3"><%= user.bio || '' %></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileChanges">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Image Modal -->
+    <div class="modal fade" id="changeImageModal" tabindex="-1" aria-labelledby="changeImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="changeImageModalLabel">Change Profile Image</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.username + '&background=' + encodeURIComponent('2e7d32') + '&color=fff&size=160' %>" 
+                             alt="Current Profile Image" 
+                             class="img-fluid rounded-circle mb-3" 
+                             style="width: 160px; height: 160px; object-fit: cover;"
+                             id="currentProfileImage">
+                    </div>
+                    <form id="changeImageForm">
+                        <div class="mb-3">
+                            <label for="newProfileImage" class="form-label">Upload New Image</label>
+                            <input class="form-control" type="file" id="newProfileImage" accept="image/*">
+                            <div class="form-text">Recommended size: 160x160 pixels. Max file size: 2MB.</div>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-outline-danger" id="removeProfileImage">
+                                <i class="fas fa-trash me-1"></i> Remove Current Image
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileImage">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Address Modal -->
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAddressForm">
+                        <div class="mb-3">
+                            <label for="addressType" class="form-label">Address Type</label>
+                            <select class="form-select" id="addressType" required>
+                                <option value="" selected disabled>Select address type</option>
+                                <option value="home">Home</option>
+                                <option value="work">Work</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addressLine1" class="form-label">Address Line 1</label>
+                            <input type="text" class="form-control" id="addressLine1" placeholder="Street address, P.O. box, company name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addressLine2" class="form-label">Address Line 2</label>
+                            <input type="text" class="form-control" id="addressLine2" placeholder="Apartment, suite, unit, building, floor, etc.">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="state" class="form-label">State/Province/Region</label>
+                                <input type="text" class="form-control" id="state" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="zipCode" class="form-label">ZIP/Postal Code</label>
+                                <input type="text" class="form-control" id="zipCode" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="country" class="form-label">Country</label>
+                                <select class="form-select" id="country" required>
+                                    <option value="" selected disabled>Select country</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" required>
+                            <div class="form-text">This will be used for delivery purposes</div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="setAsDefault">
+                            <label class="form-check-label" for="setAsDefault">
+                                Set as default address
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveAddress">Save Address</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Address Modal -->
+    <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAddressForm">
+                        <input type="hidden" id="editAddressId">
+                        <div class="mb-3">
+                            <label for="editAddressType" class="form-label">Address Type</label>
+                            <select class="form-select" id="editAddressType" required>
+                                <option value="home">Home</option>
+                                <option value="work">Work</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editFullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="editFullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAddressLine1" class="form-label">Address Line 1</label>
+                            <input type="text" class="form-control" id="editAddressLine1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAddressLine2" class="form-label">Address Line 2</label>
+                            <input type="text" class="form-control" id="editAddressLine2">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editCity" class="form-label">City</label>
+                                <input type="text" class="form-control" id="editCity" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editState" class="form-label">State/Province/Region</label>
+                                <input type="text" class="form-control" id="editState" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editZipCode" class="form-label">ZIP/Postal Code</label>
+                                <input type="text" class="form-control" id="editZipCode" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editCountry" class="form-label">Country</label>
+                                <select class="form-select" id="editCountry" required>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="GB">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPhoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="editPhoneNumber" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="editSetAsDefault">
+                            <label class="form-check-label" for="editSetAsDefault">
+                                Set as default address
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#confirmDeleteAddressModal">Delete Address</button>
+                    <button type="button" class="btn btn-primary" id="updateAddress">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted password-strength-text">Password strength</small>
+                            </div>
+                            <div class="form-text">Must be at least 8 characters long and contain a mix of letters, numbers, and symbols.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveNewPassword">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsContent">
+                    <!-- Content will be loaded via JavaScript -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="printOrderBtn">
+                        <i class="fas fa-print me-1"></i> Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modals -->
+    <div class="modal fade" id="confirmDeleteAddressModal" tabindex="-1" aria-labelledby="confirmDeleteAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="confirmDeleteAddressModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this address? This action cannot be undone.</p>
+                    <input type="hidden" id="addressToDeleteId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteAddressBtn">Delete Address</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="confirmCancelOrderModal" tabindex="-1" aria-labelledby="confirmCancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="confirmCancelOrderModalLabel">Confirm Order Cancellation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this order? Some items may not be eligible for cancellation if they've already been processed.</p>
+                    <input type="hidden" id="orderToCancelId">
+                    <div class="form-group mt-3">
+                        <label for="cancelReason" class="form-label">Reason for cancellation (optional):</label>
+                        <textarea class="form-control" id="cancelReason" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+                    <button type="button" class="btn btn-warning" id="confirmCancelOrderBtn">Cancel Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Helper function to get status badge class
+        function getStatusBadgeClass(status) {
+            switch(status.toLowerCase()) {
+                case 'delivered': return 'badge-delivered';
+                case 'shipped': return 'badge-shipped';
+                case 'completed': return 'badge-completed';
+                case 'processing': return 'badge bg-info';
+                case 'cancelled': return 'badge bg-danger';
+                default: return 'badge bg-secondary';
+            }
+        }
+        
+        // Tab functionality
+        const triggerTabList = [].slice.call(document.querySelectorAll('.profile-nav a'));
+        triggerTabList.forEach(function (triggerEl) {
+            const tabTrigger = new bootstrap.Tab(triggerEl);
+            
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault();
+                tabTrigger.show();
+                
+                // Store the active tab in localStorage
+                localStorage.setItem('activeProfileTab', triggerEl.getAttribute('href'));
+            });
+        });
+        
+        // On page load, check if there's a stored active tab
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeTab = localStorage.getItem('activeProfileTab');
+            if (activeTab) {
+                const triggerEl = document.querySelector(`.profile-nav a[href="${activeTab}"]`);
+                if (triggerEl) {
+                    bootstrap.Tab.getInstance(triggerEl).show();
+                }
+            }
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Order filter functionality
+            document.querySelectorAll('[data-filter]').forEach(filter => {
+                filter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    // Update active state
+                    document.querySelectorAll('[data-filter]').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Filter orders
+                    const allOrders = document.querySelectorAll('.order-item');
+                    allOrders.forEach(order => {
+                        if (filterValue === 'all') {
+                            order.style.display = 'block';
+                        } else {
+                            if (order.getAttribute('data-status') === filterValue) {
+                                order.style.display = 'block';
+                            } else {
+                                order.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Password strength indicator
+            const newPasswordInput = document.getElementById('newPassword');
+            if (newPasswordInput) {
+                newPasswordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    const strengthBar = document.querySelector('.password-strength .progress-bar');
+                    const strengthText = document.querySelector('.password-strength-text');
+                    
+                    // Calculate password strength (simplified example)
+                    let strength = 0;
+                    if (password.length > 0) strength += 10;
+                    if (password.length >= 8) strength += 30;
+                    if (/[A-Z]/.test(password)) strength += 20;
+                    if (/[0-9]/.test(password)) strength += 20;
+                    if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+                    
+                    strength = Math.min(strength, 100);
+                    
+                    // Update UI
+                    strengthBar.style.width = strength + '%';
+                    
+                    if (strength < 40) {
+                        strengthBar.className = 'progress-bar bg-danger';
+                        strengthText.textContent = 'Weak';
+                    } else if (strength < 70) {
+                        strengthBar.className = 'progress-bar bg-warning';
+                        strengthText.textContent = 'Moderate';
+                    } else {
+                        strengthBar.className = 'progress-bar bg-success';
+                        strengthText.textContent = 'Strong';
+                    }
+                });
+            }
+            
+            // Profile image preview
+            const newProfileImageInput = document.getElementById('newProfileImage');
+            if (newProfileImageInput) {
+                newProfileImageInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('currentProfileImage').src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Remove profile image
+            const removeProfileImageBtn = document.getElementById('removeProfileImage');
+            if (removeProfileImageBtn) {
+                removeProfileImageBtn.addEventListener('click', function() {
+                    const username = '<%= user.username %>';
+                    document.getElementById('currentProfileImage').src = 
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=2e7d32&color=fff&size=160`;
+                    document.getElementById('newProfileImage').value = '';
+                });
+            }
+        });
+        
+        // Address management functions
+        function loadAddressForEdit(addressData) {
+            const address = JSON.parse(addressData);
+            document.getElementById('editAddressId').value = address._id;
+            document.getElementById('editAddressType').value = address.type;
+            document.getElementById('editFullName').value = address.fullName;
+            document.getElementById('editAddressLine1').value = address.addressLine1;
+            document.getElementById('editAddressLine2').value = address.addressLine2 || '';
+            document.getElementById('editCity').value = address.city;
+            document.getElementById('editState').value = address.state;
+            document.getElementById('editZipCode').value = address.zipCode;
+            document.getElementById('editCountry').value = address.country;
+            document.getElementById('editPhoneNumber').value = address.phoneNumber;
+            document.getElementById('editSetAsDefault').checked = address.isDefault;
+        }
+        
+        function setDefaultAddress(addressId) {
+            console.log(`Setting address ${addressId} as default`);
+            alert('Default address updated successfully!');
+            window.location.reload();
+        }
+        
+        function confirmDeleteAddress(addressId) {
+            document.getElementById('addressToDeleteId').value = addressId;
+            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteAddressModal'));
+            modal.show();
+        }
+        
+        // Order management functions
+        function loadOrderDetails(orderId) {
+            console.log(`Loading details for order ${orderId}`);
+            setTimeout(() => {
+                const orderDetailsContent = document.getElementById('orderDetailsContent');
+                orderDetailsContent.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Order #${orderId}</h5>
+                            <p class="text-muted">Placed on ${new Date().toLocaleDateString()}</p>
+                            <div class="mb-4">
+                                <h6>Shipping Address</h6>
+                                <p>
+                                    John Doe<br>
+                                    123 Main Street, Apt 4B<br>
+                                    New York, NY 10001<br>
+                                    United States
+                                </p>
+                            </div>
+                            <div>
+                                <h6>Payment Method</h6>
+                                <p>
+                                    <i class="fab fa-cc-visa me-2"></i>Visa ending in 4242<br>
+                                    Billing address same as shipping
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Order Summary</h6>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Qty</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Premium Headphones</td>
+                                            <td>$99.99</td>
+                                            <td>1</td>
+                                            <td>$99.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Wireless Charger</td>
+                                            <td>$29.99</td>
+                                            <td>2</td>
+                                            <td>$59.98</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end">Subtotal:</td>
+                                            <td>$159.97</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end">Shipping:</td>
+                                            <td>$5.99</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end fw-bold">Total:</td>
+                                            <td class="fw-bold">$165.96</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Status:</strong> Processing. Expected to ship within 2 business days.
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+        }
+        
+        function confirmCancelOrder(orderId) {
+            document.getElementById('orderToCancelId').value = orderId;
+            const modal = new bootstrap.Modal(document.getElementById('confirmCancelOrderModal'));
+            modal.show();
+        }
+        
+        // Event listeners for modal buttons
+        document.getElementById('confirmDeleteAddressBtn')?.addEventListener('click', function() {
+            const addressId = document.getElementById('addressToDeleteId').value;
+            console.log(`Deleting address ${addressId}`);
+            alert('Address deleted successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('confirmDeleteAddressModal')).hide();
+            window.location.reload();
+        });
+        
+        document.getElementById('confirmCancelOrderBtn')?.addEventListener('click', function() {
+            const orderId = document.getElementById('orderToCancelId').value;
+            const reason = document.getElementById('cancelReason').value;
+            console.log(`Cancelling order ${orderId} with reason: ${reason}`);
+            alert('Order cancellation request submitted!');
+            bootstrap.Modal.getInstance(document.getElementById('confirmCancelOrderModal')).hide();
+            window.location.reload();
+        });
+        
+        // Save profile changes
+        document.getElementById('saveProfileChanges')?.addEventListener('click', function() {
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                bio: document.getElementById('bio').value
+            };
+            
+            console.log('Saving profile changes:', formData);
+            alert('Profile updated successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+            window.location.reload();
+        });
+        
+        // Save profile image
+        document.getElementById('saveProfileImage')?.addEventListener('click', function() {
+            const fileInput = document.getElementById('newProfileImage');
+            if (fileInput.files.length > 0) {
+                console.log('Uploading new profile image:', fileInput.files[0].name);
+            } else {
+                console.log('Removing profile image');
+            }
+            alert('Profile image updated successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('changeImageModal')).hide();
+            window.location.reload();
+        });
+        
+        // Save address
+        document.getElementById('saveAddress')?.addEventListener('click', function() {
+            const formData = {
+                type: document.getElementById('addressType').value,
+                fullName: document.getElementById('fullName').value,
+                addressLine1: document.getElementById('addressLine1').value,
+                addressLine2: document.getElementById('addressLine2').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zipCode: document.getElementById('zipCode').value,
+                country: document.getElementById('country').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                isDefault: document.getElementById('setAsDefault').checked
+            };
+            
+            console.log('Saving new address:', formData);
+            alert('Address saved successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('addAddressModal')).hide();
+            window.location.reload();
+        });
+        
+        // Update address
+        document.getElementById('updateAddress')?.addEventListener('click', function() {
+            const formData = {
+                id: document.getElementById('editAddressId').value,
+                type: document.getElementById('editAddressType').value,
+                fullName: document.getElementById('editFullName').value,
+                addressLine1: document.getElementById('editAddressLine1').value,
+                addressLine2: document.getElementById('editAddressLine2').value,
+                city: document.getElementById('editCity').value,
+                state: document.getElementById('editState').value,
+                zipCode: document.getElementById('editZipCode').value,
+                country: document.getElementById('editCountry').value,
+                phoneNumber: document.getElementById('editPhoneNumber').value,
+                isDefault: document.getElementById('editSetAsDefault').checked
+            };
+            
+            console.log('Updating address:', formData);
+            alert('Address updated successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('editAddressModal')).hide();
+            window.location.reload();
+        });
+        
+        // Change password
+        document.getElementById('saveNewPassword')?.addEventListener('click', function() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters long!');
+                return;
+            }
+            
+            console.log('Changing password...');
+            alert('Password changed successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            document.getElementById('changePasswordForm').reset();
+        });
+        
+        // Print order
+        document.getElementById('printOrderBtn')?.addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+</html>

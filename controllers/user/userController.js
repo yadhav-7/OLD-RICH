@@ -34,9 +34,8 @@ const loadHomePage = async (req, res) => {
 
             console.log('product data first',productData)
 
-            productData.sort((a,b)=>{
-                new Date(b.createdOn)-new Date(a.createdOn)
-            })
+            productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+
             
             
             productData = productData.slice(0,4)
@@ -79,6 +78,7 @@ const checkUserBlock = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        
         
 
         res.json({ findUser });
@@ -214,28 +214,28 @@ const verifyOtp = async (req, res) => {
     try {
 
         const { otp } = req.body;
-        console.log(1)
+      
 
         if (!req.session.userData || !req.session.userOTP) {
             return res.status(400).json({ success: false, message: 'Session expired. Please try registering again.' });
         }
-        console.log(2)
+     
         if(!otp.trim()){
             return res.status(400).json({success:false,message:'Enter OTP for verification'})
         }
-        console.log(3)
+   
         if (otp === req.session.userOTP) {
             const user = req.session.userData;
-console.log(4)
+
             // Re-check if email already exists
             const findUser = await User.findOne({ email: user.email });
-console.log(5)
+
             if (findUser) {
-console.log(6)
+
                 return res.status(400).json({ success: false, message: 'User with this email already exists' });
 
             }
-            console.log(7)
+
 
             const passwordHash = await securePassword(user.password);
             const saveUserData = new User({
@@ -244,24 +244,24 @@ console.log(6)
                 phone: user.phone,
                 password: passwordHash
             });
-console.log(8)
+
             await saveUserData.save();
-console.log(9)
+
             req.session.user = saveUserData._id;
             res.json({ success: true, redirectUrl: '/home' });
-            console.log(9)
+     
         } else {
-            console.log(10)
+
             return res.status(400).json({ success: false, message: 'Invalid OTP. Please try again.' });
         }
     } catch (error) {
-        console.log(11)
+      
         console.error('verify OTP error:', error);
         if (error.code === 11000) {
-            console.log(12)
+          
             return res.status(400).json({ success: false, message: 'User with this email already exists' });
         }
-        console.log(13)
+
         res.status(500).json({ success: false, message: 'An error occurred during OTP verification' });
     }
 };
@@ -291,9 +291,7 @@ const reSendOtp = async (req, res) => {
 //load login
 const loadlogin = async (req, res) => {
     try {
-        
-             res.render('login')
-        
+        return req.session.user ? res.redirect('/home') : res.render('login')
     } catch (error) {
         console.log('loadlogin',error)
         res.redirect('/pageNOTfound')
@@ -303,6 +301,9 @@ const loadlogin = async (req, res) => {
 //login
 const login = async (req, res) => {
     try {
+        if(req.session.user){
+            return res.render('login',{message:'User Logged'})
+        }
         const { email, password } = req.body;
         const findUser = await User.findOne({ isAdmin: 0, email: email });
 
@@ -376,7 +377,7 @@ const loadShopingPage = async(req,res)=>{
         const totalPages = Math.ceil(totalProducts/limit)
         const categorieWithIds = categories.map((category)=>({_id:category._id,name:category.name}))
 
-        console.log(userData)
+        console.log('totalProducts',products.length)
             res.render('shop',{
             user:userData,
             products:products,
@@ -405,6 +406,7 @@ const sortAndFilter = async (req, res) => {
   try {
     let page = parseInt(req.query.page) || 1;
     const { category, priceFilter, sort } = req.query;
+    console.log(req.query);
     const limit = 6;
     let skip = (page - 1) * limit;
 
@@ -438,16 +440,16 @@ const sortAndFilter = async (req, res) => {
     if (sort) {
       switch (sort) {
         case 'priceLowHigh':
-          sortOption = { 'variants.0.salePrice': 1 }; // Sort by first variant's price
+          sortOption = { 'variants.0.salePrice': 1 };
           break;
         case 'priceHighLow':
-          sortOption = { 'variants.0.salePrice': -1 }; // Sort by first variant's price
+          sortOption = { 'variants.0.salePrice': -1 };
           break;
         case 'nameAZ':
-          sortOption = { 'productName': 1 }; // Explicit string field
+          sortOption = { 'productName': 1 };
           break;
         case 'nameZA':
-          sortOption = { 'productName': -1 }; // Explicit string field
+          sortOption = { 'productName': -1 };
           break;
         default:
           sortOption = { createdAt: -1 };
@@ -455,11 +457,59 @@ const sortAndFilter = async (req, res) => {
     }
 
     const categories = await Category.find({});
-    const products = await Product.find(filter)
-      .collation({ locale: 'en', strength: 2 }) // Case-insensitive sorting
+    
+    // Find products and transform them
+    let products = await Product.find(filter)
+      .collation({ locale: 'en', strength: 2 })
       .sort(sortOption)
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
+
+    // Transform products to include displayVariant with proper fallbacks
+    const transformedProducts = products.map(product => {
+      // Ensure variants exists and is an array
+      const variants = Array.isArray(product.variants) ? product.variants : [];
+      
+      // Default displayVariant with fallback values
+      let displayVariant = {
+        salePrice: 0,
+        regularPrice: 0,
+        size: '',
+        quantity: 0
+      };
+
+      // If we have variants, use the first one as default
+      if (variants.length > 0) {
+        displayVariant = {
+          ...displayVariant,
+          ...variants[0]
+        };
+      }
+
+      // Find matching variant if price filter is applied
+      if (priceFilter && variants.length > 0) {
+        const ranges = Array.isArray(priceFilter) ? priceFilter : [priceFilter];
+        for (const range of ranges) {
+          const [min, max] = range.split('-').map(Number);
+          const matchingVariant = variants.find(v => 
+            v && v.salePrice && (v.salePrice >= min && v.salePrice <= max)
+          );
+          if (matchingVariant) {
+            displayVariant = {
+              ...displayVariant,
+              ...matchingVariant
+            };
+            break;
+          }
+        }
+      }
+      
+      return {
+        ...product,
+        displayVariant
+      };
+    });
 
     // Get correct total count
     const totalProduct = await Product.countDocuments(filter);
@@ -467,7 +517,7 @@ const sortAndFilter = async (req, res) => {
 
     // Render template
     res.render('shop', {
-      products,
+      products: transformedProducts,
       category: categories,
       selectedCategories: category ? (Array.isArray(category) ? category : [category]) : [],
       selectedPriceFilters: priceFilter ? (Array.isArray(priceFilter) ? priceFilter : [priceFilter]) : [],
@@ -483,50 +533,113 @@ const sortAndFilter = async (req, res) => {
 };
 
 
-const searchProducts = async(req,res)=>{
-    try {
-        const user = req.session.user
-        const userData = await User.findOne(user)
-        let search = req.body.query
+const searchProducts = async (req, res) => {
+  try {
+    let {
+      category: categoryQuery,
+      sort,
+      priceFilter,
+      query: searchQuery,
+      page = 1,
+    } = req.query;
 
-        const categories = await Category.find({isListed:true}).lean()
-        const categoryIds = categories.map((cat)=>cat._id.toString())
-        let searchResult = []
+    const ITEMS_PER_PAGE = 6;
+    const filter = {};
 
-        if(req.session.filterProduct&&req.session.filterProduct.lenght>0){
-            searchResult = req.session.filterProducts.filter((product)=>{
-                product.productName.toLowerCase().includes(search.toLowerCase())
-            })
-        }else{
-            searchResult = await Product.find({
-                productName:{$regex:".*"+search+".*",$options:"i"},
-                isBlocked:false,
-                quantity:{$gt:0},
-                category:{$in:categoryIds}
-            })
-        }
-
-        searchResult.sort((a,b)=>new Date(b.createdOn)-new Date(a.createdOn))
-        let itemsPerPage=6
-        let currentPage = parseInt(req.query.page)||1
-        let startIndex = (currentPage-1)*itemsPerPage
-        let endIndex = startIndex+itemsPerPage
-        let totalPages = Math.ceil(searchResult.length/itemsPerPage)
-
-        let currentProduct = searchResult.slice(startIndex,endIndex)
-
-        res.render('shop',{
-            user:userData,
-            products:currentProduct,
-            totalPages,
-            currentPage,
-            category:categories
-        })
-    } catch (error) {
-        console.error('error from searchProducts',error)
-        res.redirect('/pageNotFound')
+    // 🔎 Category filter
+    if (categoryQuery) {
+      const categoryIds = categoryQuery.split(',');
+      filter.category = { $in: categoryIds };
     }
+    filter.isBlocked=false
+    // 💰 Price Range filter
+    if (priceFilter) {
+      const priceRanges = priceFilter.split(',');
+      const priceConditions = [];
+
+      for (const range of priceRanges) {
+        const [min, max] = range.split('-').map(Number);
+        if (!isNaN(min) && !isNaN(max)) {
+          priceConditions.push({
+            "variants.salePrice": { $gte: min, $lte: max }
+          });
+        }
+      }
+
+      if (priceConditions.length > 0) {
+        filter.$or = priceConditions;
+      }
+    }
+
+    // 🔍 Search Query filter (product name)
+    if (searchQuery) {
+  const regex = new RegExp(searchQuery, 'i'); // case-insensitive
+
+  filter.$or = [
+    { productName: regex },
+    // { color: regex },
+    //  { 'category.name': regex } // This works **only if** category is populated
+  ];
 }
+
+
+    // 🧙 Sorting
+    let sortCondition = {};
+if(sort){
+    switch (sort) {
+      case 'priceLowHigh':
+        sortCondition = { 'displayVariant.salePrice': 1 };
+        break;
+      case 'priceHighLow':
+        sortCondition = { 'displayVariant.salePrice': -1 };
+        break;
+      case 'nameAZ':
+        sortCondition = { productName: 1 };
+        break;
+      case 'nameZA':
+        sortCondition = { productName: -1 };
+        break;
+      default:
+        sortCondition = {}; // No sorting
+    }
+}else{
+    sortCondition={createdOn:-1}
+}
+
+    // 📦 Pagination
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+
+
+    
+    // 🌟 Fetching products
+    const totalCount = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+      .sort(sortCondition)
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE)
+      .lean()
+     
+
+    //  Optional: Fetch all categories to re-render filter sidebar
+    const categories = await Category.find().lean();
+
+    res.render('shop', {
+      products,
+      category: categories,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / ITEMS_PER_PAGE),
+      selectedCategories: categoryQuery ? categoryQuery.split(',') : [],
+      selectedPriceFilters: priceFilter ? priceFilter.split(',') : [],
+      searchQuery: searchQuery || '',
+    });
+
+  } catch (err) {
+    console.error('Error in searchProducts:', err.message);
+    res.redirect('/pageNotFound')// Or however you handle errors
+  }
+};
+
 
 
 module.exports = {

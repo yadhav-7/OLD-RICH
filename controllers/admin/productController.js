@@ -11,7 +11,8 @@ const getAddProducts = async (req, res) => {
         const category = await Category.find({ isListed: true })
         res.render('product-add', {
             category: category,
-            message:null
+            message:null,
+            success:null
         })
     } catch (error) {
         console.error('error from getAddProduct', error)
@@ -20,7 +21,7 @@ const getAddProducts = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-        console.warn('addProducts is present')
+        
         const products = req.body
         let variants = []
         let tempVariantObj = {}
@@ -29,6 +30,9 @@ const addProducts = async (req, res) => {
             return `sku${size}` + Math.floor(Math.random() * 1000000); // Up to 6 digits
         }
 
+        if (!Array.isArray(products.sizes)) {
+  products.sizes = [products.sizes];
+}
         for (let i = 0; i < products.sizes.length; i++) {
 
             if (products.sizes[i] === 'S') {
@@ -77,13 +81,15 @@ const addProducts = async (req, res) => {
                     quantity: products.stockXXL
                 }
             }
+            
             variants.push(tempVariantObj)
         }
-
-        const productExist = await Product.findOne({
-            productName: products.productName
-        });
-
+       
+const productExist = await Product.findOne({
+    productName: { 
+        $regex: new RegExp(`^${products.productName}$`, 'i') 
+    }
+});
         if (!productExist) {
             const images = []
             if (req.files && req.files.length > 0) {
@@ -136,11 +142,18 @@ const addProducts = async (req, res) => {
 
             await newProduct.save()
 
+            const category = await Category.find({
+                isListed:true
+            })
           
-            res.redirect('/admin/getAddProduct')
+            res.render('product-add',{
+                success:'Product Add successFull',
+                category:category,
+                message:null
+            })
         } else {
             const category = await Category.find({isListed:true})
-            res.render('product-add',{message:'Product Name Already Exists Try Another name',category})
+            res.render('product-add',{message:'Product Name Already Exists Try Another name',category,success:null})
         }
     } catch (error) {
         console.error('error from add product', error)
@@ -156,11 +169,11 @@ const getAllProducts = async (req, res) => {
         const search = req.query.search || ''
         const page = parseInt(req.query.page) || 1
       
-        const limit = 2
+        const limit = 6
 
         const productData = await Product.find({
             productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
-        }).skip((page - 1) * limit).limit(limit).populate('category').exec()
+        }).sort({createdAt:-1}).skip((page - 1) * limit).limit(limit).populate('category').exec()
 
         const count = await Product.find({
             productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
@@ -172,23 +185,24 @@ const getAllProducts = async (req, res) => {
 
         const totalPage = Math.ceil(count / limit)
 
-        for (let product of productData) {
-            let productTotal = 0;
+      for (let product of productData) {
+  let productTotal = 0; // ← move inside the loop
 
-            if (product.variants && product.variants.length > 0) {
-                for (let variant of product.variants) {
-                    productTotal += variant.quantity;
-                }
-            } else {
-                productTotal = product.quantity || 0;
-            }
+  if (product.variants && product.variants.length > 0) {
+    for (let variant of product.variants) {
+      productTotal += variant.quantity;
+    }
+  } else {
+    productTotal = product.quantity || 0;
+  }
 
-            product.totalQuantity = productTotal;
-            console.warn(`Product: ${product.productName}, Total Quantity: ${productTotal}`);
-        }
+  product.totalQuantity = productTotal;
+}
+
+      
 
         if (isFetch) {
-            console.log(productData.length)
+            
             return res.json({
                 data: productData,
                 currentPage: page,
@@ -197,8 +211,7 @@ const getAllProducts = async (req, res) => {
         }
 
        
-        if (category) {
-            
+        if (category) {    
             res.render('getAllProducts', {
                 data: productData,
                 currentPage: page,
@@ -206,7 +219,7 @@ const getAllProducts = async (req, res) => {
                 cat: category
             })
         } else {
-            res.render('page-404')
+            res.render('pageNotFound')
         }
     } catch (error) {
         console.log('error from getallProducts', error)
@@ -359,9 +372,7 @@ const editProduct = async (req, res) => {
 });
 
 
-        if (existingProduct) {
-            return res.status(400).json({ error: 'Product with this name already exists. Please try with another name' });
-        }
+        
 
         // Get the current product to preserve existing images if no changes
         const currentProduct = await Product.findById(id);
@@ -424,7 +435,7 @@ const editProduct = async (req, res) => {
         console.log('Update fields:', updateFields);
 
         await Product.findByIdAndUpdate(id, updateFields, { new: true });
-
+       
         res.redirect('/admin/getAllProducts');
     } catch (error) {
         console.error('error from editProduct', error);

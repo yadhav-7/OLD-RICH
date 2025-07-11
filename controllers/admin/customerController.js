@@ -54,9 +54,8 @@ const costomerInfo = async (req, res) => {
 
 const blockUser = async (req, res) => {
     try {
-        
-
-        const id = req.body.user_id
+        console.log('flsdfjldjlj')
+        const id = req.body.userId
         await User.updateOne({ _id: id }, { $set: { isBlock: true } })
         return res.status(200).json({as:'true'})
     } catch (error) {

@@ -11,6 +11,7 @@
             --dark-green: #1B5E20;
             --white: #FFFFFF;
             --light-gray: #F5F5F5;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         body {
@@ -24,7 +25,6 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
         }
         
         /* Breadcrumbs */
@@ -59,12 +59,14 @@
             background-color: var(--light-gray);
             padding: 20px;
             border-radius: 8px;
+            position: relative;
         }
         
         .slider-container {
             position: relative;
             width: 100%;
             overflow: hidden;
+            cursor: zoom-in;
         }
         
         .slider {
@@ -80,6 +82,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
         }
         
         .thumbnail-container {
@@ -97,11 +100,12 @@
             border: 2px solid transparent;
             border-radius: 4px;
             cursor: pointer;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, transform 0.2s;
         }
         
         .thumbnail:hover, .thumbnail.active {
             border-color: var(--primary-green);
+            transform: scale(1.05);
         }
         
         .slider-nav {
@@ -136,6 +140,33 @@
         .slider-btn:disabled {
             background-color: rgba(0,0,0,0.3);
             cursor: not-allowed;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .zoom-btn {
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .zoom-btn:hover {
+            background-color: rgba(0,0,0,0.8);
         }
         
         .product-info {
@@ -174,6 +205,7 @@
             padding: 15px;
             background-color: var(--light-green);
             border-radius: 6px;
+            box-shadow: var(--shadow);
         }
         
         .current-price {
@@ -214,10 +246,12 @@
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
         
         .size-option:hover {
             border-color: var(--primary-green);
+            transform: translateY(-2px);
         }
         
         .size-option.selected {
@@ -232,7 +266,9 @@
             background-color: var(--light-green);
             border: 1px dashed var(--primary-green);
             border-radius: 4px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .coupon-code {
@@ -262,6 +298,8 @@
         
         .action-buttons {
             margin: 30px 0;
+            display: flex;
+            gap: 15px;
         }
         
         .add-to-cart {
@@ -272,12 +310,13 @@
             font-size: 16px;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 15px;
-            transition:(background-color 0.3s);
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: var(--shadow);
         }
         
         .add-to-cart:hover:not(:disabled) {
             background-color: var(--dark-green);
+            transform: translateY(-2px);
         }
         
         .add-to-cart:disabled {
@@ -293,8 +332,13 @@
             font-size: 16px;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3 حالا
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
         
+        .wishlist:hover {
+            background-color: var(--light-green);
+            transform: translateY(-2px);
         }
         
         .reviews-section {
@@ -350,18 +394,29 @@
                 width: 60px;
                 height: 60px;
             }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .add-to-cart, .wishlist {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
+    <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
+
     <div class="container">
         <!-- Breadcrumbs -->
         <nav class="breadcrumbs" aria-label="Breadcrumb">
             <a href="/">Home</a>
             <span>/</span>
-            <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a>
+            <a href="/shop">collection</a>
             <span>/</span>
-            <a href="/product/<%= product.slug %>"><%= product.productName %></a>
+            <a ><%= product.productName %></a>
         </nav>
         
         <!-- Product Details -->
@@ -376,6 +431,10 @@
                     <div class="slider-nav">
                         <button class="slider-btn prev-btn" aria-label="Previous image">❮</button>
                         <button class="slider-btn next-btn" aria-label="Next image">❯</button>
+                    </div>
+                    <div class="zoom-controls">
+                        <button class="zoom-btn zoom-in" aria-label="Zoom in">+</button>
+                        <button class="zoom-btn zoom-out" aria-label="Zoom out">-</button>
                     </div>
                 </div>
                 <div class="thumbnail-container" role="navigation" aria-label="Image thumbnails">
@@ -425,9 +484,9 @@
                         <div class="size-title">Size:</div>
                         <div class="size-options">
                             <% product.variants.forEach((variant, index) => { %>
-                                <div class="size-option <%= index === 0 ? 'selected' : '' %>" 
-                                     data-price="<%= variant.price %>" 
-                                     data-sale-price="<%= variant.salePrice || variant.price %>"
+                                <div class="size-option <%= index === selectedVariantIndex ? 'selected' : '' %>" 
+                                     data-price="<%= variant.regularPrice %>" 
+                                     data-sale-price="<%= variant.salePrice || variant.regularPrice %>"
                                      data-quantity="<%= variant.quantity %>"
                                      data-size="<%= variant.size %>">
                                     <%= variant.size %>
@@ -440,7 +499,8 @@
                 <!-- Coupon -->
                 <% if(product.couponCode) { %>
                     <div class="coupon">
-                        🎉 Use coupon code <span class="coupon-code"><%= product.couponCode %></span> 
+                        <span role="img" aria-label="Celebration">🎉</span>
+                        Use coupon code <span class="coupon-code"><%= product.couponCode %></span> 
                         <% if(product.couponDescription) { %>
                             <%= product.couponDescription %>
                         <% } else { %>
@@ -502,215 +562,218 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Slider functionality
-            const slider = document.querySelector('.slider');
-            const slides = document.querySelectorAll('.main-image');
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
-            const sizeOptions = document.querySelectorAll('.size-option');
-            const priceContainer = document.querySelector('.price-container');
-            const currentPriceElement = document.querySelector('.current-price');
-            const originalPriceElement = document.querySelector('.original-price');
-            const discountElement = document.querySelector('.discount');
-            const stockElement = document.querySelector('.stock');
-            const addToCartBtn = document.querySelector('.add-to-cart');
-            
-            let currentIndex = 0;
-            const slideCount = slides.length;
+document.addEventListener('DOMContentLoaded', function() {
+    // Product variant selection elements
+    const sizeOptions = document.querySelectorAll('.size-option');
+    const currentPriceElement = document.querySelector('.current-price');
+    const originalPriceElement = document.querySelector('.original-price');
+    const discountElement = document.querySelector('.discount');
+    const stockElement = document.querySelector('.stock');
+    const addToCartBtn = document.querySelector('.add-to-cart');
+    
+    // Slider and zoom elements
+    const slider = document.querySelector('.slider');
+    const slides = document.querySelectorAll('.main-image');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const zoomInBtn = document.querySelector('.zoom-in');
+    const zoomOutBtn = document.querySelector('.zoom-out');
+    const sliderContainer = document.querySelector('.slider-container');
+    
+    let currentIndex = 0;
+    let zoomLevel = 1;
+    const maxZoom = 3;
+    const minZoom = 1;
+    const slideCount = slides.length;
 
-            // Initialize slider
-            function updateSlider() {
-                if (!slider) return;
-                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-                thumbnails.forEach((thumb, index) => {
-                    thumb.classList.toggle('active', index === currentIndex);
-                });
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === slideCount - 1;
-            }
+    // Initialize slider
+    function updateSlider() {
+        if (!slider) return;
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+        thumbnails.forEach((thumb, index) => {
+            thumb.classList.toggle('active', index === currentIndex);
+        });
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === slideCount - 1;
+        resetZoom();
+    }
 
-            // Thumbnail click handler
-            thumbnails.forEach(thumb => {
-                thumb.addEventListener('click', () => {
-                    currentIndex = parseInt(thumb.getAttribute('data-index'));
-                    updateSlider();
-                });
-            });
+    // Zoom functionality
+    function updateZoom() {
+        slides[currentIndex].style.transform = `scale(${zoomLevel})`;
+        sliderContainer.style.cursor = zoomLevel >= maxZoom ? 'zoom-out' : 'zoom-in';
+        zoomInBtn.disabled = zoomLevel >= maxZoom;
+        zoomOutBtn.disabled = zoomLevel <= minZoom;
+    }
 
-            // Navigation buttons
-            prevBtn?.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateSlider();
-                }
-            });
+    function resetZoom() {
+        zoomLevel = 1;
+        updateZoom();
+    }
 
-            nextBtn?.addEventListener('click', () => {
-                if (currentIndex < slideCount - 1) {
-                    currentIndex++;
-                    updateSlider();
-                }
-            });
+    // Thumbnail click handler
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            currentIndex = parseInt(thumb.getAttribute('data-index'));
+            updateSlider();
+        });
+    });
 
-            // Auto-rotate slides
-            if (slideCount > 1) {
-                let intervalId = setInterval(() => {
-                    currentIndex = currentIndex < slideCount - 1 ? currentIndex + 1 : 0;
-                    updateSlider();
-                }, 5000);
+    // Navigation buttons
+    prevBtn?.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlider();
+        }
+    });
 
-                // Pause auto-rotation on hover
-                slider?.parentElement.addEventListener('mouseenter', () => clearInterval(intervalId));
-                slider?.parentElement.addEventListener('mouseleave', () => {
-                    intervalId = setInterval(() => {
-                        currentIndex = currentIndex < slideCount - 1 ? currentIndex + 1 : 0;
-                        updateSlider();
-                    }, 5000);
-                });
-            }
+    nextBtn?.addEventListener('click', () => {
+        if (currentIndex < slideCount - 1) {
+            currentIndex++;
+            updateSlider();
+        }
+    });
 
-            // Price and stock update function
-            function updatePriceAndStock(option) {
-                const price = parseFloat(option.getAttribute('data-price'));
-                const salePrice = parseFloat(option.getAttribute('data-sale-price'));
-                const quantity = parseInt(option.getAttribute('data-quantity'));
-                const size = option.getAttribute('data-size');
+    // Zoom controls
+    zoomInBtn?.addEventListener('click', () => {
+        if (zoomLevel < maxZoom) {
+            zoomLevel += 0.5;
+            updateZoom();
+        }
+    });
 
-                // Update price display
-                if (!isNaN(salePrice) && currentPriceElement) {
-                    currentPriceElement.textContent = `$${salePrice.toFixed(2)}`;
-                } else {
-                    currentPriceElement.textContent = 'Price Unavailable';
-                }
+    zoomOutBtn?.addEventListener('click', () => {
+        if (zoomLevel > minZoom) {
+            zoomLevel -= 0.5;
+            updateZoom();
+        }
+    });
 
-                // Update original price and discount
-                if (originalPriceElement && discountElement) {
-                    if (!isNaN(price) && !isNaN(salePrice) && price > salePrice) {
-                        originalPriceElement.textContent = `$${price.toFixed(2)}`;
-                        const discountPercent = Math.round(((price - salePrice) / price) * 100);
-                        discountElement.textContent = `${discountPercent}% OFF`;
-                        originalPriceElement.style.display = 'inline';
-                        discountElement.style.display = 'inline';
-                    } else {
-                        originalPriceElement.textContent = '';
-                        discountElement.textContent = '';
-                        originalPriceElement.style.display = 'none';
-                        discountElement.style.display = 'none';
-                    }
-                }
+    // Click to toggle zoom
+    sliderContainer?.addEventListener('click', () => {
+        if (zoomLevel === minZoom) {
+            zoomLevel = 1.5;
+        } else {
+            zoomLevel = minZoom;
+        }
+        updateZoom();
+    });
 
-                // Update stock display
-                if (stockElement) {
-                    let stockText = 'Availability: ';
-                    if (!isNaN(quantity)) {
-                        if (quantity > 10) {
-                            stockElement.innerHTML = `${stockText}<span class="in-stock">In Stock</span>`;
-                        } else if (quantity > 0) {
-                            stockElement.innerHTML = `${stockText}<span class="low-stock">Low Stock (Only ${quantity} left)</span>`;
-                        } else {
-                            stockElement.innerHTML = `${stockText}<span class="out-of-stock">Out of Stock</span>`;
-                        }
-                    } else {
-                        stockElement.innerHTML = `${stockText}<span class="out-of-stock">Stock Information Unavailable</span>`;
-                    }
-                }
+    // Auto-rotate slides
+    if (slideCount > 1) {
+        let intervalId = setInterval(() => {
+            currentIndex = currentIndex < slideCount - 1 ? currentIndex + 1 : 0;
+            updateSlider();
+        }, 5000);
 
-                // Update add to cart button
-                if (addToCartBtn) {
-                    addToCartBtn.disabled = !quantity || quantity === 0;
-                    addToCartBtn.textContent = (!quantity || quantity === 0) ? 'Out of Stock' : 'Add to Cart';
-                }
-            }
+        // Pause auto-rotation on hover
+        sliderContainer?.addEventListener('mouseenter', () => clearInterval(intervalId));
+        sliderContainer?.addEventListener('mouseleave', () => {
+            intervalId = setInterval(() => {
+                currentIndex = currentIndex < slideCount - 1 ? currentIndex + 1 : 0;
+                updateSlider();
+            }, 5000);
+        });
+    }
 
-            // Size selection handler
-            sizeOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    sizeOptions.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    updatePriceAndStock(option);
-                });
-            });
+    // Price and stock update function
+    function updatePriceAndStock(option) {
+        const price = parseFloat(option.getAttribute('data-price'));
+        const salePrice = parseFloat(option.getAttribute('data-sale-price'));
+        const quantity = parseInt(option.getAttribute('data-quantity'));
+        const size = option.getAttribute('data-size');
 
-            // Add to cart handler
-            addToCartBtn?.addEventListener('click', async () => {
-                try {
-                    const selectedSize = document.querySelector('.size-option.selected');
-                    const size = selectedSize?.getAttribute('data-size');
-                    const salePrice = parseFloat(selectedSize?.getAttribute('data-sale-price'));
+        // Update price display
+        if (!isNaN(salePrice)) {
+            currentPriceElement.textContent = `₹${salePrice.toFixed(2)}`;
+        } else {
+            currentPriceElement.textContent = 'Price Unavailable';
+        }
 
-                    if (!size) {
-                        alert('Please select a size');
-                        return;
-                    }
-
-                    if (isNaN(salePrice)) {
-                        alert('Price information is unavailable');
-                        return;
-                    }
-
-                    // Simulate AJAX request to add to cart
-                    console.log(`Adding to cart: ${size}, $${salePrice.toFixed(2)}`);
-                    // Example AJAX call:
-                    /*
-                    const response = await fetch('/api/cart/add', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ productId: '<%= product.id %>', size, price: salePrice })
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        alert('Added to cart successfully!');
-                    }
-                    */
-                } catch (error) {
-                    console.error('Error adding to cart:', error);
-                    alert('Failed to add to cart. Please try again.');
-                }
-            });
-
-            // Wishlist handler
-            document.querySelector('.wishlist')?.addEventListener('click', async () => {
-                try {
-                    // Simulate AJAX request to add to wishlist
-                    console.log(`Adding to wishlist: <%= product.id %>`);
-                    // Example AJAX call:
-                    /*
-                    const response = await fetch('/api/wishlist/add', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ productId: '<%= product.id %>' })
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        alert('Added to wishlist successfully!');
-                    }
-                    */
-                } catch (error) {
-                    console.error('Error adding to wishlist:', error);
-                    alert('Failed to add to wishlist. Please try again.');
-                }
-            });
-
-            // Initialize default size
-            const defaultSelected = document.querySelector('.size-option.selected');
-            if (defaultSelected) {
-                updatePriceAndStock(defaultSelected);
-            } else if (sizeOptions.length > 0) {
-                // Fallback to first size option if none is selected
-                sizeOptions[0].classList.add('selected');
-                updatePriceAndStock(sizeOptions[0]);
+        // Update original price and discount
+        if (!isNaN(price)) {
+            if (price > salePrice) {
+                originalPriceElement.textContent = `₹${price.toFixed(2)}`;
+                const discountPercent = Math.round(((price - salePrice) / price) * 100);
+                discountElement.textContent = `${discountPercent}% OFF`;
+                originalPriceElement.style.display = 'inline';
+                discountElement.style.display = 'inline';
             } else {
-                // No size options available
-                currentPriceElement.textContent = 'Price Unavailable';
                 originalPriceElement.style.display = 'none';
                 discountElement.style.display = 'none';
-                stockElement.innerHTML = 'Availability: <span class="out-of-stock">Size Information Unavailable</span>';
-                addToCartBtn.disabled = true;
-                addToCartBtn.textContent = 'Out of Stock';
             }
+        }
+
+        // Update stock display
+        let stockText = 'Availability: ';
+        if (!isNaN(quantity)) {
+            if (quantity > 10) {
+                stockElement.innerHTML = `${stockText}<span class="in-stock">In Stock</span>`;
+            } else if (quantity > 0) {
+                stockElement.innerHTML = `${stockText}<span class="low-stock">Low Stock (Only ${quantity} left)</span>`;
+            } else {
+                stockElement.innerHTML = `${stockText}<span class="out-of-stock">Out of Stock</span>`;
+            }
+        } else {
+            stockElement.innerHTML = `${stockText}<span class="out-of-stock">Stock Information Unavailable</span>`;
+        }
+
+        // Update add to cart button
+        addToCartBtn.disabled = !quantity || quantity === 0;
+        addToCartBtn.textContent = (!quantity || quantity === 0) ? 'Out of Stock' : 'Add to Cart';
+    }
+
+    // Size selection handler
+    sizeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            sizeOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            updatePriceAndStock(option);
         });
+    });
+
+    // Add to cart handler
+    addToCartBtn?.addEventListener('click', async () => {
+        try {
+            const selectedSize = document.querySelector('.size-option.selected');
+            const size = selectedSize?.getAttribute('data-size');
+            const salePrice = parseFloat(selectedSize?.getAttribute('data-sale-price'));
+
+            if (!size) {
+                alert('Please select a size');
+                return;
+            }
+
+            if (isNaN(salePrice)) {
+                alert('Price information is unavailable');
+                return;
+            }
+
+            console.log(`Adding to cart: ${size}, ₹${salePrice.toFixed(2)}`);
+            // Implement actual AJAX call here
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            alert('Failed to add to cart. Please try again.');
+        }
+    });
+
+    // Initialize default size selection
+    const defaultSelected = document.querySelector('.size-option.selected');
+    if (defaultSelected) {
+        updatePriceAndStock(defaultSelected);
+    } else if (sizeOptions.length > 0) {
+        sizeOptions[0].classList.add('selected');
+        updatePriceAndStock(sizeOptions[0]);
+    } else {
+        currentPriceElement.textContent = 'Price Unavailable';
+        originalPriceElement.style.display = 'none';
+        discountElement.style.display = 'none';
+        stockElement.innerHTML = 'Availability: <span class="out-of-stock">Size Information Unavailable</span>';
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'Out of Stock';
+    }
+});
     </script>
 </body>
 </html>

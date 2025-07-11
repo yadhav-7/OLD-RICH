@@ -35,19 +35,20 @@
                             <td>
                                 <%= data[i].phone %>
                             </td>
-                            <td class="action-buttons">
-                                <% if(data[i].isBlock===false){ %>
-
-                                    <button class="block-btn"
-                                        onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">Block</button>
-
-                                    <% }else{ %>
-
-                                        <button class="unblock-btn"
-                                            onclick="unblockPermission('<%= data[i]._id%>','<%= data[i].username%>')">Unblock</button>
-
+                            <td>
+                                <% if (data[i].isBlock) { %>
+                                    <button class="unblock-btn" id="btn-<%= data[i]._id %>"
+                                        onclick="unblockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                        Unblock
+                                    </button>
+                                    <% } else { %>
+                                        <button class="block-btn" id="btn-<%= data[i]._id %>"
+                                            onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                            Block
+                                        </button>
                                         <% } %>
                             </td>
+
                         </tr>
                         <%}%>
                 </tbody>
@@ -100,104 +101,51 @@
             async function blockPermission(userId, userName) {
                 const { isConfirmed } = await Swal.fire({
                     title: `Block ${userName}?`,
-                    text: "Are you sure.",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, block',
-                    cancelButtonText: 'Cancel',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
                 });
 
                 if (isConfirmed) {
-                    try {
-                        // Send data to backend
+                    const res = await fetch('/admin/blockCustomer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId })
+                    });
 
-                        const response = await fetch('/admin/blockCustomer', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-
-                            },
-                            body: JSON.stringify({
-                                user_id: userId,
-                                user_name: userName
-                            }),
-                        });
-
-                        const result = await response.json();
-
-                        if (response.ok) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: `${userName} has been blocked.`,
-                                icon: 'success',
-                                timer: 1500,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 1500)
-                        } else {
-
-                            throw new Error(result.message || "Failed to block user");
-                        }
-                    } catch (error) {
-
-                        Swal.fire('Error!', error.message, 'error');
+                    if (res.ok) {
+                        const btn = document.getElementById(`btn-${userId}`);
+                        btn.textContent = 'Unblock';
+                        btn.setAttribute('onclick', `unblockPermission('${userId}', '${userName}')`);
+                        btn.style.backgroundColor = '#28a745'; // Bootstrap success green
+                        Swal.fire('Blocked!', '', 'success');
                     }
                 }
             }
 
-
             async function unblockPermission(userId, userName) {
                 const { isConfirmed } = await Swal.fire({
-                    toast:true,
-                    title: `UnBlock ${userName}?`,
-                    text: "Are you sure.",
+                    title: `Unblock ${userName}?`,
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sure',
+                    confirmButtonText: 'Yes',
                     cancelButtonText: 'No',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
                 });
 
                 if (isConfirmed) {
-                    try {
-                        const response = await fetch('/admin/unBlockCustomer', {
-                            method: 'post',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                userId: userId
-                            })
-                        })
+                    const res = await fetch('/admin/unBlockCustomer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId })
+                    });
 
-                        const result = await response.json()
-
-                        if (response.ok) {
-                            Swal.fire({
-                                toast:true,
-                                title: 'Success!',
-                                text: `${userName} has been Unblocked.`,
-                                icon: 'success',
-                                timer: 1500,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 1500)
-                        } else {
-                            throw new Error(result.message || "Failed to unblock user");
-                        }
-                    } catch (error) {
-                        Swal.fire('Error!', error.message, 'error');
+                    if (res.ok) {
+                        const btn = document.getElementById(`btn-${userId}`);
+                        btn.textContent = 'Block';
+                        btn.setAttribute('onclick', `blockPermission('${userId}', '${userName}')`);
+                        btn.style.backgroundColor='#dc3545'
+                        Swal.fire('Unblocked!', '', 'success');
                     }
                 }
             }
@@ -219,10 +167,10 @@
                     const result = await res.json();
                     const user = result.data;
                     const currentPage = result.currentPage
-                    const totalPages=result.totalPages
+                    const totalPages = result.totalPages
 
                     table.innerHTML = '';
-
+                    pagination.innerHTML=''
                     if (user.length === 0) {
                         table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products found</td></tr>';
                     } else {
@@ -268,17 +216,16 @@
             searchInput.addEventListener('keyup', () => {
 
                 const searchValue = searchInput.value || '';
-                if(searchValue!==''){
-                fetchAndRenderProducts(searchValue);
-                }else{
-                    window.location.reload()
-                }
+               
+                    fetchAndRenderProducts(searchValue);
+               
             });
 
             // On clear button click
             clearBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                window.location.reload()
+                searchValue = ''
+                searchInput.value = ''
+                fetchAndRenderProducts(searchValue);
 
             });
 

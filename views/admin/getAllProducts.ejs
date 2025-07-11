@@ -52,7 +52,7 @@
 
     .main-content {
       flex: 1;
-      padding: 20px 30px;
+      padding: 80px 30px;
       margin-left: 250px;
       transition: all 0.3s;
       overflow-x: hidden;
@@ -567,137 +567,149 @@
 </head>
 
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <div class="admin-wrapper">
     <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
-      <div class="main-content">
-        <div class="header">
-          <div class="header-top">
-            <h1 class="header-title">Products Management</h1>
-            <div class="search-container">
-              <div class="search-input-group">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="search-input" class="search-input" placeholder="Search products..."
-                  aria-label="Search products">
-                <button class="clear-btn" id="clear-button" aria-label="Clear search">×</button>
+      <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+
+        <div class="main-content">
+          <div class="header">
+            <div class="header-top">
+              <h1 class="header-title">Products Management</h1>
+              <div class="search-container">
+                <div class="search-input-group">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" id="search-input" class="search-input" placeholder="Search products..."
+                    aria-label="Search products">
+                  <button class="clear-btn" id="clear-button" aria-label="Clear search">×</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="loading-spinner" id="loadingSpinner">
-          <div class="spinner"></div>
-          <p>Loading products...</p>
-        </div>
-
-        <div class="products-table-container" id="productsTableContainer">
-          <% if(data && data.length> 0) { %>
-            <table class="products-table">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Offer</th>
-                  <th>Total Stock</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="productsTableBody">
-                <% for(let i=0; i < data.length; i++) { %>
-                  <tr>
-                    <td><strong>
-                        <%= data[i].productName %>
-                      </strong></td>
-                    <td>
-                      <%= data[i].category.name %>
-                    </td>
-                    <td>
-                      <% if(data[i].isBlocked) { %>
-                        <span class="status-badge status-blocked">Blocked</span>
-                        <% } else { %>
-                          <span class="status-badge status-active">Active</span>
-                          <% } %>
-                    </td>
-                    <td>
-                      <% if(data[i].productOffer> 0) { %>
-                        <span class="offer-badge">
-                          <%= data[i].productOffer %>% OFF
-                        </span>
-                        <% } else { %>
-                          <span>-</span>
-                          <% } %>
-                    </td>
-                    <td>
-                      <%= data[i].totalQuantity %>
-                    </td>
-                    <td>
-                      <div class="action-buttons">
-                        <% if(data[i].productOffer < 1) { %>
-                          <button class="action-btn add-offer" onclick="addOffer('<%= data[i]._id %>')">
-                            <i class="fas fa-tag"></i>
-                            <span>Add Offer</span>
-                          </button>
-                          <% } else { %>
-                            <button class="action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
-                              <i class="fas fa-tag"></i>
-                              <span>Remove Offer</span>
-                            </button>
-                            <% } %>
-                              <% if(data[i].isBlocked) { %>
-                                <button class="action-btn unblock"
-                                  onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                  <i class="fas fa-unlock"></i>
-                                  <span>Unblock</span>
-                                </button>
-                                <% } else { %>
-                                  <button class="action-btn block"
-                                    onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                    <i class="fas fa-ban"></i>
-                                    <span>Block</span>
-                                  </button>
-                                  <% } %>
-                                    <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
-                                      <i class="fas fa-edit"></i>
-                                      <span>Edit</span>
-                                    </a>
-                                    <button class="action-btn view-variants"
-                                      onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                      <i class="fas fa-boxes"></i>
-                                      <span>Variants</span>
-                                    </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <% } %>
-              </tbody>
-
-            </table>
-            <% } else { %>
-              <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <p>No products found</p>
-              </div>
-              <% } %>
-        </div>
-
-        <% if(data && data.length> 0) { %>
-          <div class="pagination-container">
-            <% if(currentPage> 1) { %>
-              <a href="/admin/getAllProducts?page=<%= currentPage - 1 %>" class="page-link">
-                <i class="fas fa-chevron-left"></i>
-              </a>
-              <% } %>
-                <a href="#" class="page-link active">
-                  <%= currentPage %>
-                </a>
-                <% if(currentPage < totalPages) { %>
-                  <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
-                    <i class="fas fa-chevron-right"></i>
-                  </a>
-                  <% } %>
+          <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
           </div>
-          <% } %>
-      </div>
+
+
+
+          <div class="products-table-container" id="productsTableContainer">
+            <!-- At the very bottom of the page, after SweetAlert is loaded -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <% if(data && data.length> 0) { %>
+              <table class="products-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Offer</th>
+                    <th>Total Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                  <% for(let i=0; i < data.length; i++) { %>
+                    <tr>
+                      <td><strong>
+                          <%= data[i].productName %>
+                        </strong></td>
+                      <td>
+                        <%= data[i].category.name %>
+                      </td>
+                      <td>
+                        <% if(data[i].isBlocked) { %>
+  <span class="status-badge status-blocked" id="status-<%= data[i]._id %>">Blocked</span>
+<% } else { %>
+  <span class="status-badge status-active" id="status-<%= data[i]._id %>">Active</span>
+<% } %>
+
+                      </td>
+                      <td>
+                        <% if(data[i].productOffer> 0) { %>
+                          <span class="offer-badge">
+                            <%= data[i].productOffer %>% OFF
+                          </span>
+                          <% } else { %>
+                            <span>-</span>
+                            <% } %>
+                      </td>
+                      <td>
+                        <%= data[i].totalQuantity %>
+                      </td>
+                      <td>
+                        <div class="action-buttons">
+                          <% if(data[i].productOffer < 1) { %>
+                            <button class="action-btn add-offer" onclick="addOffer('<%= data[i]._id %>')">
+                              <i class="fas fa-tag"></i>
+                              <span>Add Offer</span>
+                            </button>
+                            <% } else { %>
+                              <button class="action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
+                                <i class="fas fa-tag"></i>
+                                <span>Remove Offer</span>
+                              </button>
+                              <% } %>
+
+                                <% if(data[i].isBlocked) { %>
+                                  <button class="action-btn unblock" id="btn-<%= data[i]._id %>"
+                                    onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                    <i class="fas fa-unlock"></i>
+                                    <span>Unblock</span>
+                                  </button>
+                                  <% } else { %>
+                                    <button class="action-btn block" id="btn-<%= data[i]._id %>"
+                                      onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                      <i class="fas fa-ban"></i>
+                                      <span>Block</span>
+                                    </button>
+                                    <% } %>
+
+
+                                      <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit</span>
+                                      </a>
+                                      <button class="action-btn view-variants"
+                                        onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                                        <i class="fas fa-boxes"></i>
+                                        <span>Variants</span>
+                                      </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+
+              </table>
+              <% } else { %>
+                <div class="empty-state">
+                  <i class="fas fa-box-open"></i>
+                  <p>No products found</p>
+                </div>
+                <% } %>
+          </div>
+
+          <% if(data && data.length> 0) { %>
+            <div class="pagination-container">
+              <% if(currentPage> 1) { %>
+                <a href="/admin/getAllProducts?page=<%= currentPage - 1 %>" class="page-link">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+                <% } %>
+                  <a href="#" class="page-link active">
+                    <%= currentPage %>
+                  </a>
+                  <% if(currentPage < totalPages) { %>
+                    <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <% } %>
+            </div>
+            <% } %>
+        </div>
   </div>
 
   <div class="variant-modal" id="variantModal">
@@ -724,7 +736,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // DOM Elements
     const searchInput = document.getElementById('search-input');
@@ -797,7 +808,7 @@
 
     // Add offer
     async function addOffer(productId) {
-      
+
       const { value: amount } = await Swal.fire({
         title: 'Add Product Offer',
         input: 'number',
@@ -814,7 +825,7 @@
       });
 
       if (amount) {
-        
+
         try {
           const response = await fetch('/admin/addProductOffer', {
             method: 'POST',
@@ -884,90 +895,126 @@
       }
     }
 
-    // Block product
-    async function blockProduct(productId, productName) {
-      const { isConfirmed } = await Swal.fire({
-        title: 'Block Product',
-        html: `You are about to block <strong>${productName}</strong>. This product will no longer be visible to customers.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Yes, block it',
-        cancelButtonText: 'Cancel'
+// BLOCK PRODUCT
+async function blockProduct(productId, productName) {
+  const { isConfirmed } = await Swal.fire({
+    title: 'Block Product',
+    html: `You are about to block <strong>${productName}</strong>. This product will no longer be visible to customers.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Yes, block it',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (isConfirmed) {
+    try {
+      const response = await fetch('/admin/blockProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: productId, productName })
       });
 
-      if (isConfirmed) {
-        try {
-          const response = await fetch('/admin/blockProduct', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: productId, productName })
-          });
-          const result = await response.json();
-          if (response.ok) {
-            await Swal.fire({
-              icon: 'success',
-              title: 'Blocked!',
-              text: 'Product has been blocked successfully.',
-              timer: 1500,
-              showConfirmButton: false
-            });
-            location.reload();
-          } else {
-            throw new Error(result.message || 'Failed to block product');
-          }
-        } catch (err) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: err.message || 'Something went wrong!'
-          });
-        }
-      }
-    }
+      const result = await response.json();
 
-    // Unblock product
-    async function unblockProduct(productId, productName) {
-      
-      const { isConfirmed } = await Swal.fire({
-        title: 'Unblock Product',
-        html: `You are about to unblock <strong>${productName}</strong>. This product will become visible to customers again.`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        confirmButtonText: 'Yes, unblock it',
-        cancelButtonText: 'Cancel'
+      if (response.ok) {
+        const btn = document.querySelector(`#btn-${productId}`);
+        btn.classList.remove('block');
+        btn.classList.add('unblock');
+        btn.innerHTML = `
+          <i class="fas fa-unlock"></i>
+          <span>Unblock</span>
+        `;
+        btn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
+
+        const status = document.querySelector(`#status-${productId}`);
+if (status) {
+  status.classList.remove('status-active');
+  status.classList.add('status-blocked');
+  status.textContent = 'Blocked';
+}
+
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Blocked!',
+          text: 'Product has been blocked successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(result.message || 'Failed to block product');
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'Something went wrong!'
+      });
+    }
+  }
+}
+
+// UNBLOCK PRODUCT
+async function unblockProduct(productId, productName) {
+  const { isConfirmed } = await Swal.fire({
+    title: 'Unblock Product',
+    html: `You are about to unblock <strong>${productName}</strong>. This product will become visible to customers again.`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#28a745',
+    confirmButtonText: 'Yes, unblock it',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (isConfirmed) {
+    try {
+      const response = await fetch('/admin/unblockProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: productId, productName })
       });
 
-      if (isConfirmed) {
-        try {
-          const response = await fetch('/admin/unBlockProduct', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: productId, productName })
-          });
-          const result = await response.json();
-          if (response.ok) {
-            await Swal.fire({
-              icon: 'success',
-              title: 'Unblocked!',
-              text: 'Product has been unblocked successfully.',
-              timer: 1500,
-              showConfirmButton: false
-            });
-            location.reload();
-          } else {
-            throw new Error(result.message || 'Failed to unblock product');
-          }
-        } catch (err) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: err.message || 'Something went wrong!'
-          });
-        }
+      const result = await response.json();
+
+      if (response.ok) {
+        const btn = document.querySelector(`#btn-${productId}`);
+        btn.classList.remove('unblock');
+        btn.classList.add('block');
+        btn.innerHTML = `
+          <i class="fas fa-ban"></i>
+          <span>Block</span>
+        `;
+        btn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
+
+
+        const status = document.querySelector(`#status-${productId}`);
+if (status) {
+  status.classList.remove('status-blocked');
+  status.classList.add('status-active');
+  status.textContent = 'Active';
+}
+
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Unblocked!',
+          text: 'Product has been unblocked successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(result.message || 'Failed to unblock product');
       }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'Something went wrong!'
+      });
     }
+  }
+}
 
 
     async function searchAndrender(search) {
@@ -982,6 +1029,12 @@
       const product = result.data;
       const currentPage = result.currentPage
       const totalPages = result.totalPages
+
+
+      // In your searchAndrender function, before rendering:
+product.forEach(p => {
+  p.totalQuantity = p.variants?.reduce((sum, variant) => sum + (variant.quantity || 0), 0) || 0;
+});
 
       if (response.ok) {
         if (product.length > 0) {
@@ -1003,7 +1056,7 @@
                 : '<span>-</span>'
               }
     </td>
-    <td>${product[i].totalQuantity}</td>
+    <td>${product[i].totalQuantity||0}</td>
     <td>
       <div class="action-buttons">
         ${product[i].productOffer < 1
@@ -1058,8 +1111,8 @@
       searchInput.addEventListener('keyup', function () {
 
         const search = searchInput.value
-        if (search === '') window.location.reload()
         searchAndrender(search)
+
       })
 
 
@@ -1067,7 +1120,7 @@
       // Clear search
       clearBtn.addEventListener('click', () => {
         searchInput.value = '';
-        window.location.reload()
+        searchAndrender(search)
       });
     });
   </script>

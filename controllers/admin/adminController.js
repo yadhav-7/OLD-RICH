@@ -2,6 +2,7 @@ const User = require('../../models/userSchema')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
+
 const loadlogin = (req, res) => {
     try {
         if (req.session.admin) {
@@ -72,5 +73,6 @@ module.exports = {
     login,
     loadDashboard,
     pageError,
-    logout
+    logout,
+    
 }

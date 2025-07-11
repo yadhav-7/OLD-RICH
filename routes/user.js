@@ -5,6 +5,7 @@ const profileController = require('../controllers/user/profileController')
 const productController = require('../controllers/user/productController')
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
 const passport = require('passport');
+
 //ERROR MANAGEMENT
 router.get('/pageNOTfound',userController.pageNOTfound)
 
@@ -59,13 +60,21 @@ router.post('/varify-passForgot-otp',profileController.verifyForgotPassOtp)
 router.get('/reset-password',profileController.getResetPassPage)
 router.post('/reSentOtp',profileController.reSentOtp)
 router.post('/reset-password',profileController.postNewPassword)
+router.get('/userProfile',userAuth,profileController.userProfile)
+router.get('/passCheckforEmailchange',userAuth,profileController.getPassCheckforEmailchange)
+router.post('/passCheckforEmailchange',userAuth,profileController.passCheckforEmailchange)
 
+router.post('/change-Email',userAuth,profileController.changeEmailValid)
+router.get('/changePassword',userAuth,profileController.changePassword)
+router.post('/verifychangeEmailOtp',userAuth,profileController.verifychangeEmailOtp)
+router.get('/resendOTPwhileEmailchange',userAuth,profileController.resendOTPwhileEmailchange)
+router.patch('/update-email',userAuth,profileController.emailUpdate)
 
 //HOME PAGE & SHOPING
 router.get('/home',guestAuth,userController.loadHomePage)
 router.get('/shop',guestAuth,userController.loadShopingPage)
 router.get('/sortAndfilter',userController.sortAndFilter)
-router.post('/search',userController.searchProducts)
+router.get('/searchProducts',userController.searchProducts)
 router.get('/check-user-block',userController.checkUserBlock)
 
 
