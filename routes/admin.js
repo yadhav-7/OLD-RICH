@@ -4,6 +4,7 @@ const adminController = require('../controllers/admin/adminController')
 const customerController = require('../controllers/admin/customerController')
 const catagoryController = require('../controllers/admin/catagoryController')
 let prodouctContoller = require('../controllers/admin/productController')
+const orderController = require('../controllers/admin/orderController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 const upload = require('../middlewares/multer')
 
@@ -48,5 +49,13 @@ router.get('/getEditProduct',adminAuth,prodouctContoller.getEditProduct)
 router.post('/editProduct/:id',adminAuth,upload.array('images', 5),prodouctContoller.editProduct)
 
 router.post('/deleteImage',adminAuth,prodouctContoller.deleteSingleImage)
+
+
+//ORDER MANAGEMANT
+router.get('/orderManagement',adminAuth,orderController.getOrderPage)
+
+router.post('/changeStatus',adminAuth,orderController.changeStatus)
+
+router.get('/orderDetails',adminAuth,orderController.ordereDetails)
 
 module.exports=router

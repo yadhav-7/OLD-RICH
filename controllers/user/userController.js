@@ -39,8 +39,7 @@ const loadHomePage = async (req, res) => {
             
             
             productData = productData.slice(0,4)
-            console.warn('productData length',productData.lenght)
-            console.warn('productData',productData)
+         
         if (user&&!userData.isBlock) {
             const userData = await User.findOne({ _id: user })
             res.render('home', { user: userData , products:productData })
@@ -212,14 +211,10 @@ const securePassword = async (password) => {
 // Verify OTP
 const verifyOtp = async (req, res) => {
     try {
-
         const { otp } = req.body;
-      
-
         if (!req.session.userData || !req.session.userOTP) {
             return res.status(400).json({ success: false, message: 'Session expired. Please try registering again.' });
         }
-     
         if(!otp.trim()){
             return res.status(400).json({success:false,message:'Enter OTP for verification'})
         }

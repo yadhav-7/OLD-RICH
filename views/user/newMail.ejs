@@ -42,20 +42,19 @@
 
     h2 {
       color: #2e7d32;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       font-weight: 600;
       font-size: 1.8rem;
     }
 
     .description {
       color: #616161;
-      margin-bottom: 30px;
-      line-height: 1.5;
+      margin-bottom: 25px;
       font-size: 0.95rem;
     }
 
     .input-group {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       text-align: left;
     }
 
@@ -67,7 +66,7 @@
       font-size: 0.95rem;
     }
 
-    input[type="email"] {
+    input {
       width: 100%;
       padding: 14px 16px;
       border: 2px solid #e0e0e0;
@@ -77,15 +76,22 @@
       background-color: #fafafa;
     }
 
-    input[type="email"]:focus {
+    input:focus {
       border-color: #4caf50;
       background-color: #fff;
       box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
       outline: none;
     }
 
-    input[type="email"].invalid {
+    input.invalid {
       border-color: #f44336;
+    }
+
+    .error {
+      color: #f44336;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
     }
 
     button {
@@ -99,7 +105,6 @@
       font-size: 1rem;
       width: 100%;
       transition: all 0.3s ease;
-      margin-top: 10px;
     }
 
     button:hover {
@@ -107,22 +112,9 @@
       transform: translateY(-2px);
     }
 
-    button:active {
-      transform: translateY(0);
-    }
-
     button:disabled {
       background-color: #bdbdbd;
       cursor: not-allowed;
-      transform: none;
-    }
-
-    .error {
-      color: #f44336;
-      font-size: 0.85rem;
-      margin-top: 8px;
-      display: none;
-      text-align: left;
     }
 
     .server-message {
@@ -137,51 +129,40 @@
       background-color: #ffebee;
       color: #f44336;
       border-left: 4px solid #f44336;
+      display: block;
     }
 
     .server-message.success {
       background-color: #e8f5e9;
       color: #2e7d32;
       border-left: 4px solid #2e7d32;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 30px 20px;
-      }
-      
-      h2 {
-        font-size: 1.5rem;
-      }
+      display: block;
     }
   </style>
 </head>
 <body>
-  <form id="emailForm" action="/update-email?_method=PATCH" method="post" class="container">
+  <form id="emailForm" action="/update-email?_method=PATCH" method="POST" class="container">
     <div class="logo">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="#2e7d32">
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
       </svg>
     </div>
-    
+
     <h2>Update Your Email</h2>
     <p class="description">Enter your new email address</p>
-    
-    <% if(message){ %>
-      <div class="server-message <%= message.includes('success') ? 'success' : 'error' %>">
+
+    <% if (message) { %>
+      <div class="server-message <%= message.toLowerCase().includes('success') ? 'success' : 'error' %>">
         <%= message %>
       </div>
-      <script>
-        document.querySelector('.server-message').style.display = 'block';
-      </script>
     <% } %>
-    
+
     <div class="input-group">
       <label for="email">New Email Address</label>
-      <input type="email" name="newEmail" id="email" placeholder="your.new@email.com" required />
+      <input name="newEmail" id="email" placeholder="example@domain.com" value="<%= typeof oldEmail !== 'undefined' ? oldEmail : '' %>">
       <div id="errorMsg" class="error">Please enter a valid email address.</div>
     </div>
-    
+
     <button type="submit" id="submitBtn">Send Verification OTP</button>
   </form>
 
@@ -190,20 +171,18 @@
     const emailInput = document.getElementById('email');
     const errorMsg = document.getElementById('errorMsg');
     const submitBtn = document.getElementById('submitBtn');
-    
-    // Enhanced email validation regex
+
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
-    // Real-time validation
-    emailInput.addEventListener('input', function() {
+
+    emailInput.addEventListener('input', () => {
       const email = emailInput.value.trim();
-      
-      if (email === '') {
+
+      if (email === "") {
         errorMsg.style.display = 'none';
         emailInput.classList.remove('invalid');
         return;
       }
-      
+
       if (!emailRegex.test(email)) {
         errorMsg.style.display = 'block';
         emailInput.classList.add('invalid');
@@ -212,42 +191,25 @@
         emailInput.classList.remove('invalid');
       }
     });
-    
-    // Form submission handler
-    form.addEventListener('submit', function(e) {
+
+    form.addEventListener('submit', (e) => {
       const email = emailInput.value.trim();
-      
+
       if (!emailRegex.test(email)) {
         e.preventDefault();
         errorMsg.style.display = 'block';
         emailInput.classList.add('invalid');
         emailInput.focus();
-        
-        // Shake animation for error feedback
-        form.style.animation = 'shake 0.5s';
-        setTimeout(() => {
-          form.style.animation = '';
-        }, 500);
       } else {
-        // Show loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
-        
-        // You could add a setTimeout here to simulate network request
-        // In a real app, this would be handled by the form submission
       }
     });
-    
-    // Add shake animation to CSS
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-5px); }
-        40%, 80% { transform: translateX(5px); }
-      }
-    `;
-    document.head.appendChild(style);
+
+    // Remove resubmit warning
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
   </script>
 </body>
 </html>

@@ -3,6 +3,10 @@ const router = express.Router();
 const userController = require('../controllers/user/userController');
 const profileController = require('../controllers/user/profileController')
 const productController = require('../controllers/user/productController')
+const addressController = require('../controllers/user/addressCondroller')
+const cartCondroller = require('../controllers/user/cartCondroller')
+const checkOutPageController = require('../controllers/user/checkOutPageController')
+const orderController = require('../controllers/user/orderDetailsPage')
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
 const passport = require('passport');
 
@@ -65,22 +69,56 @@ router.get('/passCheckforEmailchange',userAuth,profileController.getPassCheckfor
 router.post('/passCheckforEmailchange',userAuth,profileController.passCheckforEmailchange)
 
 router.post('/change-Email',userAuth,profileController.changeEmailValid)
-router.get('/changePassword',userAuth,profileController.changePassword)
+
 router.post('/verifychangeEmailOtp',userAuth,profileController.verifychangeEmailOtp)
 router.get('/resendOTPwhileEmailchange',userAuth,profileController.resendOTPwhileEmailchange)
 router.patch('/update-email',userAuth,profileController.emailUpdate)
 
+router.get('/changePassword',userAuth,profileController.changePassword)
+router.patch('/updatePassword',userAuth,profileController.updatePassword)
+router.patch('/editProfile',userAuth,profileController.editProfile)
+
+
+
 //HOME PAGE & SHOPING
 router.get('/home',guestAuth,userController.loadHomePage)
 router.get('/shop',guestAuth,userController.loadShopingPage)
-router.get('/sortAndfilter',userController.sortAndFilter)
-router.get('/searchProducts',userController.searchProducts)
-router.get('/check-user-block',userController.checkUserBlock)
+router.get('/sortAndfilter',guestAuth,userController.sortAndFilter)
+router.get('/searchProducts',guestAuth,userController.searchProducts)
+router.get('/check-user-block',guestAuth,userController.checkUserBlock)
 
 
 //PRODUCT MANAGEMENT
 router.get('/productDetails',productController.productDetails)
 
+//ADDRESS MANAGEMENT
+router.post('/addAddress',userAuth,addressController.addAddress)
+router.delete('/deleteAddress',userAuth,addressController.deleteAddress)
+router.patch('/editAddress',userAuth,addressController.editAddress)
 
+
+//CART MANAGEMENT 
+router.get('/cart',userAuth,cartCondroller.getCart)
+router.get('/addProductToCart',userAuth,cartCondroller.addProductToCart)
+router.get('/removeProductFromCart',userAuth,cartCondroller.removeProductFromCart)
+router.get('/decreaseCartItems',userAuth,cartCondroller.decreaseCartItems)
+router.get('/increaseCartItems',userAuth,cartCondroller.increaseCartItems)
+
+//CHECKOUTPAGE 
+router.post('/checkoutpage',userAuth,checkOutPageController.checkoutpage)
+router.get('/getCheckoutpage',userAuth,checkOutPageController.getCheckoutpage)
+router.post('/procedToCheckOut',userAuth,checkOutPageController.procedToCheckOut)
+
+//ORDER SUCCESS PAGE
+router.get('/orderSuccess',userAuth,checkOutPageController.orderSuccess)
+
+//ORDER DETAILS PAGE
+router.get('/orderDetailPage',userAuth,orderController.orderDetailPage)
+
+//ORDER CANCELL 
+router.post('/cancellOrder',userAuth,orderController.cencellOrder)
+
+//RETURN REQ
+router.post('/returnReq',userAuth,orderController.returnReq)
 
 module.exports=router 

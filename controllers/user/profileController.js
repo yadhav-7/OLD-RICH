@@ -1,4 +1,6 @@
 const User = require('../../models/userSchema')
+const Address = require('../../models/addressSchema')
+const Order = require('../../models/orderSchema')
 nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
@@ -173,22 +175,58 @@ const postNewPassword = async (req, res) => {
 
 const userProfile = async (req, res) => {
     try {
-        const userId = req.session.user
-        const userData = await User.findById(userId)
-        res.render('userProfile', {
-            user: userData
-        })
-    } catch (error) {
-        console.error('error from userProfile', error)
-        res.redirect('/pageNotFound')
-    }
+        // Clear sensitive session data
+        delete req.session.otp;
+        delete req.session.email;
+
+        const userId = req.session.user;
+
+        const order = await Order.find({ userId: userId })
+    .populate('orderedItems.product');
+
+
+        const userData = await User.findById(userId);
+        const addressDoc = await Address.findOne({ userId });
+
+        const addressData = addressDoc?.address || []; // Safely extract the embedded address array
+        function getStatusBadgeClass(status) {
+  switch (status.toLowerCase()) {
+    case 'pending': return 'bg-warning text-dark';
+    case 'processing': return 'bg-info text-white';
+    case 'shipped': return 'bg-primary text-white';
+    case 'delivered': return 'bg-success';
+    case 'cancelled': return 'bg-danger';
+    case 'return req': return 'bg-secondary';
+    case 'returned': return 'bg-dark';
+    default: return 'bg-light text-dark';
+  }
 }
+
+res.render('userProfile', {
+  user: userData,
+  addressData: addressData,
+  order: order,
+  getStatusBadgeClass
+});
+
+
+     
+
+    } catch (error) {
+        console.error('Error from userProfile:', error);
+        res.redirect('/pageNotFound');
+    }
+};
+
 
 const getPassCheckforEmailchange = async(req,res)=>{
     try {
-       res.render('passCheckforEmailchange',{
+        
+  
+    res.render('passCheckforEmailchange',{
         message:null
        })
+  
     } catch (error) {
         console.error('error from passCheckforEmailchange',error)
     }
@@ -196,8 +234,7 @@ const getPassCheckforEmailchange = async(req,res)=>{
 
 const passCheckforEmailchange = async(req,res)=>{
     try {
-        
-        const enteredPass = req.body.password
+   const enteredPass = req.body.password
         
         const userId = req.session.user
         
@@ -217,6 +254,10 @@ const passCheckforEmailchange = async(req,res)=>{
         res.render('changeEmail',{
             message:null
         })
+
+         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');     
         
     } catch (error) {
         console.error('error from passCheckEmailChange',error)
@@ -227,7 +268,7 @@ const passCheckforEmailchange = async(req,res)=>{
 
 const changeEmailValid = async(req,res)=>{
     try {
-        const {email}=req.body
+       const {email}=req.body
         const userExists = await User.findOne({email})
         const userId = req.session.user
         const userData = await User.findById(userId)
@@ -242,13 +283,16 @@ const changeEmailValid = async(req,res)=>{
             const emailSent = sendVerificationEmail(email,otp)
             if(emailSent){
                 req.session.otp = otp
-                req.session.userData =req.body
-                req.session.email = email
+                req.session.userData =email
+                // req.session.newEmail = email
+                
                 res.render('changeEmailOtp',{
                     message:null
                 })
+                req.session.otpSession=true
                 console.log(otp)
                 console.log(email)
+             
             }else{
                 return res.render('changeEmail',{
                     message:'User does not exists!'
@@ -266,7 +310,8 @@ const changeEmailValid = async(req,res)=>{
 
 const verifychangeEmailOtp = async(req,res)=>{
     try {
-        
+
+ 
         const enteredOtp = req.body.otp
         
         if(enteredOtp==req.session.otp){
@@ -276,6 +321,8 @@ const verifychangeEmailOtp = async(req,res)=>{
             res.render('newMail',{
                 message:null
             })
+
+
         }else{
             res.render('changeEmailOtp',{
                 message:'OTP not matching',
@@ -289,10 +336,13 @@ const verifychangeEmailOtp = async(req,res)=>{
 
 const emailUpdate = async (req, res) => {
   try {
+
     console.log('emailUpdate is working');
     
-    const newEmail = req.body.newEmail.trim()
-    req.session.newEmail = newEamil
+    
+    const newEmail = (req.body.newEmail || "").trim();
+
+    req.session.newEmail = newEmail
     const userId = req.session.user;
     const userData = await User.findById(userId);
 
@@ -302,6 +352,7 @@ const emailUpdate = async (req, res) => {
       });
     }
 
+    console.log('newEmail',newEmail||0)
     const existsUser = await User.findOne({
       email: newEmail,
       _id: { $ne: userId }
@@ -312,26 +363,31 @@ const emailUpdate = async (req, res) => {
         message: 'This email is already registered. Try another email.'
       });
     }
-
+     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
     await User.findByIdAndUpdate(userId, { email: newEmail });
     res.redirect('/userProfile');
 
   } catch (error) {
     console.log('error from emailUpdate', error);
-    res.redirect('/errorPage'); // Optional: Add fallback
+    res.redirect('/pageNotFound'); // Optional: Add fallback
   }
 };
 
 const resendOTPwhileEmailchange = async(req,res)=>{
+
     try {
+
         console.log('isWorking................')
         const otp = generateOtp()
         console.log('resendOTP:',otp)
-        const newEmail = req.session.userData
-        if(!newEmail){
+        const email = req.session.userData
+        
+        if(!email){
             return res.redirect('/pageNotFound')
         }
-        const emailSent = sendVerificationEmail(otp,newEmail)
+        const emailSent = sendVerificationEmail(email,otp)
 
         if(emailSent){
             req.session.otp=otp
@@ -349,15 +405,95 @@ const resendOTPwhileEmailchange = async(req,res)=>{
 const changePassword = async (req, res) => {
     try {
         const user = req.session.user
-        const id = req.query.id
-        if (!user || !id) {
+        
+        if (!user) {
           return res.redirect('home')
         }
-        res.render('changePassword')
+        res.render('changePassword',{
+            message:null
+        })
     } catch (error) {
 
     }
 }
+
+
+const updatePassword = async(req,res)=>{
+    try {
+        console.error('updatePassword is working------------------------')
+        const user = req.session.user
+       const userData = await User.findById(user)
+      
+       
+        if(!user) return res.redirect('/home')
+      
+
+            const {currentPassword,newPassword,confirmPassword}=req.body
+    
+
+        if(newPassword!==confirmPassword)return res.render('changePassword',{message:'password is not match'})
+
+            const checkExistsNewPass = await bcrypt.compare(userData.password,newPassword)
+
+            if(checkExistsNewPass)return res.render('changePassword',{message:'New password cannot be same as current password'})
+
+               const isMatch = await bcrypt.compare(currentPassword,userData.password)
+               
+
+               if(!isMatch)return res.render('changePassword',{message:'Invalid Password'})
+            
+                const hashedPass = await bcrypt.hash(newPassword,10)
+
+ const addressDoc = await Address.findOne({ user });
+
+        const addressData = addressDoc?.address || []; // Safely extract the embedded address array
+                await User.findByIdAndUpdate(
+                    user,
+                    {password:hashedPass}
+                )
+                // res.render('userProfile',{
+                //     user:userData,
+                //     addressData:addressData
+                // })
+                res.redirect('/userProfile')
+
+    } catch (error) {
+        console.error('error from updatePassword ',error)
+        res.redirect('/pageNotFound')
+    }
+}
+
+const editProfile = async (req, res) => {
+  try {
+    console.log('editProfile is working............');
+    console.log('req.query.userId', req.query.userId);
+    console.log('req.body', req.body);
+
+    const { username, email, phone } = req.body;
+    const uId = req.query.userId; 
+
+    if (!uId) {
+      return res.status(400).json({ message: 'Missing userId' });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: uId },
+      { $set: { username, email, phone } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully!' });
+
+  } catch (error) {
+    console.error('Error in editProfile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
     getForgotPasspage,
     forgotEmailValid,
@@ -372,5 +508,7 @@ module.exports = {
     emailUpdate,
     getPassCheckforEmailchange,
     passCheckforEmailchange,
-    resendOTPwhileEmailchange
+    resendOTPwhileEmailchange,
+    updatePassword,
+    editProfile
 }

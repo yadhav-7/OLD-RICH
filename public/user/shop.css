@@ -215,24 +215,9 @@
     color: #ff4757;
   }
   
-  .add-to-cart-btn {
-    background-color: #46698f;
-    color: #fff;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: auto;
-    font-weight: 500;
-    font-size: 15px;
-    transition: background-color 0.3s, transform 0.2s;
-  }
+ 
   
-  .add-to-cart-btn:hover {
-    background-color: #3a5775;
-    transform: translateY(-2px);
-  }
+ 
   
   .price-discount {
     color: #1e918b;

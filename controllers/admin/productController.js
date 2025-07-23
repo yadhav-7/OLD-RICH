@@ -178,6 +178,7 @@ const getAllProducts = async (req, res) => {
         const count = await Product.find({
             productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
         }).countDocuments()
+        
         const category = await Category.find({ isListed: true })
 
 

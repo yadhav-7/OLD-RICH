@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --light-blue: #e8f0fe;
+            --dark-blue: #0d47a1;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+        }
+
+        .main-container {
+            width: 1250px;
+            padding-left: 270px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            border-color: var(--dark-blue);
+        }
+
+        .badge-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .badge-processing {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        .badge-shipped {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .badge-delivered {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .badge-cancelled {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .badge-return {
+            background-color: #6f42c1;
+            color: #fff;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box .form-control {
+            padding-left: 40px;
+            border-radius: 20px;
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            color: #6c757d;
+        }
+
+        .order-row:hover {
+            background-color: var(--light-blue);
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="container-fluid p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Order Management</h4>
+                <div class="d-flex">
+                    <div class="me-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                          
+                            <option value="return Req">Return Requested</option>
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="form-control" placeholder="Search orders..." id="searchInput">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Orders</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-download me-1"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <% order.forEach(element=> { %>
+                                    <tr class="order-row">
+                                        <td>
+                                            <%= element.orderId %>
+                                        </td>
+                                        <td>
+                                            <%= new Date(element.createdOn).toLocaleDateString() %>
+                                        </td>
+                                        <td>
+                                            <%= element.userId?.username %>
+                                        </td>
+                                        <td>
+                                            <%= element?.orderedItems?.length %>
+                                        </td>
+                                        <td>
+                                            <%= element.totalPrice %>
+                                        </td>
+                                        <td><span class="badge badge-shipped">
+                                                <%= element.status %>
+                                            </span></td>
+                                        <td><span class="badge bg-success">
+                                                <%= element?.paymentStatus %>
+                                            </span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <a href="orderDetails?orderId=<%= element?.orderId %>"
+                                                    class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        
+                        <nav>
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- Static pagination for simplicity -->
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Update Modal -->
+        <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Update Order Status</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <form id="statusUpdateForm">
+                        <input type="hidden" id="orderId">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label"><%=  %></label>
+                                <input type="text" class="form-control" id="currentStatus" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">New Status</label>
+                                <select class="form-select" id="newStatus" >
+                                    <option value="">Select status</option>
+                                    <option>Pending</option>
+                                    <option>Processing</option>
+                                    <option>Shipped</option>
+                                    <option>Delivered</option>
+                                    <option>Cancelled</option>
+                                </select>
+                            </div>
+                           
+                           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update Status</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Return Request Modal -->
+        <div class="modal fade" id="returnRequestModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Process Return Request</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <form id="returnRequestForm">
+                        <input type="hidden" id="returnOrderId">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Order #</label>
+                                <input type="text" class="form-control" id="returnOrderNumber" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Product</label>
+                                <input type="text" class="form-control" id="returnProduct" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Return Reason</label>
+                                <input type="text" class="form-control" id="returnReason" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Customer Comments</label>
+                                <textarea class="form-control" id="returnComments" rows="2" readonly></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Action</label>
+                                <select class="form-select" id="returnAction" required>
+                                    <option value="">Select action</option>
+                                    <option>Approve Return</option>
+                                    <option>Reject Return</option>
+                                    <option>Request More Information</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Refund Method</label>
+                                <select class="form-select" id="refundMethod" required>
+                                    <option value="">Select method</option>
+                                    <option>Original Payment Method</option>
+                                    <option>Store Credit</option>
+                                    <option>Bank Transfer</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Admin Comments</label>
+                                <textarea class="form-control" id="adminComments" rows="3"
+                                    placeholder="Enter comments for customer..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit Decision</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (required for modal functionality) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JavaScript for Modals Only -->
+    <script>
+        let orderId
+        function openStatusModal(ordId, currentStatus) {
+            orderId = ordId
+            document.getElementById('orderId').value = ordId;
+            document.getElementById('currentStatus').value = currentStatus;
+            document.getElementById('newStatus').value = '';
+           
+            $('#statusUpdateModal').modal('show');
+        }
+
+        function openReturnModal(ordId, orderNumber, product, reason) {
+            document.getElementById('returnOrderId').value = ordId;
+            document.getElementById('returnOrderNumber').value = orderNumber;
+            document.getElementById('returnProduct').value = product;
+            document.getElementById('returnReason').value = reason;
+            document.getElementById('returnComments').value = reason;
+            $('#returnRequestModal').modal('show');
+        }
+
+   document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
+    e.preventDefault();
+
+
+ 
+    const newStatus = document.getElementById('newStatus').value;
+
+    
+    try {
+        const response = await fetch('/admin/changeStatus', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderId,
+                newStatus
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: data.message||'Status updated successfully!',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+    });
+
+    // Wait for 2s before reload to let user see toast
+    setTimeout(() => {
+        location.reload();
+    }, 2000);
+        } else {
+            Swal.fire({
+    toast: true,
+    position: 'top-end',
+    icon: 'error',
+    title:data.message|| 'Failed to update status!',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+});
+
+        }
+    } catch (error) {
+        console.error('🌩️ Error during status update:', error);
+        alert('🚨 Something went wrong.');
+    }
+
+    $('#statusUpdateModal').modal('hide');
+});
+
+ 
+ </script>
+</body>
+
+</html>

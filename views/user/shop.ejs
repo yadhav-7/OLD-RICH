@@ -4,11 +4,30 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+ 
     background: #f8f9fa;
-    border-radius: 8px;
+    
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
+
+
+  .view-btn {
+  width: 100%;
+  padding: 10px 0;
+  background-color: #277038;
+  color: white;
+  border: 1px solid #277038;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.view-btn:hover {
+  background-color: white;
+  color: #277038;
+}
 
   .filter-grid {
     display: grid;
@@ -303,8 +322,9 @@
                     <span class="original-price">₹<%= products[i].variants[0].regularPrice || '' %></span>
                   <% } %>
                 </div>
-              </a>
-              <button class="add-to-cart-btn" onclick="addToCart('<%= products[i]._id %>')">Add to Cart</button>
+             
+              <button class="view-btn">View</button>
+               </a>
             </div>
           <% } %>
         <% } %>

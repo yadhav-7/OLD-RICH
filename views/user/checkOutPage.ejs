@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add this in your <head> or before closing </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: #1a5d1a;
+        }
+
+        .checkout-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 1100px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .premium-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(26, 93, 26, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #1a5d1a, #28a745);
+        }
+
+        .premium-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a5d1a;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #1a5d1a, transparent);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: rgba(232, 245, 233, 0.2);
+            border-radius: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-right: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a5d1a;
+            margin-bottom: 5px;
+        }
+
+        .product-details {
+            color: #4a5568;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-badge {
+            background: linear-gradient(135deg, #1a5d1a, #28a745);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            margin-right: 15px;
+            box-shadow: 0 2px 5px rgba(26, 93, 26, 0.2);
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a5d1a;
+            margin: 0;
+        }
+
+        .product-total-price {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        .address-card {
+            background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);
+            border: 1px solid rgba(26, 93, 26, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .address-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #1a5d1a, #28a745);
+            border-radius: 2px;
+        }
+
+        .address-card:hover {
+            transform: translateX(3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .address-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a5d1a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .address-details {
+            color: #4a5568;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #1a5d1a, #28a745);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(26, 93, 26, 0.2);
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 93, 26, 0.3);
+            color: white;
+        }
+
+        .btn-outline-premium {
+            background: transparent;
+            color: #1a5d1a;
+            border: 1px solid #1a5d1a;
+            border-radius: 8px;
+            padding: 3px 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-premium:hover {
+            background: #1a5d1a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-add-address {
+            background: linear-gradient(135deg, rgba(232, 245, 233, 0.3), rgba(232, 245, 233, 0.5));
+            color: #1a5d1a;
+            border: 1px dashed #1a5d1a;
+            border-radius: 8px;
+            padding: 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-add-address:hover {
+            background: linear-gradient(135deg, #1a5d1a, #28a745);
+            color: white;
+            border-color: transparent;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a5d1a;
+            padding-top: 15px;
+        }
+
+        .summary-total {
+            font-size: 1.3rem;
+            color: #1a5d1a;
+        }
+
+        .coupon-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .form-control-premium {
+            border: 1px solid rgba(26, 93, 26, 0.2);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control-premium:focus {
+            border-color: #1a5d1a;
+            box-shadow: 0 0 0 2px rgba(26, 93, 26, 0.1);
+            background: white;
+        }
+
+        .proceed-btn {
+            background: linear-gradient(135deg, #1a5d1a, #28a745);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(26, 93, 26, 0.2);
+            margin-top: 20px;
+        }
+
+        .proceed-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 93, 26, 0.3);
+            color: white;
+        }
+
+        .form-check-input:checked {
+            background-color: #1a5d1a;
+            border-color: #1a5d1a;
+        }
+
+        /* Delivery Options */
+        .delivery-options {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(232, 245, 233, 0.3);
+            border-radius: 10px;
+        }
+
+        .delivery-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delivery-option:hover {
+            background: rgba(26, 93, 26, 0.1);
+        }
+
+        .delivery-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .delivery-option-label {
+            flex: 1;
+        }
+
+        .delivery-option-price {
+            font-weight: 600;
+            color: #1a5d1a;
+        }
+
+        /* Modal Styles */
+        .modal-premium .modal-content {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal-premium .modal-header {
+            background: linear-gradient(135deg, #1a5d1a, #28a745);
+            color: white;
+            border-bottom: none;
+        }
+
+        .modal-premium .modal-footer {
+            border-top: none;
+            background: #f8f9fa;
+        }
+
+        .modal-premium .btn-close {
+            filter: invert(1);
+        }
+
+        .address-form .form-label {
+            font-weight: 500;
+            color: #1a5d1a;
+        }
+
+        .address-form .form-control {
+            border-radius: 8px;
+            border: 1px solid rgba(26, 93, 26, 0.2);
+        }
+
+        .address-form .form-control:focus {
+            border-color: #1a5d1a;
+            box-shadow: 0 0 0 2px rgba(26, 93, 26, 0.1);
+        }
+    </style>
+    <%- include('../../views/partials/user/header', {title: 'Your Cart' }) %>
+</head>
+
+<body>
+    <div class="checkout-container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="premium-card">
+                    <h4 class="section-title">Your Cart</h4>
+                    <% let subtotal=0; %>
+            <input type="hidden" id="selectedItems" value='<%= JSON.stringify(selectedItems) %>'>
+
+                      
+<% selectedItems.forEach(item => { %>
+    <% const product = products.find(p => p._id.toString() === item.productId.toString()); %>
+    <% if (product) { %>
+        <% const itemTotal = item.price * item.quantity; %>
+        <% subtotal += itemTotal; %>
+        <div class="cart-item">
+            <img class="product-image" src="/Uploads/<%= product.productImage[0] %>">
+            <div class="product-info">
+                <h6 class="product-name"><%= product.productName %></h6>
+                <div class="product-details">
+                    <span>Size: <%= item.size %></span>
+                    <span>Price: ₹<%= item.price.toFixed(2) %></span>
+                </div>
+            </div>
+            <div class="quantity-badge">
+                Qty: <%= item.quantity %>
+            </div>
+            <div>
+                <p class="product-price">₹<%= itemTotal.toFixed(2) %></p>
+                <p class="product-total-price">
+                    <%= item.quantity %> × ₹<%= item.price.toFixed(2) %>
+                </p>
+            </div>
+        </div>
+    <% } %>
+<% }); %>
+                </div>
+
+                <div class="premium-card">
+                    <h4 class="section-title">Delivery Address</h4>
+                    <% address.forEach((element, index)=> { %>
+                        <div class="address-card">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="address"
+                                    id="address_<%= element._id %>" value="<%= element._id %>" <%=index===0 ? 'checked'
+                                    : '' %>>
+                                <label class="address-title" for="address_<%= element._id %>">
+                                    <%= index===0 ? 'Default Address' : element.addressType + ' Address' %>
+                                </label>
+                            </div>
+
+                            <div class="address-details">
+                                <strong>
+                                    <%= element.name %>
+                                </strong><br>
+                                <%= element.city %>, <%= element.state %><br>
+                                        <%= element.street %><br>
+                                            <%= element.pincode %>
+                            </div>
+
+                            <div class="address-details">
+                                Phone: <%= element.phone %><br>
+                                    <% if (element.altPhone) { %>
+                                        Alt. Phone: <%= element.altPhone %>
+                                            <% } %>
+                            </div>
+
+                            <div class="address-actions">
+                                <button class="btn btn-outline-premium btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#editAddressModal"
+                                    onclick="loadAddressForEdit('<%= element._id %>', '<%= element.name %>', '<%= element.phone %>', '<%= element.altPhone %>', '<%= element.street %>', '<%=element.country%>', '<%= element.city %>', '<%= element.state %>', '<%= element.pincode %>', '<%= element.addressType %>', )">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                        <% }) %>
+
+                            <button class="btn btn-add-address" data-bs-toggle="modal"
+                                data-bs-target="#addAddressModal">ADD NEW ADDRESS</button>
+                </div>
+
+
+
+                <div class="premium-card">
+                    <h4 class="section-title">Payment Method</h4>
+                    <div class="delivery-options">
+                        <div class="delivery-option">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="codPayment"
+                                value="cod" checked>
+                            <label class="delivery-option-label" for="codPayment">
+                                <strong>Cash on Delivery (COD)</strong><br>
+                                <small>Pay when you receive your order</small>
+                            </label>
+                        </div>
+                        <div class="delivery-option">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="onlinePayment"
+                                value="online">
+                            <label class="delivery-option-label" for="onlinePayment">
+                                <strong>Online Payment</strong><br>
+                                <small>Pay now with credit/debit card or UPI</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="premium-card">
+                    <h4 class="section-title">Order Summary</h4>
+                    <div class="summary-item">
+                        <span>Subtotal (<%= selectedItems.reduce((total, item)=> total + item.quantity, 0) %>
+                                items)</span>
+                        <span>₹<%= subtotal.toFixed(2) %></span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Savings</span>
+                        <span>-₹0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Coupon Discount</span>
+                        <span>-₹0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Shipping</span>
+                        <span>Free Shipping</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="summary-item">
+                        <h5>Total</h5>
+                        <h5 class="summary-total">₹<%= subtotal.toFixed(2) %>
+                        </h5>
+                    </div>
+
+                    <div class="coupon-section">
+                        <h4 class="section-title">Apply Coupon</h4>
+                        <input type="text" class="form-control form-control-premium mb-2"
+                            placeholder="Enter coupon code" id="couponCode">
+                        <button class="btn btn-premium w-100" onclick="applyCoupon()">APPLY</button>
+                    </div>
+
+                    <button class="btn proceed-btn w-100" onclick="proceedToPayment()">PROCEED TO PAYMENT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Address Modal -->
+    <div class="modal fade modal-premium" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAddressForm" class="address-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                            <div class="invalid-feedback">Please enter your full name</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" pattern="[0-9]{10}" required>
+                            <div class="invalid-feedback">Please enter a valid 10-digit phone number</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="altPhone" class="form-label">Alternate Phone (Optional)</label>
+                            <input type="tel" class="form-control" id="altPhone" pattern="[0-9]{10}">
+                            <div class="invalid-feedback">Please enter a valid 10-digit phone number</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="street" class="form-label">Street Address</label>
+                            <textarea class="form-control" id="street" rows="2" required></textarea>
+                            <div class="invalid-feedback">Please enter your street address</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" required>
+                                <div class="invalid-feedback">Please enter your city</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" id="state" required>
+                                <div class="invalid-feedback">Please enter your state</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="country" class="form-label">country</label>
+                                <input type="text" class="form-control" id="country" required>
+                                <div class="invalid-feedback">Please enter your country</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" pattern="[0-9]{6}" required>
+                            <div class="invalid-feedback">Please enter a valid 6-digit pincode</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addressType" class="form-label">Address Type</label>
+                            <select class="form-select" id="addressType" required>
+                                <option value="" selected disabled>Select address type</option>
+                                <option value="Home">Home</option>
+                                <option value="Work">Work</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="invalid-feedback">Please select an address type</div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="isDefault">
+                            <label class="form-check-label" for="isDefault">
+                                Set as default address
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-premium" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-premium" id="saveAddressBtn">Save Address</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Edit Address Modal -->
+    <div class="modal fade modal-premium" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAddressForm" class="address-form">
+                        <input type="hidden" id="editAddressId">
+                        <div class="mb-3">
+                            <label for="editName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="editPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAltPhone" class="form-label">Alternate Phone (Optional)</label>
+                            <input type="tel" class="form-control" id="editAltPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editStreet" class="form-label">Street Address</label>
+                            <textarea class="form-control" id="editStreet" rows="2" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editCity" class="form-label">City</label>
+                                <input type="text" class="form-control" id="editCity" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editState" class="form-label">State</label>
+                                <input type="text" class="form-control" id="editState" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="editCountry" class="form-label">State</label>
+                                <input type="text" class="form-control" id="editCountry" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPincode" class="form-label">Pincode</label>
+                            <input type="text" class="form-control" id="editPincode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAddressType" class="form-label">Address Type</label>
+                            <select class="form-select" id="editAddressType">
+                                <option value="Home">Home</option>
+                                <option value="Work">Work</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="editIsDefault">
+                            <label class="form-check-label" for="editIsDefault">
+                                Set as default address
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-premium" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-premium" onclick="updateAddress()">Update Address</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Calculate and update order summary
+        function updateOrderSummary() {
+            // In this version, the calculations are done server-side and rendered directly
+            // But we keep this function for potential client-side updates
+            const subtotal = subtotal
+            let discount = 0;
+            let couponDiscount = 0;
+
+            // Check if express delivery is selected
+            const expressDelivery = document.querySelector('input[name="deliveryOption"]:checked').value === 'express';
+            const shippingCost = expressDelivery ? 99 : 0;
+
+            const total = subtotal - discount - couponDiscount + shippingCost;
+
+            document.querySelector('.summary-item:nth-child(1) span:last-child').textContent = `₹${subtotal.toFixed(2)}`;
+            document.querySelector('.summary-item:nth-child(2) span:last-child').textContent = `-₹${discount.toFixed(2)}`;
+            document.querySelector('.summary-item:nth-child(3) span:last-child').textContent = `-₹${couponDiscount.toFixed(2)}`;
+            document.querySelector('.summary-item:nth-child(4) span:last-child').textContent =
+                shippingCost > 0 ? `₹${shippingCost.toFixed(2)}` : 'Free Shipping';
+            document.querySelector('.summary-total').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        // Apply coupon function
+        function applyCoupon() {
+            const couponCode = document.getElementById('couponCode').value;
+            // Here you would typically make an AJAX call to validate the coupon
+            // For demo purposes, we'll just show an alert
+            alert(`Coupon ${couponCode} applied! (This is a demo - no actual discount applied)`);
+            updateOrderSummary();
+        }
+
+       
+        // Load address data into edit modal
+        function loadAddressForEdit(id, name, phone, altPhone, street, editCountry, city, state, pincode, addressType, isDefault) {
+            document.getElementById('editAddressId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editPhone').value = phone;
+            document.getElementById('editAltPhone').value = altPhone || '';
+            document.getElementById('editStreet').value = street;
+            document.getElementById('editCity').value = city;
+            document.getElementById('editState').value = state;
+            document.getElementById('editCountry').value = editCountry
+            document.getElementById('editPincode').value = pincode;
+            document.getElementById('editAddressType').value = addressType;
+            document.getElementById('editIsDefault').checked = isDefault === 'true';
+        }
+
+        // Save new address
+        // Get the save button and form
+        const saveBtn = document.getElementById('saveAddressBtn');
+        const addressForm = document.getElementById('addAddressForm');
+
+        // Add click event listener to the save button
+        saveBtn.addEventListener('click', function () {
+            // Validate all required fields
+            const requiredFields = addressForm.querySelectorAll('[required]');
+            let isValid = true;
+
+            // Reset validation states
+            requiredFields.forEach(field => {
+                field.classList.remove('is-invalid');
+            });
+
+            // Check each required field
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else if (field.id === 'phone' && !/^\d{10}$/.test(field.value)) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else if (field.id === 'pincode' && !/^\d{6}$/.test(field.value)) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else if (field.id === 'addressType' && field.value === '') {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                }
+            });
+
+            // Check alternate phone if provided
+            const altPhone = document.getElementById('altPhone');
+            if (altPhone.value && !/^\d{10}$/.test(altPhone.value)) {
+                altPhone.classList.add('is-invalid');
+                isValid = false;
+            }
+
+            if (isValid) {
+                saveAddress();
+            } else {
+                // Scroll to the first invalid field
+                const firstInvalid = addressForm.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+            }
+        });
+
+        // Add input event listeners to clear validation when user types
+        addressForm.querySelectorAll('input, textarea, select').forEach(field => {
+            field.addEventListener('input', function () {
+                if (this.classList.contains('is-invalid')) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+
+
+        async function saveAddress() {
+            const addressData = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                altPhone: document.getElementById('altPhone').value.trim(),
+                addressType: document.getElementById('addressType').value,
+                country: document.getElementById('country').value,
+                state: document.getElementById('state').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                street: document.getElementById('street').value.trim(),
+                pincode: document.getElementById('pincode').value.trim(),
+            };
+
+            try {
+                const response = await fetch('/addAddress', {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(addressData)
+                });
+
+                const result = await response.json(); // Make sure to await this
+
+                if (response.ok) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: result.message || 'Address added successfully!',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: '#eaffea',
+                        color: '#155724',
+                    });
+
+                    // Proper way to close the modal
+                    // const addAddressModal = bootstrap.Modal.getInstance(document.getElementById('addAddressModal'));
+                    // if (addAddressModal) {
+                    //     addAddressModal.hide();
+                    // } else {
+                    //     // Fallback if instance not found
+                    //     $('#addAddressModal').modal('hide');
+                    // }
+
+                    window.location.reload()
+
+                    // Reset the form
+                    document.getElementById('addAddressForm').reset();
+
+                    // Refresh the page to show the new address
+                    
+
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: result.message || 'Something went wrong...',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: '#ffeaea',
+                        color: '#721c24',
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Network error occurred',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: '#ffeaea',
+                    color: '#721c24',
+                });
+            }
+        }
+
+
+
+   async function updateAddress() {
+    const addAddressId = document.getElementById('editAddressId').value;
+
+    const addressData = {
+        addressType: document.getElementById('editAddressType').value,
+        name: document.getElementById('editName').value,
+        street: document.getElementById('editStreet').value,
+        city: document.getElementById('editCity').value,
+        state: document.getElementById('editState').value,
+        pincode: document.getElementById('editPincode').value,
+        country: document.getElementById('editCountry').value,
+        phone: document.getElementById('editPhone').value,
+        altPhone: document.getElementById('editAltPhone').value
+    };
+
+    try {
+        console.log('Sending request to backend with data:', addressData);
+
+        const response = await fetch(`/editAddress?addressId=${encodeURIComponent(addAddressId)}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(addressData)
+        });
+
+        console.log('Received response, checking status...');
+
+        const result = await response.json(); // May throw error if response is not JSON
+
+        if (response.ok) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: result.message || 'Edited successfully!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editAddressModal'));
+            modal?.hide();
+            window.location.reload();
+
+        } else {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: result.message || 'Failed to update address!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+    } catch (error) {
+        console.error('Fetch failed or response not JSON:', error);
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Something went wrong!!!',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    }
+}
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            updateOrderSummary();
+
+            // Listen for delivery option changes
+            document.querySelectorAll('input[name="deliveryOption"]').forEach(radio => {
+                radio.addEventListener('change', updateOrderSummary);
+            });
+
+            // Listen for payment method changes
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    if (this.value === 'cod') {
+                        alert('Cash on Delivery selected. You will pay when you receive your order.');
+                    } else {
+                        alert('Online Payment selected. You will be redirected to payment gateway.');
+                    }
+                });
+            });
+        });
+
+       
+  async function proceedToPayment() {
+   const selectedItemsRaw = document.getElementById('selectedItems').value;
+const selectedItems = JSON.parse(selectedItemsRaw);
+
+console.log(selectedItems); // Boom! Array restored.
+
+  
+    try {
+      const selectedAddress = document.querySelector('input[name="address"]:checked')?.value;
+      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+      
+
+      if (!selectedAddress || !paymentMethod) {
+        Swal.fire('Missing Info', 'Please select both address and payment method.', 'warning');
+        return;
+      }
+
+      const data = {
+        addressId: selectedAddress,
+        paymentMethod: paymentMethod,
+        selectedItems:selectedItems
+      };
+
+      const response = await fetch('/procedToCheckOut', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+       
+      
+          window.location.href = '/orderSuccess'; 
+        
+      } else {
+        Swal.fire('Oops!', result.message || 'Something went wrong!', 'error');
+      }
+    } catch (err) {
+      console.error('Payment Error:', err);
+      Swal.fire('Server Error', 'Please try again later.', 'error');
+    }
+  }
+
+
+
+   // Proceed to payment function
+        // function proceedToPayment() {
+        //     const selectedAddress = document.querySelector('input[name="address"]:checked').value;
+        //     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        //     const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+
+        //     if (paymentMethod === 'cod') {
+        //         alert(`Proceeding to Cash on Delivery with address ID: ${selectedAddress} and ${deliveryOption} delivery`);
+        //         // window.location.href = '/checkout/confirm?addressId=' + selectedAddress + '&payment=cod'; 
+        //     } else {
+        //         alert(`Proceeding to Online Payment with address ID: ${selectedAddress} and ${deliveryOption} delivery`);
+        //         // window.location.href = '/payment?addressId=' + selectedAddress;
+        //     }
+        // }
+
+
+    </script>
+</body>
+
+</html>

@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userProfileImage: {
+    type:String,
+  },
     email: {
         type: String,
         required: true,
@@ -70,9 +73,6 @@ const userSchema = new mongoose.Schema({
         categery: {
             type: Schema.Types.ObjectId,
             ref: 'Catagery'
-        },
-        brand: {
-            type: String
         },
         searchOn: {
             type: Date,

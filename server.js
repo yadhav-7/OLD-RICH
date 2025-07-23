@@ -9,7 +9,6 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const methodOverride = require('method-override');
 const flash = require('connect-flash')
-const nocache = require('nocache')
 
 
 app.use(methodOverride('_method'))//for patch api
@@ -39,7 +38,7 @@ app.use(express.urlencoded({extended:true}))
 app.set('view engine',"ejs")
 app.set('views',[path.join(__dirname,'views/user'),path.join(__dirname,'views/admin')])
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(nocache())
+
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
