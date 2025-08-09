@@ -99,7 +99,8 @@
             }
 
             async function blockPermission(userId, userName) {
-                const { isConfirmed } = await Swal.fire({
+                try {
+                    const { isConfirmed } = await Swal.fire({
                     title: `Block ${userName}?`,
                     icon: 'warning',
                     showCancelButton: true,
@@ -121,6 +122,9 @@
                         btn.style.backgroundColor = '#28a745'; // Bootstrap success green
                         Swal.fire('Blocked!', '', 'success');
                     }
+                }
+                } catch (error) {
+                    
                 }
             }
 

@@ -14,7 +14,7 @@ const cartSchema = new mongoose.Schema({
       required: true
     },
     size: {
-      type: String, // The missing piece!
+      type: String, 
       required: true
     },
     quantity: {
@@ -30,7 +30,11 @@ const cartSchema = new mongoose.Schema({
       required: true
     },
    
-  }]
+  }],
+  total:{
+    type:Number,
+    required:true
+  }
 });
 
 const Cart = mongoose.model('Cart', cartSchema);

@@ -169,6 +169,7 @@ body {
     border: 1px solid var(--medium-gray);
     border-radius: 8px;
     transition: var(--transition);
+    position: relative;
 }
 
 .order-item:hover {
@@ -274,6 +275,73 @@ body {
 .return-requested { background-color: #ffeaa7; color: #fdcb6e; }
 .return-returned { background-color: #fab1a0; color: #e17055; }
 .return-rejected { background-color: #f8d7da; color: #721c24; }
+
+/* Item Actions */
+.item-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--light-green);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--dark-gray);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #424242;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: var(--error-red);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c62828;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
 
 /* Order Sidebar */
 .order-sidebar {
@@ -441,59 +509,9 @@ body {
     box-shadow: var(--box-shadow);
 }
 
-.btn {
+.btn-lg {
     padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
     font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-}
-
-.btn-primary {
-    background-color: var(--primary-green);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--light-green);
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background-color: var(--dark-gray);
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #424242;
-    transform: translateY(-2px);
-}
-
-.btn-danger {
-    background-color: var(--error-red);
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #c62828;
-    transform: translateY(-2px);
-}
-
-.btn-outline {
-    background-color: transparent;
-    color: var(--primary-green);
-    border: 2px solid var(--primary-green);
-}
-
-.btn-outline:hover {
-    background-color: var(--primary-green);
-    color: white;
 }
 
 /* Responsive Design */
@@ -559,7 +577,7 @@ body {
         gap: 10px;
     }
     
-    .btn {
+    .btn-lg {
         width: 100%;
         justify-content: center;
     }
@@ -579,6 +597,15 @@ body {
     .payment-details,
     .delivery-address {
         padding: 15px;
+    }
+    
+    .item-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-sm {
+        width: 100%;
     }
 }
 
@@ -618,6 +645,30 @@ body {
         border: 1px solid #ddd;
     }
 }
+
+/* Item Status Indicator */
+.item-status-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.status-indicator {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Disabled buttons */
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -641,7 +692,12 @@ body {
                     </span>
                 </div>
             </div>
-            
+            <div class="order-header-right">
+                <span class="order-status status-<%= order.status.toLowerCase().replace(' ', '-') %>">
+                    <%= order.status %>
+                </span>
+                
+            </div>
         </div>
 
         <div class="order-container">
@@ -654,7 +710,20 @@ body {
                 
                 <div class="order-items">
                     <% order.orderedItems.forEach(function(item, index) { %>
+                       
                         <div class="order-item">
+                            <!-- Status indicator -->
+                            <div class="item-status-indicator">
+                                <span id="itemStaus<%= index %>" class="status-indicator status-<%= item.status.toLowerCase().replace(' ', '-') %>">
+                                    <%= item.status %>
+                                </span>
+                                <% if (item.returnStatus) { %>
+                                    <span class="status-indicator return-<%= item.returnStatus.toLowerCase() %>">
+                                        <%= item.returnStatus %>
+                                    </span>
+                                <% } %>
+                            </div>
+                            
                             <div class="item-image">
                                 <% if (item.product && item.product.productImage && item.product.productImage[0]) { %>
                                     <img src="/Uploads/<%= item.product.productImage[0] %>" 
@@ -685,18 +754,57 @@ body {
                                     <span class="item-quantity">Qty: <%= item.quantity %></span>
                                     <span class="item-total">₹<%= (item.price * item.quantity).toFixed(2) %></span>
                                 </div>
+
+                                <!-- Item Actions -->
+                                <div class="item-actions">
+                                    <% if(item.status !== 'Delivered' && item.status !== 'cancelled'&&item.status!=='returnRequested' &&item.status!=='returned'&&item.status!=='reutrnRejected' ) { %>
+                                        <button type="button" 
+                                        id="cancelItem<%= index %>"
+                                                class="btn btn-danger btn-sm" 
+                                                onclick="cancelItem('<%= order.orderId%>' ,'<%= item._id %>','<%= index %>')">
+                                            <i class="fas fa-times"></i> Cancel Item
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.status === 'Delivered' ) { %>
+                                        <button type="button" 
+                                                class="btn btn-outline btn-sm" 
+                                                onclick="returnItem( '<%= item._id %>','<%= order.orderId %>')">
+                                            <i class="fas fa-undo"></i> Return Item
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.status === 'cancelled') { %>
+                                        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
+                                            <i class="fas fa-ban"></i> Cancelled
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.returnStatus === 'Requested') { %>
+                                        <button type="button" class="btn btn-outline btn-sm btn-disabled" disabled>
+                                            <i class="fas fa-clock"></i> Return Requested
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.returnStatus === 'Approved') { %>
+                                        <button type="button" class="btn btn-outline btn-sm btn-disabled" disabled>
+                                            <i class="fas fa-check-circle"></i> Return Approved
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.returnStatus === 'Rejected') { %>
+                                        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
+                                            <i class="fas fa-times-circle"></i> Return Rejected
+                                        </button>
+                                    <% } %>
+                                    
+                                    <% if(item.returnStatus === 'Completed') { %>
+                                        <button type="button" class="btn btn-primary btn-sm btn-disabled" disabled>
+                                            <i class="fas fa-check-double"></i> Return Completed
+                                        </button>
+                                    <% } %>
+                                </div>
                             </div>
-                            
-                            <!-- <div class="item-status">
-                                <span class="status-badge status-<%#= item.status.toLowerCase().replace(' ', '-') %>">
-                                    <%#= item.status %>
-                                </span>
-                                <%# if (item.returnStatus) { %>
-                                    <span class="return-status return-<%#= item.returnStatus.toLowerCase() %>">
-                                        Return: <%#= item.returnStatus %>
-                                    </span>
-                                <%# } %>
-                            </div> -->
                         </div>
                     <% }); %>
                 </div>
@@ -710,9 +818,9 @@ body {
                         <i class="fas fa-calculator"></i> Order Summary
                     </h3>
                     
-                    <div class="summary-row">
+                    <div id="subtotal" class="summary-row">
                         <span>Subtotal</span>
-                        <span>₹<%= order.totalPrice.toFixed(2) %></span>
+                        <span id="subTotalValue">₹<%= order.totalPrice.toFixed(2) %></span>
                     </div>
                     
                     <% if (order.discount > 0) { %>
@@ -734,9 +842,9 @@ body {
                         <span>Free</span>
                     </div>
                     
-                    <div class="summary-row total-row">
+                    <div id="finalAmount" class="summary-row total-row">
                         <span>Total Amount</span>
-                        <span>₹<%= order.finalAmount.toFixed(2) %></span>
+                        <span id="finalAmountValue">₹<%= order.finalAmount.toFixed(2) %></span>
                     </div>
                 </div>
 
@@ -825,161 +933,166 @@ body {
 
         <!-- Action Buttons -->
         <div class="order-actions">
-            <a href="/shop" class="btn btn-secondary">
+            <a href="/shop" class="btn btn-secondary btn-lg">
                 <i class="fas fa-arrow-left"></i> Back to Orders
             </a>
             
-            <% if (order.status === 'Delivered' && order.staus !== 'return Req') { %>
-                <button class="btn btn-outline" onclick="initiateReturn('<%= order.orderId %>')">
-                    <i class="fas fa-undo"></i> Return Order
-                </button>
-            <% } %>
-            
-            <% if (order.status !== 'Delivered' && order.status !== 'cancelled' && order.status!=='return Req') { %>
-                <button class="btn btn-danger" onclick="cancelOrder('<%= order.orderId %>')">
-                    <i class="fas fa-times"></i> Cancel Order
-                </button>
-            <% } %>
-            
-            <button class="btn btn-primary" onclick="downloadInvoice()">
+            <button class="btn btn-primary btn-lg" onclick="downloadInvoice()">
                 <i class="fas fa-download"></i> Download Invoice
             </button>
         </div>
     </div>
 
     <script>
-        // Cancel Order Function
-       async function cancelOrder(orderId) {
-           const {isConfirmed} = await Swal.fire({
-                title: 'Cancel Order?',
-                text: "Are you sure you want to cancel this order?",
+        // Cancel Individual Item Function
+        const subtotal = document.getElementById('subTotalValue')
+        const finalAmount = document.getElementById('finalAmountValue')
+
+        async function cancelItem(orderId, itemId,index) {
+            const cancelBtn = document.getElementById(`cancelItem${index}`)
+            const stausBtn = document.getElementById(`itemStaus${index}`)
+            const { isConfirmed } = await Swal.fire({
+                title: 'Cancel Item?',
+                text: "Are you sure you want to cancel this item? This action cannot be undone.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Yes, cancel it!',
-                cancelButtonText: 'Keep order'
-            })
+                cancelButtonText: 'Keep item'
+            });
 
-            if(isConfirmed){
-                const response =await fetch('/cancellOrder',{
-                    method:'post',
-                    headers:{
-                        'Content-type':'application/json'
-                    },
-                    body:JSON.stringify({
-                        orderId
-                    })
-                })
-
-                const result = await response.json()
-
-
-                if(response.ok){
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: result.message||'Order cancelled',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-
-                        window.location.reload()
-                }else{
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title:result.message|| 'Order cancell Failed',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                }
-
-
-            }
-        }
-
-           async function initiateReturn(orderId) {
+            if (isConfirmed) {
                 try {
-                    const { value: reason } = await Swal.fire({
-                        title: 'Return Reason',
-                        input: 'text',
-                        inputLabel: 'Please provide a reason for returning the order:',
-                        inputPlaceholder: 'e.g., Wrong item received',
-                        showCancelButton: true,
-                        confirmButtonText: 'Submit',
-                        cancelButtonText: 'Cancel',
+                    const response = await fetch('/cancelSingleItem?_method=PATCH', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                          orderId,
+                            itemId
+                        })
                     });
 
-                    if (!reason) {
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        subtotal.textContent=`₹${result.finalAmount.toFixed(2)}`
+                        finalAmount.textContent=`₹${result.total.toFixed(2)}`
+                        cancelBtn.outerHTML = `
+        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
+            <i class="fas fa-ban"></i> Cancelled
+        </button>
+    `;
+
+    stausBtn.textContent='cancelled'
+stausBtn.className='status-indicator status-cancelled'
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
-                            icon: 'warning',
-                            title: 'You must enter a reason!',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
-                        });
-                        return;
-                    }
-
-
-
-                    const response = await fetch('/returnReq', {
-                        method: 'post',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            orderId,
-                            reason
-                        })
-                    })
-
-                    const data = await response.json()
-
-                    if (response.ok) {
-                        await Swal.fire({
-                            toast: true,
-                            position: 'top-end',
                             icon: 'success',
-                            title: data.message || 'Return request submitted!',
+                            title: result.message || 'Item cancelled successfully',
                             showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
+                            timer: 2000
                         });
-
-                        window.location.reload()
 
                     } else {
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
                             icon: 'error',
-                            title: data.message || 'Return request failed!',
+                            title: result.message || 'Failed to cancel item',
                             showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
+                            timer: 2000
                         });
-
                     }
                 } catch (error) {
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
                         icon: 'error',
-                        title: data.message || 'Return request failed!',
+                        title: 'An error occurred while cancelling the item',
                         showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
+                        timer: 2000
                     });
-
                 }
             }
+        }
 
+        // Return Individual Item Function
+        async function returnItem(itemId,orderId) {
+            try {
+                const { value: reason } = await Swal.fire({
+                    title: 'Return Item Reason',
+                    input: 'textarea',
+                    inputLabel: 'Please provide a reason for returning this item:',
+                    inputPlaceholder: 'e.g., Wrong size, Damaged product, etc.',
+                    inputAttributes: {
+                        'aria-label': 'Type your reason here'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit Return',
+                    cancelButtonText: 'Cancel',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'You need to provide a reason for the return!';
+                        }
+                    }
+                });
+
+                if (reason) {
+                    const response = await fetch('/returnReq?_method=PATCH', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            itemId,
+                            orderId,
+                            reason
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: result.message || 'Return request submitted successfully',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+
+                        // Reload after a short delay to show the success message
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: result.message || 'Failed to submit return request',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            } catch (error) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'An error occurred while processing your return request',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        }
 
         // Download Invoice Function
         function downloadInvoice() {

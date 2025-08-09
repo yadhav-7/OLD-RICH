@@ -7,6 +7,8 @@ const addressController = require('../controllers/user/addressCondroller')
 const cartCondroller = require('../controllers/user/cartCondroller')
 const checkOutPageController = require('../controllers/user/checkOutPageController')
 const orderController = require('../controllers/user/orderDetailsPage')
+  
+const {upload,profileUpload} = require('../middlewares/multer')
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
 const passport = require('passport');
 
@@ -67,16 +69,18 @@ router.post('/reset-password',profileController.postNewPassword)
 router.get('/userProfile',userAuth,profileController.userProfile)
 router.get('/passCheckforEmailchange',userAuth,profileController.getPassCheckforEmailchange)
 router.post('/passCheckforEmailchange',userAuth,profileController.passCheckforEmailchange)
+router.get('/newEmail',userAuth,profileController.getNewMail)
+router.post('/update-email',userAuth,profileController.emailUpdate)
+router.get('/changeEmailOtp',userAuth,profileController.changeEmailOtp)
+router.patch('/verifychangeEmailOtp',userAuth,profileController.verifychangeEmailOtp)
 
-router.post('/change-Email',userAuth,profileController.changeEmailValid)
 
-router.post('/verifychangeEmailOtp',userAuth,profileController.verifychangeEmailOtp)
 router.get('/resendOTPwhileEmailchange',userAuth,profileController.resendOTPwhileEmailchange)
-router.patch('/update-email',userAuth,profileController.emailUpdate)
+
 
 router.get('/changePassword',userAuth,profileController.changePassword)
 router.patch('/updatePassword',userAuth,profileController.updatePassword)
-router.patch('/editProfile',userAuth,profileController.editProfile)
+router.patch('/editProfile', userAuth, profileUpload.single('profilePhoto'), profileController.editProfile);
 
 
 
@@ -117,8 +121,10 @@ router.get('/orderDetailPage',userAuth,orderController.orderDetailPage)
 
 //ORDER CANCELL 
 router.post('/cancellOrder',userAuth,orderController.cencellOrder)
+//SINGLE ITEM CANCELL
+router.patch('/cancelSingleItem',userAuth,orderController.cancelSingleItem)
 
 //RETURN REQ
-router.post('/returnReq',userAuth,orderController.returnReq)
+router.patch('/returnReq',userAuth,orderController.returnReq)
 
 module.exports=router 

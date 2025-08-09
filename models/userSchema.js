@@ -39,10 +39,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart: [{
+    cart: {
         type: Schema.Types.ObjectId,
-        ref: 'cart'
-    }],
+        ref: 'Cart',
+    },
     wallet: [{
         type: Number,
         default: 0,

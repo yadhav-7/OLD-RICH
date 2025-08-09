@@ -403,15 +403,15 @@
             <div class="col-lg-8">
                 <div class="premium-card">
                     <h4 class="section-title">Your Cart</h4>
-                    <% let subtotal=0; %>
+               
             <input type="hidden" id="selectedItems" value='<%= JSON.stringify(selectedItems) %>'>
 
                       
 <% selectedItems.forEach(item => { %>
     <% const product = products.find(p => p._id.toString() === item.productId.toString()); %>
     <% if (product) { %>
-        <% const itemTotal = item.price * item.quantity; %>
-        <% subtotal += itemTotal; %>
+       
+
         <div class="cart-item">
             <img class="product-image" src="/Uploads/<%= product.productImage[0] %>">
             <div class="product-info">
@@ -425,7 +425,7 @@
                 Qty: <%= item.quantity %>
             </div>
             <div>
-                <p class="product-price">₹<%= itemTotal.toFixed(2) %></p>
+                <p class="product-price">₹<%= item.totalPrice?.toFixed(2) %></p>
                 <p class="product-total-price">
                     <%= item.quantity %> × ₹<%= item.price.toFixed(2) %>
                 </p>
@@ -507,9 +507,8 @@
                 <div class="premium-card">
                     <h4 class="section-title">Order Summary</h4>
                     <div class="summary-item">
-                        <span>Subtotal (<%= selectedItems.reduce((total, item)=> total + item.quantity, 0) %>
-                                items)</span>
-                        <span>₹<%= subtotal.toFixed(2) %></span>
+                        <span>Subtotal (<%= selectedItems?.length%> items)</span>
+                        <span>₹<%= cartTotal.toFixed(2) %></span>
                     </div>
                     <div class="summary-item">
                         <span>Savings</span>
@@ -526,7 +525,7 @@
                     <hr class="my-2">
                     <div class="summary-item">
                         <h5>Total</h5>
-                        <h5 class="summary-total">₹<%= subtotal.toFixed(2) %>
+                        <h5 class="summary-total">₹<%= cartTotal?.toFixed(2) %>
                         </h5>
                     </div>
 
@@ -995,8 +994,13 @@ console.log(selectedItems); // Boom! Array restored.
       const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
       
 
-      if (!selectedAddress || !paymentMethod) {
-        Swal.fire('Missing Info', 'Please select both address and payment method.', 'warning');
+      if (!selectedAddress) {
+        Swal.fire('Missing Info', 'Please select  address ','warning');
+        return;
+      }
+
+      if (!paymentMethod) {
+        Swal.fire('Missing Info', 'Please select   payment method.', 'warning');
         return;
       }
 
@@ -1029,24 +1033,6 @@ console.log(selectedItems); // Boom! Array restored.
       Swal.fire('Server Error', 'Please try again later.', 'error');
     }
   }
-
-
-
-   // Proceed to payment function
-        // function proceedToPayment() {
-        //     const selectedAddress = document.querySelector('input[name="address"]:checked').value;
-        //     const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-        //     const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
-
-        //     if (paymentMethod === 'cod') {
-        //         alert(`Proceeding to Cash on Delivery with address ID: ${selectedAddress} and ${deliveryOption} delivery`);
-        //         // window.location.href = '/checkout/confirm?addressId=' + selectedAddress + '&payment=cod'; 
-        //     } else {
-        //         alert(`Proceeding to Online Payment with address ID: ${selectedAddress} and ${deliveryOption} delivery`);
-        //         // window.location.href = '/payment?addressId=' + selectedAddress;
-        //     }
-        // }
-
 
     </script>
 </body>

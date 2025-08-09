@@ -20,8 +20,9 @@
         }
 
         .main-container {
-            width: 1250px;
-            padding-left: 270px;
+               padding-top: 77px;
+    width: 1277px;
+    padding-left: 242px;
         }
 
         .card {
@@ -121,15 +122,7 @@
                 <h4 class="mb-0">Order Management</h4>
                 <div class="d-flex">
                     <div class="me-3">
-                        <select class="form-select" id="statusFilter">
-                            <option value="all">All Status</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                          
-                            <option value="return Req">Return Requested</option>
-                        </select>
+                        
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search search-icon"></i>
@@ -139,6 +132,9 @@
             </div>
 
             <!-- Orders Table -->
+           
+            
+
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Orders</h5>
@@ -163,7 +159,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="ordersTableBody">
+                            <tbody id="ordersTableBody" class="tableBody">
                                 <% order.forEach(element=> { %>
                                     <tr class="order-row">
                                         <td>
@@ -181,7 +177,7 @@
                                         <td>
                                             <%= element.totalPrice %>
                                         </td>
-                                        <td><span class="badge badge-shipped">
+                                        <td><span id='orderStatus<%=element.orderId%>' class="badge badge-shipped">
                                                 <%= element.status %>
                                             </span></td>
                                         <td><span class="badge bg-success">
@@ -208,15 +204,8 @@
 
                     <!-- Pagination -->
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        
-                        <nav>
-                            <ul class="pagination mb-0" id="pagination">
-                                <!-- Static pagination for simplicity -->
-                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                            </ul>
-                        </nav>
+
+                       
                     </div>
                 </div>
             </div>
@@ -235,12 +224,14 @@
                         <input type="hidden" id="orderId">
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label"><%=  %></label>
+                                <label class="form-label">
+                                    <%= %>
+                                </label>
                                 <input type="text" class="form-control" id="currentStatus" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">New Status</label>
-                                <select class="form-select" id="newStatus" >
+                                <select class="form-select" id="newStatus">
                                     <option value="">Select status</option>
                                     <option>Pending</option>
                                     <option>Processing</option>
@@ -249,8 +240,8 @@
                                     <option>Cancelled</option>
                                 </select>
                             </div>
-                           
-                           
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -329,85 +320,132 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- JavaScript for Modals Only -->
-    <script>
-        let orderId
-        function openStatusModal(ordId, currentStatus) {
-            orderId = ordId
-            document.getElementById('orderId').value = ordId;
-            document.getElementById('currentStatus').value = currentStatus;
-            document.getElementById('newStatus').value = '';
-           
-            $('#statusUpdateModal').modal('show');
-        }
+   <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const search = document.getElementById('searchInput');
+    const ordersTableBody = document.getElementById('ordersTableBody');
+    let orderStatusEl;
+    let orderId;
 
-        function openReturnModal(ordId, orderNumber, product, reason) {
-            document.getElementById('returnOrderId').value = ordId;
-            document.getElementById('returnOrderNumber').value = orderNumber;
-            document.getElementById('returnProduct').value = product;
-            document.getElementById('returnReason').value = reason;
-            document.getElementById('returnComments').value = reason;
-            $('#returnRequestModal').modal('show');
-        }
+   search.addEventListener('keyup', async function () {
+    const searchValue = search.value.trim();
 
-   document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
-    e.preventDefault();
-
-
- 
-    const newStatus = document.getElementById('newStatus').value;
-
-    
     try {
-        const response = await fetch('/admin/changeStatus', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                orderId,
-                newStatus
-            })
+        const response = await fetch(`/admin/searchOrders?searchvalue=${encodeURIComponent(searchValue)}`);
+        if (!response.ok) {
+            console.error("Search failed");
+            return;
+        }
+
+        const orders = await response.json();
+        ordersTableBody.innerHTML = ''; // Clear the table body first
+
+        if (orders.length === 0) {
+            ordersTableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                        No orders found.
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        if(!searchValue){
+            window.location.reload()
+        }
+
+        orders.forEach(element => {
+            ordersTableBody.innerHTML += `
+                <tr class="order-row">
+                    <td>${element.orderId}</td>
+                    <td>${new Date(element.createdOn).toLocaleDateString()}</td>
+                    <td>${element.userId?.username || ''}</td>
+                    <td>${element?.orderedItems?.length || 0}</td>
+                    <td>${element.totalPrice}</td>
+                    <td>
+                        <span id="orderStatus${element.orderId}" class="badge badge-shipped">
+                            ${element.status}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-success">
+                            ${element.paymentStatus}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="openStatusModal('${element.orderId}','${element.status}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <a href="orderDetails?orderId=${element.orderId}" 
+                               class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `;
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: data.message||'Status updated successfully!',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-    });
-
-    // Wait for 2s before reload to let user see toast
-    setTimeout(() => {
-        location.reload();
-    }, 2000);
-        } else {
-            Swal.fire({
-    toast: true,
-    position: 'top-end',
-    icon: 'error',
-    title:data.message|| 'Failed to update status!',
-    showConfirmButton: false,
-    timer: 2000,
-    timerProgressBar: true,
+    } catch (error) {
+        console.error('Error in searchOrders', error);
+    }
 });
 
+// STATUS BADGE CLASS
+    function getStatusBadgeClass(status) {
+        switch (status.toLowerCase()) {
+            case 'pending': return 'badge-pending';
+            case 'processing': return 'badge-processing';
+            case 'shipped': return 'badge-shipped';
+            case 'delivered': return 'badge-delivered';
+            case 'cancelled': return 'badge-cancelled';
+            case 'return': return 'badge-return';
+            default: return 'badge-secondary';
         }
-    } catch (error) {
-        console.error('🌩️ Error during status update:', error);
-        alert('🚨 Something went wrong.');
     }
 
-    $('#statusUpdateModal').modal('hide');
+    // STATUS UPDATE MODAL
+    window.openStatusModal = function (ordId, currentStatus) {
+        orderStatusEl = document.getElementById(`orderStatus${ordId}`);
+        orderId = ordId;
+        document.getElementById('orderId').value = ordId;
+        document.getElementById('currentStatus').value = currentStatus;
+        document.getElementById('newStatus').value = '';
+        $('#statusUpdateModal').modal('show');
+    };
+
+    // SUBMIT STATUS CHANGE
+    document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const newStatus = document.getElementById('newStatus').value;
+        if (!newStatus) return;
+
+        try {
+            const response = await fetch('/admin/changeStatus', {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ orderId, newStatus })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                orderStatusEl.innerHTML = data.updatedStatus;
+                orderStatusEl.className = `badge ${getStatusBadgeClass(data.updatedStatus)}`;
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message || 'Status updated successfully!', showConfirmButton: false, timer: 2000 });
+            } else {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: data.message || 'Failed to update status!', showConfirmButton: false, timer: 2000 });
+            }
+        } catch (error) {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error updating status!', showConfirmButton: false, timer: 2000 });
+        }
+        $('#statusUpdateModal').modal('hide');
+    });
 });
 
- 
- </script>
+</script>
+
+
 </body>
 
 </html>

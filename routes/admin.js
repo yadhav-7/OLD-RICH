@@ -6,8 +6,7 @@ const catagoryController = require('../controllers/admin/catagoryController')
 let prodouctContoller = require('../controllers/admin/productController')
 const orderController = require('../controllers/admin/orderController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
-const upload = require('../middlewares/multer')
-
+const {upload,profileUpload} = require('../middlewares/multer')
 //clear flash
 
 
@@ -54,8 +53,12 @@ router.post('/deleteImage',adminAuth,prodouctContoller.deleteSingleImage)
 //ORDER MANAGEMANT
 router.get('/orderManagement',adminAuth,orderController.getOrderPage)
 
+router.get('/searchOrders',adminAuth,orderController.searchOrders)
+
 router.post('/changeStatus',adminAuth,orderController.changeStatus)
 
 router.get('/orderDetails',adminAuth,orderController.ordereDetails)
+
+router.patch('/handleReturnReq',adminAuth,orderController.handleReturnReq)
 
 module.exports=router

@@ -394,7 +394,7 @@
             margin-top: 20px;
             font-size: 14px;
             color: var(--dark-gray);
-   
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -587,25 +587,24 @@
                 <h1><i class="fas fa-shopping-cart"></i> Your Shopping Cart
                     <% if(userCart && userCart.length> 0) { %>
                         <span class="item-count">
-                            <%= userCart.filter(item => { 
+                            <%= userCart.filter(item=> {
                                 const product = item.productId;
                                 const category = product?.category;
                                 let variantStock = 0;
-                                
+
                                 if (product?.variants?.length) {
-                                    const matchedVariant = product.variants.find(v => 
-                                        v.size === item.size && v.color === item.color
-                                    );
-                                    if (matchedVariant) {
-                                        variantStock = matchedVariant.quantity;
-                                    }
+                                const matchedVariant = product.variants.find(v =>
+                                v.size === item.size && v.color === item.color
+                                );
+                                if (matchedVariant) {
+                                variantStock = matchedVariant.quantity;
                                 }
-                                
+                                }
+
                                 const isBlocked = product?.isBlocked;
                                 const categoryListed = category?.isListed;
-                                
-                                return !(variantStock <= 0 || isBlocked || categoryListed === false);
-                            }).length %>
+
+                                return !(variantStock <= 0 || isBlocked || categoryListed===false); }).length %>
                         </span>
                         <% } %>
                 </h1>
@@ -623,261 +622,286 @@
                     </div>
                 </div>
                 <% } else { %>
-                    <% 
-                    // Calculate totals only for available items
-                    let subtotal = 0;
-                    let availableItemsCount = 0;
-                    
-                    userCart.forEach(item => {
+                    <% let subtotal=0; let availableItemsCount=0; userCart.forEach(item=> {
                         const product = item.productId;
                         const category = product?.category;
                         let variantStock = 0;
-                        
+
                         if (product?.variants?.length) {
-                            const matchedVariant = product.variants.find(v => 
-                                v.size === item.size && v.color === item.color
-                            );
-                            if (matchedVariant) {
-                                variantStock = matchedVariant.quantity;
-                            }
+                        const matchedVariant = product.variants.find(v =>
+                        v.size === item.size && v.color === item.color
+                        );
+                        if (matchedVariant) {
+                        variantStock = matchedVariant.quantity;
                         }
-                        
+                        }
+
                         const isBlocked = product?.isBlocked;
                         const categoryListed = category?.isListed;
-                        
-                        const isAvailable = !(variantStock <= 0 || isBlocked || categoryListed === false);
-                        
-                        if (isAvailable) {
-                            subtotal += item.quantity * item.price;
-                            availableItemsCount++;
-                        }
-                    });
-                    
-                    const tax = 0;
-                    const total = subtotal + tax;
-                    %>
 
-                    <div class="cart-container">
-                        <div class="cart-items">
-                            <table class="cart-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40%;">Product</th>
-                                        <th style="width: 15%;">Price</th>
-                                        <th style="width: 20%;">Quantity</th>
-                                        <th style="width: 15%;">Total</th>
-                                        <th style="width: 10%;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% userCart.forEach(function(item, index) { 
-                                        const product = item.productId;
-                                        const category = product?.category;
-                                        let variantStock = 0;
-                                        
-                                        if (product?.variants?.length) {
-                                            const matchedVariant = product.variants.find(v => 
-                                                v.size === item.size && v.color === item.color
-                                            );
-                                            if (matchedVariant) {
-                                                variantStock = matchedVariant.quantity;
-                                            }
-                                        }
-                                        
-                                        const isBlocked = product?.isBlocked;
-                                        const categoryListed = category?.isListed;
-                                        
-                                        const isAvailable = !(variantStock <= 0 || isBlocked || categoryListed === false);
-                                        const itemTotal = item.quantity * item.price;
-                                        %>
-                                        
-                                        <% if (isAvailable) { %>
-                                            <!-- Available Product Row -->
+                        const isAvailable = !(variantStock <= 0 || isBlocked || categoryListed===false); if
+                            (isAvailable) { subtotal +=item.quantity * item.price; availableItemsCount++; } }); const
+                            tax=0; const total=subtotal + tax; %>
+
+                            <div class="cart-container">
+                                <div class="cart-items">
+                                    <table class="cart-table">
+                                        <thead>
                                             <tr>
-                                                <td data-label="Product">
-                                                    <div class="product-cell">
-                                                        <% if (product?.productImage?.[0]) { %>
-                                                            <img src="/Uploads/<%= product.productImage[0] %>"
-                                                                class="product-image"
-                                                                alt="<%= product.productName || 'Product image' %>"
-                                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                            <div class="product-image-placeholder"
-                                                                style="display: none;">
-                                                                <i class="fas fa-image"></i>
-                                                            </div>
-                                                        <% } else { %>
-                                                            <div class="product-image-placeholder">
-                                                                <i class="fas fa-image"></i>
-                                                            </div>
-                                                        <% } %>
-
-                                                        <div class="product-info">
-                                                            <div class="product-name">
-                                                                <a href="/product/<%= product._id %>">
-                                                                    <%= product.productName || 'Product not found' %>
-                                                                </a>
-                                                            </div>
-
-                                                            <div class="product-variant">
-                                                                <% if(item.size) { %> 
-                                                                    <span>Size: <%= item.size %></span>
-                                                                <% } %>
-                                                                <% if(item.color) { %>
-                                                                    <span>Color: <%= item.color %></span>
-                                                                <% } %>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td data-label="Price" class="price-cell">
-                                                    ₹<%= item.price.toFixed(2) %>
-                                                </td>
-
-                                                <td data-label="Quantity">
-                                                    <div class="quantity-control">
-                                                        <button class="quantity-btn decrease"
-                                                            data-id="<%= item._id %>" data-index="<%= index %>">
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-                                                        <input type="number" class="quantity-input"
-                                                            value="<%= item.quantity %>" min="1"
-                                                            data-id="<%= item._id %>" data-index="<%= index %>"
-                                                            readonly>
-                                                        <button class="quantity-btn increase"
-                                                            data-id="<%= item._id %>" data-index="<%= index %>"
-                                                            >
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-
-                                                <td data-label="Total" class="price-cell" id="total-<%= index %>">
-                                                    ₹<%= itemTotal.toFixed(2) %>
-                                                </td>
-
-                                                <td data-label="Action">
-                                                    <button type="submit" class="remove-btn"
-                                                        id="remove-product-btn"
-                                                        data-product-id="<%= item._id %>">
-                                                        <i class="fas fa-trash-alt btn-icon"></i> Remove
-                                                    </button>
-                                                </td>
+                                                <th style="width: 40%;">Product</th>
+                                                <th style="width: 15%;">Price</th>
+                                                <th style="width: 20%;">Quantity</th>
+                                                <th style="width: 15%;">Total</th>
+                                                <th style="width: 10%;">Action</th>
                                             </tr>
-                                        <% } else { %>
-                                            //  Unavailable Product Row 
-                                            <tr class="unavailable-row">
-                                                <td colspan="5">
-                                                    <div class="product-cell">
-                                                        <% if (product?.productImage?.[0]) { %>
-                                                            <img src="/Uploads/<%= product.productImage[0] %>"
-                                                                class="product-image"
-                                                                style="width: 60px; height: 60px;"
-                                                                alt="<%= product.productName || 'Product image' %>">
+                                        </thead>
+                                        <tbody>
+                                            <% userCart.forEach(function(item, index) {
+                                                 const product=item.productId;
+                                                const category=product?.category; let variantStock=0; if
+                                                (product?.variants?.length) { const
+                                                matchedVariant=product.variants.find(v=>
+                                                v.size === item.size && v.color === item.color
+                                                );
+                                                if (matchedVariant) {
+                                                variantStock = matchedVariant.quantity;
+                                                }
+                                                }
+
+                                                const isBlocked = product?.isBlocked;
+                                                const categoryListed = category?.isListed;
+
+                                                const isAvailable = !(variantStock <= 0 || isBlocked ||
+                                                    categoryListed===false); const itemTotal=item.quantity * item.price;
+                                                    %>
+
+                                                    <% if (isAvailable) { %>
+                                                        <!-- Available Product Row -->
+                                                        <tr>
+                                                            <td data-label="Product">
+                                                                <div class="product-cell">
+                                                                    <% if (product?.productImage?.[0]) { %>
+                                                                        <img src="/Uploads/<%= product.productImage[0] %>"
+                                                                            class="product-image"
+                                                                            alt="<%= product.productName || 'Product image' %>"
+                                                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                                        <div class="product-image-placeholder"
+                                                                            style="display: none;">
+                                                                            <i class="fas fa-image"></i>
+                                                                        </div>
+                                                                        <% } else { %>
+                                                                            <div class="product-image-placeholder">
+                                                                                <i class="fas fa-image"></i>
+                                                                            </div>
+                                                                            <% } %>
+
+                                                                                <div class="product-info">
+                                                                                    <div class="product-name">
+                                                                                        <a
+                                                                                            href="/product/<%= product._id %>">
+                                                                                            <%= product.productName
+                                                                                                || 'Product not found'
+                                                                                                %>
+                                                                                        </a>
+                                                                                    </div>
+
+                                                                                    <div class="product-variant">
+                                                                                        <% if(item.size) { %>
+                                                                                            <span>Size: <%= item.size %>
+                                                                                            </span>
+                                                                                            <% } %>
+                                                                                                <% if(item.color) { %>
+                                                                                                    <span>Color: <%=
+                                                                                                            item.color
+                                                                                                            %></span>
+                                                                                                    <% } %>
+                                                                                    </div>
+                                                                                </div>
+                                                                </div>
+                                                            </td>
+
+                                                            <td data-label="Price" class="price-cell">
+                                                                ₹<%= item.price.toFixed(2) %>
+                                                            </td>
+
+                                                            <td data-label="Quantity">
+                                                                <div class="quantity-control">
+                                                                    <button class="quantity-btn decrease"
+                                                                        data-id="<%= item._id %>"
+                                                                        data-index="<%= index %>">
+                                                                        <i class="fas fa-minus"></i>
+                                                                    </button>
+                                                                    <input type="number" class="quantity-input"
+                                                                        id="itemSelectedQuantity<%= index %>"
+                                                                        value="<%= item.quantity %>" min="1"
+                                                                        data-id="<%= item._id %>"
+                                                                        data-index="<%= index %>" readonly>
+                                                                    <button class="quantity-btn increase"
+                                                                        data-id="<%= item._id %>"
+                                                                        data-index="<%= index %>">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+
+                                                            <td data-label="Total" class="price-cell"
+                                                                id="total-<%= index %>">
+                                                                ₹<%= item.totalPrice?.toFixed(2) %>
+                                                            </td>
+
+                                                            <td data-label="Action">
+                                                                <button type="submit" class="remove-btn"
+                                                                    id="remove-product-btn"
+                                                                    data-product-id="<%= item._id %>">
+                                                                    <i class="fas fa-trash-alt btn-icon"></i> Remove
+                                                                </button>
+                                                            </td>
+                                                        </tr>
                                                         <% } else { %>
-                                                            <div class="product-image-placeholder">
-                                                                <i class="fas fa-image"></i>
-                                                            </div>
-                                                        <% } %>
+                                                            
+                                                            <tr class="unavailable-row">
+                                                                <td colspan="5">
+                                                                    <div class="product-cell">
+                                                                        <% if (product?.productImage?.[0]) { %>
+                                                                            <img src="/Uploads/<%= product.productImage[0] %>"
+                                                                                class="product-image"
+                                                                                style="width: 60px; height: 60px;"
+                                                                                alt="<%= product.productName || 'Product image' %>">
+                                                                            <% } else { %>
+                                                                                <div class="product-image-placeholder">
+                                                                                    <i class="fas fa-image"></i>
+                                                                                </div>
+                                                                                <% } %>
 
-                                                        <div class="product-info">
-                                                            <div class="product-name">
-                                                                <%= product?.productName || 'Product' %>
-                                                                <span class="unavailable-badge">Unavailable</span>
-                                                            </div>
+                                                                                    <div class="product-info">
+                                                                                        <div class="product-name">
+                                                                                            <%= product?.productName
+                                                                                                || 'Product' %>
+                                                                                                <span
+                                                                                                    class="unavailable-badge">Unavailable</span>
+                                                                                        </div>
 
-                                                            <div class="product-variant">
-                                                                <% if(item.size) { %> 
-                                                                    <span>Size: <%= item.size %></span>
-                                                                <% } %>
-                                                                <% if(item.color) { %>
-                                                                    <span>Color: <%= item.color %></span>
-                                                                <% } %>
-                                                            </div>
+                                                                                        <div class="product-variant">
+                                                                                                <% if(item.size) { %>
+                                                                                                <span>Size: <%=
+                                                                                                        item.size %>
+                                                                                                </span>
+                                                                                                <% } %>
+                                                                                                    <% if(item.color) {
+                                                                                                        %>
+                                                                                                        <span>Color: <%=
+                                                                                                                item.color
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                        <% } %>
+                                                                                        </div>
 
-                                                            <div class="unavailable-reasons">
-                                                                <ul>
-                                                                    <% if (variantStock <= 0) { %>
-                                                                        <li>Selected variant is out of stock</li>
-                                                                    <% } %>
-                                                                    <% if (isBlocked) { %>
-                                                                        <li>Product has been blocked by admin</li>
-                                                                    <% } %>
-                                                                    <% if (categoryListed === false) { %>
-                                                                        <li>Category is currently unlisted</li>
-                                                                    <% } %>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                
-                                                    <button type="submit" class="remove-btn"
-                                                        id="remove-product-btn"
-                                                        data-product-id="<%= item._id %>">
-                                                        <i class="fas fa-trash-alt btn-icon"></i> Remove
-                                                    </button>
-                                                
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                    <% }); %>
-                                </tbody>
-                            </table>
-                        </div>
+                                                                                        <div
+                                                                                            class="unavailable-reasons">
+                                                                                            <ul>
+                                                                                                <% if (variantStock <=0)
+                                                                                                    { %>
+                                                                                                    <li>Selected variant
+                                                                                                        is out of stock
+                                                                                                    </li>
+                                                                                                    <% } %>
+                                                                                                        <% if
+                                                                                                            (isBlocked)
+                                                                                                            { %>
+                                                                                                            <li>Product
+                                                                                                                has been
+                                                                                                                blocked
+                                                                                                                by admin
+                                                                                                            </li>
+                                                                                                            <% } %>
+                                                                                                                <% if
+                                                                                                                    (categoryListed===false)
+                                                                                                                    { %>
+                                                                                                                    <li>Category
+                                                                                                                     is
+                                                                                                                        currently
+                                                                                                                        unlisted
+                                                                                                                    </li>
+                                                                                                                    <% }
+                                                                                                                        %>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                    </div>
 
-                        <div class="cart-summary">
-                            <h2 class="summary-title">
-                                Order Summary
-                                <span>(<%= availableItemsCount %> <%= availableItemsCount === 1 ? 'item' : 'items' %>)</span>
-                            </h2>
-                            <div class="summary-row">
-                                <span>Subtotal</span>
-                                <span id="subtotal">₹<%= subtotal.toFixed(2) %></span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Shipping</span>
-                                <span>Free</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Tax (8%)</span>
-                                <span id="tax">₹<%= tax.toFixed(2) %></span>
-                            </div>
-                            <div class="summary-row total-row">
-                                <span>Total</span>
-                                <span id="total">₹<%= total.toFixed(2) %></span>
-                            </div>
+                                                                    <button type="submit" class="remove-btn"
+                                                                        id="remove-product-btn"
+                                                                        data-product-id="<%= item._id %>">
+                                                                        <i class="fas fa-trash-alt btn-icon"></i> Remove
+                                                                    </button>
 
-                            <button class="checkout-btn" id="proceed-to-checkout" <%= availableItemsCount === 0 ? 'disabled' : '' %>>
-                                <i class="fas fa-lock"></i> Proceed to Checkout
-                            </button>
-
-                            <% if (availableItemsCount === 0) { %>
-                                <div style="color: var(--error-red); text-align: center; margin-top: 10px;">
-                                    Your cart contains no available items
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                                                <% }); %>
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                <div class="cart-summary">
+                                    <h2 class="summary-title">
+                                        Order Summary
+                                        <span>(<%= availableItemsCount %>
+                                                <%= availableItemsCount===1 ? 'item' : 'items' %>)</span>
+                                    </h2>
+                                    <div class="summary-row">
+                                        <span>Subtotal</span>
+                                        <span id="subtotal">₹<%= total.toFixed(2) %></span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Shipping</span>
+                                        <span>Free</span>
+                                    </div>
+                                    <div class="summary-row">
+                                        <span>Tax (0%)</span>
+                                        <span id="tax">₹<%= tax.toFixed(2) %></span>
+                                    </div>
+                                    <div class="summary-row total-row" >
+                                        <span>Total</span>
+                                        <span id="totalOfCart">₹<%= total.toFixed(2) %></span>
+                                    </div>
+
+                                    <button class="checkout-btn" id="proceed-to-checkout" <%=availableItemsCount===0
+                                        ? 'disabled' : '' %>>
+                                        <i class="fas fa-lock"></i> Proceed to Checkout
+                                    </button>
+
+                                    <% if (availableItemsCount===0) { %>
+                                        <div style="color: var(--error-red); text-align: center; margin-top: 10px;">
+                                            Your cart contains no available items
+                                        </div>
+                                        <% } %>
+
+                                            <div class="secure-checkout">
+                                                <i class="fas fa-shield-alt"></i> Secure Checkout
+                                            </div>
+
+                                            <div
+                                                style="margin-top: 20px; font-size: 13px; color: var(--dark-gray); text-align: center;">
+                                                <i class="fas fa-undo-alt"></i> Easy returns within 30 days
+                                            </div>
+                                </div>
+                            </div>
                             <% } %>
-
-                            <div class="secure-checkout">
-                                <i class="fas fa-shield-alt"></i> Secure Checkout
-                            </div>
-
-                            <div style="margin-top: 20px; font-size: 13px; color: var(--dark-gray); text-align: center;">
-                                <i class="fas fa-undo-alt"></i> Easy returns within 30 days
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
         </div>
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                const totalOfCart = document.getElementById('totalOfCart')
+                const subtotal = document.getElementById('subtotal')
+             
                 // Remove product from cart
                 const removeButtons = document.querySelectorAll('.remove-btn');
-                
+
                 removeButtons.forEach(function (removeBtn) {
                     removeBtn.addEventListener('click', async function (event) {
                         event.preventDefault();
-                        
+
                         const indexId = this.dataset.productId;
                         const { isConfirmed } = await Swal.fire({
                             title: 'Remove this item?',
@@ -924,19 +948,71 @@
                     });
                 });
 
+
+                // Increase quantity
+                const increaseButtons = document.querySelectorAll('.quantity-btn.increase');
+                increaseButtons.forEach(function (button,index) {
+                    button.addEventListener('click', async function (event) {
+                        const itemTotal = document.getElementById(`total-${index}`)
+                        const productId = this.dataset.id;
+
+                        //Find the related input in the same row
+                        const itemSelectedQuantity = this.closest('tr').querySelector('.quantity-input');
+
+                        try {
+                            const response = await fetch(`/increaseCartItems?item=${encodeURIComponent(productId)}`);
+                            const data = await response.json();
+
+                            if (response.ok) {
+                                itemSelectedQuantity.value = data.quantity;
+                                totalOfCart.innerText=data.cartTotal
+                                subtotal.innerText=data.cartTotal
+                                itemTotal.innerText=`${data.itemTotal.toFixed(2)}`
+                            } else {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: data.message || 'Failed to update quantity',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+                            }
+                            
+                        } catch (error) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: error.message || 'Failed to update quantity',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
+                        }
+                    });
+                });
+
                 // Decrease quantity
                 const decreaseButtons = document.querySelectorAll('.quantity-btn.decrease');
-                
-                decreaseButtons.forEach(function (button) {
+                decreaseButtons.forEach(function (button,index) {
                     button.addEventListener('click', async function (event) {
+                        const itemTotal = document.getElementById(`total-${index}`)
                         const productId = this.dataset.id;
+
+                        // 👇 Find the related input in the same row
+                        const itemSelectedQuantity = this.closest('tr').querySelector('.quantity-input');
 
                         try {
                             const response = await fetch(`/decreaseCartItems?item=${encodeURIComponent(productId)}`);
                             const data = await response.json();
-                            
+
                             if (response.ok) {
-                                window.location.reload();
+                                itemSelectedQuantity.value = data.quantity;
+                                totalOfCart.innerText=data.cartTotal
+                                subtotal.innerText=data.cartTotal
+                                itemTotal.innerText=data.itemTotal
                             } else {
                                 Swal.fire({
                                     toast: true,
@@ -948,6 +1024,7 @@
                                     timerProgressBar: true
                                 });
                             }
+                            
                         } catch (error) {
                             Swal.fire({
                                 toast: true,
@@ -962,108 +1039,71 @@
                     });
                 });
 
-                // Increase quantity
-                const increaseButtons = document.querySelectorAll('.quantity-btn.increase');
-                
-                increaseButtons.forEach(function (button) {
-                    button.addEventListener('click', async function (event) {
-                        const productId = this.dataset.id;
 
-                        try {
-                            
-                            const response = await fetch(`/increaseCartItems?item=${encodeURIComponent(productId)}`);
-                            const data = await response.json();
-                            
-                            if (response.ok) {
-                                window.location.reload();
-                            } else {
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'error',
-                                    title: data.message || 'Failed to update quantity',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
-                            }
-                        } catch (error) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'error',
-                                title: error.message || 'Failed to update quantity',
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true
-                            });
-                        }
-                    });
-                });
 
                 // Proceed to checkout button
                 const checkoutBtn = document.getElementById('proceed-to-checkout');
-                
 
-if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', async function () {
-        // Show loading state
-        const originalText = checkoutBtn.innerHTML;
-        checkoutBtn.innerHTML = `
+
+                if (checkoutBtn) {
+                    checkoutBtn.addEventListener('click', async function () {
+                        // Show loading state
+                        const originalText = checkoutBtn.innerHTML;
+                        checkoutBtn.innerHTML = `
             <span class="spinner"></span>
             <span>${checkoutBtn.textContent.trim()}</span>
         `;
-        checkoutBtn.disabled = true;
+                        checkoutBtn.disabled = true;
 
-        // Collect all available item IDs
-        const availableItems = Array.from(
-            document.querySelectorAll('.cart-table tbody tr:not(.unavailable-row) .remove-btn')
-        ).map(btn => btn.dataset.productId);
+                        // Collect all available item IDs
+                        const availableItems = Array.from(
+                            document.querySelectorAll('.cart-table tbody tr:not(.unavailable-row) .remove-btn')
+                        ).map(btn => btn.dataset.productId);
 
-        if (availableItems.length === 0) {
-            checkoutBtn.innerHTML = originalText;
-            checkoutBtn.disabled = false;
-            await Swal.fire({
-                icon: 'error',
-                title: 'Empty Cart',
-                html: `
+                        if (availableItems.length === 0) {
+                            checkoutBtn.innerHTML = originalText;
+                            checkoutBtn.disabled = false;
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Empty Cart',
+                                html: `
                     <div class="text-left">
                         <p>Your cart contains no available items to checkout.</p>
                         <p class="mt-2">Please add some products before proceeding.</p>
                     </div>
                 `,
-                confirmButtonColor: '#2e7d32',
-                confirmButtonText: 'Continue Shopping'
-            });
-            return;
-        }
+                                confirmButtonColor: '#2e7d32',
+                                confirmButtonText: 'Continue Shopping'
+                            });
+                            return;
+                        }
 
-        try {
-            const response = await fetch('/checkoutpage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: availableItems })
-            });
+                        try {
+                            const response = await fetch('/checkoutpage', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ items: availableItems })
+                            });
 
-            const result = await response.json();
-            
+                            const result = await response.json();
 
-            if (response.ok) {
-                window.location.href = `/getcheckoutpage?item=${availableItems}`;
-            } else {
-                checkoutBtn.innerHTML = originalText;
-                checkoutBtn.disabled = false;
-                
-                // Handle validation errors
-                if (result.detailedIssues && result.detailedIssues.length > 0) {
-                    const issuesList = result.detailedIssues.map(issue => 
-                        `<li class="text-left py-1">${issue}</li>`
-                    ).join('');
 
-                    await Swal.fire({
-                        icon: 'warning',
-                        title: 'Checkout Issues',
-                        html: `
+                            if (response.ok) {
+                                window.location.href = `/getcheckoutpage?item=${availableItems}`;
+                            } else {
+                                checkoutBtn.innerHTML = originalText;
+                                checkoutBtn.disabled = false;
+
+                                // Handle validation errors
+                                if (result.detailedIssues && result.detailedIssues.length > 0) {
+                                    const issuesList = result.detailedIssues.map(issue =>
+                                        `<li class="text-left py-1">${issue}</li>`
+                                    ).join('');
+
+                                    await Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Checkout Issues',
+                                        html: `
                             <div class="text-left">
                                 <p>We found some issues with your cart items:</p>
                                 <ul class="list-disc pl-5 mt-2">
@@ -1072,41 +1112,41 @@ if (checkoutBtn) {
                                 <p class="mt-3">Please update your cart and try again.</p>
                             </div>
                         `,
-                        confirmButtonColor: '#2e7d32',
-                        confirmButtonText: 'Update Cart'
-                    });
-                } else {
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Checkout Failed',
-                        text: result.message || 'Could not proceed to checkout',
-                        confirmButtonColor: '#2e7d32'
-                    });
-                }
-                window.location.reload();
-            }
-        } catch (error) {
-            checkoutBtn.innerHTML = originalText;
-            checkoutBtn.disabled = false;
-            await Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                html: `
+                                        confirmButtonColor: '#2e7d32',
+                                        confirmButtonText: 'Update Cart'
+                                    });
+                                } else {
+                                    await Swal.fire({
+                                        icon: 'error',
+                                        title: 'Checkout Failed',
+                                        text: result.message || 'Could not proceed to checkout',
+                                        confirmButtonColor: '#2e7d32'
+                                    });
+                                }
+                                window.location.reload();
+                            }
+                        } catch (error) {
+                            checkoutBtn.innerHTML = originalText;
+                            checkoutBtn.disabled = false;
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                html: `
                     <div class="text-left">
                         <p>An error occurred while processing your checkout.</p>
                         <p class="mt-2">Please try again later.</p>
                     </div>
                 `,
-                confirmButtonColor: '#2e7d32'
-            });
-            console.error('Checkout error:', error);
-        }
-    });
-}
+                                confirmButtonColor: '#2e7d32'
+                            });
+                            console.error('Checkout error:', error);
+                        }
+                    });
+                }
 
-// Add this CSS for the spinner
-const style = document.createElement('style');
-style.textContent = `
+                // Add this CSS for the spinner
+                const style = document.createElement('style');
+                style.textContent = `
     .spinner {
         display: inline-block;
         width: 16px;
@@ -1121,8 +1161,9 @@ style.textContent = `
         to { transform: rotate(360deg); }
     }
 `;
-document.head.appendChild(style);
-});
+                document.head.appendChild(style);
+            });
         </script>
 </body>
+
 </html>

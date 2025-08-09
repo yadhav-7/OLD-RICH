@@ -129,11 +129,11 @@ const checkoutpage = async (req, res) => {
 
 const getCheckoutpage = async (req, res) => {
     try {
-        console.log('items from query', req.query.item);
+        
         const itemIds = req.query.item
-        console.log('itemIds', itemIds)
+        
         const userId = req.session.user;
-        console.log('userID', userId)
+        
         const cart = await Cart.findOne({ userId })
         console.log('cart', cart)
         if (!cart || !cart.items || cart.items.length === 0) {
@@ -148,129 +148,58 @@ const getCheckoutpage = async (req, res) => {
         const productIds = selectedItems.map((p) => p.productId.toString())
         const products = await Product.find({ _id: { $in: productIds } })
 
-        console.log('selecteditems', selectedItems)
+        
         const userData = await User.findById(userId);
-        console.log('userData', userData)
-
-
-        console.log('final selectedProcuts', products)
-
+        
 
         const userAddress = await Address.findOne({ userId: userId })
-        console.log('usereAddress', userAddress)
-
-        console.log('selectedItems', selectedItems)
 
         res.render('checkOutPage', {
             user: userData,
             products,
             selectedItems,
+            cartTotal:cart.total,
             address: userAddress.address || []
         });
     } catch (error) {
         console.error('error in getCheckOutPage', error);
         res.redirect('/pageNotFound');
     }
-};
-
-// const procedToCheckOut = async (req, res) => {
-//     try {
-//         let selectedItems = req.body.selectedItems;
-//         const userId = req.session.user;
-
-//         const cart = await Cart.findOne({ userId });
-//         if (!cart || cart.items.length < 1) {
-//             return res.status(500).json({ message: 'Your cart is empty' });
-//         }
-
-//         const products = [];
-
-//         for (const item of selectedItems) {
-//             const product = await Product.findById(item.productId);
-//             if (!product) {
-//                 return res.status(500).json({ message: `Product with ID ${item.productId} not found.` });
-//             }
-
-//             if (product.isBlocked) {
-//                 return res.status(500).json({ message: `${product.productName} is currently blocked. Please try again later.` });
-//             }
-
-//             const category = await Category.findById(product.category);
-//             if (!category) {
-//                 return res.status(500).json({ message: `Category not found for product ${product.productName}.` });
-//             }
-
-//             if (!category.isListed) {
-//                 return res.status(500).json({ message: `Category for ${product.productName} is not available now.` });
-//             }
-
-//             const variant = product.variants.find(v => v.size === item.size);
-//             if (!variant) {
-//                 return res.status(500).json({ message: `Size ${item.size} not found for ${product.productName}.` });
-//             }
-
-//             if (variant.quantity < item.quantity) {
-//                 return res.status(500).json({ message: `Only ${variant.quantity} items left in stock for ${product.productName}.` });
-//             }
-
-//             // Push valid product
-//             products.push({
-//                 productId: product._id,
-//                 name: product.productName,
-//                 size: variant.size,
-//                 quantity: item.quantity,
-//                 price: variant.salePrice,
-//                 totalPrice: item.totalPrice
-//             });
-//         }
-
-
-//         // console.log(" Final products:", products);
-
-//         const newOrder = new Order({
-//             userId:userId,
-//         })
-
-
-//     } catch (error) {
-//         console.error("Error in procedToCheckOut:", error);
-//         res.status(500).json({ message: "Something went wrong. Please try again later." });
-//     }
-// };
-
+}
 
 const procedToCheckOut = async (req, res) => {
     try {
+        console.log(1)
         let selectedItems = req.body.selectedItems;
         const userId = req.session.user;
         let addressId = req.body.addressId;
         const paymentMethod = req.body.paymentMethod;
-
+console.log(2)
         const cart = await Cart.findOne({ userId });
         if (!cart || cart.items.length < 1) {
             return res.status(500).json({ message: 'Your cart is empty' });
         }
-
+console.log(3)
         const products = [];
         let totalAmount = 0;
-
+console.log(4)
         for (const item of selectedItems) {
             const product = await Product.findById(item.productId);
             if (!product) return res.status(500).json({ message: `Product with ID ${item.productId} not found.` });
-
+console.log(5)
             if (product.isBlocked) return res.status(500).json({ message: `${product.productName} is currently blocked.` });
-
+console.log(6)
             const category = await Category.findById(product.category);
             if (!category || !category.isListed) return res.status(500).json({ message: `Category unavailable for ${product.productName}.` });
-
+console.log(7)
             const variant = product.variants.find(v => v.size === item.size);
             if (!variant) return res.status(500).json({ message: `Size ${item.size} not found for ${product.productName}.` });
-
+console.log(8)
             if (variant.quantity < item.quantity) return res.status(500).json({ message: `Only ${variant.quantity} left for ${product.productName}.` });
-
+console.log(9)
             const totalPrice = variant.salePrice * item.quantity;
             totalAmount += totalPrice;
-
+console.log(10)
             products.push({
                 productId: product._id,
                 name: product.productName,
@@ -280,25 +209,25 @@ const procedToCheckOut = async (req, res) => {
                 totalPrice: totalPrice
             });
         }
-
+console.log(11)
         const adrs = await Address.findOne({ userId: userId });
         const selectedAddress = adrs?.address.find(
             ad => ad._id.toString() === addressId.toString()
         );
-
+console.log(12)
         if (!selectedAddress) {
             return res.status(500).json({ message: 'Selected address not found' });
         }
-
+console.log(13)
         const clonedAddress = selectedAddress.toObject();
-
+console.log(14)
         if (paymentMethod !== 'cod') {
             return res.status(500).json({ message: 'Now only available cash on delivery' });
         }
-
+console.log(15)
         // Check if a pending order already exists
         let existingOrder = await Order.findOne({ userId, status: "Pending", paymentStatus: "Pending" });
-
+console.log(16)
             // Create new order
             const newOrder = new Order({
                 userId,

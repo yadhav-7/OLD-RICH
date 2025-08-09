@@ -7,14 +7,6 @@ const getCart = async (req, res) => {
     const userId = req.session.user;
     const userData = await User.findById(userId);
 
-    // const userCart = await Cart.findOne({ userId })
-    //     .populate({
-    //         path: 'items.productId',
-    //         model: 'Product',
-    //         select: 'productName price productImage' // Changed 'images' to 'productImage'
-    //     });
-
-
     const userCart = await Cart.findOne({ userId: req.session.user })
   .populate({
     path: 'items.productId',
@@ -24,11 +16,11 @@ const getCart = async (req, res) => {
     }
   });
 
-    // console.log('Populated Cart:', JSON.stringify(userCart, null, 2)); // Debug log
-
     res.render('cart', {
       user: userData,
-      userCart: userCart?.items || []
+      userCart: userCart?.items || [],
+      subTotal:userCart?.total||null,
+      length:userCart?.items?.length
     });
   } catch (error) {
     console.error('Error in getCart:', error);
@@ -94,6 +86,8 @@ const addProductToCart = async (req, res) => {
       });
     }
 
+    let findTotal=requestedQty*variant.salePrice
+
     // 7. Update cart
     if (!cart) {
       cart = new Cart({
@@ -103,8 +97,9 @@ const addProductToCart = async (req, res) => {
           size: selectedSize,
           quantity: 1,
           price: variant.salePrice || variant.price,
-          totalPrice: variant.salePrice || variant.price,
+          totalPrice:findTotal
         }],
+        total:1
       });
     } else {
       if (existingItem) {
@@ -116,11 +111,16 @@ const addProductToCart = async (req, res) => {
           size: selectedSize,
           quantity: 1,
           price: variant.salePrice || variant.price,
-          totalPrice: variant.salePrice || variant.price,
+          totalPrice:findTotal
         });
       }
     }
 
+    let findCartTotal = cart.items?.reduce((acc,curr)=>{
+      return acc+=curr.totalPrice
+    },0)
+    
+cart.total=findCartTotal
     await cart.save();
     return res.status(200).json({ message: 'Added to cart!', cart });
   } catch (error) {
@@ -135,21 +135,22 @@ const removeProductFromCart = async (req, res) => {
     const itemId = req.query.indexId;
     const userId = req.session.user;
 
-    // Step 1: Find the user's cart
+    // Find the user's cart
     const cart = await Cart.findOne({ userId });
 
+    
     if (!cart) {
       return res.status(404).json({ success: false, message: 'Cart not found' });
     }
 
-    // Step 2: Filter out the item by its _id (you may need to check if it's item._id or item.productId)
+    // Filter out the item by its _id (you may need to check if it's item._id or item.productId)
+    const removeItem = cart.items.filter(item => item._id.toString() === itemId);
+    cart.total-=removeItem[0].totalPrice
     cart.items = cart.items.filter(item => item._id.toString() !== itemId);
+     await cart.save();
 
-    // Step 3: Save updated cart
-    await cart.save();
-
-    // Step 4: Send response
-    return res.status(200).json({ success: true, message: 'Item removed from cart' });
+    //  Send response
+    return res.status(200).json({ success: true, message: 'Item removed from cart', cart:cart});
 
   } catch (error) {
     console.error('Error removing product from cart:', error);
@@ -182,19 +183,16 @@ const decreaseCartItems = async (req, res) => {
     }
 
     item.quantity -= 1;
-
+    item.totalPrice = item.totalPrice - item.price
+    cart.total = cart.total-item.price
     if (item.quantity < 1) {
-      // cart.items = cart.items.filter(i =>
-      //     !(i._id.toString() === productId )
-      // );
       return res.status(404).json({ message: 'You have at least one item in your cart' })
     }
 
-    console.log('item.quantity', item.quantity)
 
     await cart.save();
 
-    res.status(200).json({ success: true, message: 'Item quantity decreased' });
+    res.status(200).json({ success: true, message: 'Item quantity decreased' ,quantity:item.quantity,itemTotal:item.totalPrice,cartTotal:cart.total});
 
   } catch (error) {
     console.error('Error decreasing item:', error);
@@ -244,14 +242,14 @@ const increaseCartItems = async (req, res) => {
       });
     }
 
-    //  All clear! Increase quantity
+    
     item.quantity += 1;
-    item.totalPrice = item.price * item.quantity;
+    item.totalPrice = item.totalPrice + item.price
+    cart.total = cart.total+item.price
 
     await cart.save();
 
-    console.log('Updated quantity:', item.quantity);
-    res.status(200).json({ success: true, message: 'Item quantity increased' });
+    res.status(200).json({ success: true, message: 'Item quantity increased' ,quantity:item.quantity,itemTotal:item.totalPrice,cartTotal:cart.total});
 
   } catch (error) {
     console.error('Error increasing item:', error);

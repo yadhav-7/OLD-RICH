@@ -6,8 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile | <%= user.username %>
     </title>
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> -->
+
+
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+
     <style>
         :root {
             --primary-color: #2e7d32;
@@ -33,6 +42,39 @@
 
         .modal-content {
             box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);
+        }
+
+
+
+        /* 👇 Round crop frame overlay */
+        .img-container .cropper-view-box,
+        .img-container .cropper-face {
+            border-radius: 50% !important;
+        }
+
+        /* Optional: add dark overlay for circular focus */
+        .img-container .cropper-bg {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+
+
+        /* Override Bootstrap's modal-lg to make it medium size */
+        #cropImageModal .modal-dialog.modal-lg {
+            max-width: 600px;
+            /* medium width, adjust as needed */
+            width: 100%;
+        }
+
+        /* Optional: Adjust image container height */
+        #cropImageModal .img-container {
+            min-height: 300px;
+            max-height: 400px;
+        }
+
+        /* Optional: If you want smoother overflow */
+        #cropImageModal .img-container img {
+            object-fit: contain;
         }
 
         .border-success:focus {
@@ -245,12 +287,9 @@
             <div class="profile-header">
                 <div class="row align-items-center">
                     <div class="col-md-2 text-center">
-                        <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=2e7d32&color=fff&size=160' %>"
+                        <img src="<%= user.userProfileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=2e7d32&color=fff&size=160' %>"
                             alt="Profile Image" class="profile-img mb-3" id="profileImagePreview">
-                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                            data-bs-target="#changeImageModal">
-                            <i class="fas fa-camera me-1"></i> Change
-                        </button>
+
                     </div>
                     <div class="col-md-6">
                         <h2 class="mb-2 fw-bold">
@@ -265,9 +304,7 @@
                                 <%= user.phone %>
                             </p>
                             <% } %>
-                                <p class="text-muted mb-0"><i class="fas fa-calendar-alt me-2"></i>Member since <%= new
-                                        Date(user.createdAt).toLocaleDateString() %>
-                                </p>
+
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
                         <button class="btn btn-primary me-2 mb-2" data-bs-toggle="modal"
@@ -338,7 +375,9 @@
                                                         class="fas fa-shopping-bag text-primary"></i></div>
                                                 <div>
                                                     <h6 class="mb-0">Total Orders</h6>
-                                                    <h4 class="mb-0">12</h4>
+                                                    <h4 class="mb-0">
+                                                        <%= totalOrders %>
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -348,7 +387,9 @@
                                                         class="fas fa-check-circle text-success"></i></div>
                                                 <div>
                                                     <h6 class="mb-0">Completed</h6>
-                                                    <h4 class="mb-0">8</h4>
+                                                    <h4 class="mb-0">
+                                                        <%= completedOrders %>
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -360,7 +401,9 @@
                                                         class="fas fa-truck text-warning"></i></div>
                                                 <div>
                                                     <h6 class="mb-0">In Progress</h6>
-                                                    <h4 class="mb-0">2</h4>
+                                                    <h4 class="mb-0">
+                                                        <%= inProgress %>
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -370,7 +413,9 @@
                                                         class="fas fa-times-circle text-danger"></i></div>
                                                 <div>
                                                     <h6 class="mb-0">Cancelled</h6>
-                                                    <h4 class="mb-0">2</h4>
+                                                    <h4 class="mb-0">
+                                                        <%= cancelledOrders %>
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -382,20 +427,20 @@
                 </div>
 
                 <div class="tab-pane fade" id="address">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-home me-2"></i> Saved Addresses</span>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#addAddressModal">
-                                <i class="fas fa-plus me-1"></i> Add New Address
-                            </button>
-                        </div>
-                        <div class="card-body">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-home me-2"></i> Saved Addresses</span>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                data-bs-target="#addAddressModal">
+                <i class="fas fa-plus me-1"></i> Add New Address
+            </button>
+        </div>
+        <div class="card-body" id="addressBodyId">
                             <% if (addressData && addressData.length> 0) { %>
                                 <div class="row">
-                                    <% addressData.forEach((address)=> { %>
+                                    <% addressData.forEach((address,index)=> { %>
                                         <div class="col-md-6 mb-4">
-                                            <div
+                                            <div id="address<%= index %>"
                                                 class="card h-100 address-card <%= address.isDefault ? 'default' : '' %>">
                                                 <div class="card-body">
                                                     <h5 class="card-title">
@@ -426,7 +471,7 @@
                                                         <i class="fas fa-edit me-1"></i> Edit
                                                     </button>
                                                     <button class="btn btn-sm btn-outline-danger"
-                                                        onclick="confirmDeleteAddress('<%= address._id %>')">
+                                                        onclick="confirmDeleteAddress('<%= address._id %>','<%= index %>')">
                                                         <i class="fas fa-trash me-1"></i> Remove
                                                     </button>
                                                 </div>
@@ -434,17 +479,6 @@
                                         </div>
                                         <% }); %>
                                 </div>
-                                <% } else { %>
-                                    <div class="empty-state text-center py-5">
-                                        <i class="fas fa-map-marker-alt fa-2x text-muted"></i>
-                                        <h4 class="mt-3">No Saved Addresses</h4>
-                                        <p class="mb-4">You haven't saved any addresses yet. Add one to make checkout
-                                            easier!</p>
-                                        <button class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#addAddressModal">
-                                            <i class="fas fa-plus me-1"></i> Add Address
-                                        </button>
-                                    </div>
                                     <% } %>
                         </div>
                     </div>
@@ -474,13 +508,14 @@
 
                         <div class="card-body">
                             <% if(order && order.length> 0) { %>
-                                <% order.forEach(order=> { %>
+                                <% order.forEach((order,index)=> { %>
                                     <div class="order-item p-3 mb-3 border rounded"
                                         data-status="<%= order.status.toLowerCase() %>">
                                         <div class="d-flex justify-content-between flex-wrap mb-2">
                                             <h5>Order #<%= order.orderId %>
                                             </h5>
-                                            <span class="badge <%= getStatusBadgeClass(order.status) %> p-2">
+                                            <span id="orderStats<%= index %>"
+                                                class="badge <%= getStatusBadgeClass(order.status) %> p-2">
                                                 <%= order.status %>
                                             </span>
                                         </div>
@@ -511,31 +546,29 @@
                                                         <i class="fas fa-eye me-1"></i> Details
                                                     </button>
                                                 </a>
-                                                <% if(order.status !=='Delivered' && order.status !=='cancelled' && order.status!=='return Req') { %>
+                                                <% if(order.status !=='Delivered' && order.status !=='cancelled' &&
+                                                    order.status!=='returnRequested' &&order.status!=='returned'
+                                                    &&order.status!=='reutrnRejected' ) { %>
                                                     <button class="btn btn-sm btn-outline-danger"
-                                                        onclick="confirmCancelOrder('<%= order.orderId%>')">
+                                                        id="cancelBtn<%= index %>"
+                                                        onclick="confirmCancelOrder('<%= order.orderId%>','<%= index %>')">
                                                         <i class="fas fa-times me-1"></i> Cancel
                                                     </button>
                                                     <% } else if(order.status==='Delivered' ) { %>
-                                                        <button class="btn btn-sm btn-outline-secondary"
-                                                            onclick="returnOrder('<%= order.orderId%>')">
+                                                        <button id="returnBtn<%= index %>"
+                                                            class="btn btn-sm btn-outline-secondary"
+                                                            onclick="returnOrder('<%= order.orderId %>', '<%= index %>')">
                                                             <i class="fas fa-times me-1"></i> return
                                                         </button>
                                                         <% } %>
+
                                             </div>
                                         </div>
                                     </div>
                                     <% }) %>
 
                                         <!-- Optional Pagination -->
-                                        <!-- <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
-        </ul>
-      </nav> -->
+                                       
 
                                         <% } else { %>
                                             <div class="empty-state text-center py-5">
@@ -552,39 +585,90 @@
 
                 </div>
 
+                <!-- PASSWORD AND SECURITY -->
+
                 <div class="tab-pane fade" id="security">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="card mb-4">
-                                <div class="card-header"><i class="fas fa-lock me-2"></i> Password & Security</div>
-                                <div class="card-body">
-                                    <div class="alert alert-info d-flex align-items-center mb-4">
-                                        <i class="fas fa-info-circle me-3"></i>
-                                        <div><strong>Security Tip:</strong> Use a strong, unique password and change it
-                                            regularly to keep your account secure.</div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div>
-                                            <h6 class="mb-0">Password</h6>
+
+                    <!-- Flash Toast Message -->
+                    <% if (flash) { %>
+                        <script>
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: '<%= flash.type %>', // 'success', 'error', etc.
+                                title: '<%= flash.message %>',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        </script>
+                        <% } %>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <i class="fas fa-lock me-2"></i> Password & Security
                                         </div>
-                                        <a href="/changePassword"><button
-                                                class="btn btn-sm btn-outline-primary">Change</button></a>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div>
-                                            <h6 class="mb-0">
-                                                <%= user.email %>
-                                            </h6>
+                                        <div class="card-body">
+
+                                            <!-- For Google Authenticated Users -->
+                                            <% if (user.googleId) { %>
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <div>
+                                                        <h6 class="mb-0">
+                                                            <%= user.email %>
+                                                        </h6>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-primary" disabled>
+                                                        <i class="fas fa-key me-1"></i> Change
+                                                    </button>
+                                                </div>
+
+                                                <!-- For Regular Users -->
+                                                <% } else { %>
+                                                    <!-- Security Tip -->
+                                                    <div class="alert alert-info d-flex align-items-center mb-4">
+                                                        <i class="fas fa-info-circle me-3"></i>
+                                                        <div>
+                                                            <strong>Security Tip:</strong> Use a strong, unique password
+                                                            and change it regularly to keep your account secure.
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Password Section -->
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <div>
+                                                            <h6 class="mb-0">Password</h6>
+                                                        </div>
+                                                        <a href="/changePassword">
+                                                            <button class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-key me-1"></i> Change
+                                                            </button>
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- Email Section -->
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <div>
+                                                            <h6 class="mb-0">
+                                                                <%= user.email %>
+                                                            </h6>
+                                                        </div>
+                                                        <a href="/passCheckforEmailchange">
+                                                            <button class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-key me-1"></i> Change
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    <% } %>
+
                                         </div>
-                                        <a href="/passCheckforEmailchange"><button
-                                                class="btn btn-sm btn-outline-primary"><i class="fas fa-key me-1"></i>
-                                                Change</button></a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
                 </div>
+
             </div>
         </div>
 
@@ -594,7 +678,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content border-0 shadow">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <h5 class="modal-title">Edit Profile</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
@@ -603,92 +687,119 @@
                             <div class="text-center mb-4">
                                 <div class="position-relative d-inline-block">
                                     <img id="editProfileImagePreview"
-                                        src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=2e7d32&color=fff&size=160' %>"
-                                        class="rounded-circle border border-success border-3" width="120" height="120"
-                                        alt="Profile photo">
+                                        src="<%= user.userProfileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=2e7d32&color=fff&size=160' %>"
+                                        class="rounded-circle border border-success border-3 object-fit-cover"
+                                        style="width: 120px; height: 120px;">
+
+
+
                                     <button type="button"
                                         class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle">
                                         <i class="fas fa-camera"></i>
                                         <input type="file" id="profilePhotoUpload" accept="image/*" class="d-none">
                                     </button>
                                 </div>
+                                <%if(user.userProfileImage){%>
+                                    <a href="#" style="text-decoration: none;">
+                                        <p class="danger" id="removeImageBtn" style="color: red; margin: 0;">remove</p>
+                                    </a>
+
+                                    <%}%>
+
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label text-success fw-bold">Username</label>
+                                <label class="form-label text-success">Username</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white text-success">@</span>
                                     <input type="text" class="form-control border-success" id="editUsername"
-                                        pattern="^[a-zA-Z0-9_]{3,20}$" value="<%= user.username %>" required>
-                                    <div class="invalid-feedback" id="usernameError">Username must be 3-20 characters,
-                                        letters, numbers, or underscores only</div>
+                                        value="<%= user.username %>" pattern="^[a-zA-Z0-9_]{3,20}$">
+                                    <div class="invalid-feedback">Username must be 3-20 characters</div>
                                 </div>
                             </div>
-                            <!-- <div class="mb-3">
-                                <label class="form-label text-success fw-bold">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white text-success"><i
-                                            class="fas fa-envelope"></i></span>
-                                    <input type="email" class="form-control border-success" value="<%#= user.email %>"
-                                        id="editEmail" readonly>
-                                </div>
-                            </div> -->
                             <div class="mb-3">
-                                <label for="phone" class="form-label text-success fw-bold">Phone Number</label>
+                                <label class="form-label text-success">Phone</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white text-success"><i
-                                            class="fas fa-phone"></i></span>
-                                    <input type="tel" class="form-control border-success" id="editPhone"
-                                        pattern="^[\d\s+()-]{7,20}$" value="<%= user.phone || '' %>">
-                                    <div class="invalid-feedback" id="phoneError">Please enter a valid phone number
-                                        (7-20 digits)</div>
+                                    <span class="input-group-text bg-white text-success"></span>
+                                    <input type="text" class="form-control border-success" id="editphone"
+                                        value="<%= user.phone %>" pattern="^[6-9]\d{9}$">
+                                    <div class="invalid-feedback">Username must be 3-20 characters</div>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light">
-                                <button type="button" class="btn btn-outline-secondary"
+                                <button id="cancellProfileEditBtn" type="button" class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-success" id="saveProfileChanges"
-                                    onclick="editProfile('<%=user._id%>')">Save Changes</button>
+                                <button type="button" class="btn btn-success" id="saveProfileChanges">Save
+                                    Changes</button>
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
 
-        <!-- Change Image Modal -->
-        <div class="modal fade" id="changeImageModal" tabindex="-1" aria-labelledby="changeImageModalLabel"
+        <!-- ===== Crop Modal ===== -->
+        <div class="modal fade" id="cropImageModal" tabindex="-1" aria-labelledby="cropImageModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="changeImageModalLabel">Change Profile Image</h5>
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+                    <!-- Header -->
+                    <div class="modal-header bg-success bg-gradient text-white py-3 px-4">
+                        <h5 class="modal-title d-flex align-items-center gap-2" id="cropImageModalLabel">
+                            <i class="fas fa-crop"></i> <span>Crop Profile Image</span>
+                        </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="text-center mb-4">
-                            <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=2e7d32&color=fff&size=160' %>"
-                                alt="Current Profile Image" class="img-fluid rounded-circle mb-3"
-                                style="width: 160px; height: 160px; object-fit: cover;" id="currentProfileImage">
-                        </div>
-                        <form id="changeImageForm">
-                            <div class="mb-3">
-                                <label for="newProfileImage" class="form-label">Upload New Image</label>
-                                <input class="form-control" type="file" id="newProfileImage" accept="image/*">
-                                <div class="form-text">Recommended size: 160x160 pixels. Max file size: 2MB.</div>
+
+                    <!-- Body -->
+                    <div class="modal-body bg-light p-0">
+                        <div class="img-container position-relative d-flex justify-content-center align-items-center"
+                            style="min-height: 200px; max-height: 30vh; background: linear-gradient(to bottom, #f9f9f9, #fff);">
+                            <!-- Crop area -->
+                            <div class="">
+                                <img id="imageToCrop" alt="To crop"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: auto;">
                             </div>
-                            <div class="text-center">
-                                <button type="button" class="btn btn-outline-danger" id="removeProfileImage">
-                                    <i class="fas fa-trash me-1"></i> Remove Current Image
+                        </div>
+
+                        <!-- Controls -->
+                        <div
+                            class="p-3 bg-white border-top d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div class="btn-group flex-wrap">
+                                <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                    id="zoomInBtn">
+                                    <i class="fas fa-search-plus"></i> <span>Zoom In</span>
+                                </button>
+                                <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                    id="zoomOutBtn">
+                                    <i class="fas fa-search-minus"></i> <span>Zoom Out</span>
+                                </button>
+                                <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                    id="rotateLeftBtn">
+                                    <i class="fas fa-undo"></i> <span>Rotate Left</span>
+                                </button>
+                                <button class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                    id="rotateRightBtn">
+                                    <i class="fas fa-redo"></i> <span>Rotate Right</span>
                                 </button>
                             </div>
-                        </form>
+                            <span class="badge bg-success fs-6 px-3 py-2 shadow rounded-pill"
+                                id="cropDimensions">--</span>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="saveProfileImage">Save Changes</button>
+
+                    <!-- Footer -->
+                    <div class="modal-footer bg-light py-3 px-4 d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
+                            data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> <span>Cancel</span>
+                        </button>
+                        <button class="btn btn-success d-flex align-items-center gap-1" id="cropImageBtn">
+                            <i class="fas fa-check"></i> <span>Crop & Save</span>
+                        </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -940,762 +1051,1240 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+     <script>
+       
+// Valid Indian pincode ranges by state
+const validIndianPincodes = {
+    'Andhra Pradesh': { start: 500000, end: 535999 },
+    'Arunachal Pradesh': { start: 790000, end: 792999 },
+    'Assam': { start: 780000, end: 788999 },
+    'Bihar': { start: 800000, end: 855999 },
+    'Chhattisgarh': { start: 490000, end: 497999 },
+    'Delhi': { start: 110000, end: 110099 },
+    'Goa': { start: 403000, end: 403999 },
+    'Gujarat': { start: 360000, end: 396999 },
+    'Haryana': { start: 120000, end: 136999 },
+    'Himachal Pradesh': { start: 170000, end: 177999 },
+    'Jammu and Kashmir': { start: 180000, end: 194999 },
+    'Jharkhand': { start: 810000, end: 835999 },
+    'Karnataka': { start: 560000, end: 591999 },
+    'Kerala': { start: 670000, end: 695999 },
+    'Ladakh': { start: 194000, end: 194999 },
+    'Madhya Pradesh': { start: 450000, end: 488999 },
+    'Maharashtra': { start: 400000, end: 445999 },
+    'Manipur': { start: 795000, end: 795999 },
+    'Meghalaya': { start: 793000, end: 794999 },
+    'Mizoram': { start: 796000, end: 796999 },
+    'Nagaland': { start: 797000, end: 798999 },
+    'Odisha': { start: 750000, end: 770999 },
+    'Punjab': { start: 140000, end: 160999 },
+    'Rajasthan': { start: 300000, end: 345999 },
+    'Sikkim': { start: 737000, end: 737999 },
+    'Tamil Nadu': { start: 600000, end: 643999 },
+    'Telangana': { start: 500000, end: 509999 },
+    'Tripura': { start: 799000, end: 799999 },
+    'Uttar Pradesh': { start: 200000, end: 285999 },
+    'Uttarakhand': { start: 240000, end: 263999 },
+    'West Bengal': { start: 700000, end: 743999 },
+    'Puducherry': { start: 605000, end: 609999 },
+    'Chandigarh': { start: 160000, end: 160999 },
+    'Dadra and Nagar Haveli and Daman and Diu': { start: 396000, end: 396999 },
+    'Lakshadweep': { start: 682000, end: 682999 },
+    'Andaman and Nicobar Islands': { start: 744000, end: 744999 }
+};
 
-            // Helper function for status badge
-            function getStatusBadgeClass(status) {
-                switch (status.toLowerCase()) {
-                    case 'delivered': return 'badge-delivered';
-                    case 'shipped': return 'badge-shipped';
-                    case 'completed': return 'badge-completed';
-                    case 'processing': return 'badge bg-info';
-                    case 'cancelled': return 'badge bg-danger';
-                    default: return 'badge bg-secondary';
-                }
+// Function to validate Indian pincode
+function validateIndianPincode(pincode, state) {
+    if (!/^\d{6}$/.test(pincode)) return false;
+    
+    const pincodeNum = parseInt(pincode);
+    
+    // Invalid pincode patterns
+    if (pincodeNum === 123456 || pincodeNum === 0 || pincodeNum === 999999) {
+        return false;
+    }
+    
+    // Check against state-specific ranges
+    if (state && validIndianPincodes[state]) {
+        const range = validIndianPincodes[state];
+        return pincodeNum >= range.start && pincodeNum <= range.end;
+    }
+    
+    // General validation for any valid Indian pincode range
+    const validRanges = [
+        { start: 110000, end: 110099 }, // Delhi
+        { start: 120000, end: 136999 }, // Haryana
+        { start: 140000, end: 160999 }, // Punjab & Chandigarh
+        { start: 170000, end: 177999 }, // Himachal Pradesh
+        { start: 180000, end: 194999 }, // J&K & Ladakh
+        { start: 200000, end: 285999 }, // UP & Uttarakhand
+        { start: 300000, end: 345999 }, // Rajasthan
+        { start: 360000, end: 396999 }, // Gujarat & Daman Diu
+        { start: 400000, end: 445999 }, // Maharashtra
+        { start: 450000, end: 497999 }, // MP & Chhattisgarh
+        { start: 500000, end: 535999 }, // Andhra Pradesh & Telangana
+        { start: 560000, end: 591999 }, // Karnataka
+        { start: 600000, end: 643999 }, // Tamil Nadu & Puducherry
+        { start: 670000, end: 695999 }, // Kerala & Lakshadweep
+        { start: 700000, end: 743999 }, // West Bengal & Andaman
+        { start: 744000, end: 744999 }, // Andaman and Nicobar
+        { start: 750000, end: 770999 }, // Odisha
+        { start: 780000, end: 799999 }, // Northeast states
+        { start: 800000, end: 855999 }  // Bihar & Jharkhand
+    ];
+    
+    return validRanges.some(range => pincodeNum >= range.start && pincodeNum <= range.end);
+}
+
+// Country-specific validation patterns and data
+const countryData = {
+    'IN': {
+        name: 'India',
+        phonePattern: /^[6-9]\d{9}$/,
+        pincodePattern: /^\d{6}$/,
+        phoneFormat: '10-digit number starting with 6-9',
+        pincodeFormat: 'valid 6-digit Indian pincode',
+        states: [
+            'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+            'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+            'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+            'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+            'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+            'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Jammu and Kashmir',
+            'Ladakh', 'Puducherry', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
+            'Lakshadweep', 'Andaman and Nicobar Islands'
+        ]
+    },
+    'US': {
+        name: 'United States',
+        phonePattern: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/,
+        pincodePattern: /^\d{5}(-\d{4})?$/,
+        phoneFormat: '10-digit US phone number',
+        pincodeFormat: '5-digit ZIP or 9-digit ZIP+4',
+        states: [
+            'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+            'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
+            'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+            'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+            'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
+            'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+            'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+            'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+            'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+            'West Virginia', 'Wisconsin', 'Wyoming', 'Washington D.C.'
+        ]
+    },
+    'GB': {
+        name: 'United Kingdom',
+        phonePattern: /^(\+44|0)?[1-9]\d{8,9}$/,
+        pincodePattern: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
+        phoneFormat: 'UK phone number (11 digits)',
+        pincodeFormat: 'UK postcode format',
+        states: [
+            'England', 'Scotland', 'Wales', 'Northern Ireland'
+        ]
+    },
+    'CA': {
+        name: 'Canada',
+        phonePattern: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/,
+        pincodePattern: /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i,
+        phoneFormat: '10-digit Canadian phone number',
+        pincodeFormat: 'Canadian postal code (A1A 1A1)',
+        states: [
+            'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick',
+            'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia',
+            'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec',
+            'Saskatchewan', 'Yukon'
+        ]
+    },
+    'AU': {
+        name: 'Australia',
+        phonePattern: /^(\+61|0)?[2-478]\d{8}$/,
+        pincodePattern: /^\d{4}$/,
+        phoneFormat: 'Australian phone number',
+        pincodeFormat: '4-digit postcode',
+        states: [
+            'Australian Capital Territory', 'New South Wales', 'Northern Territory',
+            'Queensland', 'South Australia', 'Tasmania', 'Victoria', 'Western Australia'
+        ]
+    }
+};
+
+// Helper function for status badge
+function getStatusBadgeClass(status) {
+    switch (status.toLowerCase()) {
+        case 'delivered': return 'badge-delivered';
+        case 'shipped': return 'badge-shipped';
+        case 'completed': return 'badge-completed';
+        case 'processing': return 'badge bg-info';
+        case 'cancelled': return 'badge bg-danger';
+        default: return 'badge bg-secondary';
+    }
+}
+
+// Enhanced validation patterns with country support
+const patterns = {
+    username: /^[a-zA-Z]{3,20}$/,
+    name: /^[a-zA-Z\s]{2,50}$/,
+    street: /^[a-zA-Z0-9\s,.'-]{5,100}$/,
+    city: /^[a-zA-Z\s-]{2,50}$/,
+    bio: /^.{0,200}$/
+};
+
+// Get country-specific validation data
+function getCountryValidation(countryCode) {
+    return countryData[countryCode] || countryData['IN']; // Default to India
+}
+
+// Enhanced error messages with country context
+function getErrorMessage(fieldId, countryCode = 'IN') {
+    const countryInfo = getCountryValidation(countryCode);
+    
+    const messages = {
+        username: 'Username must be 3-20 letters only, no numbers or special characters',
+        phone: `Please enter a valid ${countryInfo.phoneFormat}`,
+        altPhone: `Please enter a valid ${countryInfo.phoneFormat}`,
+        name: 'Please enter a valid name (2-50 letters only)',
+        state: `Please select a valid state/province for ${countryInfo.name}`,
+        city: 'Please enter a valid city name (2-50 characters)',
+        street: 'Please enter a valid street address (5-100 characters)',
+        pincode: `Please enter a valid ${countryInfo.pincodeFormat}`,
+        bio: 'Bio cannot exceed 200 characters'
+    };
+    return messages[fieldId] || 'Invalid input';
+}
+
+// Enhanced field validation with country support
+function validateField(field) {
+    const fieldId = field.id.replace('edit', '').toLowerCase();
+    const errorElement = document.getElementById(`${field.id}Error`);
+    const value = field.value.trim();
+    
+    // Get country code from country select field
+    const countrySelect = document.getElementById(field.id.includes('edit') ? 'editCountry' : 'country');
+    const countryCode = countrySelect ? countrySelect.value : 'IN';
+    const countryInfo = getCountryValidation(countryCode);
+
+    // Phone validation with country-specific patterns
+    if (fieldId === 'phone' || fieldId === 'editphone') {
+        if (!countryInfo.phonePattern.test(value)) {
+            showFieldError(field, errorElement, `Enter a valid ${countryInfo.phoneFormat}`);
+            return false;
+        }
+    }
+    // Alternative phone validation (optional field)
+    else if (fieldId === 'altphone' || fieldId === 'editaltphone') {
+        if (value && !countryInfo.phonePattern.test(value)) {
+            showFieldError(field, errorElement, `Enter a valid ${countryInfo.phoneFormat}`);
+            return false;
+        }
+    }
+    // Pincode validation with country-specific patterns
+    else if (fieldId === 'pincode' || fieldId === 'editpincode') {
+        if (countryCode === 'IN') {
+            // Get the state for better validation
+            const stateSelect = document.getElementById(field.id.includes('edit') ? 'editState' : 'state');
+            const selectedState = stateSelect ? stateSelect.value : '';
+            
+            if (!countryInfo.pincodePattern.test(value)) {
+                showFieldError(field, errorElement, 'Enter a valid 6-digit pincode');
+                return false;
+            }
+            
+            if (!validateIndianPincode(value, selectedState)) {
+                const errorMsg = selectedState 
+                    ? `Enter a valid pincode for ${selectedState}`
+                    : 'Enter a valid Indian pincode (e.g., 110001, 400001, 700001)';
+                showFieldError(field, errorElement, errorMsg);
+                return false;
+            }
+        } else {
+            if (!countryInfo.pincodePattern.test(value)) {
+                showFieldError(field, errorElement, `Enter a valid ${countryInfo.pincodeFormat}`);
+                return false;
+            }
+        }
+    }
+    // State validation
+    else if (fieldId === 'state' || fieldId === 'editstate') {
+        if (!countryInfo.states.includes(value)) {
+            showFieldError(field, errorElement, `Please select a valid state for ${countryInfo.name}`);
+            return false;
+        }
+    }
+    // Username validation (letters only)
+    else if (fieldId === 'username' || fieldId === 'editusername') {
+        if (!patterns.username.test(value)) {
+            showFieldError(field, errorElement, 'Username must be 3-20 letters only');
+            return false;
+        }
+    }
+    // Name validation
+    else if (fieldId === 'name' || fieldId === 'editname') {
+        if (!patterns.name.test(value)) {
+            showFieldError(field, errorElement, 'Name must be 2-50 letters only');
+            return false;
+        }
+    }
+    // City validation
+    else if (fieldId === 'city' || fieldId === 'editcity') {
+        if (!patterns.city.test(value)) {
+            showFieldError(field, errorElement, 'City name must be 2-50 letters only');
+            return false;
+        }
+    }
+    // Street validation
+    else if (fieldId === 'street' || fieldId === 'editstreet') {
+        if (!patterns.street.test(value)) {
+            showFieldError(field, errorElement, 'Street address must be 5-100 characters');
+            return false;
+        }
+    }
+    // Required field validation
+    else if (field.required && !value) {
+        showFieldError(field, errorElement, 'This field is required');
+        return false;
+    }
+
+    // Field is valid
+    field.classList.remove('is-invalid');
+    field.classList.add('is-valid');
+    errorElement.style.display = 'none';
+    return true;
+}
+
+// Helper function to show field errors
+function showFieldError(field, errorElement, message) {
+    field.classList.add('is-invalid');
+    field.classList.remove('is-valid');
+    errorElement.style.display = 'block';
+    errorElement.textContent = message;
+}
+
+// Update state dropdown based on country selection
+function updateStateOptions(countrySelectId, stateSelectId) {
+    const countrySelect = document.getElementById(countrySelectId);
+    const stateSelect = document.getElementById(stateSelectId);
+    
+    if (!countrySelect || !stateSelect) return;
+    
+    const countryCode = countrySelect.value;
+    const countryInfo = getCountryValidation(countryCode);
+    
+    // Clear existing options
+    stateSelect.innerHTML = '<option value="">Select State/Province</option>';
+    
+    // Add new options
+    countryInfo.states.forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+    });
+    
+    // Reset validation state
+    stateSelect.classList.remove('is-valid', 'is-invalid');
+    const errorElement = document.getElementById(`${stateSelectId}Error`);
+    if (errorElement) errorElement.style.display = 'none';
+}
+
+// Validate select field
+function validateSelect(select) {
+    const selectId = select.id;
+    const errorElement = document.getElementById(`${selectId}Error`);
+    if (select.required && !select.value) {
+        select.classList.add('is-invalid');
+        select.classList.remove('is-valid');
+        errorElement.style.display = 'block';
+        errorElement.textContent = 'Please select an option';
+        return false;
+    }
+    select.classList.remove('is-invalid');
+    select.classList.add('is-valid');
+    errorElement.style.display = 'none';
+    return true;
+}
+
+// Validate entire form
+function validateForm(form) {
+    let isValid = true;
+    const inputs = form.querySelectorAll('input[pattern], input[required]');
+    const selects = form.querySelectorAll('select[required]');
+    inputs.forEach(input => { isValid &= validateField(input); });
+    selects.forEach(select => { isValid &= validateSelect(select); });
+    return isValid;
+}
+
+// Show alert
+function showAlert(message, type) {
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) existingAlert.remove();
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = '2000';
+    alertDiv.style.minWidth = '300px';
+    alertDiv.role = 'alert';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => {
+        const bsAlert = new bootstrap.Alert(alertDiv);
+        bsAlert.close();
+    }, 5000);
+}
+
+// PROFILE HANDLER
+document.addEventListener('DOMContentLoaded', function () {
+    let profileDeleteReq = false;
+    let cropper;
+    const fileInput = document.getElementById('profilePhotoUpload');
+    const previewImage = document.getElementById('editProfileImagePreview');
+    const cropImage = document.getElementById('imageToCrop');
+    
+    // Initialize modals if they exist
+    let cropModal, editModal;
+    if (document.getElementById('cropImageModal')) {
+        cropModal = new bootstrap.Modal(document.getElementById('cropImageModal'));
+    }
+    if (document.getElementById('editProfileModal')) {
+        editModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+    }
+
+    // Set up country change listeners
+    const countrySelect = document.getElementById('country');
+    const editCountrySelect = document.getElementById('editCountry');
+    
+    if (countrySelect) {
+        countrySelect.addEventListener('change', () => {
+            updateStateOptions('country', 'state');
+        });
+        // Initialize state options on page load
+        updateStateOptions('country', 'state');
+    }
+    
+    if (editCountrySelect) {
+        editCountrySelect.addEventListener('change', () => {
+            updateStateOptions('editCountry', 'editState');
+        });
+        // Initialize state options on page load
+        updateStateOptions('editCountry', 'editState');
+    }
+
+    // Open file input on camera button click
+    const cameraBtn = document.querySelector('.btn-success.btn-sm');
+    if (cameraBtn && fileInput) {
+        cameraBtn.addEventListener('click', () => fileInput.click());
+    }
+
+    // Image cropper logic
+    if (fileInput) {
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) {
+                showAlert('Please select a valid image file', 'danger');
+                return;
             }
 
-            // Validation patterns
-            const patterns = {
-                username: /^[a-zA-Z0-9_]{3,20}$/,
-                phone: /^[\d\s+()-]{7,20}$/,
-                altPhone: /^[\d\s+()-]{7,20}$|^$/,
-                name: /^[a-zA-Z\s]{3,50}$/,
-                state: /^[a-zA-Z\s-]{2,50}$/,
-                city: /^[a-zA-Z\s-]{2,50}$/,
-                street: /^[a-zA-Z0-9\s,.'-]{5,100}$/,
-                pincode: /^[a-zA-Z0-9-]{3,10}$/,
-                bio: /^.{0,200}$/
+            const reader = new FileReader();
+            reader.onload = e => {
+                if (cropImage) {
+                    cropImage.src = e.target.result;
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.9,
+                        responsive: true,
+                        ready: updateCropDimensions,
+                        crop: updateCropDimensions
+                    });
+                    if (editModal) editModal.hide();
+                    if (cropModal) cropModal.show();
+                }
             };
+            reader.readAsDataURL(file);
+        });
+    }
 
-            // Error messages
-            function getErrorMessage(fieldId) {
-                const messages = {
-                    username: 'Username must be 3-20 characters, letters, numbers, or underscores only',
-                    phone: 'Please enter a valid phone number (7-20 digits)',
-                    altPhone: 'Please enter a valid phone number (7-20 digits)',
-                    name: 'Please enter a valid name (3-50 letters, no special characters)',
-                    state: 'Please enter a valid state name (2-50 characters)',
-                    city: 'Please enter a valid city name (2-50 characters)',
-                    street: 'Please enter a valid street address (5-100 characters)',
-                    pincode: 'Please enter a valid postal/ZIP code (3-10 characters)',
-                    bio: 'Bio cannot exceed 200 characters'
-                };
-                return messages[fieldId] || 'Invalid input';
+    // Crop controls
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+    const rotateRightBtn = document.getElementById('rotateRightBtn');
+    
+    if (zoomInBtn) zoomInBtn.onclick = () => cropper?.zoom(0.1);
+    if (zoomOutBtn) zoomOutBtn.onclick = () => cropper?.zoom(-0.1);
+    if (rotateLeftBtn) rotateLeftBtn.onclick = () => cropper?.rotate(-15);
+    if (rotateRightBtn) rotateRightBtn.onclick = () => cropper?.rotate(15);
+
+    function updateCropDimensions() {
+        const data = cropper?.getData();
+        const dimensionsEl = document.getElementById('cropDimensions');
+        if (data && dimensionsEl) {
+            dimensionsEl.textContent = `${Math.round(data.width)}×${Math.round(data.height)}`;
+        }
+    }
+
+    const cropImageBtn = document.getElementById('cropImageBtn');
+    if (cropImageBtn) {
+        cropImageBtn.onclick = () => {
+            const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            canvas.toBlob(blob => {
+                if (previewImage) previewImage.src = URL.createObjectURL(blob);
+                if (cropModal) cropModal.hide();
+                if (editModal) editModal.show();
+            }, 'image/jpeg');
+        };
+    }
+
+    // Save profile with validation and fetch
+    const saveProfileBtn = document.getElementById('saveProfileChanges');
+    if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Username validation
+            const usernameInput = document.getElementById('editUsername');
+            if (usernameInput) {
+                const username = usernameInput.value.trim();
+                if (!patterns.username.test(username)) {
+                    showFieldError(usernameInput, usernameInput.nextElementSibling, 
+                        "Username must be 3-20 letters only, no numbers or spaces");
+                    isValid = false;
+                } else {
+                    usernameInput.classList.remove('is-invalid');
+                    usernameInput.classList.add('is-valid');
+                    usernameInput.nextElementSibling.style.display = 'none';
+                }
             }
 
-            // Validate field
-            function validateField(field) {
-                const fieldId = field.id;
-                const errorElement = document.getElementById(`${fieldId}Error`);
-                const value = field.value.trim();
-
-                if (field.required && !value) {
-                    field.classList.add('is-invalid');
-                    field.classList.remove('is-valid');
-                    errorElement.style.display = 'block';
-                    errorElement.textContent = 'This field is required';
-                    return false;
+            // Phone validation
+            const phoneInput = document.getElementById('editphone');
+            if (phoneInput) {
+                const phone = phoneInput.value.trim();
+                const countryCode = document.getElementById('editCountry')?.value || 'IN';
+                const countryInfo = getCountryValidation(countryCode);
+                
+                if (!countryInfo.phonePattern.test(phone)) {
+                    showFieldError(phoneInput, phoneInput.nextElementSibling,
+                        `Enter a valid ${countryInfo.phoneFormat}`);
+                    isValid = false;
+                } else {
+                    phoneInput.classList.remove('is-invalid');
+                    phoneInput.classList.add('is-valid');
+                    phoneInput.nextElementSibling.style.display = 'none';
                 }
-
-                if (field.pattern && value && !new RegExp(field.pattern).test(value)) {
-                    field.classList.add('is-invalid');
-                    field.classList.remove('is-valid');
-                    errorElement.style.display = 'block';
-                    errorElement.textContent = getErrorMessage(fieldId);
-                    return false;
-                }
-
-                field.classList.remove('is-invalid');
-                field.classList.add('is-valid');
-                errorElement.style.display = 'none';
-                return true;
             }
 
-            // Validate select field
-            function validateSelect(select) {
-                const selectId = select.id;
-                const errorElement = document.getElementById(`${selectId}Error`);
-                if (select.required && !select.value) {
-                    select.classList.add('is-invalid');
-                    select.classList.remove('is-valid');
-                    errorElement.style.display = 'block';
-                    errorElement.textContent = 'Please select an option';
-                    return false;
+            // If not valid, stop here
+            if (!isValid) return;
+
+            // If valid, continue with fetch
+            try {
+                const formData = new FormData();
+                const usernameInput = document.getElementById('editUsername');
+                const phoneInput = document.getElementById('editphone');
+                
+                if (usernameInput) formData.append('username', usernameInput.value.trim());
+                if (phoneInput) formData.append('phone', phoneInput.value.trim());
+                if (fileInput?.files[0]) formData.append('profilePhoto', fileInput.files[0]);
+                if (profileDeleteReq) formData.append('profileDeleteReq', profileDeleteReq);
+
+                const res = await fetch('/editProfile', {
+                    method: 'PATCH',
+                    body: formData
+                });
+
+                profileDeleteReq = false;
+
+                if (res.ok) {
+                    sessionStorage.setItem('profileToast', 'success');
+                } else {
+                    sessionStorage.setItem('profileToast', 'error');
                 }
-                select.classList.remove('is-invalid');
-                select.classList.add('is-valid');
-                errorElement.style.display = 'none';
-                return true;
+
+                window.location.reload();
+
+            } catch (error) {
+                sessionStorage.setItem('profileToast', 'error');
+                window.location.reload();
             }
+        });
+    }
 
-            // Validate entire form
-            function validateForm(form) {
-                let isValid = true;
-                const inputs = form.querySelectorAll('input[pattern], input[required]');
-                const selects = form.querySelectorAll('select[required]');
-                inputs.forEach(input => { isValid &= validateField(input); });
-                selects.forEach(select => { isValid &= validateSelect(select); });
-                return isValid;
-            }
+    // Toast notifications
+    const toast = sessionStorage.getItem('profileToast');
+    if (toast === 'success' && typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Profile saved successfully!',
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true
+        });
+    }
+    if (toast === 'error' && typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Something went wrong!',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    }
+    sessionStorage.removeItem('profileToast');
 
-            // Show alert
-            function showAlert(message, type) {
-                const existingAlert = document.querySelector('.custom-alert');
-                if (existingAlert) existingAlert.remove();
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `custom-alert alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-                alertDiv.style.zIndex = '2000';
-                alertDiv.style.minWidth = '300px';
-                alertDiv.role = 'alert';
-                alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-                document.body.appendChild(alertDiv);
-                setTimeout(() => {
-                    const bsAlert = new bootstrap.Alert(alertDiv);
-                    bsAlert.close();
-                }, 5000);
-            }
+    // Remove image logic
+    const removeBtn = document.getElementById('removeImageBtn');
+    if (removeBtn && previewImage) {
+        removeBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
 
-            document.addEventListener('DOMContentLoaded', function () {
-                // Initialize tabs
-                const triggerTabList = [].slice.call(document.querySelectorAll('.profile-nav a'));
-                triggerTabList.forEach(function (triggerEl) {
-                    const tabTrigger = new bootstrap.Tab(triggerEl);
-                    triggerEl.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        tabTrigger.show();
-                        localStorage.setItem('activeProfileTab', triggerEl.getAttribute('href'));
-                    });
-                });
-
-                const activeTab = localStorage.getItem('activeProfileTab');
-                if (activeTab) {
-                    const triggerEl = document.querySelector(`.profile-nav a[href="${activeTab}"]`);
-                    if (triggerEl) bootstrap.Tab.getInstance(triggerEl).show();
-                }
-
-                // Initialize tooltips
-                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-                // Order filter
-                document.querySelectorAll('[data-filter]').forEach(filter => {
-                    filter.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const filterValue = this.getAttribute('data-filter');
-                        document.querySelectorAll('[data-filter]').forEach(item => item.classList.remove('active'));
-                        this.classList.add('active');
-                        const allOrders = document.querySelectorAll('.order-item');
-                        allOrders.forEach(order => {
-                            order.style.display = filterValue === 'all' || order.getAttribute('data-status') === filterValue ? 'block' : 'none';
-                        });
-                    });
-                });
-
-                // Image handling
-                const profilePhotoUpload = document.getElementById('profilePhotoUpload');
-                const editProfileImagePreview = document.getElementById('editProfileImagePreview');
-                const newProfileImageInput = document.getElementById('newProfileImage');
-                const currentProfileImage = document.getElementById('currentProfileImage');
-                const profileImagePreview = document.getElementById('profileImagePreview');
-                const cameraButton = document.querySelector('#editProfileModal .position-relative.d-inline-block button');
-
-                function handleImagePreview(file, previewElements) {
-                    if (!file) return;
-                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                    if (!validTypes.includes(file.type)) {
-                        showAlert('Please select a valid image file (JPEG, PNG, GIF, or WEBP)', 'danger');
-                        return;
-                    }
-                    const maxSize = 2 * 1024 * 1024; // 2MB
-                    if (file.size > maxSize) {
-                        showAlert('Image size should be less than 2MB', 'danger');
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const img = new Image();
-                        img.onload = function () {
-                            if (img.width !== img.height) showAlert('For best results, use a square image', 'warning');
-                            previewElements.forEach(el => {
-                                el.src = e.target.result;
-                                el.classList.add('pulse-animation');
-                                setTimeout(() => el.classList.remove('pulse-animation'), 500);
-                            });
-                        };
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-
-                if (profilePhotoUpload && cameraButton) {
-                    cameraButton.addEventListener('click', () => profilePhotoUpload.click());
-                    profilePhotoUpload.addEventListener('change', function () {
-                        handleImagePreview(this.files[0], [editProfileImagePreview, profileImagePreview]);
-                    });
-                    editProfileImagePreview.addEventListener('dragover', e => {
-                        e.preventDefault();
-                        editProfileImagePreview.classList.add('border-primary');
-                    });
-                    editProfileImagePreview.addEventListener('dragleave', () => {
-                        editProfileImagePreview.classList.remove('border-primary');
-                    });
-                    editProfileImagePreview.addEventListener('drop', e => {
-                        e.preventDefault();
-                        editProfileImagePreview.classList.remove('border-primary');
-                        const file = e.dataTransfer.files[0];
-                        if (file) {
-                            profilePhotoUpload.files = e.dataTransfer.files;
-                            handleImagePreview(file, [editProfileImagePreview, profileImagePreview]);
-                        }
-                    });
-                }
-
-                if (newProfileImageInput) {
-                    newProfileImageInput.addEventListener('change', function () {
-                        handleImagePreview(this.files[0], [currentProfileImage, profileImagePreview]);
-                    });
-                }
-
-                // Remove profile image
-                const removeProfileImageBtn = document.getElementById('removeProfileImage');
-                if (removeProfileImageBtn) {
-                    removeProfileImageBtn.addEventListener('click', function () {
-                        const defaultImage = `https://ui-avatars.com/api/?name=${encodeURIComponent('<%= user.username %>')}&background=2e7d32&color=fff&size=160`;
-                        currentProfileImage.src = defaultImage;
-                        profileImagePreview.src = defaultImage;
-                        editProfileImagePreview.src = defaultImage;
-                        newProfileImageInput.value = '';
-                    });
-                }
-
-                // Profile form validation
-                const editProfileForm = document.getElementById('editProfileForm');
-                const saveProfileChangesBtn = document.getElementById('saveProfileChanges');
-                const profileInputs = editProfileForm.querySelectorAll('input[pattern], textarea[maxlength]');
-                profileInputs.forEach(input => {
-                    input.addEventListener('input', () => validateField(input));
-                    input.addEventListener('blur', () => validateField(input));
-                });
-
-                if (saveProfileChangesBtn) {
-                    saveProfileChangesBtn.addEventListener('click', async function () {
-                        if (!validateForm(editProfileForm)) {
-                            const firstError = editProfileForm.querySelector('.is-invalid');
-                            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            return;
-                        }
-                        const formData = new FormData();
-                        formData.append('username', document.getElementById('username').value.trim());
-                        formData.append('phone', document.getElementById('phone').value.trim());
-                        formData.append('bio', document.getElementById('bio').value.trim());
-                        if (profilePhotoUpload.files[0]) formData.append('profileImage', profilePhotoUpload.files[0]);
-                        // try {
-                        //     alert('before fetch')
-                        //     const response = await fetch('/editProfile', {
-                        //         method: 'PATCH',
-                        //         body: JSON.stringify({
-                        //             formData
-                        //         })
-                        //     });
-                        //     const result = await response.json();
-                        //     if (response.ok) {
-                        //         await Swal.fire({
-                        //             icon: 'success',
-                        //             title: 'Profile updated!',
-                        //             text: result.message || 'Your profile has been updated successfully.',
-                        //             timer: 1500,
-                        //             showConfirmButton: false
-                        //         });
-                        //         bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
-                        //         window.location.reload();
-                        //     } else {
-                        //         await Swal.fire('Error!', result.message || 'Failed to update profile.', 'error');
-                        //     }
-                        // } catch (error) {
-                        //     await Swal.fire('Error!', 'Something went wrong while updating the profile.', 'error');
-                        //     console.error('Error:', error);
-                        // }
-                    });
-                }
-
-                // Add address form validation
-                const addAddressForm = document.getElementById('addAddressForm');
-                const saveAddressBtn = document.getElementById('saveAddress');
-                const addAddressInputs = addAddressForm.querySelectorAll('input[pattern], input[required]');
-                const addAddressSelects = addAddressForm.querySelectorAll('select[required]');
-                addAddressInputs.forEach(input => {
-                    input.addEventListener('input', () => validateField(input));
-                    input.addEventListener('blur', () => validateField(input));
-                });
-                addAddressSelects.forEach(select => {
-                    select.addEventListener('change', () => validateSelect(select));
-                });
-
-                if (saveAddressBtn) {
-                    saveAddressBtn.addEventListener('click', async function () {
-                        if (!validateForm(addAddressForm)) {
-                            const firstError = addAddressForm.querySelector('.is-invalid');
-                            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            return;
-                        }
-                        const formData = {
-                            name: document.getElementById('name').value.trim(),
-                            phone: document.getElementById('phone').value.trim(),
-                            altPhone: document.getElementById('altPhone').value.trim() || undefined,
-                            addressType: document.getElementById('addressType').value,
-                            country: document.getElementById('country').value,
-                            state: document.getElementById('state').value.trim(),
-                            city: document.getElementById('city').value.trim(),
-                            street: document.getElementById('street').value.trim(),
-                            pincode: document.getElementById('pincode').value.trim()
-                        };
-                        try {
-                            const response = await fetch('/addAddress', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(formData)
-                            });
-                            const result = await response.json();
-                            if (response.ok) {
-                                await Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Address added!',
-                                    text: result.message || 'Your new address has been saved.',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                });
-                                bootstrap.Modal.getInstance(document.getElementById('addAddressModal')).hide();
-                                window.location.reload();
-                            } else {
-                                await Swal.fire('Error!', result.message || 'Failed to save address.', 'error');
-                            }
-                        } catch (error) {
-                            await Swal.fire('Error!', 'Something went wrong while saving the address.', 'error');
-                            console.error('Error:', error);
-                        }
-                    });
-                }
-
-                // Reset add address form
-                document.getElementById('addAddressModal').addEventListener('hidden.bs.modal', function () {
-                    addAddressForm.reset();
-                    addAddressForm.querySelectorAll('.is-invalid, .is-valid').forEach(el => {
-                        el.classList.remove('is-invalid', 'is-valid');
-                        const errorElement = document.getElementById(`${el.id}Error`);
-                        if (errorElement) errorElement.style.display = 'none';
-                    });
-                });
-
-                // Edit address form handling
-                window.loadAddressForEdit = function (addressData) {
-                    const address = JSON.parse(decodeURIComponent(addressData));
-                    document.getElementById('editAddressId').value = address._id;
-                    document.getElementById('editAddressType').value = address.addressType;
-                    document.getElementById('editName').value = address.name;
-                    document.getElementById('editStreet').value = address.street;
-                    document.getElementById('editCity').value = address.city;
-                    document.getElementById('editState').value = address.state;
-                    document.getElementById('editPincode').value = address.pincode;
-                    document.getElementById('editCountry').value = address.country;
-                    document.getElementById('editPhone').value = address.phone;
-                    document.getElementById('editAltPhone').value = address.altPhone || '';
-                    editAddressForm.querySelectorAll('input, select').forEach(el => validateField(el) || validateSelect(el));
-                };
-
-                // Edit address form validation
-                const editAddressForm = document.getElementById('editAddressForm');
-                const updateAddressBtn = document.getElementById('updateAddress');
-                const editAddressInputs = editAddressForm.querySelectorAll('input[pattern], input[required]');
-                const editAddressSelects = editAddressForm.querySelectorAll('select[required]');
-                editAddressInputs.forEach(input => {
-                    input.addEventListener('input', () => validateField(input));
-                    input.addEventListener('blur', () => validateField(input));
-                });
-                editAddressSelects.forEach(select => {
-                    select.addEventListener('change', () => validateSelect(select));
-                });
-
-                if (updateAddressBtn) {
-                    updateAddressBtn.addEventListener('click', async function () {
-                        if (!validateForm(editAddressForm)) {
-                            const firstError = editAddressForm.querySelector('.is-invalid');
-                            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            return;
-                        }
-                        const formData = {
-                            _id: document.getElementById('editAddressId').value,
-                            addressType: document.getElementById('editAddressType').value,
-                            name: document.getElementById('editName').value.trim(),
-                            street: document.getElementById('editStreet').value.trim(),
-                            city: document.getElementById('editCity').value.trim(),
-                            state: document.getElementById('editState').value.trim(),
-                            pincode: document.getElementById('editPincode').value.trim(),
-                            country: document.getElementById('editCountry').value,
-                            phone: document.getElementById('editPhone').value.trim(),
-                            altPhone: document.getElementById('editAltPhone').value.trim() || undefined
-                        };
-                        try {
-                            const response = await fetch(`/editAddress?addressId=${encodeURIComponent(formData._id)}`, {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(formData)
-                            });
-                            const result = await response.json();
-                            if (response.ok) {
-                                await Swal.fire({
-                                    icon: 'success',
-                                    title: 'Address updated!',
-                                    text: result.message || 'Your address has been updated successfully.',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                bootstrap.Modal.getInstance(document.getElementById('editAddressModal')).hide();
-                                window.location.reload();
-                            } else {
-                                await Swal.fire('Error!', result.message || 'Failed to update address.', 'error');
-                            }
-                        } catch (error) {
-                            await Swal.fire('Error!', 'Something went wrong while updating the address.', 'error');
-                            console.error('Error:', error);
-                        }
-                    });
-                }
-
-                // Reset edit address form
-                document.getElementById('editAddressModal').addEventListener('hidden.bs.modal', function () {
-                    editAddressForm.reset();
-                    editAddressForm.querySelectorAll('.is-invalid, .is-valid').forEach(el => {
-                        el.classList.remove('is-invalid', 'is-valid');
-                        const errorElement = document.getElementById(`${el.id}Error`);
-                        if (errorElement) errorElement.style.display = 'none';
-                    });
-                });
-
-                // Delete address
-                window.confirmDeleteAddress = async function (addressId) {
-                    const { isConfirmed } = await Swal.fire({
-                        title: "Are you sure?",
-                        text: "This address will be permanently deleted!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "No, keep it"
-                    });
-                    if (!isConfirmed) return;
-                    try {
-                        const response = await fetch(`/deleteAddress?addressId=${encodeURIComponent(addressId)}`, {
-                            method: 'DELETE'
-                        });
-                        const result = await response.json();
-                        if (response.ok && result.success) {
-                            await Swal.fire({
-                                icon: 'success',
-                                title: 'Deleted!',
-                                text: result.message || 'Address deleted successfully!',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                            window.location.reload();
-                        } else {
-                            await Swal.fire('Error!', result.message || 'Failed to delete address.', 'error');
-                        }
-                    } catch (error) {
-                        await Swal.fire('Error!', 'Something went wrong while deleting the address.', 'error');
-                        console.error('Error:', error);
-                    }
-                };
-
-                // Order details
-                window.loadOrderDetails = function (orderId) {
-                    document.getElementById('orderDetailsContent').innerHTML = `
-                    <div class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                `;
-                    fetch(`/api/orders/${orderId}`)
-                        .then(response => response.json())
-                        .then(order => {
-                            document.getElementById('orderDetailsContent').innerHTML = `
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Order #${order.orderNumber}</h5>
-                                    <p class="text-muted">Placed on ${new Date(order.orderDate).toLocaleDateString()}</p>
-                                    <div class="mb-4">
-                                        <h6>Shipping Address</h6>
-                                        <p>
-                                            ${order.shippingAddress?.name || 'N/A'}<br>
-                                            ${order.shippingAddress?.street || ''}<br>
-                                            ${order.shippingAddress?.city || ''}, ${order.shippingAddress?.state || ''} ${order.shippingAddress?.pincode || ''}<br>
-                                            ${order.shippingAddress?.country || ''}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <h6>Payment Method</h6>
-                                        <p><i class="fab fa-cc-visa me-2"></i>${order.paymentMethod || 'N/A'}<br>Billing address same as shipping</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>Order Summary</h6>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr>
-                                            </thead>
-                                            <tbody>
-                                                ${order.items.map(item => `
-                                                    <tr>
-                                                        <td>${item.name || 'N/A'}</td>
-                                                        <td>$${item.price?.toFixed(2) || '0.00'}</td>
-                                                        <td>${item.quantity || 0}</td>
-                                                        <td>$${(item.price * item.quantity)?.toFixed(2) || '0.00'}</td>
-                                                    </tr>
-                                                `).join('')}
-                                                <tr><td colspan="3" class="text-end">Subtotal:</td><td>$${order.subtotal?.toFixed(2) || '0.00'}</td></tr>
-                                                <tr><td colspan="3" class="text-end">Shipping:</td><td>$${order.shippingCost?.toFixed(2) || '0.00'}</td></tr>
-                                                <tr><td colspan="3" class="text-end fw-bold">Total:</td><td class="fw-bold">$${order.totalAmount?.toFixed(2) || '0.00'}</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i><strong>Status:</strong> ${order.status || 'N/A'}</div>
-                                </div>
-                            </div>
-                        `;
-                        })
-                        .catch(error => {
-                            Swal.fire('Error!', 'Failed to load order details. Please try again.', 'error');
-                            console.error('Error:', error);
-                        });
-                };
-
-                // Cancel order
-                window.confirmCancelOrder = async function (orderId) {
-
-
-                    const { isConfirmed } = await Swal.fire({
-                        title: 'Cancel Order?',
-                        text: "Are you sure you want to cancel this order?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, cancel it!',
-                        cancelButtonText: 'Keep order'
-                    })
-
-                    if (isConfirmed) {
-                        const response = await fetch('/cancellOrder', {
-                            method: 'post',
-                            headers: {
-                                'Content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                orderId
-                            })
-                        })
-
-                        const result = await response.json()
-
-
-                        if (response.ok) {
-                            await Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'success',
-                                title: result.message || 'Order cancelled',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-
-                            window.location.reload()
-                        } else {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'error',
-                                title: result.message || 'Order cancell Failed',
-                                showConfirmButton: false,
-                                timer: 2000
-                            })
-                        }
-
-
-                    }
-
-
-
-                    // document.getElementById('orderToCancelId').value = orderId;
-                    // const modal = new bootstrap.Modal(document.getElementById('confirmCancelOrderModal'));
-                    // modal.show();
-                };
-
-                const confirmCancelOrderBtn = document.getElementById('confirmCancelOrderBtn');
-                if (confirmCancelOrderBtn) {
-                    confirmCancelOrderBtn.addEventListener('click', async function () {
-                        const orderId = document.getElementById('orderToCancelId').value;
-                        const reason = document.getElementById('cancelReason').value;
-                        try {
-                            const response = await fetch(`/api/orders/${orderId}/cancel`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ reason })
-                            });
-                            const result = await response.json();
-                            if (response.ok) {
-                                await Swal.fire({
-                                    icon: 'success',
-                                    title: 'Order cancelled!',
-                                    text: result.message || 'Your order has been cancelled successfully.',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                bootstrap.Modal.getInstance(document.getElementById('confirmCancelOrderModal')).hide();
-                                window.location.reload();
-                            } else {
-                                await Swal.fire('Error!', result.message || 'Failed to cancel order.', 'error');
-                            }
-                        } catch (error) {
-                            await Swal.fire('Error!', 'Something went wrong while cancelling the order.', 'error');
-                            console.error('Error:', error);
-                        }
-                    });
-                }
-
-                // Print order
-                const printOrderBtn = document.getElementById('printOrderBtn');
-                if (printOrderBtn) {
-                    printOrderBtn.addEventListener('click', function () {
-                        window.print();
-                    });
-                }
+            const result = await Swal.fire({
+                toast: true,
+                icon: 'warning',
+                title: 'Are you sure?',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No',
+                position: 'top-end'
             });
 
-            async function editProfile(userId) {
-                try {
-                    const username = document.getElementById('editUsername').value
-                    const email = document.getElementById('editEmail').value
-                    const phone = document.getElementById('editPhone').value
-                    const response = await fetch(`/editProfile?userId=${encodeURIComponent(userId)}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            username: username,
-                            email: email,
-                            phone: phone
-                        })
+            if (result.isConfirmed) {
+                profileDeleteReq = true;
+
+                // Replace with avatar URL
+                const userName = previewImage.dataset.username || 'User';
+                previewImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=2e7d32&color=fff&size=160`;
+
+                removeBtn.style.display = 'none';
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Profile photo removed!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true
                     });
-                    const result = await response.json();
-                    if (response.ok) {
+                }
+            }
+        });
+    }
+
+    // Cancel button reloads page
+    const cancelBtn = document.getElementById('cancellProfileEditBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+    }
+
+    // Add address form validation
+    const addAddressForm = document.getElementById('addAddressForm');
+    const saveAddressBtn = document.getElementById('saveAddress');
+    
+    if (addAddressForm) {
+        const addAddressInputs = addAddressForm.querySelectorAll('input[pattern], input[required]');
+        const addAddressSelects = addAddressForm.querySelectorAll('select[required]');
+        
+        addAddressInputs.forEach(input => {
+            input.addEventListener('input', () => validateField(input));
+            input.addEventListener('blur', () => validateField(input));
+        });
+        
+        addAddressSelects.forEach(select => {
+            select.addEventListener('change', () => validateSelect(select));
+        });
+    }
+
+    if (saveAddressBtn) {
+        saveAddressBtn.addEventListener('click', async function () {
+            if (!validateForm(addAddressForm)) {
+                const firstError = addAddressForm.querySelector('.is-invalid');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                altPhone: document.getElementById('altPhone').value.trim() || undefined,
+                addressType: document.getElementById('addressType').value,
+                country: document.getElementById('country').value,
+                state: document.getElementById('state').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                street: document.getElementById('street').value.trim(),
+                pincode: document.getElementById('pincode').value.trim()
+            };
+
+            try {
+                const response = await fetch('/addAddress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (typeof Swal !== 'undefined') {
+                        await Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Address added!',
+                            text: result.message || 'Your new address has been saved.',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                    }
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(result.message || 'Failed to add address');
+                }
+            } catch (error) {
+                if (typeof Swal !== 'undefined') {
+                    await Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message || 'Something went wrong while saving the address.',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Reset add address form modal
+    const addAddressModal = document.getElementById('addAddressModal');
+    if (addAddressModal) {
+        addAddressModal.addEventListener('hidden.bs.modal', function () {
+            addAddressForm.reset();
+            addAddressForm.querySelectorAll('.is-invalid, .is-valid').forEach(el => {
+                el.classList.remove('is-invalid', 'is-valid');
+                const errorElement = document.getElementById(`${el.id}Error`);
+                if (errorElement) errorElement.style.display = 'none';
+            });
+        });
+    }
+
+    // Edit address form handling
+    const editAddressForm = document.getElementById('editAddressForm');
+    const updateAddressBtn = document.getElementById('updateAddress');
+    
+    if (editAddressForm) {
+        const editAddressInputs = editAddressForm.querySelectorAll('input[pattern], input[required]');
+        const editAddressSelects = editAddressForm.querySelectorAll('select[required]');
+        
+        editAddressInputs.forEach(input => {
+            input.addEventListener('input', () => validateField(input));
+            input.addEventListener('blur', () => validateField(input));
+        });
+        
+        editAddressSelects.forEach(select => {
+            select.addEventListener('change', () => validateSelect(select));
+        });
+    }
+
+    if (updateAddressBtn) {
+        updateAddressBtn.addEventListener('click', async function () {
+            if (!validateForm(editAddressForm)) {
+                const firstError = editAddressForm.querySelector('.is-invalid');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            const formData = {
+                _id: document.getElementById('editAddressId').value,
+                addressType: document.getElementById('editAddressType').value,
+                name: document.getElementById('editName').value.trim(),
+                street: document.getElementById('editStreet').value.trim(),
+                city: document.getElementById('editCity').value.trim(),
+                state: document.getElementById('editState').value.trim(),
+                pincode: document.getElementById('editPincode').value.trim(),
+                country: document.getElementById('editCountry').value,
+                phone: document.getElementById('editPhone').value.trim(),
+                altPhone: document.getElementById('editAltPhone').value.trim() || undefined
+            };
+            
+            try {
+                const response = await fetch(`/editAddress?addressId=${encodeURIComponent(formData._id)}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (typeof Swal !== 'undefined') {
                         await Swal.fire({
                             icon: 'success',
-                            title: 'Profile updated!',
-                            text: result.message || 'Your profile has been updated successfully.',
+                            title: 'Address updated!',
+                            text: result.message || 'Your address has been updated successfully.',
                             timer: 1500,
                             showConfirmButton: false
                         });
-                        bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
-                        window.location.reload();
-                    } else {
-                        await Swal.fire('Error!', result.message || 'Failed to update profile.', 'error');
                     }
-                } catch (error) {
-                    await Swal.fire('Error!', 'Something went wrong while updating the profile.', 'error');
-                    console.error('Error:', error);
+                    const editModal = bootstrap.Modal.getInstance(document.getElementById('editAddressModal'));
+                    if (editModal) editModal.hide();
+                    window.location.reload();
+                } else {
+                    if (typeof Swal !== 'undefined') {
+                        await Swal.fire('Error!', result.message || 'Failed to update address.', 'error');
+                    }
                 }
+            } catch (error) {
+                if (typeof Swal !== 'undefined') {
+                    await Swal.fire('Error!', 'Something went wrong while updating the address.', 'error');
+                }
+                console.error('Error:', error);
             }
+        });
+    }
 
+    // Reset edit address form modal
+    const editAddressModal = document.getElementById('editAddressModal');
+    if (editAddressModal) {
+        editAddressModal.addEventListener('hidden.bs.modal', function () {
+            editAddressForm.reset();
+            editAddressForm.querySelectorAll('.is-invalid, .is-valid').forEach(el => {
+                el.classList.remove('is-invalid', 'is-valid');
+                const errorElement = document.getElementById(`${el.id}Error`);
+                if (errorElement) errorElement.style.display = 'none';
+            });
+        });
+    }
 
-            async function returnOrder(orderId) {
-                try {
-                    const { value: reason } = await Swal.fire({
-                        title: 'Return Reason',
-                        input: 'text',
-                        inputLabel: 'Please provide a reason for returning the order:',
-                        inputPlaceholder: 'e.g., Wrong item received',
-                        showCancelButton: true,
-                        confirmButtonText: 'Submit',
-                        cancelButtonText: 'Cancel',
+    // Print order functionality
+    const printOrderBtn = document.getElementById('printOrderBtn');
+    if (printOrderBtn) {
+        printOrderBtn.addEventListener('click', function () {
+            window.print();
+        });
+    }
+});
+
+// Global functions for address management
+window.loadAddressForEdit = function (addressData) {
+    const address = JSON.parse(decodeURIComponent(addressData));
+    document.getElementById('editAddressId').value = address._id;
+    document.getElementById('editAddressType').value = address.addressType;
+    document.getElementById('editName').value = address.name;
+    document.getElementById('editStreet').value = address.street;
+    document.getElementById('editCity').value = address.city;
+    document.getElementById('editState').value = address.state;
+    document.getElementById('editPincode').value = address.pincode;
+    document.getElementById('editCountry').value = address.country;
+    document.getElementById('editPhone').value = address.phone;
+    document.getElementById('editAltPhone').value = address.altPhone || '';
+    
+    // Update state options based on country
+    updateStateOptions('editCountry', 'editState');
+    
+    // Validate all fields after loading
+    const editAddressForm = document.getElementById('editAddressForm');
+    if (editAddressForm) {
+        editAddressForm.querySelectorAll('input, select').forEach(el => {
+            if (el.tagName === 'SELECT') {
+                validateSelect(el);
+            } else {
+                validateField(el);
+            }
+        });
+    }
+};
+
+// Delete address functionality
+window.confirmDeleteAddress = async function (addressId, index) {
+    if (typeof Swal === 'undefined') {
+        if (!confirm('Are you sure you want to delete this address?')) return;
+    } else {
+        const { isConfirmed } = await Swal.fire({
+            title: "Are you sure?",
+            text: "This address will be permanently deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, keep it"
+        });
+
+        if (!isConfirmed) return;
+    }
+
+    try {
+        const deleteResponse = await fetch(`/deleteAddress?addressId=${encodeURIComponent(addressId)}`, {
+            method: 'DELETE'
+        });
+        const deleteResult = await deleteResponse.json();
+
+        if (deleteResponse.ok && deleteResult.success) {
+            await reloadAddressSection();
+            
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: deleteResult.message || 'Address deleted successfully!',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        } else {
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire('Error!', deleteResult.message || 'Failed to delete address.', 'error');
+            } else {
+                alert(deleteResult.message || 'Failed to delete address.');
+            }
+        }
+    } catch (error) {
+        if (typeof Swal !== 'undefined') {
+            await Swal.fire('Error!', 'Something went wrong while deleting the address.', 'error');
+        } else {
+            alert('Something went wrong while deleting the address.');
+        }
+        console.error('Error:', error);
+    }
+};
+
+// Helper function to reload address section
+async function reloadAddressSection() {
+    try {
+        const profileResponse = await fetch('/userProfile');
+        if (!profileResponse.ok) throw new Error('Failed to fetch updated profile');
+        
+        const html = await profileResponse.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Extract the address tab content
+        const newAddressTab = doc.querySelector('#address');
+        const newAddressNavLink = doc.querySelector('.profile-nav a[href="#address"]');
+        
+        if (newAddressTab && newAddressNavLink) {
+            // Replace the address tab content
+            const currentAddressTab = document.querySelector('#address');
+            if (currentAddressTab) {
+                currentAddressTab.innerHTML = newAddressTab.innerHTML;
+            }
+            
+            // Replace the nav link (in case counts changed)
+            const currentNavLink = document.querySelector('.profile-nav a[href="#address"]');
+            if (currentNavLink) {
+                currentNavLink.innerHTML = newAddressNavLink.innerHTML;
+            }
+            
+            // Reinitialize event listeners
+            initializeAddressEventListeners();
+        }
+    } catch (error) {
+        console.error('Error reloading address section:', error);
+    }
+}
+
+// Helper function to reinitialize event listeners
+function initializeAddressEventListeners() {
+    // Reattach event listeners for edit buttons
+    document.querySelectorAll('[data-bs-target="#editAddressModal"]').forEach(button => {
+        button.removeEventListener('click', handleEditButtonClick);
+        button.addEventListener('click', handleEditButtonClick);
+    });
+    
+    // Reattach event listeners for delete buttons
+    document.querySelectorAll('[onclick^="confirmDeleteAddress"]').forEach(button => {
+        const matches = button.getAttribute('onclick').match(/confirmDeleteAddress\('(.+?)','(.+?)'\)/);
+        if (matches) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', function() {
+                confirmDeleteAddress(matches[1], matches[2]);
+            });
+        }
+    });
+}
+
+function handleEditButtonClick() {
+    const addressData = this.getAttribute('onclick')?.match(/loadAddressForEdit\('(.+?)'\)/)?.[1];
+    if (addressData) {
+        loadAddressForEdit(addressData);
+    }
+}
+
+// Order management functions
+window.loadOrderDetails = function (orderId) {
+    const orderDetailsContent = document.getElementById('orderDetailsContent');
+    if (!orderDetailsContent) return;
+    
+    orderDetailsContent.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    fetch(`/api/orders/${orderId}`)
+        .then(response => response.json())
+        .then(order => {
+            orderDetailsContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Order #${order.orderNumber}</h5>
+                        <p class="text-muted">Placed on ${new Date(order.orderDate).toLocaleDateString()}</p>
+                        <div class="mb-4">
+                            <h6>Shipping Address</h6>
+                            <p>
+                                ${order.shippingAddress?.name || 'N/A'}<br>
+                                ${order.shippingAddress?.street || ''}<br>
+                                ${order.shippingAddress?.city || ''}, ${order.shippingAddress?.state || ''} ${order.shippingAddress?.pincode || ''}<br>
+                                ${order.shippingAddress?.country || ''}
+                            </p>
+                        </div>
+                        <div>
+                            <h6>Payment Method</h6>
+                            <p><i class="fab fa-cc-visa me-2"></i>${order.paymentMethod || 'N/A'}<br>Billing address same as shipping</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Order Summary</h6>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${order.items.map(item => `
+                                        <tr>
+                                            <td>${item.name || 'N/A'}</td>
+                                            <td>${item.price?.toFixed(2) || '0.00'}</td>
+                                            <td>${item.quantity || 0}</td>
+                                            <td>${(item.price * item.quantity)?.toFixed(2) || '0.00'}</td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr><td colspan="3" class="text-end">Subtotal:</td><td>${order.subtotal?.toFixed(2) || '0.00'}</td></tr>
+                                    <tr><td colspan="3" class="text-end">Shipping:</td><td>${order.shippingCost?.toFixed(2) || '0.00'}</td></tr>
+                                    <tr><td colspan="3" class="text-end fw-bold">Total:</td><td class="fw-bold">${order.totalAmount?.toFixed(2) || '0.00'}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i><strong>Status:</strong> ${order.status || 'N/A'}</div>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error!', 'Failed to load order details. Please try again.', 'error');
+            } else {
+                alert('Failed to load order details. Please try again.');
+            }
+            console.error('Error:', error);
+        });
+};
+
+// Cancel order functionality
+window.confirmCancelOrder = async function (orderId, index) {
+    const cancelBtn = document.getElementById(`cancelBtn${index}`);
+    const statusBadge = document.getElementById(`orderStats${index}`);
+
+    let isConfirmed = false;
+    if (typeof Swal !== 'undefined') {
+        const result = await Swal.fire({
+            title: 'Cancel Order?',
+            text: "Are you sure you want to cancel this order?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'Keep order'
+        });
+        isConfirmed = result.isConfirmed;
+    } else {
+        isConfirmed = confirm('Are you sure you want to cancel this order?');
+    }
+
+    if (isConfirmed) {
+        try {
+            const response = await fetch('/cancellOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderId })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                if (cancelBtn) cancelBtn.style.display = 'none';
+                if (statusBadge) {
+                    statusBadge.textContent = 'cancelled';
+                    statusBadge.className = "badge bg-danger p-2";
+                }
+                
+                if (typeof Swal !== 'undefined') {
+                    await Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: result.message || 'Order cancelled',
+                        showConfirmButton: false,
+                        timer: 2000
                     });
-
-                    if (!reason) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'warning',
-                            title: 'You must enter a reason!',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
-                        });
-                        return;
-                    }
-
-
-
-                    const response = await fetch('/returnReq', {
-                        method: 'post',
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            orderId,
-                            reason
-                        })
-                    })
-
-                    const data = await response.json()
-
-                    if (response.ok) {
-                        await Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: data.message || 'Return request submitted!',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
-                        });
-
-                        window.location.reload()
-
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: data.message || 'Return request failed!',
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true
-                        });
-
-                    }
-                } catch (error) {
+                } else {
+                    showAlert(result.message || 'Order cancelled', 'success');
+                }
+            } else {
+                if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         toast: true,
                         position: 'top-end',
                         icon: 'error',
-                        title: data.message || 'Return request failed!',
+                        title: result.message || 'Order cancellation failed',
                         showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
+                        timer: 2000
                     });
-
+                } else {
+                    showAlert(result.message || 'Order cancellation failed', 'error');
                 }
             }
+        } catch (error) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Network error occurred',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                showAlert('Network error occurred', 'error');
+            }
+            console.error('Error:', error);
+        }
+    }
+};
 
+// Return order functionality
+window.returnOrder = async function (orderId, index) {
+    try {
+        const returnBtn = document.getElementById(`returnBtn${index}`);
+        const statusBadge = document.getElementById(`orderStats${index}`);
+        const itemId = null;
 
-        </script>
+        let reason = '';
+        if (typeof Swal !== 'undefined') {
+            const { value } = await Swal.fire({
+                title: 'Return Reason',
+                input: 'text',
+                inputLabel: 'Please provide a reason for returning the order:',
+                inputPlaceholder: 'e.g., Wrong item received',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please provide a reason!';
+                    }
+                }
+            });
+            
+            if (!value) return; // User cancelled
+            reason = value;
+        } else {
+            reason = prompt('Please provide a reason for returning the order:');
+            if (!reason) return; // User cancelled
+        }
+
+        const response = await fetch('/returnReq?_method=PATCH', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                itemId,
+                orderId,
+                reason
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            if (statusBadge) {
+                statusBadge.textContent = 'returnRequested';
+                statusBadge.className = "badge bg-light text-dark p-2";
+            }
+
+            if (returnBtn) returnBtn.style.display = 'none';
+
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: data.message || 'Return request submitted!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                showAlert(data.message || 'Return request submitted!', 'success');
+            }
+        } else {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: data.message || 'Return request failed!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            } else {
+                showAlert(data.message || 'Return request failed!', 'error');
+            }
+        }
+    } catch (error) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Return request failed due to a network or server error!',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        } else {
+            showAlert('Return request failed due to a network or server error!', 'error');
+        }
+        console.error('Error:', error);
+    }
+};
+</script>
 </body>
 
 </html>

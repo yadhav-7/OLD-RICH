@@ -8,7 +8,7 @@ const adminRouter = require('./routes/admin')
 const session = require('express-session')
 const passport = require('./config/passport')
 const methodOverride = require('method-override');
-const flash = require('connect-flash')
+
 
 
 app.use(methodOverride('_method'))//for patch api
@@ -26,6 +26,13 @@ app.use(session({
         maxAge:72*60*60*1000                                                                                                                                                                                       
      }
 }))
+
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash;
+  delete req.session.flash;
+  next();
+});
+
 
 app.use(passport.initialize())
 app.use(passport.session())
