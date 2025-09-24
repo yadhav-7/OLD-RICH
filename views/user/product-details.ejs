@@ -610,7 +610,9 @@
                                     <div class="action-buttons">
                                         <button class="add-to-cart" aria-label="Add to cart"
                                             data-product-id="<%= product._id %>"></button>
-                                        <button class="wishlist" aria-label="Add to wishlist">Add to Wishlist</button>
+
+
+                                        <button onclick="addToWishList('<%= product._id %>')" class="wishlist" aria-label="Add to wishlist">Add to Wishlist</button>
                                     </div>
                 </div>
             </div>
@@ -653,6 +655,42 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
+            async function addToWishList(productId) {
+    try {
+        
+        const response = await fetch(`/addToWishList?productId=${encodeURIComponent(productId)}`);
+        const result = await response.json();
+
+        if (response.ok) {
+           await Swal.fire({
+                icon: 'success',
+                title: 'Added to Wishlist',
+                text: result.message || 'The product has been added to your wishlist!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else {
+           await Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: result.message || 'Could not add to wishlist. Please try again.',
+                showConfirmButton: true
+            });
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong. Please try again later!',
+            showConfirmButton: true
+        });
+        console.error(error);
+    }
+}
+
+       
+       
             document.addEventListener('DOMContentLoaded', function () {
                 // Product variant selection elements
                 const sizeOptions = document.querySelectorAll('.size-option');
@@ -786,7 +824,7 @@
                     if (!isNaN(price)) {
                         if (price > salePrice) {
                             originalPriceElement.textContent = `₹${price.toFixed(2)}`;
-                            const discountPercent = Math.round(((price - salePrice) / price) * 100);
+                            const discountPercent = Math.round(((price - salePrice) / price) * 100)
                             discountElement.textContent = `${discountPercent}% OFF`;
                             originalPriceElement.style.display = 'inline';
                             discountElement.style.display = 'inline';

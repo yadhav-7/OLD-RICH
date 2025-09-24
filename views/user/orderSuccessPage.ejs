@@ -248,8 +248,14 @@
                 <span class="detail-label">Total Amount</span>
                 <span class="detail-value"><%= order.totalPrice %></span>
             </div>
+            <% if(order.couponApplied?.applied){%>
+                <div class="detail-row">
+                <span class="detail-label"> Coupon Discount</span>
+                <span class="detail-value"><%= order.couponApplied?.amount %></span>
+            </div>
+            <% } %>
             <div class="detail-row">
-                <span class="detail-label">Discount</span>
+                <span class="detail-label"> Total Discount</span>
                 <span class="detail-value"><%= order.discount %></span>
             </div>
             <div class="detail-row">
@@ -279,7 +285,7 @@
         </div>
 
         <div class="btn-container">
-            <a href="/orderDetailPage?orderId=<%= order.orderId %>" class="btn">Track Your Order</a>
+            <a href="/orderDetailPage?orderId=<%= encodeURIComponent(order.orderId) %>" class="btn">Track Your Order</a>
             <a href="/shop" class="btn btn-secondary">Continue Shopping</a>
         </div>
 

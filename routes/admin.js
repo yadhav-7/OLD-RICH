@@ -5,17 +5,23 @@ const customerController = require('../controllers/admin/customerController')
 const catagoryController = require('../controllers/admin/catagoryController')
 let prodouctContoller = require('../controllers/admin/productController')
 const orderController = require('../controllers/admin/orderController')
+const couponManagement = require('../controllers/admin/couponController')
+const dashboardController = require('../controllers/admin/dashboardController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 const {upload,profileUpload} = require('../middlewares/multer')
 //clear flash
 
 
-//login and dashboard
+//login 
 router.get('/login',adminController.loadlogin)
 router.post('/login',adminController.login)
-router.get('/dashboard',adminAuth,adminController.loadDashboard)
 router.get('/logout',adminController.logout)
 router.get('/pageError',adminController.pageError)
+
+//DASHBOARD MANAGEMENT
+router.get('/dashboard',adminAuth,dashboardController.loadDashboard)
+router.get('/generate-pdf',adminAuth,dashboardController.salesReport)
+
 
 //customer management
 router.get('/users',adminAuth,customerController.costomerInfo)
@@ -61,4 +67,11 @@ router.get('/orderDetails',adminAuth,orderController.ordereDetails)
 
 router.patch('/handleReturnReq',adminAuth,orderController.handleReturnReq)
 
+
+//COUPON MANAGEMENT
+router.get('/getCouponPage',adminAuth,couponManagement.getCouponPage)
+router.post('/addCoupon',adminAuth,couponManagement.addCoupons)
+router.get('/listUnlistCoupon',adminAuth,couponManagement.listUnlistCoupon)
+router.delete('/deleteCoupon',adminAuth,couponManagement.deleteCoupon)
+router.patch('/editCoupon',adminAuth,couponManagement.editCoupon)
 module.exports=router

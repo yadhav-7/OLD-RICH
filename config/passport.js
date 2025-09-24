@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/userSchema');
+const User = require('../models/userSchema')
+const Wallet = require('../models/walletSchema')
 require('dotenv').config();
 
 passport.use(new GoogleStrategy({
@@ -53,13 +54,25 @@ passport.use(new GoogleStrategy({
                     return done(null, false, { message: 'Email already exists.' });
                 }
 
+                function genarateRefferalCode(){
+                    return Math.floor(100000 + Math.random() * 900000).toString();
+                }
+
+                let referralCode = genarateRefferalCode()
+
                 // Else it's signup
                 user = new User({
                     username: profile.displayName,
                     email: profile.emails[0].value,
                     googleId: profile.id,
+                    referralCode:referralCode
                 });
-                await user.save();
+                await user.save()
+
+               const wallet = new Wallet({
+                    userId:user._id
+                })
+                await wallet.save()
                 return done(null, user);
             }
         } catch (error) {

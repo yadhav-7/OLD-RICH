@@ -1,6 +1,7 @@
 const Product = require('../../models/productSchema')
 const User = require('../../models/userSchema')
 const Category = require('../../models/catagory')
+const Cart = require('../../models/cartSchema')
 
 const productDetails = async (req, res) => {
     try {
@@ -9,6 +10,8 @@ const productDetails = async (req, res) => {
         const productId = req.query.productId;
         const product = await Product.findById(productId).populate('category');
         const priceOftheProduct = req.query.slcPrice;
+        const cart = await Cart.findOne({userId:userId})
+        // const length = cart.items?.length||0
 
         // Debug logs
         console.log('Price from query:', priceOftheProduct);
@@ -46,7 +49,8 @@ const productDetails = async (req, res) => {
             quantity: product.quantity,
             totalOffer: totalOffer,
             category: findCategory,
-            selectedVariantIndex: selectedVariantIndex
+            selectedVariantIndex: selectedVariantIndex,
+            // length:length
         });
     } catch (error) {
         console.error('Error from productDetails:', error);

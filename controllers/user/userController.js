@@ -2,6 +2,8 @@ const User = require('../../models/userSchema');
 const Product = require('../../models/productSchema')
 const Category = require('../../models/catagory')
 const Cart = require('../../models/cartSchema')
+const Wishlist = require('../../models/wishlistSchema')
+const Wallet = require('../../models/walletSchema')
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose').Types;
 const nodemailer = require('nodemailer');
@@ -25,6 +27,10 @@ const loadHomePage = async (req, res) => {
   try {
     const user = req.session.user;
     const userData = await User.findOne({ _id: user })
+    if(userData && userData?.refferalCodeApplied==='canUse'&&userData?.refferalCodeApplied!=='used'){
+      userData.refferalCodeApplied='notUsed'
+      await userData.save()
+    }
 
     const categoryData = await Category.find({ isListed: true })
     let productData = await Product.find(
@@ -232,20 +238,30 @@ const verifyOtp = async (req, res) => {
         return res.status(400).json({ success: false, message: 'User with this email already exists' });
 
       }
-
-
-      const passwordHash = await securePassword(user.password);
+      function genarateRefferalCode(){
+        return Math.floor(100000 + Math.random() * 900000).toString();
+      }
+      const refferalCode = genarateRefferalCode()
+      const passwordHash = await securePassword(user.password)
       const saveUserData = new User({
         username: user.username,
         email: user.email,
         phone: user.phone,
-        password: passwordHash
-      });
+        password: passwordHash,
+        referralCode:refferalCode
+      })
 
-      await saveUserData.save();
+      await saveUserData.save()
 
-      req.session.user = saveUserData._id;
-      res.json({ success: true, redirectUrl: '/home' });
+      const wallet = new Wallet({
+        userId:saveUserData._id
+      })
+
+      console.log('wallet',wallet)
+
+      await wallet.save()
+      req.session.user = saveUserData._id
+      return res.json({ success: true, redirectUrl: '/refferalCodeEnter' })
 
     } else {
 
@@ -259,7 +275,7 @@ const verifyOtp = async (req, res) => {
       return res.status(400).json({ success: false, message: 'User with this email already exists' });
     }
 
-    res.status(500).json({ success: false, message: 'An error occurred during OTP verification' });
+    return res.status(500).json({ success: false, message: 'An error occurred during OTP verification' });
   }
 };
 
@@ -323,6 +339,7 @@ const login = async (req, res) => {
 
     req.session.user = findUser._id;
 
+   
     res.redirect('/home');
   } catch (error) {
     console.log('login error', error);
@@ -350,6 +367,10 @@ const loadShopingPage = async (req, res) => {
   try {
 
     const user = req.session.user
+    const wishList = await Wishlist.findOne({userId:user})
+    const wishListArray = wishList?.products??[]
+
+    console.log('wishListArray==========================>',wishListArray)
     const userData = await User.findOne({ _id: user, isBlock: false })
     const categories = await Category.find({ isListed: true })
     const categoryIds = categories.map((cat) => cat._id.toString())
@@ -386,7 +407,8 @@ const loadShopingPage = async (req, res) => {
       totalPages: totalPages,
       query: req.query.search || '',
       sortBy: req.query.sortBy || '',
-      length:cart?.items?.length
+      length:cart?.items?.length,
+      wishListArray:wishListArray
     })
 
 
@@ -463,12 +485,10 @@ const sortAndFilter = async (req, res) => {
       .limit(limit)
       .lean();
 
-    // Transform products to include displayVariant with proper fallbacks
     const transformedProducts = products.map(product => {
-      // Ensure variants exists and is an array
+   
       const variants = Array.isArray(product.variants) ? product.variants : [];
 
-      // Default displayVariant with fallback values
       let displayVariant = {
         salePrice: 0,
         regularPrice: 0,
@@ -476,7 +496,6 @@ const sortAndFilter = async (req, res) => {
         quantity: 0
       };
 
-      // If we have variants, use the first one as default
       if (variants.length > 0) {
         displayVariant = {
           ...displayVariant,
@@ -484,7 +503,7 @@ const sortAndFilter = async (req, res) => {
         };
       }
 
-      // Find matching variant if price filter is applied
+
       if (priceFilter && variants.length > 0) {
         const ranges = Array.isArray(priceFilter) ? priceFilter : [priceFilter];
         for (const range of ranges) {
@@ -508,11 +527,10 @@ const sortAndFilter = async (req, res) => {
       };
     });
 
-    // Get correct total count
+
     const totalProduct = await Product.countDocuments(filter);
     const totalPage = Math.ceil(totalProduct / limit);
 
-    // Render template
     res.render('shop', {
       products: transformedProducts,
       category: categories,
@@ -543,13 +561,12 @@ const searchProducts = async (req, res) => {
     const ITEMS_PER_PAGE = 6;
     const filter = {};
 
-    // 🔎 Category filter
     if (categoryQuery) {
       const categoryIds = categoryQuery.split(',');
       filter.category = { $in: categoryIds };
     }
     filter.isBlocked = false
-    // 💰 Price Range filter
+
     if (priceFilter) {
       const priceRanges = priceFilter.split(',');
       const priceConditions = [];
@@ -568,19 +585,19 @@ const searchProducts = async (req, res) => {
       }
     }
 
-    // 🔍 Search Query filter (product name)
+
     if (searchQuery) {
-      const regex = new RegExp(searchQuery, 'i'); // case-insensitive
+      const regex = new RegExp(searchQuery, 'i'); 
 
       filter.$or = [
         { productName: regex },
         // { color: regex },
-        //  { 'category.name': regex } // This works **only if** category is populated
+        //  { 'category.name': regex } 
       ];
     }
 
 
-    // 🧙 Sorting
+   
     let sortCondition = {};
     if (sort) {
       switch (sort) {

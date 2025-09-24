@@ -1009,10 +1009,15 @@
                             const data = await response.json();
 
                             if (response.ok) {
+                              
                                 itemSelectedQuantity.value = data.quantity;
+                              
                                 totalOfCart.innerText=data.cartTotal
+                        
                                 subtotal.innerText=data.cartTotal
+                                
                                 itemTotal.innerText=data.itemTotal
+                            
                             } else {
                                 Swal.fire({
                                     toast: true,

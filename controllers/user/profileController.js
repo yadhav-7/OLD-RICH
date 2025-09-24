@@ -1,6 +1,7 @@
 const User = require('../../models/userSchema')
 const Address = require('../../models/addressSchema')
 const Order = require('../../models/orderSchema')
+const Cart = require('../../models/cartSchema')
 nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
@@ -80,9 +81,9 @@ const forgotEmailValid = async (req, res) => {
 
             if (emailSent) {
                 req.session.userOTP = otp
-                setTimeout(()=>{
+                setTimeout(() => {
                     delete req.session.userOTP
-                },60000)
+                }, 60000)
                 req.session.email = email
                 console.log('OTP:', otp)
                 return res.render('forgotPass-otp')
@@ -181,24 +182,52 @@ const postNewPassword = async (req, res) => {
 const userProfile = async (req, res) => {
     try {
 
+        console.log('reached at userprofile ')
 
+        const page = req.query.page||1
+        const limit = 2
+        const skip = (page-1)*limit
+        const filter = req.query.filter || ''
+        const sort = req.query.sort || ''
         const userId = req.session.user;
-
-
-        const order = await Order.find({ userId: userId })
+        let query={}
+        if(userId){
+         query.userId=userId
+        }
+        if(filter&&filter!=='all'){
+           query.status=filter
+        }
+       
+        console.log(query)
+        const order = await Order.find(query)
             .sort({ createdOn: -1 })
+            .skip(skip)
+            .limit(limit)
+
+            const totalDoc = await Order.countDocuments(query)
+
+            const totalPage = Math.ceil(totalDoc/limit)
         const totalOrders = await Order.countDocuments({ userId: userId })
         const completedOrders = await Order.countDocuments({ userId: userId, status: 'Delivered' })
         const cancelledOrders = await Order.countDocuments({ userId: userId, status: 'cancelled' })
         const inProgress = await Order.countDocuments({ userId: userId, status: { $nin: ['Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected'] } })
+            .populate('orderedItems.product')
 
-            .populate('orderedItems.product');
-
-
-        const userData = await User.findById(userId);
+            
+console.log(1)
+        const cart = await Cart.findOne({ userId: userId })
+        let length
+        console.log(2)
+        if(cart && cart.items?.length){
+            length = cart.items?.length
+        }
+        
+        const userData = await User.findById(userId)
+        console.log(3)
         const addressDoc = await Address.findOne({ userId });
-
-        const addressData = addressDoc?.address || []; // Safely extract the embedded address array
+console.log(4)
+        const addressData = addressDoc?.address || []
+        console.log(5)
         function getStatusBadgeClass(status) {
             switch (status.toLowerCase()) {
                 case 'pending': return 'bg-warning text-dark';
@@ -212,6 +241,14 @@ const userProfile = async (req, res) => {
             }
         }
 
+        console.log(6)
+        
+        if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+            console.log(7)
+            console.log('order datas',order)
+            return res.status(200).json({order:order,totalPage:totalPage,currentPage:page})
+        }
+console.log(8)
         res.render('userProfile', {
             user: userData,
             addressData: addressData,
@@ -220,6 +257,9 @@ const userProfile = async (req, res) => {
             completedOrders: completedOrders,
             cancelledOrders: cancelledOrders,
             inProgress: inProgress,
+            length: length,
+            totalPage:totalPage,
+            currentPage:page,
             getStatusBadgeClass
         });
 
@@ -230,10 +270,10 @@ const userProfile = async (req, res) => {
         console.error('Error from userProfile:', error);
         res.redirect('/pageNotFound');
     }
-};
+}
 
 
-const getPassCheckforEmailchange = async (req, res) => {
+const getPassCheckforEmailchange = async (req,res) => {
     try {
         const user = req.session.user
         const userData = await User.findById(user)
@@ -387,7 +427,7 @@ const emailUpdate = async (req, res) => {
 
 
         const otp = generateOtp()
-        
+
         const emailSent = sendVerificationEmail(newEmail, otp)
         if (emailSent) {
             req.session.otp = otp

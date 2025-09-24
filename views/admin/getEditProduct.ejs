@@ -901,7 +901,7 @@
                         const regularPrice = parseFloat(row.querySelector('.regular-price').value) || 0;
                         const salePrice = parseFloat(row.querySelector('.sale-price').value) || 0;
                         
-                        if (salePrice > 0 && salePrice >= regularPrice) {
+                        if (salePrice > 0 && salePrice > regularPrice) {
                             Swal.fire('Error', 'Sale price must be less than regular price', 'error');
                             row.querySelector('.sale-price').value = '';
                             row.querySelector('.sale-price').focus();

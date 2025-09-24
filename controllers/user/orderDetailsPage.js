@@ -1,18 +1,23 @@
 const Order = require('../../models/orderSchema');
 const User = require('../../models/userSchema')
 const Product = require('../../models/productSchema')
+const Cart = require('../../models/cartSchema')
 const mongoose = require('mongoose'); // make sure you imported this
 const orderDetailPage = async (req, res) => {
     try {
         const userId = req.session.user
         const user = await User.findOne({ _id: userId, isBlock: false })
+
         const id = req.query.orderId;
-        const order = await Order.findById(id).populate('orderedItems.product') // or findOne({ orderId: id }) if it's a custom ID
+        console.log('req.query.orderId',req.query.orderId)
+        console.log('id',id)
+        const order = await Order.findOne({orderId:id}).populate('orderedItems.product') // or findOne({ orderId: id }) if it's a custom ID
 
+        const cart = await Cart.findOne({userId:userId})
 
-        
+        const length = cart.items?.length
 
-        res.render('orderDetailPages', { order, user });
+        res.render('orderDetailPages', { order, user ,length});
 
     } catch (error) {
         console.error('error in orderDetailPages', error);

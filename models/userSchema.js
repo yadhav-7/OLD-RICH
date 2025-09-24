@@ -44,9 +44,19 @@ const userSchema = new mongoose.Schema({
         ref: 'Cart',
     },
     wallet: [{
-        type: Number,
-        default: 0,
+        type: Schema.Types.ObjectId,
+        ref:'Wallet'
     }],
+     referralCode: {
+        type: String,
+        default: null
+    },
+    refferalCodeApplied: {
+  type: String,
+  enum: ['canUse', 'used', 'notUsed'],
+  default: 'canUse'
+},
+
     wishlist: [{
         type: Schema.Types.ObjectId,
         ref: 'wishlist'

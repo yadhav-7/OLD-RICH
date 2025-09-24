@@ -25,8 +25,7 @@ const guestAuth = async (req, res, next) => {
    
     if (!req.session.user) {
 
-        console.log("no session")
-      res.locals.user = null; // no login, go ahead
+      res.locals.user = null; 
       return next();
     }
 
@@ -62,8 +61,6 @@ const adminAuth = async(req, res, next) => {
 
             
             if (data.isAdmin) {
-                console.log('inside next...................');
-                
                 next();
             } else {
                 res.redirect('/admin/login');

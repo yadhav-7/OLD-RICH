@@ -15,8 +15,6 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-
-  // For non-variant products
   quantity: {
     type: Number
   },
@@ -29,7 +27,7 @@ const productSchema = new mongoose.Schema({
         type:String,
         required:true
       },
-  //  Variant-wise pricing & SKU
+
   variants: [
     {
       sku: {

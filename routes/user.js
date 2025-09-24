@@ -7,7 +7,10 @@ const addressController = require('../controllers/user/addressCondroller')
 const cartCondroller = require('../controllers/user/cartCondroller')
 const checkOutPageController = require('../controllers/user/checkOutPageController')
 const orderController = require('../controllers/user/orderDetailsPage')
-  
+const wishlistCondroller = require('../controllers/user/wishlistCondroller')
+const walletCondroller = require('../controllers/user/walletController')
+const refferalController = require('../controllers/user/refferalController')
+
 const {upload,profileUpload} = require('../middlewares/multer')
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
 const passport = require('passport');
@@ -33,7 +36,10 @@ failureMessage: true
   (req, res) => {
     const authState = req.query.state;
 
-    if (authState === 'signup' || authState === 'login') {
+    if (authState === 'signup' ) {
+  req.session.user = req.user._id;
+  res.redirect('/refferalCodeEnter');
+}else if(authState === 'login'){
   req.session.user = req.user._id;
   res.redirect('/home');
 }
@@ -41,8 +47,8 @@ failureMessage: true
   });
 // Handle Google OAuth failure and redirect accordingly
 router.get('/handle-auth-failure', (req, res) => {
-  const messages = req.session.messages || [];
-  req.session.messages = [];
+  const messages = req.session.messages || []
+  req.session.messages = []
 
   const state = req.query.state || 'signin'; // Fallback to signin
   const message = messages[0] || 'Authentication failed';
@@ -112,6 +118,9 @@ router.get('/increaseCartItems',userAuth,cartCondroller.increaseCartItems)
 router.post('/checkoutpage',userAuth,checkOutPageController.checkoutpage)
 router.get('/getCheckoutpage',userAuth,checkOutPageController.getCheckoutpage)
 router.post('/procedToCheckOut',userAuth,checkOutPageController.procedToCheckOut)
+router.post('/applyCoupon',userAuth,checkOutPageController.applyCoupon)
+router.post('/create-razorpay-order',userAuth,checkOutPageController.createRazorpayOrder)
+router.post('/verify-razorpay-payment',userAuth,checkOutPageController.verifyRazorpayPayment)
 
 //ORDER SUCCESS PAGE
 router.get('/orderSuccess',userAuth,checkOutPageController.orderSuccess)
@@ -127,4 +136,16 @@ router.patch('/cancelSingleItem',userAuth,orderController.cancelSingleItem)
 //RETURN REQ
 router.patch('/returnReq',userAuth,orderController.returnReq)
 
+//WISHLIST 
+router.get('/wishlist',userAuth,wishlistCondroller.getWishList)
+router.get('/addToWishList',userAuth,wishlistCondroller.addToWishlist)
+router.delete('/removeProductFromWishlist',userAuth,wishlistCondroller.removeProduct)
+
+//WALLET MANAGEMENT
+router.get('/wallet',userAuth,walletCondroller.getWallet)
+
+//REFFERAL
+router.get('/refferalCodeEnter',userAuth,refferalController.refferalCodeEnterPage)
+router.get('/applyRefferalCode',userAuth,refferalController.applyRefferalCode)
+router.get('/skipRefferal',userAuth,refferalController.skipRefferal)
 module.exports=router 
