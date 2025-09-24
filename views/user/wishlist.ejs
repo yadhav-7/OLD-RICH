@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Wishlist - Green & White Theme</title>
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <%- include('../../views/partials/user/header',{title:'Wishlist'}) %>
+        <style>
+            :root {
+                --primary-green: #2e7d32;
+                --light-green: #388e3c;
+                --lighter-green: #4caf50;
+                --white: #FFFFFF;
+                --light-gray: #f8f9fa;
+                --medium-gray: #e0e0e0;
+                --dark-gray: #616161;
+                --black: #212121;
+                --error-red: #d32f2f;
+                --warning-orange: #ffa000;
+                --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                --transition: all 0.3s ease;
+            }
+
+            body {
+                font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                background-color: var(--light-gray);
+                color: var(--black);
+                margin: 0;
+                padding: 0;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+
+            }
+
+            .wishlist-header {
+                background-color: var(--white);
+                padding: 25px 30px;
+                border-radius: 10px;
+                box-shadow: var(--box-shadow);
+                margin-bottom: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-left: 5px solid var(--primary-green);
+            }
+
+            .wishlist-header h1 {
+                color: var(--primary-green);
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-size: 28px;
+                font-weight: 600;
+            }
+
+            .item-count {
+                background-color: var(--primary-green);
+                color: white;
+                border-radius: 50%;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .wishlist-container {
+                background-color: var(--white);
+                border-radius: 10px;
+                box-shadow: var(--box-shadow);
+                padding: 25px;
+                position: relative;
+            }
+
+            .wishlist-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+
+            .wishlist-table th {
+                text-align: left;
+                padding: 15px;
+                background-color: var(--lighter-green);
+                color: white;
+                font-weight: 500;
+                font-size: 15px;
+                white-space: nowrap;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .wishlist-table th:first-child {
+                border-top-left-radius: 8px;
+            }
+
+            .wishlist-table th:last-child {
+                border-top-right-radius: 8px;
+            }
+
+            .wishlist-table td {
+                padding: 18px 15px;
+                border-bottom: 1px solid var(--medium-gray);
+                vertical-align: middle;
+                transition: var(--transition);
+            }
+
+            .wishlist-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .wishlist-table tr:hover td {
+                background-color: rgba(76, 175, 80, 0.05);
+            }
+
+            .product-cell {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .product-image {
+                width: 90px;
+                height: 90px;
+                object-fit: contain;
+                border-radius: 6px;
+                border: 1px solid var(--medium-gray);
+                background-color: var(--light-gray);
+                padding: 5px;
+                transition: var(--transition);
+            }
+
+            .product-image:hover {
+                transform: scale(1.03);
+            }
+
+            .product-image-placeholder {
+                width: 90px;
+                height: 90px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: var(--light-gray);
+                color: var(--dark-gray);
+                font-size: 12px;
+                border-radius: 6px;
+                text-align: center;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            .product-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .product-name {
+                font-weight: 600;
+                color: var(--black);
+                margin-bottom: 8px;
+                font-size: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .product-name a {
+                color: inherit;
+                text-decoration: none;
+                transition: var(--transition);
+            }
+
+            .product-name a:hover {
+                color: var(--primary-green);
+                text-decoration: underline;
+            }
+
+            .product-price {
+                font-weight: 600;
+                color: var(--primary-green);
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .product-stock {
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .in-stock {
+                color: var(--lighter-green);
+            }
+
+            .out-of-stock {
+                color: var(--error-red);
+            }
+
+            .low-stock {
+                color: var(--warning-orange);
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .add-to-cart-btn {
+                padding: 8px 16px;
+                background-color: var(--primary-green);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: var(--transition);
+                white-space: nowrap;
+            }
+
+            .add-to-cart-btn:hover {
+                background-color: var(--light-green);
+                transform: translateY(-1px);
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .add-to-cart-btn:disabled {
+                background-color: var(--medium-gray);
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .remove-btn {
+                padding: 8px 16px;
+                background-color: var(--white);
+                color: var(--error-red);
+                border: 1px solid var(--error-red);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: var(--transition);
+                white-space: nowrap;
+            }
+
+            .remove-btn:hover {
+                background-color: rgba(211, 47, 47, 0.1);
+            }
+
+            .continue-shopping {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 28px;
+                background-color: var(--primary-green);
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                transition: var(--transition);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .continue-shopping:hover {
+                background-color: var(--light-green);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                text-decoration: none;
+                color: white;
+            }
+
+            .empty-wishlist {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--dark-gray);
+            }
+
+            .empty-wishlist-icon {
+                font-size: 60px;
+                color: var(--light-green);
+                margin-bottom: 25px;
+                opacity: 0.7;
+            }
+
+            .empty-wishlist h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+                color: var(--black);
+            }
+
+            .empty-wishlist p {
+                font-size: 16px;
+                margin-bottom: 30px;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .loading-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 100;
+                border-radius: 10px;
+                display: none;
+            }
+
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+                border: 4px solid rgba(46, 125, 50, 0.2);
+                border-top-color: var(--primary-green);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Responsive styles */
+            @media (max-width: 992px) {
+                .wishlist-header {
+                    padding: 20px;
+                }
+
+                .wishlist-table th,
+                .wishlist-table td {
+                    padding: 12px 10px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .wishlist-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .continue-shopping {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .wishlist-table {
+                    display: block;
+                    overflow-x: auto;
+                }
+
+                .wishlist-table thead {
+                    display: none;
+                }
+
+                .wishlist-table tr {
+                    display: block;
+                    margin-bottom: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                }
+
+                .wishlist-table td {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 12px 15px;
+                    border-bottom: 1px solid var(--medium-gray);
+                }
+
+                .wishlist-table td::before {
+                    content: attr(data-label);
+                    font-weight: 600;
+                    color: var(--primary-green);
+                    margin-right: 10px;
+                    flex: 1;
+                }
+
+                .wishlist-table td:last-child {
+                    border-bottom: none;
+                }
+
+                .product-cell {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .product-image,
+                .product-image-placeholder {
+                    width: 100%;
+                    height: auto;
+                    max-height: 200px;
+                }
+
+                .action-buttons {
+                    width: 100%;
+                    justify-content: flex-end;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .action-buttons {
+                    flex-direction: column;
+                    gap: 8px;
+                }
+
+                .add-to-cart-btn,
+                .remove-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+
+            /* Animation */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .wishlist-container {
+                animation: fadeIn 0.4s ease-out;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="wishlist-header">
+            <h1><i class="fas fa-heart"></i> Your Wishlist
+                <% if(wishList && wishList.products && wishList.products.length> 0) { %>
+                    <span class="item-count">
+                        <%= wishList.products.length %>
+                    </span>
+                    <% } %>
+            </h1>
+            <a href="/shop" class="continue-shopping"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+        </div>
+
+        <% if(!wishList || !wishList.products || wishList.products.length===0) { %>
+            <div class="wishlist-container">
+                <div class="empty-wishlist">
+                    <i class="fas fa-heart empty-wishlist-icon"></i>
+                    <h2>Your wishlist is empty</h2>
+                    <p>You haven't added any items to your wishlist yet. Start browsing to find products you love!</p>
+                    <a href="/shop" class="continue-shopping"><i class="fas fa-store"></i> Start Shopping</a>
+                </div>
+            </div>
+            <% } else { %>
+                <div class="wishlist-container">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+
+                    <table class="wishlist-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%; min-width: 300px;">Product</th>
+                                <th style="width: 20%; min-width: 120px;">Price</th>
+                                <th style="width: 20%; min-width: 120px;">Stock</th>
+                                <th style="width: 15%; min-width: 180px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% wishList.products.forEach((product)=> { %>
+                                <tr>
+                                    <td data-label="Product">
+                                        <div class="product-cell">
+                                            <% if(product.productId?.productImage && product.productId.productImage[0])
+                                                { %>
+                                                <a
+                                                    href="/productDetails?productId=<%= product.productId._id%>&slcPrice=<%= product.productId?.displayVariant?.salePrice || 0 %>">
+                                                    <img src="/uploads/<%= product.productId.productImage[0] %>"
+                                                        class="product-image" alt="<%= product.productId.productName %>"
+                                                        onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    <div class="product-image-placeholder" style="display: none;">
+                                                        <i class="fas fa-image"></i> Image not available
+                                                    </div>
+                                                </a>
+
+                                                <% } else { %>
+                                                    <div class="product-image-placeholder">
+                                                        <i class="fas fa-image"></i> No image
+                                                    </div>
+                                                    <% } %>
+                                                        <div class="product-info">
+                                                            <div class="product-name">
+                                                                <a href="/productDetails?productId=<%= product.productId._id%>&slcPrice=<%= product.productId?.displayVariant?.salePrice || 0 %>"
+                                                                    style="text-decoration: none;">
+                                                                    <%= product.productId?.productName %>
+                                                                </a>
+                                                            </div>
+                                                            <% if(product.productId?.description) { %>
+                                                                <div class="product-description"
+                                                                    style="font-size: 14px; color: var(--dark-gray);">
+                                                                    <%= product.productId.description.substring(0, 50)
+                                                                        %>...
+                                                                </div>
+                                                                <% } %>
+                                                        </div>
+                                        </div>
+                                    </td>
+
+                                    <td data-label="Price" class="product-price">
+                                        ₹<%= product.productId?.variants[0]?.salePrice?.toFixed(2) || 'N/A' %>
+                                    </td>
+
+                                    <td data-label="Status">
+                                        <% if(product.productId?.status==='Available' ) { %>
+                                            <span class="product-stock in-stock">
+                                                <i class="fas fa-check-circle"></i> In Stock
+                                            </span>
+                                            <% } else if(product.productId?.status==='out of stock' ) { %>
+                                                <span class="product-stock out-of-stock">
+                                                    <i class="fas fa-times-circle"></i> Out of Stock
+                                                </span>
+                                                <% } else { %>
+                                                    <span class="product-stock">
+                                                        <i class="fas fa-info-circle"></i>
+                                                        <%= product.productId?.status %>
+                                                    </span>
+                                                    <% } %>
+                                    </td>
+
+                                    <td data-label="Actions">
+                                        <div class="action-buttons">
+                                           <button class="add-to-cart-btn"
+    data-product-id="<%= product.productId?._id %>"
+    data-product-variants='<%- JSON.stringify(product.productId?.variants || []) %>'
+    <%= product.productId?.status !=='Available' ? 'disabled' : '' %>>
+    <i class="fas fa-cart-plus"></i> Add to Cart
+</button>
+
+                                            <button class="remove-btn" data-product-id="<%= product.productId?._id %>">
+                                                <i class="fas fa-trash-alt"></i> Remove
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+
+            // Show loading state
+            function showLoading() {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            // Hide loading state
+            function hideLoading() {
+                loadingOverlay.style.display = 'none';
+            }
+
+            // Remove item from wishlist
+            const removeButtons = document.querySelectorAll('.remove-btn');
+            removeButtons.forEach(function (button) {
+                button.addEventListener('click', async function () {
+
+                    const productId = this.dataset.productId;
+                    const productRow = this.closest('tr');
+                    const productName = productRow.querySelector('.product-name a')?.textContent.trim() || 'this product';
+
+                    const { isConfirmed } = await Swal.fire({
+                        title: 'Remove from wishlist?',
+                        html: `Are you sure you want to remove <strong>${productName}</strong> from your wishlist?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#2e7d32',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, remove it',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true
+                    });
+
+                    if (isConfirmed) {
+                        try {
+                            showLoading();
+
+                            const response = await fetch(`/removeProductFromWishlist?productId=${encodeURIComponent(productId)}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            const result = await response.json();
+
+                            if (response.ok) {
+
+
+
+                                // Smooth removal animation
+                                productRow.style.transition = 'all 0.3s ease';
+                                productRow.style.opacity = '0';
+                                productRow.style.height = '0';
+                                productRow.style.padding = '0';
+                                productRow.style.margin = '0';
+                                productRow.style.overflow = 'hidden';
+
+                                setTimeout(() => {
+
+                                    productRow.remove();
+                                    // Update item count
+                                    const itemCount = document.querySelector('.item-count');
+                                    if (itemCount) {
+                                        const newCount = parseInt(itemCount.textContent) - 1;
+                                        itemCount.textContent = newCount;
+                                        if (newCount === 0) {
+                                            window.location.reload();
+                                        }
+                                    }
+                                }, 300);
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Item removed from wishlist',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                })
+                            } else {
+
+                                throw new Error(result.message || 'Failed to remove item');
+                            }
+                        } catch (error) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Error',
+                                text: error.message || 'An error occurred while removing the item',
+                                confirmButtonColor: '#2e7d32'
+                            });
+                            console.error('Error:', error);
+                        } finally {
+                            hideLoading();
+                        }
+                    }
+                });
+            });
+
+       
+       
+            // Add to cart functionality
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            addToCartButtons.forEach(function (button) {
+                button.addEventListener('click', async function () {
+                    if (this.disabled) return;
+                    const variants = JSON.parse(this.dataset.productVariants); 
+
+                    let selectedSize = null;
+                    const sizeButtons = variants.map(v => {
+  return `<button class="swal-size-btn" data-size="${v.size}">${v.size}</button>`;
+}).join('');
+
+
+                    const { value: confirmed } = await Swal.fire({
+                        title: 'Select Size',
+                        html: `
+    <div id="swal-size-container" 
+         style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+      ${sizeButtons}
+    </div>
+  `,
+
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel',
+                        background: '#fff',
+                        color: '#2e7d32',
+                        confirmButtonColor: '#2e7d32',
+                        cancelButtonColor: '#d33',
+                        preConfirm: () => {
+                            if (!selectedSize) {
+                                Swal.showValidationMessage('Please select a size');
+                                return false;
+                            }
+                            return selectedSize;
+                        },
+                        didOpen: () => {
+                            document.querySelectorAll('.swal-size-btn').forEach(btn => {
+                                btn.style.cssText = `
+        padding:10px 18px;
+        border:2px solid #2e7d32;
+        border-radius:8px;
+        background:#fff;
+        color:#2e7d32;
+        font-weight:600;
+        font-size:14px;
+        cursor:pointer;
+        transition: all 0.3s ease;
+      `;
+                                btn.addEventListener('mouseenter', () => {
+                                    btn.style.background = '#2e7d32';
+                                    btn.style.color = '#fff';
+                                });
+                                btn.addEventListener('mouseleave', () => {
+                                    if (btn.dataset.size !== selectedSize) {
+                                        btn.style.background = '#fff';
+                                        btn.style.color = '#2e7d32';
+                                    }
+                                });
+                                btn.addEventListener('click', () => {
+                                    // reset previous
+                                    document.querySelectorAll('.swal-size-btn').forEach(b => {
+                                        b.style.background = '#fff';
+                                        b.style.color = '#2e7d32';
+                                    });
+                                    // select new
+                                    btn.style.background = '#2e7d32';
+                                    btn.style.color = '#fff';
+                                    selectedSize = btn.dataset.size;
+                                });
+                            });
+                        }
+                    });
+
+
+
+
+                    const productId = this.dataset.productId;
+
+                    const productRow = this.closest('tr');
+                    const productName = productRow.querySelector('.product-name a')?.textContent.trim() || 'this product';
+                    const buttonText = this.innerHTML;
+
+
+                    // Show loading state on button
+                    
+
+
+                    if (confirmed) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+                    this.disabled = true;
+                        selectedSize = confirmed
+                        try {
+                            const response = await fetch(`/addProductToCart?productId=${encodeURIComponent(productId)}&selectedSize=${selectedSize}`, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+
+                            const result = await response.json();
+
+                            if (response.ok) {
+                                productRow.style.transition = 'all 0.3s ease';
+                                productRow.style.opacity = '0';
+                                productRow.style.height = '0';
+                                productRow.style.padding = '0';
+                                productRow.style.margin = '0';
+                                productRow.style.overflow = 'hidden';
+
+                                setTimeout(() => {
+
+                                    productRow.remove();
+                                    // Update item count
+                                    const itemCount = document.querySelector('.item-count');
+                                    if (itemCount) {
+                                        const newCount = parseInt(itemCount.textContent) - 1;
+                                        itemCount.textContent = newCount;
+                                        if (newCount === 0) {
+                                            window.location.reload();
+                                        }
+                                    }
+                                }, 300);
+
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: `${productName} added to cart`,
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+
+                                
+                            } else {
+                                throw new Error(result.message || 'Failed to add to cart');
+                            }
+                        } catch (error) {
+                        
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: error.message || 'An error occurred while adding to cart',
+                                confirmButtonColor: '#2e7d32'
+                            });
+                            console.error('Error:', error);
+                        } finally {
+                            // Reset button state
+                            this.innerHTML = buttonText;
+                            this.disabled = false;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

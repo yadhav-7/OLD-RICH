@@ -11,8 +11,8 @@ const getAddProducts = async (req, res) => {
         const category = await Category.find({ isListed: true })
         res.render('product-add', {
             category: category,
-            message:null,
-            success:null
+            message: null,
+            success: null
         })
     } catch (error) {
         console.error('error from getAddProduct', error)
@@ -21,7 +21,7 @@ const getAddProducts = async (req, res) => {
 
 const addProducts = async (req, res) => {
     try {
-        
+
         const products = req.body
         let variants = []
         let tempVariantObj = {}
@@ -31,8 +31,8 @@ const addProducts = async (req, res) => {
         }
 
         if (!Array.isArray(products.sizes)) {
-  products.sizes = [products.sizes];
-}
+            products.sizes = [products.sizes];
+        }
         for (let i = 0; i < products.sizes.length; i++) {
 
             if (products.sizes[i] === 'S') {
@@ -81,15 +81,22 @@ const addProducts = async (req, res) => {
                     quantity: products.stockXXL
                 }
             }
-            
+
             variants.push(tempVariantObj)
         }
-       
-const productExist = await Product.findOne({
-    productName: { 
-        $regex: new RegExp(`^${products.productName}$`, 'i') 
-    }
-});
+        let totalStock = 0
+        for (let key of variants) {
+            totalStock += parseInt(key.quantity)
+        }
+        console.log('totalStock of the product=========================>', totalStock)
+
+        let sts = totalStock === 0 ? 'out of stock' : 'Available'
+        console.log('sts=========================>', sts)
+        const productExist = await Product.findOne({
+            productName: {
+                $regex: new RegExp(`^${products.productName}$`, 'i')
+            }
+        });
         if (!productExist) {
             const images = []
             if (req.files && req.files.length > 0) {
@@ -124,7 +131,7 @@ const productExist = await Product.findOne({
                 console.warn(categoryId)
                 return res.status(400).json({ error: 'Invalid category name' })
             }
-            console.warn('near to save data')
+
             const newProduct = new Product({
                 productName: products.productName,
                 description: products.description,
@@ -135,7 +142,7 @@ const productExist = await Product.findOne({
 
                 color: products.color,
                 productImage: images,
-                status: 'Available',
+                status: sts,
                 variants
             })
 
@@ -143,17 +150,17 @@ const productExist = await Product.findOne({
             await newProduct.save()
 
             const category = await Category.find({
-                isListed:true
+                isListed: true
             })
-          
-            res.render('product-add',{
-                success:'Product Add successFull',
-                category:category,
-                message:null
+
+            res.render('product-add', {
+                success: 'Product Add successFull',
+                category: category,
+                message: null
             })
         } else {
-            const category = await Category.find({isListed:true})
-            res.render('product-add',{message:'Product Name Already Exists Try Another name',category,success:null})
+            const category = await Category.find({ isListed: true })
+            res.render('product-add', { message: 'Product Name Already Exists Try Another name', category, success: null })
         }
     } catch (error) {
         console.error('error from add product', error)
@@ -164,20 +171,21 @@ const productExist = await Product.findOne({
 const getAllProducts = async (req, res) => {
 
     try {
-        
-        
+
+
         const search = req.query.search || ''
         const page = parseInt(req.query.page) || 1
-      
+
         const limit = 6
 
         const productData = await Product.find({
             productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
-        }).sort({createdAt:-1}).skip((page - 1) * limit).limit(limit).populate('category').exec()
+        }).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).populate('category').exec()
 
         const count = await Product.find({
             productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
         }).countDocuments()
+
         const category = await Category.find({ isListed: true })
 
 
@@ -185,33 +193,27 @@ const getAllProducts = async (req, res) => {
 
         const totalPage = Math.ceil(count / limit)
 
-      for (let product of productData) {
-  let productTotal = 0; // ← move inside the loop
+        for (let product of productData) {
+            let productTotal = 0; // move inside the loop
 
-  if (product.variants && product.variants.length > 0) {
-    for (let variant of product.variants) {
-      productTotal += variant.quantity;
-    }
-  } else {
-    productTotal = product.quantity || 0;
-  }
+            if (product.variants && product.variants.length > 0) {
+                for (let variant of product.variants) {
+                    productTotal += variant.quantity;
+                }
+            } else {
+                productTotal = product.quantity || 0;
+            }
 
-  product.totalQuantity = productTotal;
-}
-
-      
-
+            product.totalQuantity = productTotal;
+        }
         if (isFetch) {
-            
             return res.json({
                 data: productData,
                 currentPage: page,
                 totalPages: totalPage
             });
         }
-
-       
-        if (category) {    
+        if (category) {
             res.render('getAllProducts', {
                 data: productData,
                 currentPage: page,
@@ -249,30 +251,41 @@ const productVarintsModal = async (req, res) => {
 }
 
 const addProductOffer = async (req, res) => {
-
     try {
-        const { productId, percentage } = req.body
-        
+        const productId = req.body.productId
+        let percentage = req.body.percentage
+
         const findProduct = await Product.findOne({ _id: productId })
+
         const findCategory = await Category.findOne({ _id: findProduct.category })
-        if (findCategory.categoryOffer > percentage) {
-            return res.json({ success: false, message: 'This product category already has category offer' })
+        const categoryOffer = findCategory.categoryOffer
+
+        percentage = parseInt(percentage)
+        if (findCategory.categoryOffer > percentage) return res.status(401).json({ message: 'Category have offer more then product offer!' })
+
+        if (categoryOffer > 0) {
+            for (let variant of findProduct.variants) {
+                let offer = categoryOffer
+                variant.salePrice = Math.floor((variant.salePrice * 100) / (100 - offer));
+            }
+
         }
 
-        // findProduct.salePrice = findProduct.salePrice.Math.floor(findProduct.regularPrice*(percentage/100))
-        findProduct.salePrice = Math.floor(findProduct.regularPrice * (1 - percentage / 100));
+
+        for (let variant of findProduct.variants) {
+            variant.salePrice = Math.floor(variant.salePrice * (1 - percentage / 100))
+        }
+        findProduct.productOffer = percentage
 
 
-        findProduct.productOffer = parseInt(percentage)
+
         await findProduct.save()
 
-        findCategory.categoryOffer = 0
         await findCategory.save()
-        res.json({ success: true })
+        return res.status(200).json({ success: true })
     } catch (error) {
-        console.log('error from addProductOffer', error)
-        res.redirect('/admin/pageError')
-        res.status(500).json({ success: false, message: 'Internal server error' })
+        console.error('error from addProductOffer', error)
+        return res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
 
@@ -282,16 +295,32 @@ const removeProductOffer = async (req, res) => {
     try {
         const { productId } = req.body
         const findProduct = await Product.findOne({ _id: productId })
+        const findCategory = await Category.findOne({ _id: findProduct.category })
+
+        const categoryOffer = findCategory.categoryOffer
+
         const percentage = findProduct.productOffer
-        findProduct.salePrice = findProduct.salePrice + Math.floor(findProduct.regularPrice * (percentage / 100))
 
+        for (let variant of findProduct.variants) {
+            variant.salePrice = Math.floor(
+                variant.salePrice + (variant.salePrice * (percentage / (100 - percentage)))
+            )
 
+            if (categoryOffer > 0) {
+                variant.salePrice = Math.floor(
+                    variant.salePrice = Math.floor(variant.salePrice * (1 - categoryOffer / 100))
+                )
+
+            }
+
+        }
 
         await Product.updateOne({ _id: findProduct._id }, { $set: { productOffer: false } })
 
-        res.json({ success: true })
+        await findProduct.save()
+        return res.json({ success: true })
     } catch (error) {
-        res.redirect('/admin/pageError')
+        return res.redirect('/admin/pageError')
     }
 }
 
@@ -349,8 +378,6 @@ const getEditProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
     try {
-        console.log('editProduct function is working');
-
         const id = req.params.id;
         const data = req.body;
         console.log('Form data received:', data);
@@ -367,12 +394,12 @@ const editProduct = async (req, res) => {
         const categoryId = await Category.findOne({ name: category });
 
         const existingProduct = await Product.findOne({
-    productName: { $regex: `^${productName}$`, $options: 'i' }, // case-insensitive exact match
-    _id: { $ne: id } // exclude current product
-});
+            productName: { $regex: `^${productName}$`, $options: 'i' }, // case-insensitive exact match
+            _id: { $ne: id } // exclude current product
+        });
 
 
-        
+
 
         // Get the current product to preserve existing images if no changes
         const currentProduct = await Product.findById(id);
@@ -391,7 +418,7 @@ const editProduct = async (req, res) => {
 
         // Handle existing images
         let finalImages = [];
-        
+
         if (existingImages && existingImages.trim() !== '') {
             // Split existing images and filter out empty strings
             finalImages = existingImages.split(',').filter(img => img.trim() !== '');
@@ -408,6 +435,9 @@ const editProduct = async (req, res) => {
             console.log('Final images with new additions:', finalImages);
         }
 
+
+        console.log('variants =================>', variants)
+
         // Prepare update fields
         const updateFields = {
             productName,
@@ -417,25 +447,28 @@ const editProduct = async (req, res) => {
             productImage: finalImages
         };
 
+
         // Handle variants if they exist
+
         if (variants && Array.isArray(variants)) {
-            const validVariants = variants.filter(variant => 
+            const validVariants = variants.filter(variant =>
                 variant.size && variant.regularPrice && variant.quantity
             ).map(variant => ({
                 size: variant.size,
                 regularPrice: parseFloat(variant.regularPrice),
                 salePrice: variant.salePrice ? parseFloat(variant.salePrice) : null,
                 quantity: parseInt(variant.quantity),
-                _id: variant._id || undefined
+                _id: variant._id || undefined,
+
             }));
-            
+
             updateFields.variants = validVariants;
         }
 
         console.log('Update fields:', updateFields);
 
         await Product.findByIdAndUpdate(id, updateFields, { new: true });
-       
+
         res.redirect('/admin/getAllProducts');
     } catch (error) {
         console.error('error from editProduct', error);
@@ -474,5 +507,5 @@ module.exports = {
     getEditProduct,
     editProduct,
     deleteSingleImage,
-    
+
 }

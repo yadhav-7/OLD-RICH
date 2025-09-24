@@ -8,8 +8,7 @@ const adminRouter = require('./routes/admin')
 const session = require('express-session')
 const passport = require('./config/passport')
 const methodOverride = require('method-override');
-const flash = require('connect-flash')
-const nocache = require('nocache')
+
 
 
 app.use(methodOverride('_method'))//for patch api
@@ -28,6 +27,13 @@ app.use(session({
      }
 }))
 
+app.use((req, res, next) => {
+  res.locals.flash = req.session.flash;
+  delete req.session.flash;
+  next();
+});
+
+
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -39,10 +45,12 @@ app.use(express.urlencoded({extended:true}))
 app.set('view engine',"ejs")
 app.set('views',[path.join(__dirname,'views/user'),path.join(__dirname,'views/admin')])
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(nocache())
+
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
+
+
 
 
 app.listen(process.env.PORT,()=>{

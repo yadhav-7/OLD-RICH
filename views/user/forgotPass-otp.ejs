@@ -274,7 +274,7 @@
 
     async function validateForm() {
         event.preventDefault()
-        alert('start validateForm')
+      
         try {
             const otpInput = document.getElementById('otp').value
             const response = await fetch('/varify-passForgot-otp', {
@@ -286,7 +286,7 @@
                     otp: otpInput
                 }),
             })
-            alert('after fetch req')
+      
             const result = await response.json()
             if (response.ok) {
                 Swal.fire({

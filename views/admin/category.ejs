@@ -290,7 +290,17 @@
                     title: 'Offer In percentage',
                     input: 'number',
                     inputLabel: 'Percentage',
-                    inputPlaceholder: '%'
+                    inputPlaceholder: '%',
+                    inputAttributes: {
+                        min: 1,
+                        max: 99,
+                        step: 1
+                    },
+                    inputValidator: (value) => {
+                        if (!value) return 'Please enter a percentage';
+                        if (value < 1 || value > 99) return 'Enter a value between 1 and 99';
+                    }
+
                 })
 
                 if (amount) {
@@ -375,9 +385,9 @@
             const table = document.getElementById('category-table');
 
             // function to fetch & render products
-            const fetchAndRenderProducts = async (search , page = 1) => {
+            const fetchAndRenderProducts = async (search, page = 1) => {
                 try {
-                    
+
                     const res = await fetch(`/admin/category?search=${encodeURIComponent(search)}&page=${page}`, {
                         headers: { 'Accept': 'application/json' }
                     });

@@ -11,168 +11,178 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #2a2a2a;
-      --secondary-color: #e63946;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --transition-speed: 0.3s;
-    }
-    
-    body {
-      font-family: 'Montserrat', sans-serif;
-    }
-    
-    .navbar-custom {
-      background-color: var(--light-color);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 15px 0;
-      transition: all var(--transition-speed) ease;
-    }
-    
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: var(--primary-color);
-      letter-spacing: 1px;
-    }
-    
-    .navbar-brand:hover {
-      color: var(--secondary-color);
-    }
-    
-    .nav-link {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--primary-color);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 0 10px;
-      position: relative;
-      padding: 5px 0;
-    }
-    
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: 0;
-      left: 0;
-      background-color: var(--secondary-color);
-      transition: width var(--transition-speed) ease;
-    }
-    
-    .nav-link:hover::after,
-    .nav-link.active::after {
-      width: 100%;
-    }
-    
-    .nav-link:hover,
-    .nav-link.active {
-      color: var(--secondary-color);
-    }
-    
-    .nav-icons {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .nav-icon {
-      color: var(--primary-color);
-      font-size: 1.2rem;
-      position: relative;
-      transition: color var(--transition-speed) ease;
-    }
-    
-    .nav-icon:hover {
-      color: var(--secondary-color);
-    }
-    
-    .cart-count {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background-color: var(--secondary-color);
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .auth-links {
-      display: flex;
-      gap: 15px;
-      margin-left: 20px;
-    }
-    
-    .auth-link {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--primary-color);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-decoration: none;
-      transition: color var(--transition-speed) ease;
-    }
-    
-    .auth-link:hover {
-      color: var(--secondary-color);
-    }
-    
-    .dropdown-menu {
-      border: none;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      margin-top: 10px;
-    }
-    
-    .dropdown-item {
-      font-weight: 500;
-      padding: 8px 15px;
-      transition: all var(--transition-speed) ease;
-    }
-    
-    .dropdown-item:hover {
-      background-color: var(--light-color);
-      color: var(--secondary-color);
-      padding-left: 20px;
-    }
-    
-    .navbar-toggler {
-      border: none;
-      padding: 5px;
-      font-size: 1.5rem;
-    }
-    
-    .navbar-toggler:focus {
-      box-shadow: none;
-    }
-    
-    @media (max-width: 991.98px) {
-      .navbar-collapse {
-        padding-top: 20px;
-      }
-      
-      .nav-link {
-        margin: 5px 0;
-        padding: 10px 0;
-      }
-      
-      .nav-icons {
-        margin: 15px 0;
-        justify-content: flex-start;
-      }
-      
-      .auth-links {
-        margin-left: 0;
-        margin-bottom: 15px;
-      }
-    }
+    /* ===== Scoped Navbar CSS ===== */
+/* Preserves all original styling but prevents leaks */
+:root {
+  --navbar-primary: #2a2a2a;
+  --navbar-secondary: #e63946;
+  --navbar-light: #f8f9fa;
+  --navbar-dark: #212529;
+  --navbar-transition: 0.3s;
+}
+
+nav.navbar-custom {
+  background-color: var(--navbar-light);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 0;
+  transition: all var(--navbar-transition) ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+nav.navbar-custom .navbar-brand {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--navbar-primary);
+  letter-spacing: 1px;
+}
+
+nav.navbar-custom .navbar-brand:hover {
+  color: var(--navbar-secondary);
+}
+
+/* nav.navbar-custom .nav-item { */
+  /* Added for better dropdown scoping */
+/* } */
+
+nav.navbar-custom .nav-link {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--navbar-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 10px;
+  position: relative;
+  padding: 5px 0;
+}
+
+nav.navbar-custom .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--navbar-secondary);
+  transition: width var(--navbar-transition) ease;
+}
+
+nav.navbar-custom .nav-link:hover::after,
+nav.navbar-custom .nav-link.active::after {
+  width: 100%;
+}
+
+nav.navbar-custom .nav-link:hover,
+nav.navbar-custom .nav-link.active {
+  color: var(--navbar-secondary);
+}
+
+nav.navbar-custom .nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+nav.navbar-custom .nav-icon {
+  color: var(--navbar-primary);
+  font-size: 1.2rem;
+  position: relative;
+  transition: color var(--navbar-transition) ease;
+}
+
+nav.navbar-custom .nav-icon:hover {
+  color: var(--navbar-secondary);
+}
+
+nav.navbar-custom .cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--navbar-secondary);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+nav.navbar-custom .auth-links {
+  display: flex;
+  gap: 15px;
+  margin-left: 20px;
+}
+
+nav.navbar-custom .auth-link {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--navbar-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: color var(--navbar-transition) ease;
+}
+
+nav.navbar-custom .auth-link:hover {
+  color: var(--navbar-secondary);
+}
+
+nav.navbar-custom .dropdown-menu {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+nav.navbar-custom .dropdown-item {
+  font-weight: 500;
+  padding: 8px 15px;
+  transition: all var(--navbar-transition) ease;
+}
+
+nav.navbar-custom .dropdown-item:hover {
+  background-color: var(--navbar-light);
+  color: var(--navbar-secondary);
+  padding-left: 20px;
+}
+
+nav.navbar-custom .navbar-toggler {
+  border: none;
+  padding: 5px;
+  font-size: 1.5rem;
+}
+
+nav.navbar-custom .navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* Mobile styles */
+@media (max-width: 991.98px) {
+  nav.navbar-custom .navbar-collapse {
+    padding-top: 20px;
+  }
+  
+  nav.navbar-custom .nav-link {
+    margin: 5px 0;
+    padding: 10px 0;
+  }
+  
+  nav.navbar-custom .nav-icons {
+    margin: 15px 0;
+    justify-content: flex-start;
+  }
+  
+  nav.navbar-custom .auth-links {
+    margin-left: 0;
+    margin-bottom: 15px;
+  }
+}
+
+/* Bootstrap overrides (scoped to navbar only) */
+nav.navbar-custom .navbar-toggler-icon {
+  background-image: none;
+  line-height: 1.5;
+}
   </style>
 </head>
 <body>
@@ -193,7 +203,7 @@
             <a class="nav-link" href="/shop">COLLECTIONS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cart">CART</a>
+            <a class="nav-link" href="#">contact</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/about">ABOUT US</a>
@@ -202,13 +212,16 @@
         
         <div class="d-flex align-items-center">
           <div class="nav-icons">
-            
+            <a href="/search" class="nav-icon">
+              <i class="bi bi-search"></i>
+            </a>
             <a href="/wishlist" class="nav-icon">
               <i class="bi bi-heart"></i>
             </a>
             <a href="/cart" class="nav-icon">
               <i class="bi bi-cart"></i>
-              <span class="cart-count">3</span>
+               <span class="cart-count"><%= locals.length || 0 %></span>
+
             </a>
           </div>
           
@@ -219,7 +232,7 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="/userProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
-                <li><a class="dropdown-item" href="/orders"><i class="bi bi-bag me-2"></i>Orders</a></li>
+                <!-- <li><a class="dropdown-item" href="/orders"><i class="bi bi-bag me-2"></i>Orders</a></li> -->
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
               </ul>

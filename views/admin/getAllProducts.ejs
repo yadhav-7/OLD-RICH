@@ -768,7 +768,7 @@
               rows += `
                 <tr>
                   <td>${variant.size || '-'}</td>
-                  <td>$${variant.salePrice || '0.00'}</td>
+                  <td>₹${variant.salePrice || '0.00'}</td>
                   <td>${variant.quantity || '0'}</td>
                   <td>${variant.sku || '-'}</td>
                 </tr>
@@ -806,53 +806,58 @@
       document.getElementById('variantModal').style.display = 'none';
     }
 
-    // Add offer
-    async function addOffer(productId) {
+  
+   // Add offer
+async function addOffer(productId) {
+  const { value: amount } = await Swal.fire({
+    title: 'Add Product Offer',
+    input: 'number',
+    inputLabel: 'Enter offer percentage',
+    inputPlaceholder: '10',
+    inputAttributes: { min: '1', max: '100' },
+    showCancelButton: true,
+    confirmButtonText: 'Add Offer',
+    cancelButtonText: 'Cancel',
+    inputValidator: (value) => {
+      if (!value) return 'Please enter a value';
+      if (value < 1 || value > 100) return 'Please enter a value between 1 and 100';
+    }
+  });
 
-      const { value: amount } = await Swal.fire({
-        title: 'Add Product Offer',
-        input: 'number',
-        inputLabel: 'Enter offer percentage',
-        inputPlaceholder: '10',
-        inputAttributes: { min: '1', max: '100' },
-        showCancelButton: true,
-        confirmButtonText: 'Add Offer',
-        cancelButtonText: 'Cancel',
-        inputValidator: (value) => {
-          if (!value) return 'Please enter a value';
-          if (value < 1 || value > 100) return 'Please enter a value between 1 and 100';
-        }
+  if (!amount) return; // user cancelled or invalid input
+
+  try {
+    const response = await fetch('/admin/addProductOffer', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ productId, percentage: amount })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      await Swal.fire({
+        icon: 'success',
+        title: 'Offer Added',
+        text: `Successfully added ${amount}% offer to the product`,
+        timer: 2000,
+        showConfirmButton: false,
+        timerProgressBar: true
       });
 
-      if (amount) {
-
-        try {
-          const response = await fetch('/admin/addProductOffer', {
-            method: 'POST',
-            headers: { 'Content-type': 'application/json' },
-            body: JSON.stringify({ productId, percentage: amount })
-          });
-          const result = await response.json();
-          if (response.ok) {
-            Swal.fire({
-              icon: 'success',
-              title: 'Offer Added',
-              text: `Successfully added ${amount}% offer to the product`,
-              timer: 2000,
-              showConfirmButton: false
-            }).then(() => location.reload());
-          } else {
-            throw new Error(result.message || 'Failed to add offer');
-          }
-        } catch (err) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Failed',
-            text: err.message || 'Something went wrong'
-          });
-        }
-      }
+      // 🔄 Reload only after success popup finishes
+      window.location.reload();
+    } else {
+      throw new Error(result.message || 'Failed to add offer');
     }
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed',
+      text: err.message || 'Something went wrong'
+    });
+  }
+}
 
     // Remove offer
     async function removeOffer(productId) {

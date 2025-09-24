@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userProfileImage: {
+    type:String,
+  },
     email: {
         type: String,
         required: true,
@@ -36,14 +39,24 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart: [{
+    cart: {
         type: Schema.Types.ObjectId,
-        ref: 'cart'
-    }],
+        ref: 'Cart',
+    },
     wallet: [{
-        type: Number,
-        default: 0,
+        type: Schema.Types.ObjectId,
+        ref:'Wallet'
     }],
+     referralCode: {
+        type: String,
+        default: null
+    },
+    refferalCodeApplied: {
+  type: String,
+  enum: ['canUse', 'used', 'notUsed'],
+  default: 'canUse'
+},
+
     wishlist: [{
         type: Schema.Types.ObjectId,
         ref: 'wishlist'
@@ -70,9 +83,6 @@ const userSchema = new mongoose.Schema({
         categery: {
             type: Schema.Types.ObjectId,
             ref: 'Catagery'
-        },
-        brand: {
-            type: String
         },
         searchOn: {
             type: Date,

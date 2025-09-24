@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Referral Code</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #1a202c;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .header h1 i {
+            margin-right: 12px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .benefits {
+            margin-bottom: 25px;
+        }
+
+        .benefits h2 {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .benefits h2 i {
+            color: #38a169;
+            margin-right: 10px;
+        }
+
+        .benefit-list {
+            list-style: none;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            background: #f0fff4;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(56, 161, 105, 0.15);
+        }
+
+        .benefit-item i {
+            color: #38a169;
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 16px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #38a169;
+            font-size: 20px;
+            z-index: 1;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: #2d3748;
+            font-weight: 500;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #38a169;
+            box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.2);
+        }
+
+        .form-control.error {
+            border-color: #e53e3e;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+            letter-spacing: normal;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56, 161, 105, 0.4);
+            background: linear-gradient(135deg, #2f855a 0%, #38a169 100%);
+        }
+
+        .btn-primary:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #38a169;
+            border: 2px solid #38a169;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+            transform: translateY(-3px);
+        }
+
+        .terms {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .terms a {
+            color: #38a169;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+            display: none;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 1px solid #68d391;
+        }
+
+        .success-message i {
+            color: #38a169;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .success-message h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #718096;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            border: 1px solid #fc8181;
+        }
+
+        .error-message i {
+            color: #e53e3e;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .error-message h3 {
+            color: #742a2a;
+            margin-bottom: 10px;
+        }
+
+        .error-message p {
+            color: #974d4d;
+        }
+
+        .input-error {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .input-error i {
+            font-size: 16px;
+        }
+
+        #ContinueToDashboard{
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gift"></i> Enter Referral Code</h1>
+            <p>Unlock exclusive rewards when you enter a referral code</p>
+        </div>
+
+        <div class="content">
+            
+
+            <div class="form-group">
+                <label for="referralCode">Enter Referral Code</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-tag"></i>
+                    <input type="text" id="referralCode" class="form-control" placeholder="e.g. ABC123" maxlength="20">
+                </div>
+                <div class="input-error" id="codeError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText">Please enter a valid referral code</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="applyButton">
+                Apply Referral Code
+            </button>
+
+            <button class="btn btn-secondary" id="skipButton">
+                Skip for now
+            </button>
+
+            <a href="/home" style="text-decoration: none;">
+                <button class="btn btn-secondary" id="ContinueToDashboard">
+                Continue to Dashboard
+            </button>
+            </a>
+
+           
+
+            <div class="message success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <h3>Referral Applied Successfully!</h3>
+          
+            </div>
+
+            <div class="message error-message" id="errorMessage">
+                <i class="fas fa-times-circle"></i>
+                <h3>Referral Application Failed!</h3>
+                <p id="errorDetail">Please check the code and try again.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const applyButton = document.getElementById('applyButton');
+            const skipButton = document.getElementById('skipButton');
+            const ContinueToDashboard = document.getElementById('ContinueToDashboard')
+            const referralCodeInput = document.getElementById('referralCode');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const codeError = document.getElementById('codeError');
+            const errorText = document.getElementById('errorText');
+            const errorDetail = document.getElementById('errorDetail');
+
+            // Function to validate referral code format
+            function validateReferralCode(code) {
+                // Allow alphanumeric codes between 5-20 characters
+                const regex = /^\d{6}$/;
+
+                return regex.test(code);
+            }
+
+            // Apply button functionality
+            applyButton.addEventListener('click', function () {
+                const code = referralCodeInput.value.trim();
+                
+                // Reset previous error states
+                referralCodeInput.classList.remove('error', 'shake');
+                codeError.style.display = 'none';
+                
+                // Validate input
+                if (code === '') {
+                    errorText.textContent = 'Please enter a referral code';
+                    codeError.style.display = 'flex';
+                    referralCodeInput.classList.add('error', 'shake');
+                    referralCodeInput.focus();
+                    return;
+                }
+                
+                if (!validateReferralCode(code)) {
+                    errorText.textContent = 'Please enter a valid referral 6 digit code ';
+                    codeError.style.display = 'flex';
+                    referralCodeInput.classList.add('error', 'shake');
+                    referralCodeInput.focus();
+                    return;
+                }
+
+                // Show loading state
+                applyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+                applyButton.disabled = true
+
+                // Simulate API call
+                fetch(`/applyRefferalCode?code=${encodeURIComponent(code)}`)
+                    .then(async (res) => {
+                        const data = await res.json();
+                        applyButton.innerHTML = 'Apply Referral Code';
+                applyButton.disabled = false
+                        return { ok: res.ok, ...data };
+                    })
+                    .then((res) => {
+                        setTimeout(() => {
+                            if (res.ok) {
+                                // Show success message
+                                applyButton.style.display='none'
+                                successMessage.style.display = 'flex';
+                                errorMessage.style.display = 'none';
+                                skipButton.style.display='none'
+                                ContinueToDashboard.style.display='block'
+                                
+                                // Update success message if provided by API
+                                if (res.message) {
+                                    successMessage.querySelector('h3').textContent = res.message;
+                                }
+                                
+                                if (res.details) {
+                                    successMessage.querySelector('p').textContent = res.details;
+                                }
+                            } else {
+                                // Show error message
+                                errorMessage.style.display = 'flex';
+                                successMessage.style.display = 'none';
+                                
+                                // Update error message if provided by API
+                                if (res.message) {
+                                    errorMessage.querySelector('h3').textContent = res.message;
+                                }
+                                
+                                if (res.details) {
+                                    errorDetail.textContent = res.details;
+                                }
+                                
+                                // Reset button
+                                applyButton.innerHTML = 'Apply Referral Code';
+                                applyButton.disabled = false;
+                            }
+                        }, 1500);
+                    })
+                    .catch((err) => {
+                        setTimeout(() => {
+                            errorMessage.style.display = 'flex';
+                            successMessage.style.display = 'none';
+                            errorDetail.textContent = 'Network error. Please check your connection and try again.';
+                            
+                            // Reset button
+                            applyButton.innerHTML = 'Apply Referral Code';
+                            applyButton.disabled = false;
+                        }, 1500);
+                        console.error(err);
+                    });
+            });
+
+            // Skip button functionality
+            skipButton.addEventListener('click', function () {
+                window.location.href = '/skipRefferal';
+            });
+
+            // Input validation and formatting
+            referralCodeInput.addEventListener('input', function () {
+                this.value = this.value.toUpperCase();
+                // Remove error state when user starts typing
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error', 'shake');
+                    codeError.style.display = 'none';
+                }
+            });
+
+            // Press Enter to apply
+            referralCodeInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    applyButton.click();
+                }
+            });
+
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // Remove any existing ripple
+                    const existingRipple = this.querySelector('.ripple');
+                    if (existingRipple) {
+                        existingRipple.remove();
+                    }
+                    
+                    // Create new ripple
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    
+                    // Style the ripple
+                    const diameter = Math.max(this.clientWidth, this.clientHeight);
+                    const radius = diameter / 2;
+                    
+                    ripple.style.width = ripple.style.height = `${diameter}px`;
+                    ripple.style.left = `${e.clientX - this.getBoundingClientRect().left - radius}px`;
+                    ripple.style.top = `${e.clientY - this.getBoundingClientRect().top - radius}px`;
+                    
+                    // Add ripple to button
+                    this.appendChild(ripple);
+                    
+                    // Remove ripple after animation completes
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

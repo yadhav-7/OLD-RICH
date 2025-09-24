@@ -1,339 +1,444 @@
 <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
-<style>
-  .filter-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+  <style>
+    .filter-container {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
 
-  .filter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-  }
+      background: #f8f9fa;
 
-  .filter-section {
-    background: white;
-    padding: 15px;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .filter-title {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 16px;
-    color: #333;
-  }
-
-  .search-box {
-    position: relative;
-    width: 100%;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 12px 15px 12px 40px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #777;
-  }
-
-  .filter-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .filter-option {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    padding-left: 30px;
-    user-select: none;
-  }
-
-  .filter-option input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-
-  .checkmark {
-    position: absolute;
-    left: 0;
-    height: 18px;
-    width: 18px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-
-  .filter-option:hover input~.checkmark {
-    background-color: #f1f1f1;
-  }
-
-  .filter-option input:checked~.checkmark {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-
-  .filter-option input:checked~.checkmark:after {
-    display: block;
-  }
-
-  .filter-option .checkmark:after {
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-
-  .sort-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: white;
-  }
-
-  .action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .btn.primary {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .btn.primary:hover {
-    background-color: #0069d9;
-  }
-
-  .btn.secondary {
-    background-color: #6c757d;
-    color: white;
-  }
-
-  .btn.secondary:hover {
-    background-color: #5a6268;
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 20px 0;
-  }
-
-  @media (max-width: 768px) {
-    .filter-grid {
-      grid-template-columns: 1fr;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-  }
-</style>
-<link rel="stylesheet" href="/user/shop.css">
-<div class="main-container">
-  <section class="shop-page container">
-    <div class="shop-topbar">
-      <div class="search-bar">
-<form action="" method="" class="search-form" id="search-form">
-  <input type="text" name="query" placeholder="Search for products..." class="search-input"
-    value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" id="searchInput" />
 
-  <button type="submit" class="search-button">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-      <path
-        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-    </svg>
-    Search
-  </button>
 
- 
-  <button type="button" id="clearSearch" class="search-button" style="margin-left: 4px; color: white;">
-    ✖
-  </button>
-</form>
+    .view-btn {
+      width: 100%;
+      padding: 10px 0;
+      background-color: #277038;
+      color: white;
+      border: 1px solid #277038;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
 
+    .view-btn:hover {
+      background-color: white;
+      color: #277038;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .filter-section {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-title {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 15px 12px 40px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      padding-left: 30px;
+      user-select: none;
+    }
+
+    .filter-option input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      position: absolute;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .filter-option:hover input~.checkmark {
+      background-color: #f1f1f1;
+    }
+
+    .filter-option input:checked~.checkmark {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    .filter-option input:checked~.checkmark:after {
+      display: block;
+    }
+
+    .filter-option .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .sort-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: white;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn.primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background-color: #0069d9;
+    }
+
+    .btn.secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn.secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/user/shop.css">
+  <div class="main-container">
+    <section class="shop-page container">
+      <div class="shop-topbar">
+        <div class="search-bar">
+          <form action="" method="" class="search-form" id="search-form">
+            <input type="text" name="query" placeholder="Search for products..." class="search-input"
+              value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" id="searchInput" />
+
+            <button type="submit" class="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
+              Search
+            </button>
+
+
+            <button type="button" id="clearSearch" class="search-button" style="margin-left: 4px; color: white;">
+              ✖
+            </button>
+          </form>
+
+        </div>
       </div>
-    </div>
 
-    <div class="product-list-container">
-      <!-- FILTER SIDEBAR -->
-      <div class="filter-container">
-        <form action="/sortAndfilter?page=<%= currentPage %>" method="GET" id="filterForm">
-          <div class="filter-grid">
-            <div class="filter-section">
-              <h3 class="filter-title">Category</h3>
-              <div class="filter-options">
-                <% if (category && category.length) { %>
-                  <% category.forEach(cat => { %>
-                    <label class="filter-option">
-                      <input type="checkbox" name="category" class="categoryFilter" value="<%= cat._id %>"
-                        <%= selectedCategories.includes(cat._id.toString()) ? 'checked' : '' %>>
-                      <span class="checkmark"></span>
-                      <span><%= cat.name %></span>
-                    </label>
-                  <% }) %>
-                <% } else { %>
-                  <p class="text-muted">No Category</p>
+      <div class="product-list-container">
+        <!-- FILTER SIDEBAR -->
+        <div class="filter-container">
+          <form action="/sortAndfilter?page=<%= currentPage %>" method="GET" id="filterForm">
+            <div class="filter-grid">
+              <div class="filter-section">
+                <h3 class="filter-title">Category</h3>
+                <div class="filter-options">
+                  <% if (category && category.length) { %>
+                    <% category.forEach(cat=> { %>
+                      <label class="filter-option">
+                        <input type="checkbox" name="category" class="categoryFilter" value="<%= cat._id %>"
+                          <%=selectedCategories.includes(cat._id.toString()) ? 'checked' : '' %>>
+                        <span class="checkmark"></span>
+                        <span>
+                          <%= cat.name %>
+                        </span>
+                      </label>
+                      <% }) %>
+                        <% } else { %>
+                          <p class="text-muted">No Category</p>
+                          <% } %>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <h3 class="filter-title">Price Range (₹)</h3>
+                <div class="filter-options">
+                  <label class="filter-option">
+                    <input type="checkbox" name="priceFilter" class="priceFilter" value="0-499"
+                      <%=selectedPriceFilters.includes('0-499') ? 'checked' : '' %>>
+                    <span class="checkmark"></span>
+                    <span>Under 500</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" name="priceFilter" class="priceFilter" value="500-999"
+                      <%=selectedPriceFilters.includes('500-999') ? 'checked' : '' %>>
+                    <span class="checkmark"></span>
+                    <span>500 - 999</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" name="priceFilter" class="priceFilter" value="1000-1499"
+                      <%=selectedPriceFilters.includes('1000-1499') ? 'checked' : '' %>>
+                    <span class="checkmark"></span>
+                    <span>1000 - 1499</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" name="priceFilter" class="priceFilter" value="1500-9999"
+                      <%=selectedPriceFilters.includes('1500-9999') ? 'checked' : '' %>>
+                    <span class="checkmark"></span>
+                    <span>1500+</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <h3 class="filter-title">Sort By</h3>
+                <select name="sort" class="sort-select">
+                  <option value="">Recommended</option>
+                  <option value="priceLowHigh">Price: Low to High</option>
+                  <option value="priceHighLow">Price: High to Low</option>
+                  <option value="nameAZ">Name: A-Z</option>
+                  <option value="nameZA">Name: Z-A</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button type="submit" id="applyBtn" class="btn primary">Apply</button>
+              <a href="/shop"><button type="button" id="clearBtn" class="btn secondary">Clear All</button></a>
+            </div>
+          </form>
+        </div>
+
+        <hr class="divider">
+
+        <!-- PRODUCT GRID -->
+        <main class="product-grid">
+          <% if (products.length===0) { %>
+            <div class="no-products">
+              <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ccc" viewBox="0 0 16 16">
+                <path
+                  d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z" />
+                <path
+                  d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+              </svg>
+              <h3>No products found</h3>
+              <p>Try adjusting your search or filter criteria</p>
+            </div>
+            <% } else { %>
+              <% for(let i=0; i < products.length; i++) { %>
+                <div class="product-card">
+                   <% if(wishListArray.some((item)=>item.productId?.toString()===products[i]._id?.toString())) {%>
+                      <!-- Already in wishlist -->
+  <button class="wishlist-btn" onclick="toggleWishlist(this,'removeWishList')"
+                    data-product-id="<%= products[i]._id %>">❤️</button>
+                    <% }else{ %>
+  <!-- Not in wishlist -->
+  <button class="wishlist-btn" onclick="toggleWishlist(this,'addToWishList')"
+                    data-product-id="<%= products[i]._id %>">❤</button>
+                      <% } %>
+                  
+                  <% if (products[i].discountPercentage> 0) { %>
+                    <div class="discount-badge">
+                      <%= products[i].discountPercentage %>% OFF
+                    </div>
+                    <% } %>
+                      <a href="/productDetails?productId=<%= products[i]._id %>&slcPrice=<%= products[i].displayVariant?.salePrice || 0 %>"
+                        style="text-decoration: none;">
+                        <img src="/Uploads/<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>" />
+                        <h4>
+                          <%= products[i].productName %>
+                        </h4>
+                        <div>
+                          <% if (products[i].displayVariant && products[i].displayVariant.salePrice) { %>
+                            <span class="price-discount">₹<%=
+                                products[i].displayVariant.salePrice.toLocaleString('en-IN') %></span>
+                            <span class="original-price">₹<%=
+                                products[i].displayVariant.regularPrice?.toLocaleString('en-IN') || '' %></span>
+                            <% } else { %>
+                              <span class="price-discount">₹<%= products[i].variants[0].salePrice %></span>
+                              <span class="original-price">₹<%= products[i].variants[0].regularPrice || '' %></span>
+                              <% } %>
+                        </div>
+
+                        <button class="view-btn">View</button>
+                      </a>
+                </div>
                 <% } %>
-              </div>
-            </div>
-
-            <div class="filter-section">
-              <h3 class="filter-title">Price Range (₹)</h3>
-              <div class="filter-options">
-                <label class="filter-option">
-                  <input type="checkbox" name="priceFilter" class="priceFilter" value="0-499"
-                    <%= selectedPriceFilters.includes('0-499') ? 'checked' : '' %>>
-                  <span class="checkmark"></span>
-                  <span>Under 500</span>
-                </label>
-                <label class="filter-option">
-                  <input type="checkbox" name="priceFilter" class="priceFilter" value="500-999"
-                    <%= selectedPriceFilters.includes('500-999') ? 'checked' : '' %>>
-                  <span class="checkmark"></span>
-                  <span>500 - 999</span>
-                </label>
-                <label class="filter-option">
-                  <input type="checkbox" name="priceFilter" class="priceFilter" value="1000-1499"
-                    <%= selectedPriceFilters.includes('1000-1499') ? 'checked' : '' %>>
-                  <span class="checkmark"></span>
-                  <span>1000 - 1499</span>
-                </label>
-                <label class="filter-option">
-                  <input type="checkbox" name="priceFilter" class="priceFilter" value="1500-9999"
-                    <%= selectedPriceFilters.includes('1500-9999') ? 'checked' : '' %>>
-                  <span class="checkmark"></span>
-                  <span>1500+</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="filter-section">
-              <h3 class="filter-title">Sort By</h3>
-              <select name="sort" class="sort-select">
-                <option value="">Recommended</option>
-                <option value="priceLowHigh">Price: Low to High</option>
-                <option value="priceHighLow">Price: High to Low</option>
-                <option value="nameAZ">Name: A-Z</option>
-                <option value="nameZA">Name: Z-A</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="action-buttons">
-            <button type="submit" id="applyBtn" class="btn primary">Apply</button>
-            <a href="/shop"><button type="button" id="clearBtn" class="btn secondary">Clear All</button></a>
-          </div>
-        </form>
+                  <% } %>
+        </main>
       </div>
 
-      <hr class="divider">
-
-      <!-- PRODUCT GRID -->
-      <main class="product-grid">
-        <% if (products.length === 0) { %>
-          <div class="no-products">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#ccc" viewBox="0 0 16 16">
-              <path
-                d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z" />
-              <path
-                d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-            </svg>
-            <h3>No products found</h3>
-            <p>Try adjusting your search or filter criteria</p>
-          </div>
-        <% } else { %>
-          <% for(let i = 0; i < products.length; i++) { %>
-            <div class="product-card">
-              <button class="wishlist-btn" onclick="toggleWishlist(this)" data-product-id="<%= products[i]._id %>">❤</button>
-              <% if (products[i].discountPercentage > 0) { %>
-                <div class="discount-badge">
-                  <%= products[i].discountPercentage %>% OFF
-                </div>
-              <% } %>
-              <a href="/productDetails?productId=<%= products[i]._id %>&slcPrice=<%= products[i].displayVariant?.salePrice || 0 %>" style="text-decoration: none;">
-                <img src="/Uploads/<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>" />
-                <h4><%= products[i].productName %></h4>
-                <div>
-                  <% if (products[i].displayVariant && products[i].displayVariant.salePrice) { %>
-                    <span class="price-discount">₹<%= products[i].displayVariant.salePrice.toLocaleString('en-IN') %></span>
-                    <span class="original-price">₹<%= products[i].displayVariant.regularPrice?.toLocaleString('en-IN') || '' %></span>
-                  <% } else { %>
-                    <span class="price-discount">₹<%= products[i].variants[0].salePrice %></span>
-                    <span class="original-price">₹<%= products[i].variants[0].regularPrice || '' %></span>
-                  <% } %>
-                </div>
-              </a>
-              <button class="add-to-cart-btn" onclick="addToCart('<%= products[i]._id %>')">Add to Cart</button>
-            </div>
+      <!-- Pagination -->
+      <div class="pagination">
+        <% if(currentPage> 1) { %>
+          <a class="btn" href="/shop?page=<%= currentPage - 1 %>" title="Previous">«</a>
           <% } %>
-        <% } %>
-      </main>
-    </div>
+            <a class="btn" href="">
+              <%= currentPage %>
+            </a>
+            <% if(currentPage < totalPages) { %>
+              <a class="btn" href="/shop?page=<%= currentPage + 1 %>" title="Next">»</a>
+              <% } %>
+      </div>
+    </section>
+  </div>
 
-    <!-- Pagination -->
-    <div class="pagination">
-      <% if(currentPage > 1) { %>
-        <a class="btn" href="/shop?page=<%= currentPage - 1 %>" title="Previous">«</a>
-      <% } %>
-      <a class="btn" href=""><%= currentPage %></a>
-      <% if(currentPage < totalPages) { %>
-        <a class="btn" href="/shop?page=<%= currentPage + 1 %>" title="Next">»</a>
-      <% } %>
-    </div>
-  </section>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script>
-    // Toggle wishlist button
-    function toggleWishlist(button) {
-      const productId = button.getAttribute('data-product-id');
-      button.classList.toggle('active');
 
+   // Toggle wishlist button
+async function toggleWishlist(button, action) {
+  const productId = button.getAttribute('data-product-id');
+  const productRow = button.closest('.product-row'); // optional if in wishlist page
+
+  try {
+    if (action === 'addToWishList') {
+      const response = await fetch(`/addToWishList?productId=${encodeURIComponent(productId)}`);
+      const body = await response.json();
+
+      if (response.ok) {
+        button.classList.add('active');
+        button.innerHTML = '❤️'; // update icon
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Added to Wishlist',
+          text: body.message || 'The product has been added to your wishlist!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+button.setAttribute("onclick", `toggleWishlist(this, 'removeWishList')`);
+
+      } else {
+        throw new Error(body.message || 'Could not add to wishlist. Please try again.');
+      }
+
+    } else {
+      const response = await fetch(`/removeProductFromWishlist?productId=${encodeURIComponent(productId)}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const body = await response.json();
+
+      if (response.ok) {
+        button.classList.remove('active');
+        button.innerHTML = '❤'
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Item removed from wishlist',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+
+       button.setAttribute("onclick", `toggleWishlist(this, 'addToWishList')`);
+      } else {
+        throw new Error(body.message || 'Failed to remove item');
+      }
     }
+
+  } catch (error) {
+    alert('this catch is workig ')
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Something went wrong',
+      confirmButtonColor: '#2e7d32'
+    });
+    console.error('Error:', error);
+  }
+}
+
+
+
+
 
 
     // Price filter buttons active state
@@ -352,76 +457,76 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent page reload
         // Get the input value
-       
-     
+
+
         // search(search)
       });
-     
 
-      
+
+
 
     });
 
-    document.getElementById('search-form').addEventListener('submit',function(e){
+    document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault()
-  
+
       const params = new URLSearchParams(window.location.search)
 
-      const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb)=>cb.value)
+      const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb) => cb.value)
 
-      if(categoryFilter.length>0){
-        params.set('category',categoryFilter.join(','))
-      }else{
+      if (categoryFilter.length > 0) {
+        params.set('category', categoryFilter.join(','))
+      } else {
         params.delete('category')
       }
-     
+
 
       const sort = document.querySelectorAll('input[name="sort"]:checked')?.value
 
-      if(sort){
-        params.set('sort',sort)
-      }else{
+      if (sort) {
+        params.set('sort', sort)
+      } else {
         params.delete('sort')
       }
-      
+
       const price = [...document.querySelectorAll('input[name="priceFilter"]')]
-  .filter(cb => cb.checked) // optional: only selected ones
-  .map(cb => cb.value);
+        .filter(cb => cb.checked) // optional: only selected ones
+        .map(cb => cb.value);
 
 
-      if(price.length>0){
-        params.set('priceFilter',price.join(','))
-      }else{
+      if (price.length > 0) {
+        params.set('priceFilter', price.join(','))
+      } else {
         params.delete('priceFilter')
       }
 
-       let search = document.querySelector(".search-input").value.trim()
+      let search = document.querySelector(".search-input").value.trim()
 
-       if(search){
-        params.set('query',search)
-       }else{
+      if (search) {
+        params.set('query', search)
+      } else {
         params.delete('query')
-       }
+      }
 
-       params.set('page',1)
-       const basePath = '/searchProducts';
-       
-       window.location.href= `${basePath}?${params.toString()}`
-     })
+      params.set('page', 1)
+      const basePath = '/searchProducts';
 
-     document.getElementById("clearSearch").addEventListener("click", function () {
-  // Clear the input
-  document.getElementById("searchInput").value = "";
+      window.location.href = `${basePath}?${params.toString()}`
+    })
 
-  // Reset filters and reload the page without search
-  const params = new URLSearchParams(window.location.search);
+    document.getElementById("clearSearch").addEventListener("click", function () {
+      // Clear the input
+      document.getElementById("searchInput").value = "";
 
-  search=''
-  // Remove search query
-  params.set('query',search)
+      // Reset filters and reload the page without search
+      const params = new URLSearchParams(window.location.search);
 
-  // Redirect without query
-  window.location.href = `/searchProducts?${params.toString()}`;
-});
+      search = ''
+      // Remove search query
+      params.set('query', search)
+
+      // Redirect without query
+      window.location.href = `/searchProducts?${params.toString()}`;
+    });
 
   </script>
