@@ -468,75 +468,75 @@
                     </div>
 
                     <style>
-                    .wallet-card {
-                        background: #f5f6f7;
-                        border-radius: 8px;
-                        padding: 24px;
-                        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-                        border: #000;
+                        .wallet-card {
+                            background: #f5f6f7;
+                            border-radius: 8px;
+                            padding: 24px;
+                            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                            border: #000;
 
-                        width: 546px;
-                        height: 180px;
+                            width: 546px;
+                            height: 180px;
 
-                        display: flex;
-                        flex-direction: column;
-                        gap: 12px;
-                        align-items: center;
-                        justify-content: center;
-                    }
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                            align-items: center;
+                            justify-content: center;
+                        }
 
 
-                    .wallet-icon {
-                        width: 40px;
-                        height: 40px;
-                        background: #f3f3ed;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 20px;
-                        color: #444;
-                    }
+                        .wallet-icon {
+                            width: 40px;
+                            height: 40px;
+                            background: #f3f3ed;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            color: #444;
+                        }
 
-                    .wallet-content {
-                        flex: 1;
-                    }
+                        .wallet-content {
+                            flex: 1;
+                        }
 
-                    .wallet-title {
-                        font-weight: 700;
-                        margin: 0;
-                        color: #222;
-                    }
+                        .wallet-title {
+                            font-weight: 700;
+                            margin: 0;
+                            color: #222;
+                        }
 
-                    .wallet-text {
-                        margin: 2px 0 8px;
-                        color: #555;
-                        font-size: 14px;
-                    }
+                        .wallet-text {
+                            margin: 2px 0 8px;
+                            color: #555;
+                            font-size: 14px;
+                        }
 
-                    .wallet-link {
-                        font-size: 14px;
-                        color: #000;
-                        font-weight: 500;
-                        text-decoration: none;
-                    }
-                </style>
-                <div class="wallet-card">
-                    <a href="/wallet" class="wallet-link">
-                        <div class="wallet-icon">
-                            <i class="bi bi-wallet2"></i>
-                        </div>
-                        <div class="wallet-content">
-                            <h6 class="wallet-title">Your Wallet</h6>
-                            <p class="wallet-text">Add or check balance</p>
-                            <a href="/wallet" class="wallet-link">View wallet &gt;</a>
-                        </div>
-                    </a>
+                        .wallet-link {
+                            font-size: 14px;
+                            color: #000;
+                            font-weight: 500;
+                            text-decoration: none;
+                        }
+                    </style>
+                    <div class="wallet-card">
+                        <a href="/wallet" class="wallet-link">
+                            <div class="wallet-icon">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div class="wallet-content">
+                                <h6 class="wallet-title">Your Wallet</h6>
+                                <p class="wallet-text">Add or check balance</p>
+                                <a href="/wallet" class="wallet-link">View wallet &gt;</a>
+                            </div>
+                        </a>
+                    </div>
+
+
                 </div>
 
-                
-                </div>
-                
 
 
                 <div class="tab-pane fade" id="address">
@@ -612,11 +612,12 @@
                                         <hr class="dropdown-divider">
                                     </li>
 
-                                    <li><a class="dropdown-item" href="#" data-filter="Pending">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#" data-filter="Delivered">Delivered</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter='Pending'>Pending</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter='Delivered'>Delivered</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="Shipped">Shipped</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="Processing">Processing</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="cancelled">Cancelled</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="Failed">Failed</a></li>
                                     <li><a class="dropdown-item" href="#"
                                             data-filter="returnRequested">returnRequested</a></li>
                                     <li><a class="dropdown-item" href="#"
@@ -660,26 +661,33 @@
 
 
                                             <div class="mt-2 mt-sm-0">
-                                                <a href="/orderDetailPage?orderId=<%= order.orderId %>">
-                                                    <button class="btn btn-sm btn-outline-primary me-2">
-                                                        <i class="fas fa-eye me-1"></i> Details
-                                                    </button>
-                                                </a>
-                                                <% if(order.status !=='Delivered' && order.status !=='cancelled' &&
-                                                    order.status!=='returnRequested' &&order.status!=='returned'
-                                                    &&order.status!=='reutrnRejected' ) { %>
-                                                    <button class="btn btn-sm btn-outline-danger"
-                                                        id="cancelBtn<%= index %>"
-                                                        onclick="confirmCancelOrder('<%= order.orderId%>','<%= index %>')">
-                                                        <i class="fas fa-times me-1"></i> Cancel
-                                                    </button>
-                                                    <% } else if(order.status==='Delivered' ) { %>
-                                                        <button id="returnBtn<%= index %>"
-                                                            class="btn btn-sm btn-outline-secondary"
-                                                            onclick="returnOrder('<%= order.orderId %>', '<%= index %>')">
-                                                            <i class="fas fa-times me-1"></i> return
+                                                <% if(order.status!=='Failed' ){%>
+                                                    <a href="/orderDetailPage?orderId=<%= order.orderId %>">
+                                                        <button class="btn btn-sm btn-outline-primary me-2">
+                                                            <i class="fas fa-eye me-1"></i> Details
                                                         </button>
-                                                        <% } %>
+                                                    </a>
+                                                    <% } %>
+                                                        <% if(order.status !=='Delivered' && order.status !=='cancelled'
+                                                            && order.status!=='returnRequested'
+                                                            &&order.status!=='returned'
+                                                            &&order.status!=='reutrnRejected' &&order.status!=='Failed'
+                                                            ) { %>
+                                                            <button class="btn btn-sm btn-outline-danger"
+                                                                id="cancelBtn<%= index %>"
+                                                                onclick="confirmCancelOrder('<%= order.orderId%>','<%= index %>')">
+                                                                <i class="fas fa-times me-1"></i> Cancel
+                                                            </button>
+                                                            <% } else if(order.status==='Delivered' ) { %>
+                                                                <button id="returnBtn<%= index %>"
+                                                                    class="btn btn-sm btn-outline-secondary"
+                                                                    onclick="returnOrder('<%= order.orderId %>', '<%= index %>')">
+                                                                    <i class="fas fa-times me-1"></i> return
+                                                                </button>
+                                                                <% }else if(order.status==='Failed' ){%>
+                                                                    <a href="/paymentFaildRetry?orderId=<%= order.orderId %>"
+                                                                        class="btn btn-danger btn-sm">Retry Payment</a>
+                                                                    <% } %>
 
                                             </div>
                                         </div>
@@ -691,8 +699,7 @@
                                             <div class="pagination">
                                                 <!-- Previous Button -->
                                                 <% if(currentPage> 1) { %>
-                                                    <button
-                                                        onclick="paginationForOrderSection('<%= currentPage - 1 %>')"
+                                                    <button onclick="paginationForOrderSection(<%= currentPage - 1 %>)"
                                                         class="page-btn" aria-label="Previous Page">&lt;</button>
                                                     <% } %>
 
@@ -705,7 +712,7 @@
                                                         <!-- Next Button -->
                                                         <% if(currentPage < totalPage) { %>
                                                             <button
-                                                                onclick="paginationForOrderSection('<%= currentPage + 1 %>')"
+                                                                onclick="paginationForOrderSection(<%= currentPage + 1 %>)"
                                                                 class="page-btn" aria-label="Next Page">&gt;</button>
                                                             <% } %>
                                             </div>
@@ -2448,15 +2455,17 @@
                 };
 
                 //Filter orders
-                let filter
+                let filter = ''
+                let page = document.querySelectorAll('.page-btn').value
                 document.querySelectorAll('.dropdown-menu .dropdown-item')
                     .forEach((item) => {
                         item.addEventListener('click', async function (e) {
                             e.preventDefault();
                             try {
-                                filter = e.target.getAttribute('data-filter')
+                                filter = e.target.getAttribute('data-filter') || ''
 
-                                const response = await fetch(`/userProfile?filter=${encodeURIComponent(filter)}`, {
+
+                                const response = await fetch(`/userProfile?filter=${encodeURIComponent(filter)}&page=${encodeURIComponent(page)}`, {
                                     headers: {
                                         'Accept': 'application/json',
                                         'Content-Type': 'application/json'
@@ -2606,14 +2615,12 @@
                 //Filter orders
                 async function paginationForOrderSection(page) {
                     try {
-
-                        const response = await fetch(`/userProfile?page=${encodeURIComponent(page)}&filter=${filter}`, {
+                        const response = await fetch(`/userProfile?page=${encodeURIComponent(page)}&filter=${encodeURIComponent(filter)}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
                             }
-                        });
-
+                        })
                         if (!response.ok) {
                             Swal.fire({
                                 toast: true,
@@ -2624,13 +2631,12 @@
                                 timer: 2000,
                                 timerProgressBar: true
                             });
-                            return;
+                            return
                         }
-
                         const data = await response.json();
                         const orders = data.order || [];
                         const container = document.querySelector('#orders .card-body');
-                        container.innerHTML = '';
+                        container.innerHTML = ''
 
                         if (orders.length === 0) {
                             container.innerHTML = `
@@ -2640,8 +2646,8 @@
           <p class="mb-4">No orders on page <b>${page}</b>.</p>
           <a href="/shop" class="btn btn-primary"><i class="fas fa-store me-1"></i> Start Shopping</a>
         </div>
-      `;
-                            return;
+      `
+                            return
                         }
 
                         // same getStatusBadgeClass() as before

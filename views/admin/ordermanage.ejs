@@ -146,60 +146,61 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Items</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Payment</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ordersTableBody" class="tableBody">
-                                <% order.forEach(element=> { %>
-                                    <tr class="order-row">
-                                        <td>
-                                            <%= element.orderId %>
-                                        </td>
-                                        <td>
-                                            <%= new Date(element.createdOn).toLocaleDateString() %>
-                                        </td>
-                                        <td>
-                                            <%= element.userId?.username %>
-                                        </td>
-                                        <td>
-                                            <%= element?.orderedItems?.length %>
-                                        </td>
-                                        <td>
-                                            <%= element.totalPrice %>
-                                        </td>
-                                        <td><span id='orderStatus<%=element.orderId%>' class="badge badge-shipped">
-                                                <%= element.status %>
-                                            </span></td>
-                                        <td><span class="badge bg-success">
-                                                <%= element?.paymentStatus %>
-                                            </span></td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="btn btn-sm btn-outline-primary"
-                                                    onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <a href="orderDetails?orderId=<%= element?.orderId %>"
-                                                    class="btn btn-sm btn-outline-info">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <% }); %>
-                            </tbody>
+                        
+                        <% if (order && order.length > 0) { %>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTableBody" class="tableBody">
+            <% order.forEach(element => { %>
+                <tr class="order-row">
+                    <td><%= element.orderId %></td>
+                    <td><%= new Date(element.createdOn).toLocaleDateString() %></td>
+                    <td><%= element.userId?.username %></td>
+                    <td><%= element?.orderedItems?.length %></td>
+                    <td><%= element.totalPrice %></td>
+                    <td>
+                        <span id="orderStatus<%= element.orderId %>" class="badge badge-shipped">
+                            <%= element.status %>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-success">
+                            <%= element?.paymentStatus %>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <a href="orderDetails?orderId=<%= element?.orderId %>"
+                                class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <div class="text-center mt-4">
+        <h5 class="text-muted">No orders yet ✨</h5>
+    </div>
+<% } %>
 
-                        </table>
                     </div>
 
                     <!-- Pagination -->
