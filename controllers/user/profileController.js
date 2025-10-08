@@ -184,52 +184,69 @@ const userProfile = async (req, res) => {
 
         console.log('reached at userprofile ')
 
-        const page = req.query.page||1
-        const limit = 2
-        const skip = (page-1)*limit
+        let page = req.query.page
+        page = parseInt(page) || 1
+const limit = 3
+const skip = (page - 1) * limit
+
+        
+     
+       
+        console.log('skip',skip)
+        console.log('typeof skip',typeof skip)
+        console.log('limit',limit)
+        console.log('typeof limit',typeof limit)
+        console.log("page",page)
+        console.log('typeof page',typeof page)
         const filter = req.query.filter || ''
+        console.log('filter',filter)
+        console.log('typeof filter',typeof filter)
         const sort = req.query.sort || ''
         const userId = req.session.user;
-        let query={}
-        if(userId){
-         query.userId=userId
+        let query = {}
+        if (userId) {
+            query.userId = userId
+            
         }
-        if(filter&&filter!=='all'){
-           query.status=filter
+        if (filter && filter !== 'all') {
+            query.status = filter
         }
-       
-        console.log(query)
+
+
+
+        console.log('query',query)
         const order = await Order.find(query)
             .sort({ createdOn: -1 })
             .skip(skip)
             .limit(limit)
 
-            const totalDoc = await Order.countDocuments(query)
+        const totalDoc = await Order.countDocuments(query)
 
-            const totalPage = Math.ceil(totalDoc/limit)
+        const totalPage = Math.ceil(totalDoc / limit)
         const totalOrders = await Order.countDocuments({ userId: userId })
         const completedOrders = await Order.countDocuments({ userId: userId, status: 'Delivered' })
         const cancelledOrders = await Order.countDocuments({ userId: userId, status: 'cancelled' })
         const inProgress = await Order.countDocuments({ userId: userId, status: { $nin: ['Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected'] } })
-            .populate('orderedItems.product')
+        .populate('orderedItems.product')
 
-            
-console.log(1)
+
+        console.log(1)
         const cart = await Cart.findOne({ userId: userId })
         let length
         console.log(2)
-        if(cart && cart.items?.length){
+        if (cart && cart.items?.length) {
             length = cart.items?.length
         }
-        
+
         const userData = await User.findById(userId)
         console.log(3)
         const addressDoc = await Address.findOne({ userId });
-console.log(4)
+        console.log(4)
         const addressData = addressDoc?.address || []
         console.log(5)
         function getStatusBadgeClass(status) {
             switch (status.toLowerCase()) {
+                case 'Failed': return 'bg-danger text-white';
                 case 'pending': return 'bg-warning text-dark';
                 case 'processing': return 'bg-info text-white';
                 case 'shipped': return 'bg-primary text-white';
@@ -242,13 +259,14 @@ console.log(4)
         }
 
         console.log(6)
-        
+
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
             console.log(7)
-            console.log('order datas',order)
-            return res.status(200).json({order:order,totalPage:totalPage,currentPage:page})
+            console.log('order datas', order)
+         
+            return res.status(200).json({ order: order, totalPage: totalPage, currentPage: page })
         }
-console.log(8)
+        console.log(8)
         res.render('userProfile', {
             user: userData,
             addressData: addressData,
@@ -258,14 +276,10 @@ console.log(8)
             cancelledOrders: cancelledOrders,
             inProgress: inProgress,
             length: length,
-            totalPage:totalPage,
-            currentPage:page,
+            totalPage: totalPage,
+            currentPage: page,
             getStatusBadgeClass
-        });
-
-
-
-
+        })
     } catch (error) {
         console.error('Error from userProfile:', error);
         res.redirect('/pageNotFound');
@@ -273,7 +287,7 @@ console.log(8)
 }
 
 
-const getPassCheckforEmailchange = async (req,res) => {
+const getPassCheckforEmailchange = async (req, res) => {
     try {
         const user = req.session.user
         const userData = await User.findById(user)

@@ -1,7 +1,7 @@
 const User = require('../../models/userSchema')
 const Order = require('../../models/orderSchema')
 const Product = require('../../models/productSchema')
-
+const Wallet = require('../../models/walletSchema')
 const getOrderPage = async (req, res) => {
     try {
         const order = await Order.find().sort({ createdOn: -1 }).populate('userId')
@@ -19,16 +19,16 @@ const searchOrders = async (req, res) => {
         const search = req.query.searchvalue || '';
 
         const searchData = await Order.find({
-  $or: [
-    { orderId: { $regex: search, $options: 'i' } },
-    { status: { $regex: search, $options: 'i' } },
-    { 'address.name': { $exists: true, $regex: search, $options: 'i' } }
-  ]
-})
-.populate('userId', 'username')
-.lean();
+            $or: [
+                { orderId: { $regex: search, $options: 'i' } },
+                { status: { $regex: search, $options: 'i' } },
+                { 'address.name': { $exists: true, $regex: search, $options: 'i' } }
+            ]
+        })
+            .populate('userId', 'username')
+            .lean();
 
-        console.log('searched data is ',searchData)
+        console.log('searched data is ', searchData)
         res.json(searchData);
 
     } catch (error) {
@@ -50,12 +50,11 @@ const changeStatus = async (req, res) => {
         }
 
 
-        // Validate newStatus is one of the allowed values
+
         const allowedStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected']
         if (!allowedStatuses.includes(newStatus)) {
             return res.status(400).json({ message: 'Invalid status value.' });
         }
-
 
 
         const order = await Order.findOne({ orderId });
@@ -66,15 +65,18 @@ const changeStatus = async (req, res) => {
         }
 
 
-
         if (order.status === 'Delivered' || order.status === 'returned' || order.status === 'cancelled') {
             return res.status(400).json({ message: 'Cannot change status from Delivered to another status except return.' });
         }
 
-        order.status = newStatus;
+        order.status = newStatus
+        console.log('order.status', order.status)
+        console.log('newStatus', newStatus)
+        if (newStatus === 'Delivered') order.paymentStatus = 'Completed'
 
         const orderedItems = order.orderedItems
         for (let key of orderedItems) {
+            if (key.status === 'cancelled') continue
             key.status = newStatus
         }
 
@@ -122,38 +124,76 @@ const handleReturnReq = async (req, res) => {
 
         let orderedItems
         let promises = []
+        let reFund = 0
+        let productIds = []
+        let productQuantity = 0
+        let newTransactionRefund = 0
 
         if (itemId) {
             orderedItems = order.orderedItems.map((i) => {
-                if (i._id.toString() === itemId) {
+                if (i._id.toString() === itemId && i.status !== 'cancelled' && i.status !== 'returned' && order.paymentStatus === 'Completed') {
                     i.status = 'returned'
                     promises.push(incProductQuntity(i.product, i.size, i.quantity))
-                    order.finalAmount-=i.price*i.quantity
-                    order.totalPrice-=i.price*i.quantity
+                    i.reFund = i.quantity * i.finalPrice
+                    i.reFundStatus = 'Completed'
+                    reFund += i.quantity * i.finalPrice
+                    newTransactionRefund += reFund
+                    productIds.push(i.product)
+                    productQuantity++
                 }
                 return i
             })
         } else {
             order.status = 'returned'
+            order.reFundStatus = 'Completed'
             orderedItems = order.orderedItems.map((i) => {
-                i.status = 'returned'
-                promises.push(incProductQuntity(i.product, i.size, i.quantity))
+                if ((i.status !== 'cancelled' || i.status === 'returned' ) && i.reFundStatus !== 'Completed') {
+                    newTransactionRefund += i.quantity * i.finalPrice
+                    i.reFund = i.quantity * i.finalPrice
+                    i.reFundStatus = 'Completed'
+                    i.status = 'returned'
+                    reFund += i.quantity * i.finalPrice
+                    order.reFund += i.quantity * i.finalPrice
+                    productIds.push(i.product)
+                    productQuantity++
+                    promises.push(incProductQuntity(i.product, i.size, i.quantity))
+                } else if (i.reFund > 0) {
+                    reFund += i.reFund
+                    order.reFund += i.quantity * i.finalPrice
+                }
                 return i
             })
-            order.finalAmount=0
-            order.totalPrice=0
+
         }
 
         let checkTotalStatus = orderedItems.every((i) => i.status === 'returned')
         if (checkTotalStatus) order.status = 'returned'
 
-        
+
         await Promise.all(promises)
 
         order.orderedItems = orderedItems
-        await order.save()
 
-        res.status(200).json({ message: 'order returned successfully' })
+
+
+        const userWallet = await Wallet.findOne({ userId: order.userId })
+        userWallet.balance += newTransactionRefund
+        userWallet.totalCredited += newTransactionRefund
+        let transaction = {
+            type: 'credit',
+            amount: newTransactionRefund,
+            reason: 'Amount credited for returned product',
+            orderId: order.orderId,
+            productId: productIds,
+            productQuantity: productQuantity,
+            createdAt: new Date()
+        }
+
+        userWallet.transactions?.push(transaction)
+        await order.save()
+        console.log('order.paymentStatus', order.paymentStatus)
+        if (order.paymentStatus === 'Completed') await userWallet.save()
+        return res.status(200).json({ message: 'order returned successfully' })
 
     } catch (error) {
         console.error('error in handleReturnReq', error)
