@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #e0e7ff;
+            --secondary: #3a0ca3;
+            --dark: #1e1e2e;
+            --light: #ffffff;
+            --gray: #f8fafc;
+            --gray-dark: #cbd5e1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 40px;
+            user-select: none;
+        }
+
+        .page-btn {
+            border: none;
+            background: white;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .page-btn.active {
+            background: #007bff;
+            color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-btn.prev,
+        .page-btn.next {
+            font-size: 1.1rem;
+            padding: 8px 12px;
+        }
+
+        .page-btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+
+        body {
+            background: #f8fafc;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 70px auto;
+            padding: 20px;
+            margin-left: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title i {
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-filters-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .pdf-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .excel-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .toggle-filters-btn:hover,
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        /* Modern Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-dark);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .filter-card.collapsed {
+            max-height: 60px;
+        }
+
+        .filter-card.expanded {
+            max-height: 500px;
+        }
+
+        .filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            cursor: pointer;
+            background: var(--primary-light);
+        }
+
+        .filter-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-header i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .filter-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .filter-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .filter-card.expanded .filter-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .filter-content {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .filter-card.expanded .filter-content {
+            padding: 25px;
+            max-height: 400px;
+        }
+
+        /* Single Row Filter Layout */
+        .filter-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .preset-select {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-dark);
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .date-range-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .date-input-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        .date-input {
+            padding: 10px 12px 10px 35px;
+            border: 1px solid var(--gray-dark);
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-dark);
+        }
+
+        .generate-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .reset-btn {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--gray-dark);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .generate-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .reset-btn:hover {
+            background: var(--gray);
+            transform: translateY(-2px);
+        }
+
+        /* Active Filter Display */
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .active-filter-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+        }
+
+        .active-filter-tag i {
+            color: var(--primary);
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: var(--success);
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .report-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .section-header {
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .report-table {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--gray-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 13px;
+            min-width: 800px;
+        }
+
+        thead {
+            background: var(--primary-light);
+        }
+
+        th {
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 13px;
+            border-bottom: 1px solid var(--gray-dark);
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--gray-dark);
+        }
+
+        tbody tr:hover {
+            background: var(--primary-light);
+        }
+
+        .discount-badge {
+            background: var(--warning);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .coupon-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .coupon-badge-notused {
+            background: #6c757d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+
+        .status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status.delivered {
+            color: var(--success);
+        }
+
+        .status.delivered::before {
+            background: var(--success);
+        }
+
+        .status.shipped,
+        .status.processing {
+            color: var(--info);
+        }
+
+        .status.shipped::before,
+        .status.processing::before {
+            background: var(--info);
+        }
+
+        .status.pending {
+            color: var(--warning);
+        }
+
+        .status.pending::before {
+            background: var(--warning);
+        }
+
+        .status.cancelled,
+        .status.failed {
+            color: var(--danger);
+        }
+
+        .status.cancelled::before,
+        .status.failed::before {
+            background: var(--danger);
+        }
+
+        .status.returned,
+        .status.returnrequested {
+            color: #6c757d;
+        }
+
+        .status.returned::before,
+        .status.returnrequested::before {
+            background: #6c757d;
+        }
+
+        .status.reutrnrejected {
+            color: #ff6600;
+        }
+
+        .status.reutrnrejected::before {
+            background: #ff6600;
+        }
+
+        .refund {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .status.cancelled,
+        .status.returned {
+            color: crimson;
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .toggle-filters-btn,
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+
+            .date-range-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .toggle-filters-btn,
+            .action-btn {
+                width: 100%;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .filter-card,
+            .report-section {
+                padding: 0;
+            }
+
+            .filter-header {
+                padding: 15px 20px;
+            }
+
+            .filter-card.expanded .filter-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="container">
+                <div class="dashboard-header">
+                    <div class="header-title">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Sales Analytics</span>
+                    </div>
+                    <div class="header-actions">
+                        <button class="toggle-filters-btn" id="toggle-filters">
+                            <i class="fas fa-filter"></i>
+                            <span>Show Filters</span>
+                        </button>
+                        <button class="action-btn pdf-btn" id="export-pdf">
+                            <i class="far fa-file-pdf"></i>
+                            Export PDF
+                        </button>
+                        <button class="action-btn excel-btn" id="export-excel">
+                            <i class="far fa-file-excel"></i>
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Modern Filter Card -->
+                    <div class="filter-card collapsed" id="filter-card">
+                        <div class="filter-header" id="filter-header">
+                            <div class="filter-header-left">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h2>Filter Report by Date</h2>
+                            </div>
+                            <div class="filter-toggle-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+
+                        <div class="filter-content">
+                            <!-- Single Row Filter Layout -->
+                            <div class="filter-row">
+                                <div class="filter-group">
+                                    <label for="preset-select"><i class="fas fa-clock"></i> Quick Presets</label>
+                                    <select class="preset-select" id="preset-select">
+                                        <option value="today">Today</option>
+                                        <option value="week">Last 7 Days</option>
+                                        <option value="month">Last 30 Days</option>
+                                        <option value="year">Last Year</option>
+                                        <option value="custom">Custom Range</option>
+                                    </select>
+                                </div>
+
+                                <div class="filter-group" id="custom-date-group" style="display: none;">
+                                    <label><i class="fas fa-calendar-day"></i> Custom Date Range</label>
+                                    <div class="date-range-container">
+                                        <div class="date-input-wrapper">
+                                            <i class="fas fa-calendar"></i>
+                                            <input type="date" class="date-input" id="start-date">
+                                        </div>
+                                        <span>to</span>
+                                        <div class="date-input-wrapper">
+                                            <i class="fas fa-calendar"></i>
+                                            <input type="date" class="date-input" id="end-date">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="active-filters" id="active-filters">
+                                <!-- Active filters will appear here -->
+                            </div>
+
+                            <div class="filter-actions">
+                                <button class="generate-btn" id="generate-report">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Apply Filters & Generate Report
+                                </button>
+                                <button class="reset-btn" id="reset-filters">
+                                    <i class="fas fa-redo"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div class="loading-spinner" id="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
+                        <p style="margin-top: 10px;">Loading sales data...</p>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid" id="stats-grid">
+                        <div class="stat-card">
+                            <h3>Overall Sales Count</h3>
+                            <div class="stat-value" id="totalSalesCount">
+                                <%= totalSalesCount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Overall Order Amount</h3>
+                            <div class="stat-value" id="OverallOrderAmount">₹<%= OverallOrderAmount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Overall Discount</h3>
+                            <div class="stat-value" id="OverallDiscount">₹<%= OverallDiscount %>
+                            </div>
+                            <div class="stat-trend trend-down"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Coupon Usage</h3>
+                            <div class="stat-value" id="CouponUsage">
+                                <%= CouponUsage %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Coupon Discount</h3>
+                            <div class="stat-value" id="CouponDisCount">
+                                <%= CouponDisCount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Returned Amount</h3>
+                            <div class="stat-value" id="returnedAmount">
+                                <%= returnedAmount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Return Count</h3>
+                            <div class="stat-value" id="returnCount">
+                                <%= returnCount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Cancelled Refund</h3>
+                            <div class="stat-value" id="cancelledAmount">
+                                <%= cancelledAmount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Cancelled Count</h3>
+                            <div class="stat-value" id="cancelledCount">
+                                <%= cancelledCount %>
+                            </div>
+                            <div class="stat-trend trend-up"></div>
+                        </div>
+                    </div>
+
+                    <!-- Report Section -->
+                    <% if (orders && orders.length> 0) { %>
+                        <div class="report-section" id="report-section">
+                            <div class="section-header">
+                                <h3>Detailed Sales Report</h3>
+                            </div>
+                            <div class="report-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Amount</th>
+                                            <th>Discount</th>
+                                            <th>Coupon</th>
+                                            <th>Status</th>
+                                            <th>Refund for<br>cancell/return</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sales-table-body">
+                                        <% orders.forEach(order=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= new Date(order.createdOn).toLocaleDateString('en-IN', {
+                                                        day: '2-digit' , month: 'short' , year: 'numeric' }) %>
+                                                </td>
+                                                <td>
+                                                    <%= order.orderId %>
+                                                </td>
+                                                <td>
+                                                    <%= order.userId?.username %>
+                                                </td>
+                                                <td>
+                                                    <%= order.finalAmount %>
+                                                </td>
+                                                <td><span class="discount-badge">
+                                                        <%= order.discount %>
+                                                    </span></td>
+                                                <% if (order.couponApplied?.applied) { %>
+                                                    <td><span class="coupon-badge">
+                                                            <%= order.couponApplied?.code %>
+                                                        </span></td>
+                                                    <% } else { %>
+                                                        <td><span class="coupon-badge-notused">None</span></td>
+                                                        <% } %>
+                                                            <td class="status <%= order.status.toLowerCase() %>">
+                                                                <%= order.status %>
+                                                            </td>
+                                                            <% let totalRefund=0; if (order.orderedItems &&
+                                                                order.orderedItems.length> 0) {
+                                                                order.orderedItems.forEach(item => {
+                                                                totalRefund += item.reFund || 0
+                                                                });
+                                                                }
+                                                                %>
+                                                                <% if (totalRefund>0) { %>
+                                                                    <td class="refund">
+                                                                        <%= totalRefund %>
+                                                                    </td>
+                                                                    <% } else { %>
+                                                                        <td class="refund">—</td>
+                                                                        <% } %>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+                                <div class="pagination">
+                                        <% if(currentPage>1){ %>
+                                            <button onclick="pagination('previous')" id="prevBtn"
+                                                class="page-btn prev">&laquo;</button>
+                                            <% } %>
+                                                <button id="currentPage" class="page-btn active">
+                                                    <%= currentPage %>
+                                                </button>
+
+                                                <% if (currentPage<totalPage) { %>
+                                                    <button onclick="pagination('next')" id="nextBtn"
+                                                        class="page-btn next">&raquo;</button>
+
+                                                    <% } %>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                        <% } else { %>
+                            <div class="report-section" id="report-section" style="display: none;">
+                                <div class="section-header">
+                                    <h3>Detailed Sales Report</h3>
+                                </div>
+                                <div class="report-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Order ID</th>
+                                                <th>Customer</th>
+                                                <th>Amount</th>
+                                                <th>Discount</th>
+                                                <th>Coupon</th>
+                                                <th>Status</th>
+                                                <th>Refund for<br>cancell/return</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sales-table-body">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+            <script>
+                // Set default date inputs to today
+                let startDate
+                let endDate
+                const today = new Date();
+                const startOfToday = new Date(today);
+
+                document.getElementById('start-date').valueAsDate = startOfToday;
+                document.getElementById('end-date').valueAsDate = today;
+
+                // Filter state
+                let currentFilter = {
+                    preset: '',
+                    startDate: formatDate(today),
+                    endDate: formatDate(today)
+                }
+
+                // Filter toggle functionality
+                const filterCard = document.getElementById('filter-card');
+                const filterHeader = document.getElementById('filter-header');
+                const toggleFiltersBtn = document.getElementById('toggle-filters');
+                const presetSelect = document.getElementById('preset-select');
+                const customDateGroup = document.getElementById('custom-date-group');
+                const startDateInput = document.getElementById('start-date');
+                const endDateInput = document.getElementById('end-date');
+                const loadingSpinner = document.getElementById('loading-spinner');
+                const statsGrid = document.getElementById('stats-grid');
+                const reportSection = document.getElementById('report-section');
+
+                // Initialize filters as collapsed
+                filterCard.classList.add('collapsed');
+                filterCard.classList.remove('expanded');
+                toggleFiltersBtn.querySelector('span').textContent = 'Show Filters';
+
+                // Toggle filters when header is clicked
+                filterHeader.addEventListener('click', function () {
+                    toggleFilters();
+                });
+
+                // Toggle filters when button is clicked
+                toggleFiltersBtn.addEventListener('click', function () {
+                    toggleFilters();
+                });
+
+                function toggleFilters() {
+                    const isCollapsed = filterCard.classList.contains('collapsed');
+
+                    if (isCollapsed) {
+                        // Expand filters
+                        filterCard.classList.remove('collapsed');
+                        filterCard.classList.add('expanded');
+                        toggleFiltersBtn.querySelector('span').textContent = 'Hide Filters';
+                        toggleFiltersBtn.querySelector('i').className = 'fas fa-times';
+                    } else {
+                        // Collapse filters
+                        filterCard.classList.remove('expanded');
+                        filterCard.classList.add('collapsed');
+                        toggleFiltersBtn.querySelector('span').textContent = 'Show Filters';
+                        toggleFiltersBtn.querySelector('i').className = 'fas fa-filter';
+                    }
+                }
+
+                // Preset select change
+                presetSelect.addEventListener('change', function () {
+                    currentFilter.preset = this.value;
+
+                    // Show/hide custom date inputs
+                    if (currentFilter.preset === 'custom') {
+                        customDateGroup.style.display = 'block'
+
+
+
+
+
+                        currentFilter.startDate = startDate
+                        currentFilter.endDate = endDate
+                    } else {
+                        customDateGroup.style.display = 'none';
+                    }
+
+                    // updateActiveFilters();
+                });
+
+                // Date input changes
+                startDateInput.addEventListener('change', function () {
+                    currentFilter.startDate = this.value;
+                    currentFilter.preset = 'custom';
+                    presetSelect.value = 'custom';
+                    customDateGroup.style.display = 'block';
+                    // updateActiveFilters();
+                });
+
+                endDateInput.addEventListener('change', function () {
+                    currentFilter.endDate = this.value;
+                    currentFilter.preset = 'custom';
+                    presetSelect.value = 'custom';
+                    customDateGroup.style.display = 'block';
+                    //updateActiveFilters();
+                });
+
+                // Set dates based on preset
+                // function setDatesFromPreset(preset) {
+                //     const endDate = new Date();
+                //     const startDate = new Date();
+
+                //     switch(preset) {
+                //         case 'today':
+                //             startDate.setDate(endDate.getDate());
+                //             break;
+                //         case 'week':
+                //             startDate.setDate(endDate.getDate() - 7);
+                //             break;
+                //         case 'month':
+                //             startDate.setDate(endDate.getDate() - 30);
+                //             break;
+                //         case 'year':
+                //             startDate.setDate(endDate.getDate() - 365);
+                //             break;
+                //     }
+
+                //     startDateInput.valueAsDate = startDate;
+                //     endDateInput.valueAsDate = endDate;
+
+                //     currentFilter.startDate = formatDate(startDate);
+                //     currentFilter.endDate = formatDate(endDate);
+                // }
+
+                // Format date for display
+                function formatDate(date) {
+                    return date.toISOString().split('T')[0];
+                }
+
+                // Update active filters display
+                // function updateActiveFilters() {
+                //     const activeFiltersContainer = document.getElementById('active-filters');
+                //     activeFiltersContainer.innerHTML = '';
+
+                //     let filterText = '';
+
+                //     switch(currentFilter.preset) {
+                //         case 'today':
+                //             filterText = 'Today';
+                //             break;
+                //         case 'week':
+                //             filterText = 'Last 7 Days';
+                //             break;
+                //         case 'month':
+                //             filterText = 'Last 30 Days';
+                //             break;
+                //         case 'year':
+                //             filterText = 'Last Year';
+                //             break;
+                //         case 'custom':
+                //             filterText = `Custom: ${formatDisplayDate(currentFilter.startDate)} to ${formatDisplayDate(currentFilter.endDate)}`;
+                //             break;
+                //     }
+
+                //     if (filterText) {
+                //         const filterTag = document.createElement('div');
+                //         filterTag.className = 'active-filter-tag';
+                //         filterTag.innerHTML = `
+                //             <span>${filterText}</span>
+                //             <i class="fas fa-times" onclick="resetFilters()"></i>
+                //         `;
+                //         activeFiltersContainer.appendChild(filterTag);
+                //     }
+                // }
+
+                // Format date for display (MM/DD/YYYY)
+                function formatDisplayDate(dateString) {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+
+                // Generate report with AJAX
+                document.getElementById('generate-report').addEventListener('click', async function () {
+                    try {
+                        // Show loading state
+                        loadingSpinner.classList.add('active');
+                        statsGrid.classList.add('loading');
+                        reportSection.style.display = 'none';
+
+                        let filterParam = ''
+                        let endDate
+                        let startDate
+
+                        switch (currentFilter.preset) {
+                            case 'today':
+                                filterParam = 'Today'
+                                break;
+                            case 'week':
+                                filterParam = 'Last 7 Days'
+                                break;
+                            case 'month':
+                                filterParam = 'Last 30 Days';
+                                break;
+                            case 'year':
+                                filterParam = 'Last Year';
+                                break;
+                            case 'custom':
+                                filterParam = 'custom';
+                                startDate = document.getElementById('start-date').value;
+                                endDate = document.getElementById('end-date').value;
+
+
+                                let today = new Date()
+                                //today.setHours(0, 0, 0, 0)
+
+                                let start = new Date(startDate);
+                                let end = new Date(endDate);
+                                console.log('start', start)
+                                console.log('end', end)
+                                console.log('today', today)
+
+                                if (start > today) {
+                                    Toastify({
+                                        text: "Start date cannot be in the future!",
+                                        duration: 3000,
+                                        gravity: "top",
+                                        position: "right",
+                                        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                        stopOnFocus: true
+                                    }).showToast()
+                                    return
+                                }
+
+                                if (end > today) {
+                                    Toastify({
+                                        text: "End date cannot be in the future!",
+                                        duration: 3000,
+                                        gravity: "top",
+                                        position: "right",
+                                        backgroundColor: "linear-gradient(to right, #36d1dc, #5b86e5)",
+                                        stopOnFocus: true
+                                    }).showToast()
+                                    return
+                                }
+
+                                if (start > end) {
+                                    Toastify({
+                                        text: "Start date should be before end date!",
+                                        duration: 3000,
+                                        gravity: "top",
+                                        position: "right",
+                                        backgroundColor: "linear-gradient(to right, #ff512f, #dd2476)",
+                                        stopOnFocus: true
+                                    }).showToast()
+                                    return
+                                }
+
+                                break;
+                        }
+
+
+
+                        const response = await fetch(`/admin/salesReport?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
+                            headers: { 'Accept': 'application/json' }
+                        })
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok')
+                        }
+
+                        const data = await response.json()
+
+                        // Update stats
+                        document.getElementById('totalSalesCount').textContent = data.totalSalesCount;
+                        document.getElementById('OverallOrderAmount').textContent = '₹' + data.OverallOrderAmount.toFixed(2);
+                        document.getElementById('OverallDiscount').textContent = '₹' + data.OverallDiscount.toFixed(2);
+                        document.getElementById('CouponUsage').textContent = data.CouponUsage;
+                        document.getElementById('CouponDisCount').textContent = data.CouponDisCount.toFixed(2);
+                        document.getElementById('returnedAmount').textContent = data.returnedAmount.toFixed(2);
+                        document.getElementById('returnCount').textContent = data.returnCount;
+                        document.getElementById('cancelledAmount').textContent = data.cancelledAmount.toFixed(2);
+                        document.getElementById('cancelledCount').textContent = data.cancelledCount;
+
+                        // Update table
+                        const tableBody = document.getElementById('sales-table-body');
+                        tableBody.innerHTML = '';
+
+                        if (data.orders && data.orders.length > 0) {
+                            data.orders.forEach(order => {
+                                const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+
+                                let totalRefund = 0;
+                                if (order.orderedItems && order.orderedItems.length > 0) {
+                                    order.orderedItems.forEach(item => {
+                                        totalRefund += item.reFund || 0;
+                                    });
+                                }
+
+                                const couponBadge = order.couponApplied?.applied
+                                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
+                                    : `<span class="coupon-badge-notused">None</span>`;
+
+                                const refundCell = totalRefund > 0
+                                    ? `<td class="refund">${totalRefund}</td>`
+                                    : `<td class="refund">—</td>`;
+
+                                const row = `
+                            <tr>
+                                <td>${orderDate}</td>
+                                <td>${order.orderId}</td>
+                                <td>${order.userId?.username || 'Guest'}</td>
+                                <td>${order.finalAmount}</td>
+                                <td><span class="discount-badge">${order.discount}</span></td>
+                                <td>${couponBadge}</td>
+                                <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+                                ${refundCell}
+                            </tr>
+                        `;
+                                tableBody.insertAdjacentHTML('beforeend', row);
+                            });
+
+                            renderPagination(data.currentPage,data.totalPage)
+
+                            reportSection.style.display = 'block';
+                        } else {
+                            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found for the selected filter</td></tr>';
+                            reportSection.style.display = 'block';
+                        }
+
+                        // Show success toast
+                        Toastify({
+                            text: `Report loaded successfully!`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#10b981",
+                        }).showToast();
+
+                    } catch (error) {
+                        console.error('Error fetching sales data:', error);
+                        Toastify({
+                            text: "Error loading data. Please try again!",
+                            backgroundColor: "#ef4444",
+                            gravity: "top",
+                            position: "right"
+                        }).showToast();
+                    } finally {
+                        // Hide loading state
+                        loadingSpinner.classList.remove('active');
+                        statsGrid.classList.remove('loading');
+                    }
+                });
+
+                // Reset filters and reload report to initial state
+document.getElementById('reset-filters').addEventListener('click', async function () {
+    try {
+        // Reset filter inputs
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
+        currentFilter.preset = 'today'; // default filter
+
+        // Show loading state
+        loadingSpinner.classList.add('active');
+        statsGrid.classList.add('loading');
+        reportSection.style.display = 'none';
+
+        // Fetch the **first page** with default filter
+        const response = await fetch(`/admin/salesReport?date=Today&page=1`, {
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const data = await response.json();
+
+        // Update stats (same as initial render)
+        document.getElementById('totalSalesCount').textContent = data.totalSalesCount;
+        document.getElementById('OverallOrderAmount').textContent = '₹' + data.OverallOrderAmount.toFixed(2);
+        document.getElementById('OverallDiscount').textContent = '₹' + data.OverallDiscount.toFixed(2);
+        document.getElementById('CouponUsage').textContent = data.CouponUsage;
+        document.getElementById('CouponDisCount').textContent = data.CouponDisCount.toFixed(2);
+        document.getElementById('returnedAmount').textContent = data.returnedAmount.toFixed(2);
+        document.getElementById('returnCount').textContent = data.returnCount;
+        document.getElementById('cancelledAmount').textContent = data.cancelledAmount.toFixed(2);
+        document.getElementById('cancelledCount').textContent = data.cancelledCount;
+
+        // Update table
+        const tableBody = document.getElementById('sales-table-body');
+        tableBody.innerHTML = '';
+
+        if (data.orders && data.orders.length > 0) {
+            data.orders.forEach(order => {
+                const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                let totalRefund = 0;
+                if (order.orderedItems && order.orderedItems.length > 0) {
+                    order.orderedItems.forEach(item => {
+                        totalRefund += item.reFund || 0;
+                    });
+                }
+
+                const couponBadge = order.couponApplied?.applied
+                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
+                    : `<span class="coupon-badge-notused">None</span>`;
+
+                const refundCell = totalRefund > 0
+                    ? `<td class="refund">${totalRefund}</td>`
+                    : `<td class="refund">—</td>`;
+
+                const row = `
+                    <tr>
+                        <td>${orderDate}</td>
+                        <td>${order.orderId}</td>
+                        <td>${order.userId?.username || 'Guest'}</td>
+                        <td>${order.finalAmount}</td>
+                        <td><span class="discount-badge">${order.discount}</span></td>
+                        <td>${couponBadge}</td>
+                        <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+                        ${refundCell}
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Reset pagination to first page
+            renderPagination(1, data.totalPage);
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found</td></tr>';
+        }
+
+        reportSection.style.display = 'block';
+
+        Toastify({
+            text: "Report reset to initial state.",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#10b981",
+        }).showToast();
+
+    } catch (error) {
+        console.error('Error resetting report:', error);
+        Toastify({
+            text: "Error resetting report. Please try again!",
+            backgroundColor: "#ef4444",
+            gravity: "top",
+            position: "right"
+        }).showToast();
+    } finally {
+        loadingSpinner.classList.remove('active');
+        statsGrid.classList.remove('loading');
+    }
+});
+
+                document.getElementById('export-pdf').addEventListener('click', function () {
+                    switch (currentFilter.preset) {
+                        case 'today':
+                            filterParam = 'Today'
+                            break;
+                        case 'week':
+                            filterParam = 'Last 7 Days'
+                            break;
+                        case 'month':
+                            filterParam = 'Last 30 Days';
+                            break;
+                        case 'year':
+                            filterParam = 'Last Year';
+                            break;
+                        case 'custom':
+                            filterParam = 'custom';
+                            startDate = document.getElementById('start-date').value;
+                            endDate = document.getElementById('end-date').value;
+                            break;
+                    }
+
+                    window.location.href = `/admin/generate-pdf?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
+                });
+
+                document.getElementById('export-excel').addEventListener('click', function () {
+                    switch (currentFilter.preset) {
+                        case 'today':
+                            filterParam = 'Today'
+                            break;
+                        case 'week':
+                            filterParam = 'Last 7 Days'
+                            break;
+                        case 'month':
+                            filterParam = 'Last 30 Days';
+                            break;
+                        case 'year':
+                            filterParam = 'Last Year';
+                            break;
+                        case 'custom':
+                            filterParam = 'custom';
+                            startDate = document.getElementById('start-date').value;
+                            endDate = document.getElementById('end-date').value;
+                            break;
+                    }
+                  
+                    window.location.href = `/admin/salesReportExcel?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
+                });
+
+
+                // Mobile menu toggle
+                const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+                mobileMenuToggle.addEventListener('click', function () {
+                    alert('Sidebar toggle functionality would go here');
+                });
+
+                // Initialize
+                setDatesFromPreset('today');
+                updateActiveFilters();
+
+                async function pagination(action) {
+
+                    const prevBtn = document.getElementById('prevBtn')
+                    const nextBtn = document.getElementById('nextBtn')
+                    let currentPage = parseInt(document.getElementById('currentPage').textContent)
+
+                    currentPage = action === 'next' ? currentPage + 1 : currentPage - 1
+                    if (currentPage < 1) currentPage = 1
+
+                    switch (currentFilter.preset) {
+                        case 'today':
+                            filterParam = 'Today'
+                            break;
+                        case 'week':
+                            filterParam = 'Last 7 Days'
+                            break;
+                        case 'month':
+                            filterParam = 'Last 30 Days';
+                            break;
+                        case 'year':
+                            filterParam = 'Last Year';
+                            break;
+                        case 'custom':
+                            filterParam = 'custom';
+                            startDate = document.getElementById('start-date').value;
+                            endDate = document.getElementById('end-date').value;
+                            break;
+                             default:
+        filterParam = 'All Time';
+        startDate = null;
+        endDate = null;
+        break;
+                    }
+                  
+                  
+
+                    console.log('currentFilter',currentFilter)
+                    const response = await fetch(`/admin/salesReport?page=${encodeURIComponent(currentPage)}&date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
+                        headers: { 'Accept': 'application/json' }
+                    })
+
+                    const data = await response.json()
+                    const orders = data.orders
+
+                    document.getElementById('currentPage').textContent = data.currentPage
+
+
+                    const tbody = document.getElementById('sales-table-body')
+                    tbody.innerHTML = ''
+
+                    orders.forEach(order => {
+                        let totalRefund = 0;
+                        if (order.orderedItems && order.orderedItems.length > 0) {
+                            order.orderedItems.forEach(item => {
+                                totalRefund += item.reFund || 0
+                            })
+                        }
+
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+            <td>${new Date(order.createdOn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+            <td>${order.orderId}</td>
+            <td>${order.userId?.username || '-'}</td>
+            <td>${order.finalAmount}</td>
+            <td><span class="discount-badge">${order.discount || 0}</span></td>
+            <td>${order.couponApplied?.applied ? `<span class="coupon-badge">${order.couponApplied.code}</span>` : `<span class="coupon-badge-notused">None</span>`}</td>
+            <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+            <td class="refund">${totalRefund > 0 ? totalRefund : '—'}</td>
+        `;
+                        tbody.appendChild(tr)
+                    })
+
+                    
+                    renderPagination(data.currentPage,data.totalPage)
+
+                }
+
+                function renderPagination(currentPage, totalPage) {
+    const paginationContainer = document.querySelector('.pagination')
+    
+    paginationContainer.innerHTML = ''
+
+    
+    if (currentPage > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'page-btn prev';
+        prevBtn.innerHTML = '&laquo;';
+        prevBtn.onclick = () => pagination('previous');
+        paginationContainer.appendChild(prevBtn);
+    }
+
+    
+    const currentBtn = document.createElement('button');
+    currentBtn.id = 'currentPage';
+    currentBtn.className = 'page-btn active';
+    currentBtn.textContent = currentPage;
+    paginationContainer.appendChild(currentBtn);
+
+    if (currentPage < totalPage) {
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'page-btn next';
+        nextBtn.innerHTML = '&raquo;';
+        nextBtn.onclick = () => pagination('next');
+        paginationContainer.appendChild(nextBtn);
+    }
+}
+
+            </script>
+</body>
+
+</html>

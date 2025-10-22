@@ -135,15 +135,20 @@ const checkoutpage = async (req, res) => {
 
 const getCheckoutpage = async (req, res) => {
     try {
+        const userId = req.session.user
         const currentDate = new Date()
+        const cart = await Cart.findOne({ userId })
         const coupons = await Coupon.find({
+            minimumPrice:{$lte:cart.total},
+            usedBy:{$nin:[userId]},
             isList: true,
-            expireOn: { $gt: currentDate }
+            expireOn: { $gt: currentDate },
+            $expr:{$lt:[{$size:'$usedBy'},'$maxUsage']}
         }).sort({ createdOn: -1 })
 
         const itemIds = req.query.item
 
-        const userId = req.session.user
+        
 
         const orderId = req.query.orderId
 
@@ -170,7 +175,7 @@ const getCheckoutpage = async (req, res) => {
                 razorpayKeyId: process.env.RAZORPAY_KEY_ID,
             })
         }
-        const cart = await Cart.findOne({ userId })
+        
         if (!cart || !cart.items || cart.items.length === 0) {
             return res.redirect('/pageNotFound');
         }
@@ -231,9 +236,9 @@ const getCheckoutpage = async (req, res) => {
         res.redirect('/pageNotFound');
     }
 }
-
 const procedToCheckOut = async (req, res) => {
     try {
+        console.log('start proced to checkout')
         let selectedItems = req.body.selectedItems
         const userId = req.session.user
         const retryPayment = req.body.retryPayment
@@ -247,6 +252,7 @@ const procedToCheckOut = async (req, res) => {
             const order = await Order.findOne({ orderId: retryOrderId })
             if (!order) return res.status(401).json({ message: 'Order not found' })
             if (paymentMethod === 'COD') {
+                if(totalAmount>1000)return res.status(401).json({message:'Order above Rs 1000 not be allowed for COD'})
                 order.status = 'Pending'
                 order.paymentStatus = 'Pending'
                 for (let item of order.orderedItems) {
@@ -295,6 +301,8 @@ const procedToCheckOut = async (req, res) => {
             return res.status(500).json({ message: 'Your cart is empty' });
         }
 
+        if(paymentMethod==='COD'&&cart.total>1000)return res.status(401).json({message:'Order above Rs 1000 not be allowed for COD'})
+
         const coupon = await Coupon.findOne({ code: code })
         const products = []
         let totalAmount = 0
@@ -305,6 +313,7 @@ const procedToCheckOut = async (req, res) => {
         if (coupon?.amount) {
             discountPerItem = coupon.amount / selectedItems.length
         }
+        console.log('selectedItems')
         for (const item of selectedItems) {
             const product = await Product.findById(item.productId);
             if (!product) return res.status(500).json({ message: `Product with ID ${item.productId} not found.` });
@@ -314,7 +323,7 @@ const procedToCheckOut = async (req, res) => {
             const category = await Category.findById(product.category);
             if (!category || !category.isListed) return res.status(500).json({ message: `Category unavailable for ${product.productName}.` });
 
-            const variant = product.variants.find(v => v.size === item.size);
+            const variant = JSON.parse(JSON.stringify(product.variants.find(v => v.size === item.size)))
             if (!variant) return res.status(500).json({ message: `Size ${item.size} not found for ${product.productName}.` });
             discount += (variant.regularPrice * item.quantity) - (variant.salePrice * item.quantity)
             if (variant.quantity < item.quantity) return res.status(500).json({ message: `Only ${variant.quantity} left for ${product.productName}.` });
@@ -332,10 +341,12 @@ const procedToCheckOut = async (req, res) => {
                 size: variant.size,
                 categoryId: product.category,
                 quantity: item.quantity,
+                regularPrice:variant.regularPrice,
                 price: variant.salePrice,
                 finalPrice: finalPrice,
                 totalPrice: totalPrice
             })
+            console.log('variant.regularPrice',variant.regularPrice)
         }
 
 
@@ -380,8 +391,6 @@ const procedToCheckOut = async (req, res) => {
             return res.status(500).json({ message: 'Selected address not found' });
         }
         const clonedAddress = structuredClone(selectedAddress.toObject())
-        // Check if a pending order already exists
-        let existingOrder = await Order.findOne({ userId, status: "Pending", paymentStatus: "Pending" });
         let appliedCoupon = {
             applied: false,
             code: null,
@@ -389,7 +398,7 @@ const procedToCheckOut = async (req, res) => {
         }
         if (couponApplied) {
             appliedCoupon.applied = true
-            appliedCoupon.code = parseInt(code)
+            appliedCoupon.code = code
             appliedCoupon.amount = parseInt(couponDiscount)
         }
         const newOrder = new Order({
@@ -400,6 +409,7 @@ const procedToCheckOut = async (req, res) => {
                 size: item.size,
                 categoryId: item.categoryId,
                 quantity: item.quantity,
+                regularPrice:item.regularPrice,
                 price: item.price,
                 finalPrice: item.finalPrice,
                 status: 'Pending',
@@ -449,11 +459,13 @@ const procedToCheckOut = async (req, res) => {
 
 
 
+        let totalQuantityofProduct
 
         for (const item of products) {
             const product = await Product.findById(item.productId);
             if (product) {
-                const variant = product.variants.find(v => v.size === item.size);
+                const variant = product.variants.find(v => v.size === item.size)
+                
                 if (variant) {
                     variant.quantity -= item.quantity;
                     await product.save();
@@ -461,8 +473,15 @@ const procedToCheckOut = async (req, res) => {
                 } else {
                     console.log(`Variant with size ${item.size} not found in product.`);
                 }
+                totalQuantityofProduct=product.variants?.reduce((acc,curr)=>{
+                    return acc + curr.quantity
+                },0)
             } else {
                 console.log('Product not found!');
+            }
+            if(totalQuantityofProduct===0){
+                product.status='out of stock'
+               await product.save()
             }
         }
         for (let item of products) {
@@ -502,6 +521,8 @@ const applyCoupon = async (req, res) => {
 
         if (coupon.expireOn < new Date()) return res.status(401).json({ message: 'This coupon is expired' })
 
+            if(coupon.maxUsage===coupon.usedBy.length)return res.status(401).json({message:'This coupon coupon not available'})
+
         const cart = await Cart.findOne({ userId })
             .populate('items.productId', 'productName isBlocked salePrice variants');
 
@@ -534,6 +555,7 @@ const createRazorpayOrder = async (req, res) => {
         const userId = req.session.user;
         const { selectedItems, addressId, code, couponApplied, couponDiscount } = req.body;
 
+        console.log('coupon code',code)
         let appliedCoupon = {
             applied: false,
             code: null,
@@ -585,6 +607,7 @@ const createRazorpayOrder = async (req, res) => {
                 size: variant.size,
                 categoryId: product.category,
                 quantity: item.quantity,
+                regularPrice:variant.regularPrice,
                 price: variant.salePrice,
                 finalPrice,
             })
@@ -628,6 +651,7 @@ const createRazorpayOrder = async (req, res) => {
                 size: item.size,
                 categoryId: item.categoryId,
                 quantity: item.quantity,
+                regularPrice:item.regularPrice,
                 price: item.price,
                 finalPrice: item.finalPrice,
                 status: 'Pending',
@@ -659,13 +683,18 @@ const createRazorpayOrder = async (req, res) => {
         await newOrder.save()
 
         if (couponApplied) {
-            coupon.usedBy.push(newOrder.userId)
+            console.log('coupon',coupon)
+            coupon.usedBy?.push(newOrder.userId)
             await coupon.save()
         }
 
         // Update stock quantities
+        let productQuantityStatus = 0
         for (let p of products) {
             const product = await Product.findById(p.productId)
+            productQuantityStatus = product.variants?.reduce((acc,curr)=>{
+                return acc+curr
+            },0)
             if (product) {
                 let variant = product.variants?.find(v => v.size === p.size);
                 if (variant) {
@@ -676,6 +705,10 @@ const createRazorpayOrder = async (req, res) => {
                 }
             } else {
                 console.log(`Product not found: ${p.productId}`);
+            }
+            if(productQuantityStatus===0){
+                product.status='out of stock'
+                await product.save()
             }
         }
 
@@ -858,7 +891,7 @@ const paymentFaildRetry = async (req, res) => {
             selectedItems,
             cartTotal,
             address: userAddress?.address || [],
-            coupons,
+            coupons:[],
             savings,
             razorpayKeyId: process.env.RAZORPAY_KEY_ID,
             retryPayment: true,

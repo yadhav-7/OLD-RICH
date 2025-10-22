@@ -328,7 +328,7 @@ const blockProduct = async (req, res) => {
     try {
         console.warn('i reach here')
         const productId = req.body.id
-        await Product.updateOne({ _id: productId }, { isBlocked: true })
+        await Product.updateOne({ _id: productId }, { isBlocked: true , status:'notAvailable'})
         console.log('1');
 
         const p = await Product.findOne({ _id: productId })
@@ -347,7 +347,7 @@ const unBlockProduct = async (req, res) => {
     try {
         const productId = req.body.id
 
-        await Product.updateOne({ _id: productId }, { isBlocked: false })
+        await Product.updateOne({ _id: productId }, { isBlocked: false , status:'Available'})
 
         res.json({ message: true })
     } catch (error) {
@@ -450,6 +450,7 @@ const editProduct = async (req, res) => {
 
         // Handle variants if they exist
 
+
         if (variants && Array.isArray(variants)) {
             const validVariants = variants.filter(variant =>
                 variant.size && variant.regularPrice && variant.quantity
@@ -460,9 +461,22 @@ const editProduct = async (req, res) => {
                 quantity: parseInt(variant.quantity),
                 _id: variant._id || undefined,
 
-            }));
+            }))
 
             updateFields.variants = validVariants;
+        }
+
+
+        let productStatus = updateFields.variants?.reduce((acc, curr) => {
+            return curr.quantity + acc
+        }, 0)
+
+        console.log('productStatus', productStatus)
+
+        if (productStatus === 0) {
+            updateFields.status = 'out of stock'
+        }else if (productStatus>0){
+            updateFields.status='Available'
         }
 
         console.log('Update fields:', updateFields);

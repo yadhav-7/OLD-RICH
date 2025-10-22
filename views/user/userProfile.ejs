@@ -322,6 +322,7 @@
 
 <body>
     <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
+ 
         <div class="container py-5">
             <div class="profile-header">
                 <div class="row align-items-center">
@@ -734,7 +735,12 @@
 
                     </div>
 
-                    <!-- PASSWORD AND SECURITY -->
+                  
+
+                </div>
+
+
+                  <!-- PASSWORD AND SECURITY -->
 
                     <div class="tab-pane fade" id="security">
 
@@ -820,8 +826,6 @@
                                     </div>
                                 </div>
                     </div>
-
-                </div>
             </div>
 
             <!-- Edit Profile Modal -->
@@ -1898,8 +1902,8 @@
                                 city: document.getElementById('city').value.trim(),
                                 street: document.getElementById('street').value.trim(),
                                 pincode: document.getElementById('pincode').value.trim()
-                            };
-
+                            }
+                            
                             try {
                                 const response = await fetch('/addAddress', {
                                     method: 'POST',

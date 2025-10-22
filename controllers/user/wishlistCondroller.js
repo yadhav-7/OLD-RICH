@@ -10,7 +10,7 @@ const getWishList = async (req, res) => {
         const userData = await User.findById(userId)
 
 
-        const wishList = await Wishlist.findOne({ userId: userId })
+        let wishList = await Wishlist.findOne({ userId: userId })
             .populate({
                 path: 'products.productId',
                 select: 'productName productImage description variants status' // keep it lean
@@ -19,7 +19,7 @@ const getWishList = async (req, res) => {
             if(cart && cart.items){
                 length = cart.items?.length < 1 ? 0 : cart.items?.length
             }
-         
+         wishList.products?.sort((a,b)=>b.addedOn-a.addedOn)
 
         return res.render('wishlist', { wishList, length, user: userData })
     } catch (error) {

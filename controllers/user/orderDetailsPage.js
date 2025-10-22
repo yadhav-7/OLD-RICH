@@ -275,6 +275,7 @@ const cancelSingleItem = async (req, res) => {
         const { orderId, itemId } = req.body;
 
         const order = await Order.findOne({ orderId });
+
         if (!order) return res.status(404).json({ message: 'Order not found' });
 
         let refund = 0;
@@ -287,10 +288,10 @@ const cancelSingleItem = async (req, res) => {
 
         order.orderedItems = order.orderedItems.map(item => {
             if (item._id.toString() === itemId && item.status !== 'cancelled') {
-                item.status = 'cancelled';
-                productId = item.product;
-                itemSize = item.size;
-                quantity = item.quantity;
+                item.status = 'cancelled'
+                productId = item.product
+                itemSize = item.size
+                quantity = item.quantity
 
                 if (order.paymentStatus === 'Completed') {
                     refund += item.quantity * item.finalPrice;
@@ -300,8 +301,8 @@ const cancelSingleItem = async (req, res) => {
                     productQuantity++;
                 }
             }
-            return item;
-        });
+            return item
+        })
 
 
         const allCancelled = order.orderedItems.every(i => i.status === 'cancelled');

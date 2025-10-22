@@ -624,7 +624,7 @@
                                         <th scope="col">Min Amount</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Visibility</th>
-                                        <th scope="col">Used Count</th>
+                                        <th scope="col">Maximum Count</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -653,7 +653,7 @@
                                                     , month: "short" , year: "numeric" }) %>
                                             </td>
 
-                                            <!-- ✅ Expire Time (NEW COLUMN) -->
+
                                             <td>
                                                 <%= new Date(cpn.expireOn).toLocaleTimeString("en-GB", { hour: "2-digit"
                                                     , minute: "2-digit" }) %>
@@ -787,6 +787,9 @@
                 </div>
             </div>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
             <script>
 
 
@@ -861,19 +864,29 @@
                                 })
                             })
 
-                            if (response.ok) {
-                                const result = await response.json()
+                            const result = await response.json()
                                 const coupon = result.coupon;
+                            if (response.ok) {
+                                
 
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: couponId.value ? 'Coupon updated successfully!' : 'Coupon created successfully!',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    timerProgressBar: true
-                                });
+
+                                Toastify({
+  text:"Coupon updated successfully!" ,
+  duration: 1500,
+  gravity: "top",        // top or bottom
+  position: "right",     // left, center or right
+  stopOnFocus: true,
+  close: false,          // like Swal toast (auto close)
+  style: {
+    background: "linear-gradient(to right, #00b09b, #96c93d)", // success green
+    color: "#fff",
+    fontWeight: "500",
+    borderRadius: "8px",
+    padding: "10px 16px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+  },
+}).showToast();
+
 
                                 // If it's a new coupon (not editing), add a new row
                                 if (!couponId.value) {
@@ -942,16 +955,14 @@
                                     toast: true,
                                     position: 'top-end',
                                     icon: 'error',
-                                    title: couponId.value || 'Action failed!',
+                                    title: result.message || 'Action failed!',
                                     showConfirmButton: false,
                                     timer: 2000,
                                     timerProgressBar: true
                                 });
                             }
                         } else if (modalTitle.textContent === 'Edit Coupon') {
-
                             const couponData = {
-                                // Access each input field by its ID
                                 name: document.getElementById('name').value,
                                 code: document.getElementById('code').value,
                                 amount: document.getElementById('amount').value,
@@ -959,7 +970,6 @@
                                 maxUsage: document.getElementById('maxUsage').value,
                                 isList: document.getElementById('isList').value,
                                 expireOn: document.getElementById('expireOn').value,
-                                // couponId: document.getElementById('couponId').value
                             }
 
 
@@ -982,25 +992,42 @@
                             couponModal.classList.remove('show');
 
                             if (response.ok) {
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Coupon updated successfully',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                    timerProgressBar: true
-                                });
+                                Toastify({
+                                    text: "Coupon updated successfully",
+                                    duration: 3500,
+                                    gravity: "top",       // top or bottom
+                                    position: "right",    // left, center, or right
+                                    stopOnFocus: true,
+                                    close: false,         // same as Swal toast (auto hides)
+                                    style: {
+                                        background: "linear-gradient(to right, #00b09b, #96c93d)", // success green
+                                        color: "#fff",
+                                        fontWeight: "500",
+                                        borderRadius: "8px",
+                                        padding: "10px 16px",
+                                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+                                    },
+                                }).showToast();
+
                             } else {
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'error',
-                                    title: result.message || 'Update failed',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
+                                Toastify({
+                                    text: result.message || "Update failed",
+                                    duration: 5000,
+                                    gravity: "top",        // "top" or "bottom"
+                                    position: "right",     // "left", "center" or "right"
+                                    stopOnFocus: true,
+                                    close: false,          // no close button (just like Swal toast)
+                                    style: {
+                                        background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                        color: "#fff",
+                                        fontWeight: "500",
+                                        borderRadius: "8px",
+                                        padding: "10px 16px",
+                                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
+                                    },
+                                    className: "toast-error"
+                                }).showToast();
+
                             }
 
                         }
@@ -1008,12 +1035,24 @@
 
                     } catch (error) {
 
-                        Swal.fire({
-                            title: 'Failed!',
-                            text: error || 'something went wrong please try again later!',
-                            icon: 'error',
-                            confirmButtonColor: '#1976d2'
-                        });
+                        Toastify({
+                            text: `Failed!\n${error || 'Something went wrong, please try again later!'}`,
+                            duration: 5000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            stopOnFocus: true,
+                            style: {
+                                background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                                color: "#fff",
+                                borderRadius: "8px",
+                                padding: "16px",
+                                fontWeight: "500",
+                                whiteSpace: "pre-line",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
+                            }
+                        }).showToast();
+
                     }
                 });
 

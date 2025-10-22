@@ -189,15 +189,24 @@ const getListCategory = async (req, res) => {
         // Update the category document
         await Category.updateOne({ _id: id }, { $set: { isListed: true } });
 
+        const products = await Product.find({category:id})
+
+        for(let product of products){
+            product.status='Available'
+
+            await product.save()
+        }
+
+      
         // Fetch the updated document to check the isListed value
         const updatedCategory = await Category.findById(id);
         console.log(id);
         console.log(updatedCategory.isListed); // This will log the isListed value of the document
 
-        res.json({ status: true })
+        return res.json({ status: true })
     } catch (error) {
         console.log('error from getListCategory', error);
-        res.status(500).json({ status: false })
+        return res.status(500).json({ status: false })
     }
 }
 
@@ -206,10 +215,17 @@ const getUnlistCategory = async (req, res) => {
         console.log('unListCategory')
         let id = req.body.id
         await Category.updateOne({ _id: id }, { $set: { isListed: false } })
-        res.json({ status: true })
+        const products = await Product.find({category:id})
+
+        for(let product of products){
+            product.status='notAvailable'
+
+            await product.save()
+        }
+        return res.json({ status: true })
     } catch (error) {
         console.log('Error from getUnListCategory', error)
-        res.status(500).json({ status: false })
+        return res.status(500).json({ status: false })
     }
 }
 

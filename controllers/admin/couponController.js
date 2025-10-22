@@ -1,4 +1,5 @@
 const Coupon = require('../../models/couponSchema')
+const mongoose = require('mongoose');
 
 const getCouponPage = async (req, res) => {
     try {
@@ -80,7 +81,7 @@ const addCoupons = async (req, res) => {
             });
         }
 
-        // ✅ If creating a new coupon
+        
         const newCoupon = new Coupon({
             name: formData.name,
             code: formData.code,
@@ -171,11 +172,19 @@ const editCoupon = async (req, res) => {
     try {
 
         const id = req.query.id
+
+        const { ObjectId } = mongoose.Types;
  
         const {couponData} = req.body
+
+        console.log('id',id)
+        console.log('req.query.id',req.query.id)
+
       
         if (!couponData) return res.status(401).json({ message: 'no data' })
-        const checkExists = await Coupon.find({
+
+            if(couponData.name===couponData.code)return res.status(401).json({message:'Coupon name and code shuold be different'})
+        const checkExists = await Coupon.findOne({
             $or: [
                 { name: { $regex: new RegExp(couponData.name, "i") } },
                 { code: { $regex: new RegExp(couponData.code, "i") } }
@@ -183,7 +192,7 @@ const editCoupon = async (req, res) => {
             _id:{$ne:id}
         });
 
-        if (checkExists.length>0) return res.status(400).json({ message: 'Coupon already exists use another code or name!' })
+        if (checkExists) return res.status(400).json({ message: 'Coupon already exists use another code or name!' })
 
             const updatedCoupon = await Coupon.findByIdAndUpdate(
                 id,

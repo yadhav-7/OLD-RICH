@@ -16,6 +16,7 @@ const getCart = async (req, res) => {
         }
       });
 
+      userCart.items?.sort((a,b)=>b.addedOn-a.addedOn)
     
     if (!userCart || !Array.isArray(userCart.items) || userCart.items.length === 0) {
       return res.render('cart', {
@@ -120,7 +121,8 @@ const addProductToCart = async (req, res) => {
           size: selectedSize,
           quantity: 1,
           price: variant.salePrice || variant.price,
-          totalPrice: findTotal
+          totalPrice: findTotal,
+          
         }],
         total: 1
       });

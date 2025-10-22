@@ -6,6 +6,8 @@ const fs = require('fs')
 
 const PDFDocument = require('pdfkit');
 
+
+
 const loadDashboard = async (req, res) => {
     try {
         const date = req.query.date || null;
@@ -15,12 +17,18 @@ const loadDashboard = async (req, res) => {
             const today = new Date();
 
             switch (date) {
-                case 'daily':
-                    filter.createdOn = {
-                        $gte: new Date(today.setHours(0, 0, 0, 0)),
-                        $lte: new Date(today.setHours(23, 59, 59, 999))
-                    };
-                    break;
+               case 'daily': {
+    const startOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+
+    filter.createdOn = {
+        $gte: startOfDay,
+        $lte: endOfDay
+    };
+    break;
+}
+
+
 
                 case 'weekly': {
                     const firstDayOfWeek = new Date(today);
@@ -69,7 +77,7 @@ const loadDashboard = async (req, res) => {
         }
 
         console.log('date', date)
-        console.log('filter',filter)
+        console.log('filter', filter)
         const orders = await Orders.find(filter)
 
         const usersCount = await Users.countDocuments()
@@ -90,114 +98,112 @@ const loadDashboard = async (req, res) => {
         console.log(6)
 
         const rawDailySales = await Orders.aggregate([
-  {
-    $match: {
-      ...filter,
-      status: { $nin: ["cancelled", "returned"] }
-    }
-  },
-  {
-    $group: {
-      _id: {
-        $dateToString: {
-          format: "%Y-%m-%d",
-          date: "$createdOn",
-          timezone: "+05:30" // 🇮🇳 Important for IST
+            {
+                $match: {
+                    ...filter,
+                    status: { $nin: ["cancelled", "returned"] }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: "$createdOn",
+                            timezone: "+05:30" 
+                        }
+                    },
+                    totalSales: { $sum: "$finalAmount" },
+                    totalDiscount: { $sum: "$discount" },
+                    orderCount: { $sum: 1 },
+
+                    totalCouponAmount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$couponApplied.applied", true] },
+                                "$couponApplied.amount",
+                                0
+                            ]
+                        }
+                    },
+
+                    totalCouponCount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$couponApplied.applied", true] },
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                }
+            },
+            { $sort: { "_id": 1 } }
+        ]);
+
+
+
+
+
+
+        let start, end;
+
+        const now = new Date();
+
+        switch (date) {
+            case 'daily': {
+                start = new Date(now.setHours(0, 0, 0, 0));          
+                end = new Date(now.setHours(23, 59, 59, 999));           
+                break;
+            }
+
+            case 'weekly': {
+                const dayOfWeek = now.getDay();                           
+                start = new Date(now);
+                start.setDate(now.getDate() - dayOfWeek);               
+                start.setHours(0, 0, 0, 0);
+
+                end = new Date(start);
+                end.setDate(start.getDate() + 6);                         
+                end.setHours(23, 59, 59, 999);
+                break;
+            }
+
+            case 'monthly': {
+                start = new Date(now.getFullYear(), now.getMonth(), 1);   
+                end = new Date(now.getFullYear(), now.getMonth() + 1, 0); 
+                end.setHours(23, 59, 59, 999);
+                break;
+            }
+
+            case 'yearly': {
+                start = new Date(now.getFullYear(), 0, 1);       
+                end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999)
+                break;
+            }
+
+            case 'custom': {
+                const { startDate, endDate } = req.query;
+                if (startDate && endDate) {
+                    start = new Date(startDate);
+                    end = new Date(endDate);
+                    end.setHours(23, 59, 59, 999);
+                } else {
+                    throw new Error('Custom filter requires startDate and endDate');
+                }
+                break;
+            }
+
+            default: {
+  
+                start = new Date(now.getFullYear(), now.getMonth(), 1);
+                end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                end.setHours(23, 59, 59, 999);
+            }
         }
-      },
-      totalSales: { $sum: "$finalAmount" },
-      totalDiscount: { $sum: "$discount" },
-      orderCount: { $sum: 1 },
-
-      totalCouponAmount: {
-        $sum: {
-          $cond: [
-            { $eq: ["$couponApplied.applied", true] },
-            "$couponApplied.amount",
-            0
-          ]
-        }
-      },
-
-      totalCouponCount: {
-        $sum: {
-          $cond: [
-            { $eq: ["$couponApplied.applied", true] },
-            1,
-            0
-          ]
-        }
-      }
-    }
-  },
-  { $sort: { "_id": 1 } }
-]);
 
 
-
-
-
-        
-let start, end;
-
-const now = new Date();
-
-switch (date) {
-  case 'daily': {
-    start = new Date(now.setHours(0, 0, 0, 0));              // Start of today
-    end = new Date(now.setHours(23, 59, 59, 999));            // End of today
-    break;
-  }
-
-  case 'weekly': {
-    const dayOfWeek = now.getDay();                           // 0 (Sun) to 6 (Sat)
-    start = new Date(now);
-    start.setDate(now.getDate() - dayOfWeek);                 // Start of the week (Sunday)
-    start.setHours(0, 0, 0, 0);
-
-    end = new Date(start);
-    end.setDate(start.getDate() + 6);                         // End of the week (Saturday)
-    end.setHours(23, 59, 59, 999);
-    break;
-  }
-
-  case 'monthly': {
-    start = new Date(now.getFullYear(), now.getMonth(), 1);   // 1st of this month
-    end = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of this month
-    end.setHours(23, 59, 59, 999);
-    break;
-  }
-
-  case 'yearly': {
-    start = new Date(now.getFullYear(), 0, 1);                // Jan 1 of current year
-    end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999); // Dec 31 of current year
-    break;
-  }
-
-  case 'custom': {
-    const { startDate, endDate } = req.query;
-    if (startDate && endDate) {
-      start = new Date(startDate);
-      end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-    } else {
-      throw new Error('Custom filter requires startDate and endDate');
-    }
-    break;
-  }
-
-  default: {
-    // Default fallback: this month
-    start = new Date(now.getFullYear(), now.getMonth(), 1);
-    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    end.setHours(23, 59, 59, 999);
-  }
-}
-
-console.log('🗓️ Filter range:', start.toISOString(), '→', end.toISOString());
-
-
-        console.log('rawDailySales',rawDailySales)
+        console.log('rawDailySales', rawDailySales)
         const dailySales = [];
         for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
             const dateStr = d.toISOString().split('T')[0];
@@ -210,7 +216,7 @@ console.log('🗓️ Filter range:', start.toISOString(), '→', end.toISOString
                 totalCouponCount: dayData ? dayData.totalCouponCount : 0
             });
         }
-        
+
 
         console.log(11)
 
@@ -227,9 +233,9 @@ console.log('🗓️ Filter range:', start.toISOString(), '→', end.toISOString
         console.log(13)
         console.log('topCategory', topCategory)
 
-        console.log('date',date)
-        console.log('filter',filter)
-        
+        console.log('date', date)
+        console.log('filter', filter)
+
 
         return res.render('dashboard', {
             orders,
@@ -250,7 +256,7 @@ console.log('🗓️ Filter range:', start.toISOString(), '→', end.toISOString
 const salesReport = async (req, res) => {
     try {
 
-         const date = req.query.date || null;
+        const date = req.query.date || null;
         let filter = {};
 
         if (date !== null) {
@@ -258,18 +264,23 @@ const salesReport = async (req, res) => {
 
             switch (date) {
                 case 'daily': {
-    const startOfDay = new Date(today);
-    startOfDay.setHours(0, 0, 0, 0);
+                    const today = new Date();
 
-    const endOfDay = new Date(today);
-    endOfDay.setHours(23, 59, 59, 999);
+                    const startOfDay = new Date(today);
+                    startOfDay.setHours(0, 0, 0, 0);
 
-    filter.createdOn = {
-        $gte: startOfDay,
-        $lte: endOfDay
-    };
-    break;
-}
+
+                    const endOfDay = new Date(today);
+                    endOfDay.setHours(23, 59, 59, 999);
+
+
+                    filter.createdOn = {
+                        $gte: startOfDay,
+                        $lte: endOfDay
+                    };
+                    break;
+                }
+
 
 
                 case 'weekly': {
@@ -327,12 +338,12 @@ const salesReport = async (req, res) => {
             return res.status(404).send('No orders found');
         }
 
-        // SUMMARY
+ 
         const overallSalesCount = orders.length;
         const overallOrderAmount = orders.reduce((acc, o) => acc + (o.finalAmount || 0), 0);
         const overallDiscount = orders.reduce((acc, o) => acc + (o.couponApplied?.amount || 0), 0);
 
-        // FLATTEN DATA
+        
         const salesData = orders.map(order => {
             const date = new Date(order.createdOn).toLocaleDateString('en-GB', {
                 day: '2-digit', month: 'short', year: 'numeric'
@@ -348,14 +359,14 @@ const salesReport = async (req, res) => {
             };
         });
 
-        // PDF SETUP
+    
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
 
         const doc = new PDFDocument({ margin: 40, size: 'A4' });
         doc.pipe(res);
 
-        // HEADER
+     
         doc.fontSize(22).text('VORAODI', { align: 'center' });
         doc.fontSize(16).text('Sales Report', { align: 'center' });
         doc.moveDown(0.5);
@@ -366,7 +377,6 @@ const salesReport = async (req, res) => {
             .text(`Period: Yearly`, { align: 'left' });
         doc.moveDown(1);
 
-        // SALES SUMMARY
         doc.font('Helvetica-Bold').fontSize(14).text('Sales Summary', { underline: true })
         doc.moveDown(0.3)
         doc.font('Helvetica').fontSize(12)
@@ -375,7 +385,6 @@ const salesReport = async (req, res) => {
         doc.text(`Overall Discount: ₹${overallDiscount.toLocaleString('en-IN')}`)
         doc.moveDown(1)
 
-        // SALES DETAILS TABLE
         const tableTop = doc.y
         const rowHeight = 20
         const colWidths = {
@@ -388,7 +397,6 @@ const salesReport = async (req, res) => {
         };
         const startX = 50;
 
-        // Table Header
         doc.font('Helvetica-Bold').fontSize(12)
         doc.text('Order ID', startX, tableTop, { width: colWidths.orderId, align: 'left' })
         doc.text('Date', startX + colWidths.orderId, tableTop, { width: colWidths.date, align: 'left' })
@@ -400,18 +408,17 @@ const salesReport = async (req, res) => {
         let y = tableTop + rowHeight
         doc.moveTo(startX, y - 5).lineTo(550, y - 5).stroke() // header bottom line
 
-        // Table Rows
         doc.font('Helvetica').fontSize(11)
         salesData.forEach((s, index) => {
-            // Alternate row background
+          
             if (index % 2 === 0) {
-                doc.save(); // Save current state
-                doc.fillColor('#f0f0f0', 0.5) // Light gray
-                doc.rect(startX, y - 2, 500, rowHeight).fill() // Draw rectangle
-                doc.restore() // Restore to default color
+                doc.save(); 
+                doc.fillColor('#f0f0f0', 0.5)
+                doc.rect(startX, y - 2, 500, rowHeight).fill() 
+                doc.restore() 
             }
 
-            doc.fillColor('black') // Reset text color
+            doc.fillColor('black') 
 
             doc.text(s.orderId, startX, y, { width: colWidths.orderId });
             doc.text(s.date, startX + colWidths.orderId, y, { width: colWidths.date });
@@ -503,7 +510,7 @@ const salesReportExcel = async (req, res) => {
             }
         }
 
-        const orders = await Orders.find({
+        const orders = await Order.find({
             ...filter,
             status: { $nin: ["cancelled", "returned"] }
         }).populate('userId', 'username email');
@@ -550,7 +557,7 @@ const salesReportExcel = async (req, res) => {
 
         // Header styling
         sheet.mergeCells('A1:F1');
-        sheet.getCell('A1').value = 'VORAODI';
+        sheet.getCell('A1').value = 'Old Rich';
         sheet.getCell('A1').alignment = { horizontal: 'center' };
         sheet.getCell('A1').font = { size: 16, bold: true };
 
@@ -652,7 +659,7 @@ const getTopProducts = async (filter) => {
         const topSellingProducts = await Orders.aggregate([
             {
                 $match: {
-                     ...filter,
+                    ...filter,
                     status: { $nin: ["cancelled", "returned"] }
                 }
             },

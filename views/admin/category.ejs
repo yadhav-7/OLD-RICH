@@ -93,6 +93,8 @@
 
                                         <td class="text-center">
                                             <span
+                                            
+                                            id="index-<%= index %>"
                                                 class="badge rounded-pill bg-<%= category.isListed ? 'success' : 'danger' %>">
                                                 <%= category.isListed ? 'Listed' : 'Unlisted' %>
                                             </span>
@@ -100,12 +102,12 @@
 
                                         <td class="text-center">
                                             <% if(category.isListed){ %>
-                                                <a onclick="Unlist('<%= category._id%>')" id="btn-<%= category._id %>"
+                                                <a  onclick="Unlist('<%= category._id%>',<%= index %>)" id="btn-<%= category._id %>"
                                                     class="btn btn-sm btn-outline-danger">
                                                     Unlist
                                                 </a>
                                                 <% }else{ %>
-                                                    <a onclick="list('<%= category._id %>')" id="btn-<%= category._id%>"
+                                                    <a onclick="list('<%= category._id %>',<%= index %>)" id="btn-<%= category._id%>"
                                                         class="btn btn-sm btn-outline-success">
                                                         List
                                                     </a>
@@ -500,9 +502,8 @@
 
 
 
-            async function list(id) {
+            async function list(id,index) {
                 try {
-
                     const { isConfirmed } = await Swal.fire({
                         toast: true,
                         title: `list product?`,
@@ -526,11 +527,17 @@
                             })
                         })
                         if (response.ok) {
-                            const btn = document.querySelector(`#btn-${id}`);
-                            btn.setAttribute('onclick', `Unlist('${id}')`);
+                            const status = document.getElementById(`index-${index}`)
+                            status.className="badge rounded-pill bg-success"
+                            status.textContent='Listed'
+                            const btn = document.querySelector(`#btn-${id}`)
+                            btn.setAttribute('onclick', `Unlist('${id}')`)
                             btn.textContent = 'Unlist';
                             btn.classList.remove('btn-outline-success');
                             btn.classList.add('btn-outline-danger');
+                            btn.onclick = () => Unlist(id, index); // when listing
+
+
                             Swal.fire({
                                 toast: true,
                                 title: 'Success!',
@@ -552,9 +559,8 @@
             }
 
 
-            async function Unlist(id) {
+            async function Unlist(id,index) {
                 try {
-
                     const { isConfirmed } = await Swal.fire({
                         toast: true,
                         title: `Unlist product?`,
@@ -578,16 +584,15 @@
                             })
                         })
                         if (response.ok) {
-
-
-                            const btn = document.querySelector(`#btn-${id}`);
-                            btn.setAttribute('onclick', `list('${id}')`);
-                            btn.textContent = 'List';
-                            btn.classList.remove('btn-outline-danger');
-                            btn.classList.add('btn-outline-success');
-
-
-
+                            const status = document.getElementById(`index-${index}`)
+                            status.className="badge rounded-pill bg-danger"
+                            status.textContent='Unlisted'
+                            const btn = document.querySelector(`#btn-${id}`)
+                            btn.setAttribute('onclick', `list('${id}')`)
+                            btn.textContent = 'List'
+                            btn.classList.remove('btn-outline-danger')
+                            btn.classList.add('btn-outline-success')
+                            btn.onclick = () => list(id, index)
                             await Swal.fire({
                                 toast: true,
                                 title: 'Success!',
