@@ -536,7 +536,7 @@ const applyCoupon = async (req, res) => {
         let savings = req.body.savings
 
 
-        let amount = savings.slice(2);
+        let amount = savings.slice(1);
         savings = parseInt(amount) + coupon.amount
 
         couponDiscount = coupon.amount
@@ -551,11 +551,11 @@ const applyCoupon = async (req, res) => {
 
 const createRazorpayOrder = async (req, res) => {
     try {
-        console.log('createRazorpayOrder start');
+
         const userId = req.session.user;
         const { selectedItems, addressId, code, couponApplied, couponDiscount } = req.body;
 
-        console.log('coupon code',code)
+
         let appliedCoupon = {
             applied: false,
             code: null,
@@ -623,8 +623,6 @@ const createRazorpayOrder = async (req, res) => {
         const selectedAddress = adrs?.address.find(ad => ad._id.toString() === addressId.toString());
         if (!selectedAddress) return res.status(400).json({ message: "Selected address not found" });
 
-        console.log('process.env.RAZORPAY_KEY_ID', process.env.RAZORPAY_KEY_ID);
-        console.log('process.env.RAZORPAY_KEY_SECRET', process.env.RAZORPAY_KEY_SECRET);
 
         const razorPay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
@@ -632,8 +630,6 @@ const createRazorpayOrder = async (req, res) => {
         });
 
         const clonedAddress = structuredClone(selectedAddress.toObject());
-
-        console.log('finalAmount', finalAmount)
 
         const razorpayOrder = await razorPay.orders.create({
             amount: Math.round(finalAmount * 100),
@@ -720,7 +716,7 @@ const createRazorpayOrder = async (req, res) => {
             );
         }
 
-        console.log('createRazorpayOrder end');
+
 
         return res.status(200).json({
             success: true,
@@ -812,15 +808,21 @@ const orderSuccess = async (req, res) => {
 
 const paymentFaild = async (req, res) => {
     try {
-        console.log('paymentFaild')
-
         const razorPayOrderId = req.query.razorPayOrderId
-        console.log("razorPayOrderId", razorPayOrderId)
-        console.log('typeof razorPayOrderId', typeof razorPayOrderId)
+        
         const order = await Order.findOne({ "razorPay.orderId": razorPayOrderId })
-        console.log('order', order)
+
+        for(let item of order.orderedItems){
+            const product = await Product.findOne({_id:item.product})
+            for(let variant of product.variants){
+                if(variant.size===item.size){
+                    variant.quantity+=item.quantity
+                }
+            }
+            await product.save()
+        }
+        
         if (!order) {
-            console.error('cannot find order in paymentFaild')
             return res.redirect('/pageNotFound')
         }
         order.paymentStatus = 'Failed'
@@ -840,17 +842,26 @@ const paymentFaild = async (req, res) => {
 
 const paymentFaildRetry = async (req, res) => {
     try {
-        console.log('paymentFaildRetry')
+
         const orderId = req.query.orderId
-        const order = await Order.findOne({ orderId: orderId });
+        const order = await Order.findOne({ orderId: orderId })
+          for(let item of order.orderedItems){
+            const product = await Product.findOne({_id:item.product})
+            for(let variant of product.variants){
+                if(variant.size===item.size){
+                    variant.quantity-=item.quantity
+                }
+            }
+            await product.save()
+        }
         if (!order) {
-            console.error('order Not found')
+            
             return res.redirect('/pageNotFoud')
         }
         const userId = req.session.user
         const user = await User.findOne({ _id: userId })
         if (!user) {
-            console.error('user not found')
+      
             return res.redirect('/pageNotFound')
         }
 

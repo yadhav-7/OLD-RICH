@@ -204,7 +204,7 @@ const editCoupon = async (req, res) => {
                 return res.json({message:'Something went wrong try again!'})
             }
 
-            return res.status(200).json({message:'Coupon Updated Succussfull'})
+            return res.status(200).json({message:'Coupon Updated Succussfull',updatedCoupon})
 
     } catch (error) {
         console.error('error in editCoupon', error)

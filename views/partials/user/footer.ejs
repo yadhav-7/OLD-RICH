@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Old Money Clothing Brand Footer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+         
+        }
+        
+        body {
+            background-color: #f8f7f2;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        
+        
+        .content {
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #1a3c27;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #444;
+        }
+        
+        .brand-name {
+            font-size: 3rem;
+            font-weight: normal;
+            margin-bottom: 10px;
+            color: #1a3c27;
+            letter-spacing: 3px;
+        }
+        
+        .tagline {
+            font-style: italic;
+            margin-bottom: 40px;
+            color: #5a7155;
+            font-size: 1.2rem;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #0a2316;
+            color: #e8e8e8;
+            padding: 60px 20px 30px;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #d4c19c;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: normal;
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 1px;
+            background-color: #d4c19c;
+        }
+        
+        .footer-column p {
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #c8c8c8;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #e8e8e8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .footer-links a:hover {
+            color: #d4c19c;
+            transform: translateX(5px);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .newsletter-form input {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 0.9rem;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: #d4c19c;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .newsletter-form input::placeholder {
+            color: #aaa;
+        }
+        
+        .newsletter-form button {
+            padding: 12px 20px;
+            background: #d4c19c;
+            color: #0a2316;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        .newsletter-form button:hover {
+            background: #e8d8b8;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e8e8e8;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-links a:hover {
+            background: #d4c19c;
+            color: #0a2316;
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 50px auto 0;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-bottom p {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .payment-methods i {
+            font-size: 1.5rem;
+            color: #c8c8c8;
+        }
+        
+        .legal-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .legal-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+        
+        .legal-links a:hover {
+            color: #d4c19c;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .brand-name {
+                font-size: 2.2rem;
+            }
+            
+            .content h1 {
+                font-size: 2rem;
+            }
+        }
+
+
+        
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="brand-name">AUTHENTIC CLASSICS</div>
+        <div class="tagline">Timeless Elegance Since 1922</div>
+        <h1>Old Money Clothing Brand Footer</h1>
+        <p>This elegant dark green footer complements the "old money" aesthetic of your clothing brand. It features a sophisticated color scheme, refined typography, and classic design elements that convey heritage and quality.</p>
+        <p>Scroll down to see the complete footer design.</p>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>Since 1922, we have crafted timeless apparel of uncompromising quality for the discerning gentleman and lady. Our heritage is woven into every garment.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Our Heritage</a></li>
+                    <li><a href="#">The Collection</a></li>
+                    <li><a href="#">Fit Guide</a></li>
+                    <li><a href="#">Fabric Care</a></li>
+                    <li><a href="#">Store Locator</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Customer Service</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>The Gazette</h3>
+                <p>Subscribe to receive updates on new collections, exclusive events, and style insights.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Authentic Classics. All rights reserved.</p>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+            </div>
+            <div class="legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Legal</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

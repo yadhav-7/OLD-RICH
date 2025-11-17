@@ -10,8 +10,9 @@ const getSalesReport = async (req, res) => {
 
         const date = req.query.date || null
         const page = parseInt(req.query.page) || 1
-        console.log('req.query.page', req.query.page)
-        console.log('page', typeof page)
+        console.log('date',date)
+        console.log('endDate',req.query.endDate||null)
+        console.log('startDate',req.query.startDate||null)
         let limit = 5
         let skip = (page - 1) * limit
 
@@ -98,6 +99,7 @@ const getSalesReport = async (req, res) => {
             status: { $nin: ['returned', 'cancelled'] }
         })
 
+
         let totalPage = Math.ceil(totalDoc / limit);
 
 
@@ -169,10 +171,14 @@ const salesReport = async (req, res) => {
         console.log('reach at salesReport')
         const date = req.query.date || null;
         let filter = {};
+
+        // ----------------------------
+        // DATE FILTER HANDLING
+        //-----------------------------
         if (date) {
 
-            const today = new Date()
-            today.setHours(0, 0, 0, 0)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
             switch (date) {
                 case 'Today': {
@@ -188,7 +194,7 @@ const salesReport = async (req, res) => {
                     end.setHours(23, 59, 59, 999);
 
                     const start = new Date(today);
-                    start.setDate(start.getDate() - 6)
+                    start.setDate(start.getDate() - 6);
                     start.setHours(0, 0, 0, 0);
 
                     filter.createdOn = { $gte: start, $lte: end };
@@ -200,7 +206,7 @@ const salesReport = async (req, res) => {
                     end.setHours(23, 59, 59, 999);
 
                     const start = new Date(today);
-                    start.setDate(start.getDate() - 29)
+                    start.setDate(start.getDate() - 29);
                     start.setHours(0, 0, 0, 0);
 
                     filter.createdOn = { $gte: start, $lte: end };
@@ -233,25 +239,36 @@ const salesReport = async (req, res) => {
                     break;
                 }
             }
-
         }
 
+        // ----------------------------
+        // FETCH ORDERS
+        //----------------------------
+        let orders = await Order.find(filter)
+            .populate('userId', 'username email');
 
-        const orders = await Order.find({
-            ...filter,
-            status: { $nin: ["cancelled", "returned"] }
-        }).populate('userId', 'username email');
+        // ----------------------------
+        // FILTER OUT CANCELLED OR RETURNED
+        //----------------------------
+        orders = orders.filter(o => {
+            const s = o.status?.toLowerCase();
+            return s !== "cancelled" && s !== "returned";
+        });
 
-        if (!orders || orders.length === 0) {
-            return res.status(404).send('No orders found');
+        if (orders.length === 0) {
+            return res.status(404).send('No valid orders found for this period');
         }
 
-
+        // ----------------------------
+        // SUMMARY CALCULATIONS
+        //----------------------------
         const overallSalesCount = orders.length;
         const overallOrderAmount = orders.reduce((acc, o) => acc + (o.finalAmount || 0), 0);
         const overallDiscount = orders.reduce((acc, o) => acc + (o.couponApplied?.amount || 0), 0);
 
-
+        // ----------------------------
+        // FORMAT SALES DATA
+        //----------------------------
         const salesData = orders.map(order => {
             const date = new Date(order.createdOn).toLocaleDateString('en-GB', {
                 day: '2-digit', month: 'short', year: 'numeric'
@@ -267,13 +284,14 @@ const salesReport = async (req, res) => {
             };
         });
 
-
+        // ----------------------------
+        // PDF HEADER SETUP
+        //----------------------------
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
 
         const doc = new PDFDocument({ margin: 40, size: 'A4' });
         doc.pipe(res);
-
 
         doc.fontSize(22).text('Old Rich', { align: 'center' });
         doc.fontSize(16).text('Sales Report', { align: 'center' });
@@ -282,19 +300,25 @@ const salesReport = async (req, res) => {
         const generatedDate = new Date().toLocaleDateString('en-GB');
         doc.fontSize(12)
             .text(`Report Generated: ${generatedDate}`, { align: 'left' })
-            .text(`Period: Yearly`, { align: 'left' });
+            .text(`Period: ${date || "All Time"}`, { align: 'left' });
         doc.moveDown(1);
 
-        doc.font('Helvetica-Bold').fontSize(14).text('Sales Summary', { underline: true })
-        doc.moveDown(0.3)
-        doc.font('Helvetica').fontSize(12)
+        // ----------------------------
+        // SALES SUMMARY
+        //----------------------------
+        doc.font('Helvetica-Bold').fontSize(14).text('Sales Summary', { underline: true });
+        doc.moveDown(0.3);
+        doc.font('Helvetica').fontSize(12);
         doc.text(`Overall Sales Count: ${overallSalesCount}`);
-        doc.text(`Overall Order Amount: ₹${overallOrderAmount.toLocaleString('en-IN')}`)
-        doc.text(`Overall Discount: ₹${overallDiscount.toLocaleString('en-IN')}`)
-        doc.moveDown(1)
+        doc.text(`Overall Order Amount: ₹${overallOrderAmount.toLocaleString('en-IN')}`);
+        doc.text(`Overall Discount: ₹${overallDiscount.toLocaleString('en-IN')}`);
+        doc.moveDown(1);
 
-        const tableTop = doc.y
-        const rowHeight = 20
+        // ----------------------------
+        // TABLE HEADER
+        //----------------------------
+        const tableTop = doc.y;
+        const rowHeight = 20;
         const colWidths = {
             orderId: 60,
             date: 80,
@@ -305,28 +329,31 @@ const salesReport = async (req, res) => {
         };
         const startX = 50;
 
-        doc.font('Helvetica-Bold').fontSize(12)
-        doc.text('Order ID', startX, tableTop, { width: colWidths.orderId, align: 'left' })
-        doc.text('Date', startX + colWidths.orderId, tableTop, { width: colWidths.date, align: 'left' })
-        doc.text('Customer', startX + colWidths.orderId + colWidths.date, tableTop, { width: colWidths.customer, align: 'left' })
-        doc.text('Total', startX + colWidths.orderId + colWidths.date + colWidths.customer, tableTop, { width: colWidths.total, align: 'right' })
-        doc.text('Discount', startX + colWidths.orderId + colWidths.date + colWidths.customer + colWidths.total, tableTop, { width: colWidths.discount, align: 'right' })
-        doc.text('Coupon', startX + colWidths.orderId + colWidths.date + colWidths.customer + colWidths.total + colWidths.discount, tableTop, { width: colWidths.coupon, align: 'center' })
-        let y = tableTop + rowHeight
-        doc.moveTo(startX, y - 5).lineTo(550, y - 5).stroke() // header bottom line
+        doc.font('Helvetica-Bold').fontSize(12);
+        doc.text('Order ID', startX, tableTop, { width: colWidths.orderId });
+        doc.text('Date', startX + colWidths.orderId, tableTop, { width: colWidths.date });
+        doc.text('Customer', startX + colWidths.orderId + colWidths.date, tableTop, { width: colWidths.customer });
+        doc.text('Total', startX + colWidths.orderId + colWidths.date + colWidths.customer, tableTop, { width: colWidths.total, align: 'right' });
+        doc.text('Discount', startX + colWidths.orderId + colWidths.date + colWidths.customer + colWidths.total, tableTop, { width: colWidths.discount, align: 'right' });
+        doc.text('Coupon', startX + colWidths.orderId + colWidths.date + colWidths.customer + colWidths.total + colWidths.discount, tableTop, { width: colWidths.coupon, align: 'center' });
 
-        doc.font('Helvetica').fontSize(11)
+        let y = tableTop + rowHeight;
+        doc.moveTo(startX, y - 5).lineTo(550, y - 5).stroke();
+
+        // ----------------------------
+        // TABLE ROWS
+        //----------------------------
+        doc.font('Helvetica').fontSize(11);
+
         salesData.forEach((s, index) => {
-
             if (index % 2 === 0) {
                 doc.save();
-                doc.fillColor('#f0f0f0', 0.5)
-                doc.rect(startX, y - 2, 500, rowHeight).fill()
-                doc.restore()
+                doc.fillColor('#f0f0f0', 0.5);
+                doc.rect(startX, y - 2, 500, rowHeight).fill();
+                doc.restore();
             }
 
-            doc.fillColor('black')
-
+            doc.fillColor('black');
             doc.text(s.orderId, startX, y, { width: colWidths.orderId });
             doc.text(s.date, startX + colWidths.orderId, y, { width: colWidths.date });
             doc.text(s.customer, startX + colWidths.orderId + colWidths.date, y, { width: colWidths.customer });
@@ -335,12 +362,12 @@ const salesReport = async (req, res) => {
             doc.text(s.coupon, startX + colWidths.orderId + colWidths.date + colWidths.customer + colWidths.total + colWidths.discount, y, { width: colWidths.coupon, align: 'center' });
 
             y += rowHeight;
+
             if (y > 750) {
                 doc.addPage();
                 y = 50;
             }
         });
-
 
         doc.moveDown(1);
         doc.fontSize(10).fillColor('gray').text('--- End of Report ---', { align: 'center', opacity: 0.6 });
@@ -351,81 +378,88 @@ const salesReport = async (req, res) => {
         console.error('Error generating sales report:', error);
         res.status(500).send('Error generating sales report PDF');
     }
-}
+};
+
 
 const salesReportExcel = async (req, res) => {
     try {
-        console.log('Generating Excel report...');
+        
 
         const date = req.query.date || null;
         let filter = {};
 
-        if (date) {
+       if (date) {
 
-            const today = new Date()
-            today.setHours(0, 0, 0, 0)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-            switch (date) {
-                case 'Today': {
-                    const start = new Date(today);
-                    const end = new Date(today);
-                    end.setHours(23, 59, 59, 999);
-                    filter.createdOn = { $gte: start, $lte: end };
-                    break;
-                }
-
-                case 'Last 7 Days': {
-                    const end = new Date(today);
-                    end.setHours(23, 59, 59, 999);
-
-                    const start = new Date(today);
-                    start.setDate(start.getDate() - 6)
-                    start.setHours(0, 0, 0, 0);
-
-                    filter.createdOn = { $gte: start, $lte: end };
-                    break;
-                }
-
-                case 'Last 30 Days': {
-                    const end = new Date(today);
-                    end.setHours(23, 59, 59, 999);
-
-                    const start = new Date(today);
-                    start.setDate(start.getDate() - 29)
-                    start.setHours(0, 0, 0, 0);
-
-                    filter.createdOn = { $gte: start, $lte: end };
-                    break;
-                }
-
-                case 'Last Year': {
-                    const end = new Date();
-                    end.setHours(23, 59, 59, 999);
-
-                    const start = new Date(end);
-                    start.setFullYear(end.getFullYear() - 1);
-                    start.setHours(0, 0, 0, 0);
-
-                    filter.createdOn = { $gte: start, $lte: end };
-                    break;
-                }
-
-                case 'custom': {
-                    const { startDate, endDate } = req.query;
-                    if (startDate && endDate) {
-                        const start = new Date(startDate);
-                        start.setHours(0, 0, 0, 0);
-
-                        const end = new Date(endDate);
-                        end.setHours(23, 59, 59, 999);
-
-                        filter.createdOn = { $gte: start, $lte: end };
-                    }
-                    break;
-                }
-            }
-
+    switch (date) {
+        case 'Today': {
+            const start = new Date(today);
+            const end = new Date(today);
+            end.setHours(23, 59, 59, 999);
+            filter.createdOn = { $gte: start, $lte: end };
+            break;
         }
+
+        case 'Last 7 Days': {
+            const end = new Date(today);
+            end.setHours(23, 59, 59, 999);
+
+            const start = new Date(today);
+            start.setDate(start.getDate() - 6);
+            start.setHours(0, 0, 0, 0);
+
+            filter.createdOn = { $gte: start, $lte: end };
+            break;
+        }
+
+        case 'Last 30 Days': {
+            const end = new Date(today);
+            end.setHours(23, 59, 59, 999);
+
+            const start = new Date(today);
+            start.setDate(start.getDate() - 29);
+            start.setHours(0, 0, 0, 0);
+
+            filter.createdOn = { $gte: start, $lte: end };
+            break;
+        }
+
+        case 'Last Year': {
+            const end = new Date();
+            end.setHours(23, 59, 59, 999);
+
+            const start = new Date(end);
+            start.setFullYear(end.getFullYear() - 1);
+            start.setHours(0, 0, 0, 0);
+
+            filter.createdOn = { $gte: start, $lte: end };
+            break;
+        }
+
+        case 'custom': {
+            const { startDate, endDate } = req.query;
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                start.setHours(0, 0, 0, 0);
+
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+
+                filter.createdOn = { $gte: start, $lte: end };
+            }
+            break;
+        }
+
+        // ✅ DEFAULT: return all orders received
+        default: {
+            // No date filter → fetch ALL orders
+            filter.createdOn = { $exists: true };
+            break;
+        }
+    }
+}
 
         const orders = await Order.find({
             ...filter,

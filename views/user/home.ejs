@@ -5,46 +5,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OLDRICH - Premium Fashion</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
   <style>
     :root {
       --primary-color: #2e7d32;
-      /* Deep green */
       --secondary-color: #388e3c;
-      /* Vibrant green */
       --light-color: #f8f9fa;
-      /* Light background */
       --dark-color: #212529;
-      /* Dark background */
       --accent-color: #8bc34a;
-      /* Light green accent */
       --text-dark: #37474f;
-      /* Dark text */
       --text-light: #f5f5f5;
-      /* Light text */
       --transition-speed: 0.3s;
       --border-radius: 8px;
       --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --white: #ffffff;
+      --light-green: #e8f5e9;
+      --accent-gold: #d4af37;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
       color: var(--text-dark);
-      background-color: #ffffff;
+      background-color: var(--white);
+      overflow-x: hidden;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
+    h1, h2, h3, h4, h5 {
       font-family: 'Playfair Display', serif;
       color: var(--primary-color);
       font-weight: 600;
@@ -52,48 +43,38 @@
 
     /* Hero Section */
     .hero {
-      position: relative;
-      height: 90vh;
-      min-height: 600px;
-      overflow: hidden;
-      margin-bottom: 4rem;
-      background: linear-gradient(rgba(46, 125, 50, 0.1), rgba(46, 125, 50, 0.1));
+      background: linear-gradient(rgba(26, 71, 42, 0.8), rgba(26, 71, 42, 0.8)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      color: var(--white);
+      padding: 100px 0;
+      text-align: center;
     }
-
-    .hero-container {
-      position: relative;
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .hero-text {
-      position: absolute;
-      left: 10%;
-      max-width: 500px;
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 2.5rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-    }
-
-    .hero-text h1 {
-      font-size: 2.8rem;
+    
+    .hero h1 {
+      color: var(--white);
+      font-size: 3rem;
       margin-bottom: 1.5rem;
-      color: var(--primary-color);
+      position: relative;
     }
-
-    .hero-text p {
+    
+    .hero h1:after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 3px;
+      background-color: var(--accent-gold);
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -15px;
+    }
+    
+    .hero p {
       font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: var(--text-dark);
+      max-width: 700px;
+      margin: 2rem auto 0;
+      color: var(--light-green);
+      line-height: 1.6;
     }
 
     .btn-primary {
@@ -128,8 +109,8 @@
     }
 
     .section-title h2 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
       position: relative;
       display: inline-block;
     }
@@ -137,10 +118,10 @@
     .section-title h2::after {
       content: '';
       position: absolute;
-      width: 60px;
+      width: 80px;
       height: 4px;
       background-color: var(--accent-color);
-      bottom: -12px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
     }
@@ -149,7 +130,8 @@
       color: #666;
       font-size: 1.1rem;
       max-width: 700px;
-      margin: 0 auto;
+      margin: 1rem auto 0;
+      line-height: 1.6;
     }
 
     /* Product Cards */
@@ -162,6 +144,9 @@
       overflow: hidden;
       background: white;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .product-card:hover {
@@ -172,6 +157,7 @@
     .product-image-container {
       position: relative;
       overflow: hidden;
+      flex-grow: 1;
     }
 
     .product-image {
@@ -237,12 +223,15 @@
     .product-info {
       padding: 1.5rem;
       text-align: center;
+      flex-shrink: 0;
     }
 
     .product-title {
+      color: var(--primary-color);
       font-size: 1.1rem;
       margin-bottom: 0.5rem;
       font-weight: 600;
+      line-height: 1.4;
     }
 
     .product-price {
@@ -261,10 +250,12 @@
       border: none;
       border-radius: var(--border-radius);
       transition: all var(--transition-speed) ease;
+      color: white;
     }
 
     .add-to-cart-btn:hover {
       background-color: var(--primary-color);
+      color: white;
     }
 
     .view-all-btn {
@@ -281,6 +272,43 @@
     .view-all-btn:hover {
       background-color: var(--primary-color);
       color: white;
+    }
+
+    /* Brand Values Section */
+    .values-section {
+      background-color: var(--light-color);
+    }
+
+    .value-card {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      border-radius: var(--border-radius);
+      transition: all var(--transition-speed) ease;
+      background-color: var(--white);
+      box-shadow: var(--box-shadow);
+      height: 100%;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .value-icon {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .value-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .value-card p {
+      color: var(--text-dark);
+      line-height: 1.6;
     }
 
     /* Newsletter Section */
@@ -307,6 +335,7 @@
       max-width: 600px;
       margin-bottom: 2rem;
       color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
     }
 
     .newsletter-form {
@@ -332,212 +361,150 @@
       font-weight: 600;
       border-radius: var(--border-radius);
       transition: all var(--transition-speed) ease;
+      color: var(--white);
     }
 
     .btn-secondary:hover {
       background-color: #7cb342;
       border-color: #7cb342;
       transform: translateY(-2px);
-    }
-
-    /* Footer */
-    .site-footer {
-      background-color: var(--dark-color);
-      color: white;
-      padding: 5rem 0 2rem;
-    }
-
-    .footer-content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-bottom: 3rem;
-    }
-
-    .footer-brand {
-      flex: 0 0 100%;
-      margin-bottom: 2rem;
-    }
-
-    .footer-brand h4 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: white;
-    }
-
-    .footer-brand p {
-      color: rgba(255, 255, 255, 0.7);
-      max-width: 500px;
-    }
-
-    .social-icons {
-      margin-top: 1.5rem;
-    }
-
-    .social-icons a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 1.2rem;
-      margin-right: 0.75rem;
-      border-radius: 50%;
-      transition: all var(--transition-speed) ease;
-    }
-
-    .social-icons a:hover {
-      background-color: var(--accent-color);
-      color: var(--dark-color);
-      transform: translateY(-3px);
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-
-    .links-column {
-      flex: 1;
-      min-width: 200px;
-      margin-bottom: 2rem;
-    }
-
-    .links-column h5 {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent-color);
-    }
-
-    .links-column ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .links-column li {
-      margin-bottom: 0.75rem;
-    }
-
-    .links-column a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      transition: color var(--transition-speed) ease;
-    }
-
-    .links-column a:hover {
-      color: white;
-      padding-left: 5px;
-    }
-
-    .links-column i {
-      margin-right: 0.5rem;
-      color: var(--accent-color);
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 0.9rem;
+      color: var(--white);
     }
 
     /* Responsive Styles */
     @media (max-width: 1200px) {
-      .hero-text {
-        left: 5%;
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .section-title h2 {
+        font-size: 2.2rem;
       }
     }
 
     @media (max-width: 992px) {
-      .hero {
-        height: 70vh;
-        min-height: 500px;
-      }
-
-      .hero-text {
-        left: 5%;
-        right: 5%;
-        max-width: none;
-        padding: 2rem;
-      }
-
-      .hero-text h1 {
-        font-size: 2.2rem;
-      }
-
       .section {
         padding: 4rem 0;
+      }
+      
+      .hero {
+        padding: 80px 0;
+      }
+      
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      .section-title h2 {
+        font-size: 2rem;
+      }
+      
+      .product-image {
+        height: 250px;
       }
     }
 
     @media (max-width: 768px) {
+      .section {
+        padding: 3.5rem 0;
+      }
+      
       .hero {
-        height: 60vh;
+        padding: 70px 0;
       }
-
-      .hero-text {
-        padding: 1.5rem;
+      
+      .hero h1 {
+        font-size: 2rem;
       }
-
-      .hero-text h1 {
-        font-size: 1.8rem;
-      }
-
-      .hero-text p {
+      
+      .hero p {
         font-size: 1rem;
+        padding: 0 1rem;
       }
-
+      
       .section-title h2 {
         font-size: 1.8rem;
       }
-
-      .product-image {
-        height: 250px;
+      
+      .section-subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
       }
-
+      
+      .product-image {
+        height: 220px;
+      }
+      
       .newsletter-text h3 {
-        font-size: 1.6rem;
+        font-size: 1.7rem;
+      }
+      
+      .newsletter-form {
+        flex-direction: column;
+      }
+      
+      .newsletter-form .btn {
+        margin-top: 1rem;
+        width: 100%;
       }
     }
 
     @media (max-width: 576px) {
-      .hero {
-        height: 50vh;
-        min-height: 400px;
-      }
-
-      .hero-text h1 {
-        font-size: 1.5rem;
-      }
-
       .section {
         padding: 3rem 0;
       }
-
-      .section-title h2 {
-        font-size: 1.5rem;
+      
+      .hero {
+        padding: 60px 0;
       }
-
+      
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .section-title h2 {
+        font-size: 1.6rem;
+      }
+      
       .product-image {
         height: 200px;
       }
-
+      
       .product-info {
-        padding: 1rem;
+        padding: 1.2rem;
       }
-
-      .links-column {
-        flex: 0 0 100%;
+      
+      .value-card {
+        padding: 2rem 1rem;
       }
-
-      .footer-brand h4 {
+      
+      .newsletter-text h3 {
         font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+      
+      .section-title h2 {
+        font-size: 1.4rem;
+      }
+      
+      .product-image {
+        height: 180px;
+      }
+    }
+
+    /* Additional responsive grid adjustments */
+    @media (max-width: 576px) {
+      .row-cols-2 {
+        row-gap: 1.5rem;
       }
     }
   </style>
@@ -546,257 +513,213 @@
 <body>
   <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
 
-    <section class="hero">
-      <div class="hero-container">
-        <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1200&auto=format&fit=crop"
-          alt="Stylish woman in a modern outfit" class="hero-image">
-        <div class="hero-text">
-          <h1>Elevate Your Style This Season</h1>
-          <p>Discover our curated collection of premium fashion pieces designed to inspire</p>
-          <a href="/shop" class="btn btn-success">SHOP THE COLLECTION</a>
-        </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Old Rich</h1>
+      <p>Discover the timeless elegance of premium old money clothing for the discerning gentleman</p>
+    </div>
+  </section>
+
+  <!-- Brand Values -->
+  <section class="section values-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>OUR VALUES</h2>
+        <p class="section-subtitle">What sets Old Rich apart</p>
       </div>
-    </section>
-
-    <!-- FEATURED PRODUCTS -->
-    <section class="section featured-products">
-      <div class="container">
-        <div class="section-title">
-          <h2>FEATURED PRODUCTS</h2>
-          <p class="section-subtitle">Our most popular items this season</p>
-        </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-          <% for(let i=0 ; i < products.length ; i++){ %>
-            <div class="col">
-              <div class="product-card">
-                <% if(i < 2) { %>
-                  <span class="product-badge">NEW</span>
-                  <% } %>
-                    <div class="product-image-container">
-                      <img src="/uploads/<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>"
-                        class="product-image">
-                      <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
-                        <div class="product-overlay">
-                          <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                        </div>
-                    
-
-                    </div>
-                    <div class="product-info">
-                      <h3 class="product-title">
-                        <%= products[i].productName %>
-                      </h3>
-                      <div class="product-price">Rs <%= products[i].variants[0]?.salePrice %>
-                      </div>
-                      <button class="btn btn-dark add-to-cart-btn">view</button>
-                        </a>
-                    </div>
-              </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="value-card">
+            <div class="value-icon">
+              <i class="bi bi-award"></i>
             </div>
-            <% } %>
-        </div>
-        <div class="text-center mt-5">
-          <a href="/shop" class="btn btn-outline-dark view-all-btn">VIEW ALL PRODUCTS</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- BEST SELLING PRODUCTS -->
-    <section class="section best-sellers bg-light">
-      <div class="container">
-        <div class="section-title">
-          <h2>BEST SELLERS</h2>
-          <p class="section-subtitle">Customer favorites</p>
-        </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-          <% for(let i=0 ; i < 4 ; i++){ %>
-            <div class="col">
-              <div class="product-card">
-                <% if(i===1) { %>
-                  <span class="product-badge">BESTSELLER</span>
-                  <% } %>
-                    <div class="product-image-container">
-                      <img src="https://i.pinimg.com/736x/bf/3b/4d/bf3b4d8102c1500670416ec2ae3b1897.jpg"
-                        class="product-image" alt="Fashion item">
-                      <div class="product-overlay">
-                        <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                      </div>
-                    </div>
-                    <div class="product-info">
-                      <h3 class="product-title">GRAILD FIT</h3>
-                      <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                      <button class="btn btn-dark add-to-cart-btn">view</button>
-                    </div>
-              </div>
-            </div>
-            <% } %>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOP WEARS -->
-    <section class="section top-wears">
-      <div class="container">
-        <div class="section-title">
-          <h2>TOP WEAR</h2>
-          <p class="section-subtitle">Elevate your upper style</p>
-        </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-          <% for(let i=0 ; i < 4 ; i++){ %>
-            <div class="col">
-              <div class="product-card">
-                <% if(i===1) { %>
-                  <span class="product-badge">TRENDING</span>
-                  <% } %>
-                    <div class="product-image-container">
-                      <img src="https://i.pinimg.com/736x/69/28/58/6928580f902f47636c98947dd63a3ec5.jpg"
-                        class="product-image" alt="Polo shirt">
-                      <div class="product-overlay">
-                        <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                      </div>
-                    </div>
-                    <div class="product-info">
-                      <h3 class="product-title">POLO SHIRTS</h3>
-                      <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                      <button class="btn btn-dark add-to-cart-btn">ADD TO CART</button>
-                    </div>
-              </div>
-            </div>
-            <% } %>
-        </div>
-      </div>
-    </section>
-
-    <!-- BOTTOM WEARS -->
-    <section class="section bottom-wears bg-light">
-      <div class="container">
-        <div class="section-title">
-          <h2>BOTTOM WEAR</h2>
-          <p class="section-subtitle">Complete your look</p>
-        </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-          <% for(let i=0 ; i < 4 ; i++){ %>
-            <div class="col">
-              <div class="product-card">
-                <% if(i===0) { %>
-                  <span class="product-badge">NEW</span>
-                  <% } %>
-                    <div class="product-image-container">
-                      <img src="https://i.pinimg.com/736x/86/86/a4/8686a45ea7417ea710c4d5d665db1eae.jpg"
-                        class="product-image" alt="Chinos">
-                      <div class="product-overlay">
-                        <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                      </div>
-                    </div>
-                    <div class="product-info">
-                      <h3 class="product-title">CHINOS</h3>
-                      <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                      <button class="btn btn-dark add-to-cart-btn">ADD TO CART</button>
-                    </div>
-              </div>
-            </div>
-            <% } %>
-        </div>
-      </div>
-    </section>
-
-    <!-- NEWSLETTER -->
-    <section class="newsletter-section">
-      <div class="container">
-        <div class="newsletter-content">
-          <div class="newsletter-text">
-            <h3>Join Our Newsletter</h3>
-            <p>Subscribe to get updates on new arrivals, special offers and other discount information.</p>
-          </div>
-          <form class="newsletter-form">
-            <div class="input-group">
-              <input type="email" class="form-control" placeholder="Your email address" required>
-              <button type="submit" class="btn btn-secondary">SUBSCRIBE</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <h4>OLDRICH</h4>
-            <p>Elevating your style with premium fashion pieces since 2015.</p>
-            <div class="social-icons">
-              <a href="#"><i class="bi bi-facebook"></i></a>
-              <a href="#"><i class="bi bi-instagram"></i></a>
-              <a href="#"><i class="bi bi-twitter"></i></a>
-              <a href="#"><i class="bi bi-pinterest"></i></a>
-            </div>
-          </div>
-
-          <div class="footer-links">
-            <div class="links-column">
-              <h5>SHOP</h5>
-              <ul>
-                <li><a href="#">New Arrivals</a></li>
-                <li><a href="#">OLD MONEY CLOTHS</a></li>
-                <li><a href="#">TRENDINGS</a></li>
-              </ul>
-            </div>
-
-            <div class="links-column">
-              <h5>HELP</h5>
-              <ul>
-                <li><a href="#">Customer Service</a></li>
-                <li><a href="#">Track Order</a></li>
-                <li><a href="#">Returns & Exchanges</a></li>
-                <li><a href="#">Shipping Information</a></li>
-              </ul>
-            </div>
-
-            <div class="links-column">
-              <h5>CONTACT</h5>
-              <ul>
-                <li><a href="#"><i class="bi bi-geo-alt"></i> 123 OLDRICH Ave, New York</a></li>
-                <li><a href="#"><i class="bi bi-telephone"></i> +1 (555) 123-4567</a></li>
-                <li><a href="#"><i class="bi bi-envelope"></i> info@oldrich.com</a></li>
-              </ul>
-            </div>
+            <h3 class="value-title">Premium Quality</h3>
+            <p>Only the finest materials and craftsmanship for lasting elegance</p>
           </div>
         </div>
-
-        <div class="footer-bottom">
-          <p>&copy; 2023 OLDRICH. All rights reserved.</p>
+        <div class="col-md-4">
+          <div class="value-card">
+            <div class="value-icon">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <h3 class="value-title">Timeless Style</h3>
+            <p>Classic designs that transcend trends and seasons</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="value-card">
+            <div class="value-icon">
+              <i class="bi bi-person-check"></i>
+            </div>
+            <h3 class="value-title">Sophisticated Fit</h3>
+            <p>Tailored cuts designed for the discerning gentleman</p>
+          </div>
         </div>
       </div>
-    </footer>
+    </div>
+  </section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Bootstrap dropdowns explicitly
-    const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-    dropdownElementList.forEach(dropdown => {
-      new bootstrap.Dropdown(dropdown);
+  <!-- FEATURED PRODUCTS -->
+  <section class="section featured-products">
+    <div class="container">
+      <div class="section-title">
+        <h2>FEATURED PRODUCTS</h2>
+        <p class="section-subtitle">Our most popular items this season</p>
+      </div>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <% for(let i=0 ; i < products.length ; i++){ %>
+          <div class="col">
+            <div class="product-card">
+              <% if(i < 2) { %>
+                <span class="product-badge">NEW</span>
+              <% } %>
+              <div class="product-image-container">
+                <img src="/uploads/<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>"
+                  class="product-image">
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <div class="product-overlay">
+                    <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
+                  </div>
+                </a>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">
+                  <%= products[i].productName %>
+                </h3>
+                <div class="product-price">Rs <%= products[i].variants[0]?.salePrice %></div>
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <button class="btn btn-success add-to-cart-btn">VIEW</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+      <div class="text-center mt-5">
+        <a href="/shop" class="btn btn-outline-dark view-all-btn">VIEW ALL PRODUCTS</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEST SELLING PRODUCTS -->
+  <section class="section best-sellers bg-light">
+    <div class="container">
+      <div class="section-title">
+        <h2>BEST SELLERS</h2>
+        <p class="section-subtitle">Customer favorites</p>
+      </div>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <% for(let i=0 ; i < 4 ; i++){ %>
+          <div class="col">
+            <div class="product-card">
+              <% if(i===1) { %>
+                <span class="product-badge">BESTSELLER</span>
+              <% } %>
+              <div class="product-image-container">
+                <img src="https://i.pinimg.com/736x/bf/3b/4d/bf3b4d8102c1500670416ec2ae3b1897.jpg"
+                  class="product-image" alt="Fashion item">
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <div class="product-overlay">
+                    <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
+                  </div>
+                </a>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">GRAILD FIT</h3>
+                <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <button class="btn btn-success add-to-cart-btn">VIEW</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP WEARS -->
+  <section class="section top-wears">
+    <div class="container">
+      <div class="section-title">
+        <h2>TOP WEAR</h2>
+        <p class="section-subtitle">Elevate your upper style</p>
+      </div>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <% for(let i=0 ; i < 4 ; i++){ %>
+          <div class="col">
+            <div class="product-card">
+              <% if(i===1) { %>
+                <span class="product-badge">TRENDING</span>
+              <% } %>
+              <div class="product-image-container">
+                <img src="https://i.pinimg.com/736x/69/28/58/6928580f902f47636c98947dd63a3ec5.jpg"
+                  class="product-image" alt="Polo shirt">
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <div class="product-overlay">
+                    <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
+                  </div>
+                </a>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">POLO SHIRTS</h3>
+                <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
+                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
+                  <button class="btn btn-success add-to-cart-btn">VIEW</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <div class="newsletter-text">
+          <h3>Join the Old Rich Community</h3>
+          <p>Subscribe to our newsletter for exclusive offers, style tips, and early access to new collections</p>
+        </div>
+        <form class="newsletter-form d-flex gap-2 flex-column flex-md-row">
+          <input type="email" class="form-control" placeholder="Enter your email address" required>
+          <button type="submit" class="btn btn-secondary">SUBSCRIBE</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../../views/partials/user/footer',{title:'Home-page'}) %>
+
+ 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Bootstrap dropdowns explicitly
+      const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+      dropdownElementList.forEach(dropdown => {
+        new bootstrap.Dropdown(dropdown);
+      });
+
+      // Check user block status
+      setInterval(() => {
+        fetch('/check-user-block')
+          .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+          })
+          .then(data => {
+            if (data.findUser && data.findUser.isBlock) {
+              window.location.href = '/login';
+            }
+          })
+          .catch(err => {
+            console.error('Block check failed:', err);
+          });
+      }, 3000);
     });
-
-    // Check user block status
-    setInterval(() => {
-      fetch('/check-user-block')
-        .then(res => {
-          if (!res.ok) throw new Error('Network response was not ok');
-          return res.json();
-        })
-        .then(data => {
-          if (data.findUser && data.findUser.isBlock) {
-            window.location.href = '/login';
-          }
-        })
-        .catch(err => {
-          console.error('Block check failed:', err);
-        });
-    }, 3000);
-  });
-</script>
+  </script>
+</body>
 </html>

@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
-const userController = require('../controllers/user/userController');
+const router = express.Router()
+const aboutUs = require('../controllers/user/aboutUs')
+const userController = require('../controllers/user/userController')
 const profileController = require('../controllers/user/profileController')
 const productController = require('../controllers/user/productController')
 const addressController = require('../controllers/user/addressCondroller')
@@ -13,7 +14,10 @@ const refferalController = require('../controllers/user/refferalController')
 
 const {upload,profileUpload} = require('../middlewares/multer')
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
-const passport = require('passport');
+const passport = require('passport')
+
+//ABOUT US
+router.get('/aboutUs',aboutUs.aboutUs)
 
 //ERROR MANAGEMENT
 router.get('/pageNOTfound',userController.pageNOTfound)
@@ -93,8 +97,6 @@ router.patch('/editProfile', userAuth, profileUpload.single('profilePhoto'), pro
 //HOME PAGE & SHOPING
 router.get('/home',guestAuth,userController.loadHomePage)
 router.get('/shop',guestAuth,userController.loadShopingPage)
-router.get('/sortAndfilter',guestAuth,userController.sortAndFilter)
-router.get('/searchProducts',guestAuth,userController.searchProducts)
 router.get('/check-user-block',guestAuth,userController.checkUserBlock)
 
 
@@ -139,6 +141,9 @@ router.patch('/cancelSingleItem',userAuth,orderController.cancelSingleItem)
 
 //RETURN REQ
 router.patch('/returnReq',userAuth,orderController.returnReq)
+
+//ORDER INVOICE
+router.get('/generateInvoice',userAuth,orderController.generateInvoice)
 
 //WISHLIST 
 router.get('/wishlist',userAuth,wishlistCondroller.getWishList)

@@ -2,21 +2,51 @@ const User = require('../../models/userSchema')
 const Order = require('../../models/orderSchema')
 const Product = require('../../models/productSchema')
 const Wallet = require('../../models/walletSchema')
+const PDFDocument = require("pdfkit")
 const getOrderPage = async (req, res) => {
-    try {
-        const order = await Order.find().sort({ createdOn: -1 }).populate('userId')
+  try {
+    const page = req.query.page||1
+    const limit = 6
+    const skip = (page-1)*limit
 
-        res.render('ordermanage', {
-            order
+    const order = await Order.find()
+      .sort({ createdOn: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('userId', 'username')
+
+      const totalOrder = await Order.countDocuments()
+
+      const totalPage = totalOrder/limit
+
+      if(req.headers['x-requested-by'] === 'frontend-fetch'){
+        console.log('orders',order)
+        return res.status(200).json({
+            order,
+      currentPage:page,
+      totalPage:totalPage
         })
-    } catch (error) {
-        console.error('error in getOrderPage', error)
-    }
+      }else{
+        return res.render('ordermanage', {
+      order,
+      currentPage:page,
+      totalPage:totalPage
+    })
+      }
+  } catch (error) {
+    console.error('error in getOrderPage', error);
+  }
 }
 
 const searchOrders = async (req, res) => {
     try {
-        const search = req.query.searchvalue || '';
+        const search = req.query.searchvalue || ''
+
+         const page = req.query.page||1
+    const limit = 6
+    const skip = (page-1)*limit
+
+
 
         const searchData = await Order.find({
             $or: [
@@ -28,8 +58,17 @@ const searchOrders = async (req, res) => {
             .populate('userId', 'username')
             .lean();
 
-        console.log('searched data is ', searchData)
-        res.json(searchData);
+            const totalOrder = await Order.countDocuments()
+
+      const totalPage = totalOrder/limit
+
+      console.log('searchData',searchData)
+
+       return res.json({
+        searchData,
+        totalPage,
+        currentPage:page
+       });
 
     } catch (error) {
         console.error(error);
@@ -103,9 +142,7 @@ const ordereDetails = async (req, res) => {
             .populate({
                 path: 'orderedItems.product',
                 select: 'productImage productName variants'
-            });
-
-        console.log('order.returnReason', order.returnReason)
+            })
 
         if (!order) res.redirect('/pageNotFound')
         return res.render('orderDetailPage', { order })
@@ -114,6 +151,7 @@ const ordereDetails = async (req, res) => {
         res.redirect('/pageNotFound')
     }
 }
+
 
 const handleReturnReq = async (req, res) => {
     try {

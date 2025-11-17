@@ -4,7 +4,7 @@ const costomerInfo = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
 
-        const limit = 6;
+        const limit = 5
         
         const skip = (page - 1) * limit;
 
@@ -27,7 +27,7 @@ const costomerInfo = async (req, res) => {
             .sort({createdOn:-1})
             .limit(limit)
             .skip(skip)
-            .exec();
+            .exec()
 
             const isFetch = req.headers.accept?.includes('application/json')
 

@@ -27,7 +27,7 @@ const addProducts = async (req, res) => {
         let tempVariantObj = {}
 
         function skugen(size) {
-            return `sku${size}` + Math.floor(Math.random() * 1000000); // Up to 6 digits
+            return `sku${size}` + Math.floor(Math.random() * 1000000)
         }
 
         if (!Array.isArray(products.sizes)) {
@@ -88,10 +88,10 @@ const addProducts = async (req, res) => {
         for (let key of variants) {
             totalStock += parseInt(key.quantity)
         }
-        console.log('totalStock of the product=========================>', totalStock)
+       
 
         let sts = totalStock === 0 ? 'out of stock' : 'Available'
-        console.log('sts=========================>', sts)
+       
         const productExist = await Product.findOne({
             productName: {
                 $regex: new RegExp(`^${products.productName}$`, 'i')
@@ -105,11 +105,10 @@ const addProducts = async (req, res) => {
                     const originalImagePath = req.files[i].path;
                     const ext = path.extname(req.files[i].originalname);
                     const baseName = path.basename(req.files[i].originalname, ext);
-                    // Unique name to avoid overwrite
+                 
                     const resizedFileName = Date.now() + '-' + baseName + '-resized' + ext;
                     const resizedImagePath = path.join('public', 'uploads', 'product-images', resizedFileName);
 
-                    // Ensure the 'resized' folder exists
                     fs.mkdirSync(path.join('public', 'uploads', 'product-images'), { recursive: true });
 
 
@@ -140,7 +139,7 @@ const addProducts = async (req, res) => {
 
                 createdOn: new Date(),
 
-                color: products.color,
+                color: products.colour,
                 productImage: images,
                 status: sts,
                 variants
@@ -164,7 +163,7 @@ const addProducts = async (req, res) => {
         }
     } catch (error) {
         console.error('error from add product', error)
-        res.redirect('/admin/pageError')
+        res.redirect('/pageNotFound')
     }
 }
 
@@ -361,6 +360,7 @@ const getEditProduct = async (req, res) => {
         const id = req.query.id
 
         const product = await Product.findOne({ _id: id })
+        .populate('category' , 'name')
 
         const category = await Category.find({})
 
@@ -382,23 +382,25 @@ const editProduct = async (req, res) => {
         const data = req.body;
         console.log('Form data received:', data);
 
-        const {
+        let {
             productName,
             description,
             category,
             color,
-            existingImages, // This comes from the hidden input
+            existingImages,
             variants
         } = data;
 
         const categoryId = await Category.findOne({ name: category });
 
+        productName=productName.trim()
         const existingProduct = await Product.findOne({
-            productName: { $regex: `^${productName}$`, $options: 'i' }, // case-insensitive exact match
-            _id: { $ne: id } // exclude current product
-        });
+            productName: { $regex: `^${productName}$`, $options: 'i' },
+            _id: { $ne: id }
+        })
 
 
+        if(existingProduct)return res.json({error:'Product name is already exists'})
 
 
         // Get the current product to preserve existing images if no changes
@@ -483,7 +485,7 @@ const editProduct = async (req, res) => {
 
         await Product.findByIdAndUpdate(id, updateFields, { new: true });
 
-        res.redirect('/admin/getAllProducts');
+       return res.redirect('/admin/getAllProducts');
     } catch (error) {
         console.error('error from editProduct', error);
         res.redirect('/admin/pageError');

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter New Email</title>
+        <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,6 +66,15 @@
     </div>
 
     <script>
+        window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      // Hide content instantly
+      document.body.style.display = "none";
+      // Force reload from server
+      window.location.href='/home';
+    }
+  })
+
         document.getElementById('emailForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = this.querySelector('input').value;

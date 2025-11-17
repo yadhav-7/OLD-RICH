@@ -7,23 +7,96 @@
     <title>Order Management</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-blue: #1a73e8;
-            --light-blue: #e8f0fe;
-            --dark-blue: #0d47a1;
+            --primary-yellow: #ffc107;
+            --light-yellow: #fff9e6;
+            --dark-yellow: #e6a700;
             --white: #ffffff;
             --light-gray: #f8f9fa;
             --dark-gray: #343a40;
+            --text-dark: #333333;
+        }
+
+        body {
+            background-color: #fefefe;
+            color: var(--text-dark);
         }
 
         .main-container {
-        padding-top: 77px;
-        width: 1277px;
-        padding-left: 242px;
-        
+            padding-top: 77px;
+            width: 100%;
+            padding-left: 0;
+        }
+
+        .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0;
+  background: #fffbea; /* soft white-yellow base */
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+}
+
+.page-btn {
+  background-color: #ffffff;
+  color: #333;
+  border: 2px solid #ffe082; /* soft yellow border */
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+  background-color: #fff176; /* brighter yellow on hover */
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(255, 235, 59, 0.3);
+}
+
+.page-btn.active {
+  background-color: #ffd600; /* vibrant golden */
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.8);
+  cursor: default;
+}
+
+.page-btn.prev,
+.page-btn.next {
+  background-color: #fff;
+  border-color: #ffeb3b;
+}
+
+.page-btn.prev:hover,
+.page-btn.next:hover {
+  background-color: #ffee58;
+  color: #000;
+}
+
+#prevBtn:disabled,
+#nextBtn:disabled {
+  background-color: #f0f0f0;
+  color: #aaa;
+  border-color: #ddd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+        @media (min-width: 992px) {
+            .main-container {
+                padding-left: 242px;
+            }
         }
 
         .card {
@@ -31,6 +104,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
+            background-color: var(--white);
         }
 
         .card:hover {
@@ -38,20 +112,32 @@
         }
 
         .card-header {
-            background-color: var(--primary-blue);
-            color: var(--white);
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
             border-radius: 10px 10px 0 0 !important;
             font-weight: 500;
         }
 
         .btn-primary {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
+            background-color: var(--primary-yellow);
+            border-color: var(--primary-yellow);
+            color: var(--text-dark);
         }
 
         .btn-primary:hover {
-            background-color: var(--dark-blue);
-            border-color: var(--dark-blue);
+            background-color: var(--dark-yellow);
+            border-color: var(--dark-yellow);
+            color: var(--text-dark);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary-yellow);
+            color: var(--primary-yellow);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
         }
 
         .badge-pending {
@@ -101,7 +187,7 @@
         }
 
         .order-row:hover {
-            background-color: var(--light-blue);
+            background-color: var(--light-yellow);
             cursor: pointer;
         }
 
@@ -111,27 +197,94 @@
         }
 
         .notification-dot {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
-  background-color: red;
-  border-radius: 50%;
-  box-shadow: 0 0 3px rgba(0,0,0,0.3);
-  animation: pulse 1.5s infinite ease-in-out;
-}
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            animation: pulse 1.5s infinite ease-in-out;
+        }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
 
+        .modal-header {
+            background-color: var(--primary-yellow);
+            color: var(--text-dark);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-container {
+                padding-top: 20px;
+            }
+            
+            .d-flex.justify-content-between.align-items-center.mb-4 {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            
+            .d-flex.justify-content-between.align-items-center.mb-4 > div {
+                margin-top: 10px;
+                width: 100%;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container-fluid {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            h4 {
+                font-size: 1.25rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(4),
+            .table td:nth-child(4) {
+                display: none;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+    <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 </head>
 
 <body>
@@ -141,7 +294,6 @@
                 <h4 class="mb-0">Order Management</h4>
                 <div class="d-flex">
                     <div class="me-3">
-                        
                     </div>
                     <div class="search-box">
                         <i class="fas fa-search search-icon"></i>
@@ -150,112 +302,101 @@
                 </div>
             </div>
 
-            <!-- Orders Table -->
-           
-            
-
             <div class="card">
-                <!-- <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Orders</h5>
-                    <div>
-                        <button class="btn btn-sm btn-outline-secondary me-2">
-                            <i class="fas fa-download me-1"></i> Export
-                        </button>
-                    </div>
-                </div> -->
                 <div class="card-body">
                     <div class="table-responsive">
-                        
                         <% if (order && order.length > 0) { %>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="ordersTableBody" class="tableBody">
-            <% order.forEach(element => { %>
-                <tr class="order-row">
-                    <td><%= element.orderId %></td>
-                    <td><%= new Date(element.createdOn).toLocaleDateString() %></td>
-                    <td><%= element.userId?.username %></td>
-                    <td><%= element?.orderedItems?.length %></td>
-                    <td><%= element.totalPrice %></td>
-                    <td>
-                        <span id="orderStatus<%= element.orderId %>" class="badge badge-shipped">
-                            <%= element.status %>
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge bg-success">
-                            <%= element?.paymentStatus %>
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-primary"
-                                onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <a href="orderDetails?orderId=<%= element?.orderId %>"
-                                class="btn btn-sm btn-outline-info">
-                                
-
-                                <span class="icon-wrapper position-relative">
-                                    <% if(element.status==='returnRequested'||element.orderedItems?.some((v)=>v.status==='returnRequested')){ %>
-                                        <span class="notification-dot"></span>
-                                    <% } %>
-                                    <i class="fas fa-eye"></i>
-                                
-                                </span>
-                                
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
-<% } else { %>
-    <div class="text-center mt-4">
-        <h5 class="text-muted">No orders yet ✨</h5>
-    </div>
-<% } %>
-
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Payment</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTableBody" class="tableBody">
+                                    <% let i = 1 %>
+                                    <% order.forEach(element => { %>
+                                        <tr class="order-row">
+                                            <td><%= i++ %></td>
+                                            <td><%= new Date(element.createdOn).toLocaleDateString() %></td>
+                                            <td><%= element.userId?.username %></td>
+                                            <td><%= element?.orderedItems?.length %></td>
+                                            <td><%= element.totalPrice %></td>
+                                            <td>
+                                                <span id="orderStatus<%= element.orderId %>" class="badge badge-shipped">
+                                                    <%= element.status %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    <%= element?.paymentStatus %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn btn-sm btn-outline-primary"
+                                                        onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="orderDetails?orderId=<%= element?.orderId %>"
+                                                        class="btn btn-sm btn-outline-info">
+                                                        <span class="icon-wrapper position-relative">
+                                                            <% if(element.status==='returnRequested'||element.orderedItems?.some((v)=>v.status==='returnRequested')){ %>
+                                                                <span class="notification-dot"></span>
+                                                            <% } %>
+                                                            <i class="fas fa-eye"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        <% } else { %>
+                            <div class="text-center mt-4">
+                                <h5 class="text-muted">No orders yet ✨</h5>
+                            </div>
+                        <% } %>
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-
-                       
-                    </div>
+                    
                 </div>
             </div>
+
+              <div class="pagination" id="paginationContainer">
+  <% if(currentPage>1){ %>
+      <button onclick="pagination('previous')" id="prevBtn" class="page-btn prev">&laquo;</button>
+  <% } %>
+  <button id="currentPage" class="page-btn active"><%= currentPage %></button>
+  <% if (currentPage<totalPage) { %>
+      <button onclick="pagination('next')" id="nextBtn" class="page-btn next">&raquo;</button>
+  <% } %>
+</div>
+
+
+
         </div>
 
         <!-- Status Update Modal -->
         <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
+                    <div class="modal-header">
                         <h5 class="modal-title">Update Order Status</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form id="statusUpdateForm">
                         <input type="hidden" id="orderId">
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label">
-                                    <%= %>
-                                </label>
+                                <label class="form-label">Current Status</label>
                                 <input type="text" class="form-control" id="currentStatus" readonly>
                             </div>
                             <div class="mb-3">
@@ -269,8 +410,6 @@
                                     <option>Cancelled</option>
                                 </select>
                             </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -285,10 +424,9 @@
         <div class="modal fade" id="returnRequestModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
+                    <div class="modal-header">
                         <h5 class="modal-title">Process Return Request</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form id="returnRequestForm">
                         <input type="hidden" id="returnOrderId">
@@ -348,133 +486,265 @@
     <!-- jQuery (required for modal functionality) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- JavaScript for Modals Only -->
-   <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const search = document.getElementById('searchInput');
-    const ordersTableBody = document.getElementById('ordersTableBody');
-    let orderStatusEl;
-    let orderId;
+    <script src="/helpers/fetchService.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-   search.addEventListener('keyup', async function () {
-    const searchValue = search.value.trim();
+           
+            const search = document.getElementById('searchInput');
+            const ordersTableBody = document.getElementById('ordersTableBody');
+            let orderStatusEl;
+            let orderId;
 
-    try {
-        const response = await fetch(`/admin/searchOrders?searchvalue=${encodeURIComponent(searchValue)}`);
-        if (!response.ok) {
-            console.error("Search failed");
-            return;
-        }
+            search.addEventListener('keyup', async function () {
+                const searchValue = search.value.trim();
 
-        const orders = await response.json();
-        ordersTableBody.innerHTML = ''; // Clear the table body first
+                try {
+                    const response = await fetch(`/admin/searchOrders?searchvalue=${encodeURIComponent(searchValue)}`);
+                    if (!response.ok) {
+                        console.error("Search failed");
+                        return;
+                    }
 
-        if (orders.length === 0) {
-            ordersTableBody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center text-muted py-4">
-                        No orders found.
-                    </td>
-                </tr>`;
-            return;
-        }
+                    const data = await response.json();
 
-        if(!searchValue){
-            window.location.reload()
-        }
+                    const orders = data.searchData
+                    ordersTableBody.innerHTML = ''
 
-        orders.forEach(element => {
-            ordersTableBody.innerHTML += `
-                <tr class="order-row">
-                    <td>${element.orderId}</td>
-                    <td>${new Date(element.createdOn).toLocaleDateString()}</td>
-                    <td>${element.userId?.username || ''}</td>
-                    <td>${element?.orderedItems?.length || 0}</td>
-                    <td>${element.totalPrice}</td>
-                    <td>
-                        <span id="orderStatus${element.orderId}" class="badge badge-shipped">
-                            ${element.status}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge bg-success">
-                            ${element.paymentStatus}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-primary"
-                                onclick="openStatusModal('${element.orderId}','${element.status}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <a href="orderDetails?orderId=${element.orderId}" 
-                               class="btn btn-sm btn-outline-info">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
 
-    } catch (error) {
-        console.error('Error in searchOrders', error);
-    }
-});
 
-// STATUS BADGE CLASS
-    function getStatusBadgeClass(status) {
-        switch (status.toLowerCase()) {
-            case 'pending': return 'badge-pending';
-            case 'processing': return 'badge-processing';
-            case 'shipped': return 'badge-shipped';
-            case 'delivered': return 'badge-delivered';
-            case 'cancelled': return 'badge-cancelled';
-            case 'return': return 'badge-return';
-            default: return 'badge-secondary';
-        }
-    }
+                    if (orders.length === 0) {
+                        ordersTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    No orders found.
+                                </td>
+                            </tr>`;
+                        return;
+                    }
 
-    // STATUS UPDATE MODAL
-    window.openStatusModal = function (ordId, currentStatus) {
-        orderStatusEl = document.getElementById(`orderStatus${ordId}`);
-        orderId = ordId;
-        document.getElementById('orderId').value = ordId;
-        document.getElementById('currentStatus').value = currentStatus;
-        document.getElementById('newStatus').value = '';
-        $('#statusUpdateModal').modal('show');
-    };
+                    if(!searchValue){
+                        window.location.reload()
+                    }
 
-    // SUBMIT STATUS CHANGE
-    document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const newStatus = document.getElementById('newStatus').value;
-        if (!newStatus) return;
+                    orders.forEach(element => {
+                        ordersTableBody.innerHTML += `
+                            <tr class="order-row">
+                                <td>${element.orderId}</td>
+                                <td>${new Date(element.createdOn).toLocaleDateString()}</td>
+                                <td>${element.userId?.username || ''}</td>
+                                <td>${element?.orderedItems?.length || 0}</td>
+                                <td>${element.totalPrice}</td>
+                                <td>
+                                    <span id="orderStatus${element.orderId}" class="badge badge-shipped">
+                                        ${element.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        ${element.paymentStatus}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            onclick="openStatusModal('${element.orderId}','${element.status}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <a href="orderDetails?orderId=${element.orderId}" 
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
 
-        try {
-            const response = await fetch('/admin/changeStatus', {
-                method: 'POST',
-                headers: { 'Content-type': 'application/json' },
-                body: JSON.stringify({ orderId, newStatus })
+                    renderPagination(data.currentPage,data.totalPage)
+
+                } catch (error) {
+                    console.error('Error in searchOrders', error);
+                }
             });
-            const data = await response.json();
-            if (response.ok) {
-                orderStatusEl.innerHTML = data.updatedStatus;
-                orderStatusEl.className = `badge ${getStatusBadgeClass(data.updatedStatus)}`;
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message || 'Status updated successfully!', showConfirmButton: false, timer: 2000 });
-            } else {
-                Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: data.message || 'Failed to update status!', showConfirmButton: false, timer: 2000 });
+
+            // STATUS BADGE CLASS
+            function getStatusBadgeClass(status) {
+                switch (status.toLowerCase()) {
+                    case 'pending': return 'badge-pending';
+                    case 'processing': return 'badge-processing';
+                    case 'shipped': return 'badge-shipped';
+                    case 'delivered': return 'badge-delivered';
+                    case 'cancelled': return 'badge-cancelled';
+                    case 'return': return 'badge-return';
+                    default: return 'badge-secondary';
+                }
             }
-        } catch (error) {
-            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error updating status!', showConfirmButton: false, timer: 2000 });
-        }
-        $('#statusUpdateModal').modal('hide');
-    });
-});
 
-</script>
+            // STATUS UPDATE MODAL
+            window.openStatusModal = function (ordId, currentStatus) {
+                orderStatusEl = document.getElementById(`orderStatus${ordId}`);
+                orderId = ordId;
+                document.getElementById('orderId').value = ordId;
+                document.getElementById('currentStatus').value = currentStatus;
+                document.getElementById('newStatus').value = '';
+                $('#statusUpdateModal').modal('show');
+            };
+
+            // SUBMIT STATUS CHANGE
+            document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
+                e.preventDefault();
+                const newStatus = document.getElementById('newStatus').value;
+                if (!newStatus) return;
+
+                try {
+                    const response = await fetch('/admin/changeStatus', {
+                        method: 'POST',
+                        headers: { 'Content-type': 'application/json' },
+                        body: JSON.stringify({ orderId, newStatus })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        orderStatusEl.innerHTML = data.updatedStatus;
+                        orderStatusEl.className = `badge ${getStatusBadgeClass(data.updatedStatus)}`;
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message || 'Status updated successfully!', showConfirmButton: false, timer: 2000 });
+                    } else {
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: data.message || 'Failed to update status!', showConfirmButton: false, timer: 2000 });
+                    }
+                } catch (error) {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error updating status!', showConfirmButton: false, timer: 2000 });
+                }
+                $('#statusUpdateModal').modal('hide');
+            });
+      
+            const currentPage = parseInt(document.getElementById('currentPage').textContent)
+
+            document.getElementById('nextBtn').addEventListener('click',async function(e) {
+                e.preventDefault()
+                alert('next')
+                const page = currentPage+1
+                const response = await apiReq(`/admin/orderManagement?page=${encodeURIComponent(page)}`)
+                renderOrdersTable(response)
+                renderPagination(response.currentPage,response.totalPage)
+            })
+
+            document.getElementById('prevBtn').addEventListener('click',async function(e){
+                e.preventDefault()
+                alert('prev')
+                const page = currentPage-1
+                const response = await apiReq(`/admin/orderManagement?page=${encodeURIComponent(page)}`)
+            })
+
+            function renderOrdersTable(response) {
+                let orderData = response.order
+
+  const tbody = document.getElementById('ordersTableBody');
+  tbody.innerHTML = ''
+
+  if (!orderData || orderData.length === 0) {
+    document.querySelector('.table-responsive').innerHTML = `
+      <div class="text-center mt-4">
+        <h5 class="text-muted">No orders yet ✨</h5>
+      </div>`;
+    return;
+  }
+
+  let i = ((response.currentPage-1)*6+1)
+  orderData.forEach(element => {
+    const createdDate = new Date(element.createdOn).toLocaleDateString();
+    const returnDot =
+      element.status === 'returnRequested' ||
+      (element.orderedItems || []).some(v => v.status === 'returnRequested')
+        ? '<span class="notification-dot"></span>'
+        : '';
+
+    tbody.innerHTML += `
+      <tr class="order-row">
+        <td>${i++}</td>
+        <td>${createdDate}</td>
+        <td>${element.userId?.username || 'N/A'}</td>
+        <td>${element.orderedItems?.length || 0}</td>
+        <td>${element.totalPrice}</td>
+        <td>
+          <span id="orderStatus${element.orderId}" class="badge badge-shipped">
+            ${element.status}
+          </span>
+        </td>
+        <td><span class="badge bg-success">${element.paymentStatus}</span></td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn btn-sm btn-outline-primary"
+              onclick="openStatusModal('${element.orderId}','${element.status}')">
+              <i class="fas fa-edit"></i>
+            </button>
+            <a href="orderDetails?orderId=${element.orderId}" class="btn btn-sm btn-outline-info">
+              <span class="icon-wrapper position-relative">
+                ${returnDot}
+                <i class="fas fa-eye"></i>
+              </span>
+            </a>
+          </div>
+        </td>
+      </tr>`;
+  });
+}
 
 
+function renderPagination(currentPage, totalPage) {
+  const container = document.getElementById('paginationContainer');
+  container.innerHTML = '';
+
+  if (currentPage > 1) {
+    const prevBtn = document.createElement('button');
+    prevBtn.id = 'prevBtn';
+    prevBtn.className = 'page-btn prev';
+    prevBtn.innerHTML = '&laquo;';
+    container.appendChild(prevBtn);
+  }
+
+  const currentBtn = document.createElement('button');
+  currentBtn.id = 'currentPage';
+  currentBtn.className = 'page-btn active';
+  currentBtn.textContent = currentPage;
+  container.appendChild(currentBtn);
+
+  if (currentPage < totalPage) {
+    const nextBtn = document.createElement('button');
+    nextBtn.id = 'nextBtn';
+    nextBtn.className = 'page-btn next';
+    nextBtn.innerHTML = '&raquo;';
+    container.appendChild(nextBtn);
+  }
+
+  // 🔥 reattach listeners here
+  attachPaginationEvents();
+}
+
+function attachPaginationEvents() {
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', async (e) => {
+      const currentPage = parseInt(document.getElementById('currentPage').textContent)
+      const response = await apiReq(`/admin/orderManagement?page=${currentPage + 1}`)
+      renderOrdersTable(response)
+      renderPagination(response.currentPage, response.totalPage)
+    })
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', async (e) => {
+      const currentPage = parseInt(document.getElementById('currentPage').textContent)
+      const response = await apiReq(`/admin/orderManagement?page=${currentPage - 1}`)
+      renderOrdersTable(response)
+      renderPagination(response.currentPage, response.totalPage)
+    })
+  }
+}
+
+            
+        });
+    </script>
 </body>
-
 </html>

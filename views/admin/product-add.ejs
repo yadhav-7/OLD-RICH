@@ -11,15 +11,81 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Cropper.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.css">
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
     <style>
+        :root {
+            --primary-yellow: #FFD700;
+            --light-yellow: #FFF9C4;
+            --dark-yellow: #FFC107;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --medium-gray: #E9ECEF;
+            --dark-gray: #6C757D;
+            --text-dark: #212529;
+            --error-red: #DC3545;
+            --success-green: #28A745;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         .main-container {
             margin-left: 250px;
-            /* Space for sidebar */
             margin-top: 50px;
-            /* Space for navbar */
             padding: 20px;
             min-height: 100vh;
             box-sizing: border-box;
+        }
+
+        .page-header {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-yellow);
+        }
+
+        .page-header h2 {
+            color: var(--text-dark);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .form-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            padding: 10px 12px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-yellow);
+            border-color: var(--primary-yellow);
         }
 
         .variant-inputs {
@@ -30,49 +96,68 @@
             display: flex;
         }
 
+        .variant-row {
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .variant-row:last-child {
+            border-bottom: none;
+        }
+
         .upload-area {
-            border: 2px dashed #ccc;
-            padding: 20px;
+            border: 2px dashed var(--medium-gray);
+            border-radius: 8px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             transition: all 0.3s;
+            background-color: var(--light-gray);
         }
 
         .upload-area:hover,
         .upload-area.dragover {
-            border-color: #0d6efd;
-            background-color: #f8f9fa;
+            border-color: var(--primary-yellow);
+            background-color: var(--light-yellow);
         }
 
         .error-message {
             display: none;
-            color: #dc3545;
+            color: var(--error-red);
             font-size: 0.875rem;
-            margin-top: 0.25rem;
+            margin-top: 5px;
         }
 
         .thumbnail {
             position: relative;
             display: inline-block;
             margin: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray);
             padding: 5px;
-            background: #fff;
-            border-radius: 4px;
+            background: var(--white);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .thumbnail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .thumbnail img {
             max-width: 100px;
             max-height: 100px;
             display: block;
+            border-radius: 4px;
         }
 
         .thumbnail .remove-btn {
             position: absolute;
             top: -10px;
             right: -10px;
-            background: #dc3545;
+            background: var(--error-red);
             color: white;
             border-radius: 50%;
             width: 20px;
@@ -82,21 +167,28 @@
             cursor: pointer;
             font-size: 12px;
             border: none;
+            transition: all 0.3s;
+        }
+
+        .thumbnail .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
         }
 
         .thumbnail.main-image {
-            border: 2px solid #0d6efd;
+            border: 2px solid var(--primary-yellow);
         }
 
         .main-image-badge {
             position: absolute;
             bottom: 5px;
             left: 5px;
-            background: #0d6efd;
-            color: white;
+            background: var(--primary-yellow);
+            color: var(--text-dark);
             padding: 2px 5px;
             font-size: 12px;
             border-radius: 3px;
+            font-weight: 500;
         }
 
         #imagePreviews {
@@ -115,9 +207,86 @@
             font-weight: 500;
         }
 
-        .variant-row {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+        .btn-warning {
+            background-color: var(--primary-yellow);
+            border-color: var(--primary-yellow);
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--dark-yellow);
+            border-color: var(--dark-yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: var(--dark-gray);
+            border-color: var(--dark-gray);
+            padding: 10px 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            background-color: var(--light-yellow);
+            border-bottom: 1px solid var(--medium-gray);
+            font-weight: 500;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-color: rgba(40, 167, 69, 0.3);
+            color: var(--success-green);
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-color: rgba(220, 53, 69, 0.3);
+            color: var(--error-red);
+        }
+
+        .modal-header {
+            background-color: var(--light-yellow);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .btn-group .btn-outline-secondary.active {
+            background-color: var(--primary-yellow);
+            border-color: var(--primary-yellow);
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .variant-inputs.show .row {
+                flex-direction: column;
+            }
+
+            .variant-inputs.show .row>div {
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -125,338 +294,371 @@
 <body>
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
 
-
         <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+
             <div class="main-container">
-
-                <div class="container-fluid ">
-
-
+                <div class="container-fluid">
                     <% if(success){ %>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= success %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  <script>
-    setTimeout(() => {
-      const alert = document.querySelector('.alert-success');
-      if (alert) {
-        // Using Bootstrap's built-in method to close the alert
-        const bsAlert = new bootstrap.Alert(alert);
-        bsAlert.close();
-        
-        // Or alternatively with plain JavaScript:
-        // alert.remove();
-      }
-    }, 3000);
-  </script>
-<% } %>
-                    <div class="row">
-                        <main class="col-md-12 p-4 bg-white">
-                            <h2 class="mb-4">ADD ITEMS</h2>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                        <script>
+                            setTimeout(() => {
+                                const alert = document.querySelector('.alert-success');
+                                if (alert) {
+                                    const bsAlert = new bootstrap.Alert(alert);
+                                    bsAlert.close();
+                                }
+                            }, 3000);
+                        </script>
+                        <% } %>
 
-                            <!-- Server Messages -->
-                            <div id="server-messages" class="mb-3"></div>
+                            <div class="row">
+                                <main class="col-md-12">
+                                    <div class="page-header">
+                                        <h2>ADD ITEMS</h2>
+                                    </div>
 
-                            <!-- Client Error Message -->
-                            <div id="error-message" class="alert alert-danger mb-3 d-none"></div>
+                                    <div class="form-container">
+                                        <!-- Form -->
+                                        <form id="add-product-form" action="/admin/addProducts" method="POST"
+                                            enctype="multipart/form-data">
 
-                            <!-- Form -->
-                            <form id="add-product-form" action="/admin/addProducts" method="POST"
-                                enctype="multipart/form-data">
-                                <div id="server-messages" class="mb-3">
-
-                                </div>
-                                <div id="error-message" class="alert alert-danger mb-3 d-none"></div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="productName" class="form-label">PRODUCT NAME <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="productName" name="productName">
-                                        <% if (message) { %>
-                                            <div class="alert alert-danger" role="alert">
-                                                <%= message %>
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <label for="productName" class="form-label">PRODUCT NAME <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="productName"
+                                                        name="productName">
+                                                    <% if (message) { %>
+                                                        <div class="alert alert-danger mt-2" role="alert">
+                                                            <%= message %>
+                                                        </div>
+                                                        <% } %>
+                                                            <div id="productName-error" class="error-message"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="description" class="form-label">PRODUCT DESCRIPTION
+                                                        <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" id="description" name="description"
+                                                        rows="3"></textarea>
+                                                    <div id="description-error" class="error-message"></div>
+                                                </div>
                                             </div>
-                                            <% } %>
 
-                                                <div id="productName-error" class="error-message"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="descriptionid" class="form-label">PRODUCT DESCRIPTION <span
-                                                class="text-danger">*</span></label>
-                                        <textarea class="form-control" id="descriptionid" name="description"
-                                            rows="3"></textarea>
-                                        <div id="description-error" class="error-message"></div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="category" class="form-label">CATEGORY <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-select" id="category" name="category">
-                                            <option value="">Select</option>
-                                            <% if(category.length>0){ %>
-                                                <% for(let i=0 ; i < category.length ; i ++){ %>
-                                                    <option value="<%= category[i].name%>">
-                                                        <%= category[i].name%>
-                                                    </option>
-                                                    <% } %>
-                                                        <% }else{ %>
-                                                            <option value="">No category</option>
-                                                            <% } %>
-                                        </select>
-                                        <div id="category-error" class="error-message"></div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="colour" class="form-label">COLOR <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="colour" name="color">
-                                    <div id="color-error" class="error-message"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">VARIANTS (SIZES) <span
-                                            class="text-danger">*</span></label>
-                                    <div class="variant-container">
-                                        <!-- Size S -->
-                                        <div class="variant-row mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="sizes" value="S"
-                                                    id="size-S" onchange="toggleVariantInputs(this, 'S')">
-                                                <label class="form-check-label" for="size-S">Size S</label>
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <label for="category" class="form-label">CATEGORY <span
+                                                            class="text-danger">*</span></label>
+                                                    <select class="form-select" id="category" name="category">
+                                                        <option value="">Select</option>
+                                                        <% if(category.length>0){ %>
+                                                            <% for(let i=0 ; i < category.length ; i ++){ %>
+                                                                <option value="<%= category[i].name%>">
+                                                                    <%= category[i].name%>
+                                                                </option>
+                                                                <% } %>
+                                                                    <% }else{ %>
+                                                                        <option value="">No category</option>
+                                                                        <% } %>
+                                                    </select>
+                                                    <div id="category-error" class="error-message"></div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="colour" class="form-label">COLOR <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="colour" name="colour">
+                                                    <div id="colour-error" class="error-message"></div>
+                                                </div>
                                             </div>
-                                            <div id="inputs-size-S" class="variant-inputs mt-2">
-                                                <div class="row g-2">
-                                                    <div class="col-md-3">
-                                                        <label for="regularPrice-S" class="form-label">Regular Price
-                                                            <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="regularPriceS"
-                                                            id="regularPrice-S" placeholder="Regular" min="0"
-                                                            step="0.01">
-                                                        <div id="regularPrice-S-error" class="error-message"></div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="salePrice-S" class="form-label">Sale Price</label>
-                                                        <input type="number" class="form-control" name="salePriceS"
-                                                            id="salePrice-S" placeholder="Sale" min="0" step="0.01">
-                                                        <div id="salePrice-S-error" class="error-message"></div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <label for="stock-S" class="form-label">Stock <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="stockS"
-                                                            id="stock-S" placeholder="Stock" min="0">
-                                                        <div id="stock-S-error" class="error-message"></div>
+                                            <div class="mb-4">
+                                                <label class="form-label">VARIANTS (SIZES) <span
+                                                        class="text-danger">*</span></label>
+                                                <div id="variants-error" class="error-message mb-3"></div>
+                                                <div class="variant-container">
+                                                    <!-- Size S -->
+                                                    <div class="variant-row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="sizes"
+                                                                value="S" id="size-S"
+                                                                onchange="toggleVariantInputs(this, 'S')">
+                                                            <label class="form-check-label" for="size-S">Size S</label>
+                                                        </div>
+                                                        
+                                                        <div id="inputs-size-S" class="variant-inputs mt-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <label for="regularPrice-S"
+                                                                        class="form-label">Regular Price <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="regularPriceS" id="regularPrice-S"
+                                                                        placeholder="Regular" min="0" step="0.01">
+                                                                    <div id="regularPrice-S-error"
+                                                                        class="error-message"></div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="salePrice-S" class="form-label">Sale
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="salePriceS" id="salePrice-S"
+                                                                        placeholder="Sale" min="0" step="0.01">
+                                                                    <div id="salePrice-S-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="stock-S" class="form-label">Stock <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="stockS" id="stock-S" placeholder="Stock"
+                                                                        min="0">
+                                                                    <div id="stock-S-error" class="error-message"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Size M -->
+                                                    <div class="variant-row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="sizes"
+                                                                value="M" id="size-M"
+                                                                onchange="toggleVariantInputs(this, 'M')">
+                                                            <label class="form-check-label" for="size-M">Size M</label>
+                                                        </div>
+                                                        <div id="inputs-size-M" class="variant-inputs mt-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <label for="regularPrice-M"
+                                                                        class="form-label">Regular Price <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="regularPriceM" id="regularPrice-M"
+                                                                        placeholder="Regular" min="0" step="0.01">
+                                                                    <div id="regularPrice-M-error"
+                                                                        class="error-message"></div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="salePrice-M" class="form-label">Sale
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="salePriceM" id="salePrice-M"
+                                                                        placeholder="Sale" min="0" step="0.01">
+                                                                    <div id="salePrice-M-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="stock-M" class="form-label">Stock <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="stockM" id="stock-M" placeholder="Stock"
+                                                                        min="0">
+                                                                    <div id="stock-M-error" class="error-message"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Size L -->
+                                                    <div class="variant-row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="sizes"
+                                                                value="L" id="size-L"
+                                                                onchange="toggleVariantInputs(this, 'L')">
+                                                            <label class="form-check-label" for="size-L">Size L</label>
+                                                        </div>
+                                                        <div id="inputs-size-L" class="variant-inputs mt-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <label for="regularPrice-L"
+                                                                        class="form-label">Regular Price <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="regularPriceL" id="regularPrice-L"
+                                                                        placeholder="Regular" min="0" step="0.01">
+                                                                    <div id="regularPrice-L-error"
+                                                                        class="error-message"></div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="salePrice-L" class="form-label">Sale
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="salePriceL" id="salePrice-L"
+                                                                        placeholder="Sale" min="0" step="0.01">
+                                                                    <div id="salePrice-L-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="stock-L" class="form-label">Stock <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="stockL" id="stock-L" placeholder="Stock"
+                                                                        min="0">
+                                                                    <div id="stock-L-error" class="error-message"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Size XL -->
+                                                    <div class="variant-row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="sizes"
+                                                                value="XL" id="size-XL"
+                                                                onchange="toggleVariantInputs(this, 'XL')">
+                                                            <label class="form-check-label" for="size-XL">Size
+                                                                XL</label>
+                                                        </div>
+                                                        <div id="inputs-size-XL" class="variant-inputs mt-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <label for="regularPrice-XL"
+                                                                        class="form-label">Regular Price <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="regularPriceXL" id="regularPrice-XL"
+                                                                        placeholder="Regular" min="0" step="0.01">
+                                                                    <div id="regularPrice-XL-error"
+                                                                        class="error-message"></div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="salePrice-XL" class="form-label">Sale
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="salePriceXL" id="salePrice-XL"
+                                                                        placeholder="Sale" min="0" step="0.01">
+                                                                    <div id="salePrice-XL-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="stock-XL" class="form-label">Stock <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="stockXL" id="stock-XL" placeholder="Stock"
+                                                                        min="0">
+                                                                    <div id="stock-XL-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Size XXL -->
+                                                    <div class="variant-row">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="sizes"
+                                                                value="XXL" id="size-XXL"
+                                                                onchange="toggleVariantInputs(this, 'XXL')">
+                                                            <label class="form-check-label" for="size-XXL">Size
+                                                                XXL</label>
+                                                        </div>
+                                                        <div id="inputs-size-XXL" class="variant-inputs mt-2">
+                                                            <div class="row g-2">
+                                                                <div class="col-md-3">
+                                                                    <label for="regularPrice-XXL"
+                                                                        class="form-label">Regular Price <span
+                                                                            class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="regularPriceXXL" id="regularPrice-XXL"
+                                                                        placeholder="Regular" min="0" step="0.01">
+                                                                    <div id="regularPrice-XXL-error"
+                                                                        class="error-message"></div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="salePrice-XXL" class="form-label">Sale
+                                                                        Price</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="salePriceXXL" id="salePrice-XXL"
+                                                                        placeholder="Sale" min="0" step="0.01">
+                                                                    <div id="salePrice-XXL-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="stock-XXL" class="form-label">Stock
+                                                                        <span class="text-danger">*</span></label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="stockXXL" id="stock-XXL"
+                                                                        placeholder="Stock" min="0">
+                                                                    <div id="stock-XXL-error" class="error-message">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- Size M -->
-                                        <div class="variant-row mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="sizes" value="M"
-                                                    id="size-M" onchange="toggleVariantInputs(this, 'M')">
-                                                <label class="form-check-label" for="size-M">Size M</label>
-                                            </div>
-                                            <div id="inputs-size-M" class="variant-inputs mt-2">
-                                                <div class="row g-2">
-                                                    <div class="col-md-3">
-                                                        <label for="regularPrice-M" class="form-label">Regular Price
-                                                            <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="regularPriceM"
-                                                            id="regularPrice-M" placeholder="Regular" min="0"
-                                                            step="0.01">
-                                                        <div id="regularPrice-M-error" class="error-message"></div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="salePrice-M" class="form-label">Sale Price</label>
-                                                        <input type="number" class="form-control" name="salePriceM"
-                                                            id="salePrice-M" placeholder="Sale" min="0" step="0.01">
-                                                        <div id="salePrice-M-error" class="error-message"></div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <label for="stock-M" class="form-label">Stock <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="stockM"
-                                                            id="stock-M" placeholder="Stock" min="0">
-                                                        <div id="stock-M-error" class="error-message"></div>
+                                            <!-- Product Images Card -->
+                                            <div class="card mb-4">
+                                                <div class="card-header">Product Images (Min 3, Max 5 are required) only jpg png alloweded <span
+                                                        class="text-danger">*</span></div>
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <div class="upload-area" id="uploadArea">
+                                                            <i class="fas fa-cloud-upload-alt mb-2"
+                                                                style="font-size: 24px;"></i>
+                                                            <p>Drag & drop images here or click to browse</p>
+                                                            <small>Recommended size: 800x800px (max 5MB each)</small>
+                                                            <input type="file" id="imageUpload" name="images"
+                                                                accept="image/*" multiple style="display: none;">
+                                                        </div>
+                                                        <div id="images-error" class="error-message"></div>
+                                                        <div id="imagePreviews" class="mt-3"></div>
+                                                        <input type="hidden" id="mainImageIndex" name="mainImageIndex"
+                                                            value="0">
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- Size L -->
-                                        <div class="variant-row mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="sizes" value="L"
-                                                    id="size-L" onchange="toggleVariantInputs(this, 'L')">
-                                                <label class="form-check-label" for="size-L">Size L</label>
-                                            </div>
-                                            <div id="inputs-size-L" class="variant-inputs mt-2">
-                                                <div class="row g-2">
-                                                    <div class="col-md-3">
-                                                        <label for="regularPrice-L" class="form-label">Regular Price
-                                                            <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="regularPriceL"
-                                                            id="regularPrice-L" placeholder="Regular" min="0"
-                                                            step="0.01">
-                                                        <div id="regularPrice-L-error" class="error-message"></div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="salePrice-L" class="form-label">Sale Price</label>
-                                                        <input type="number" class="form-control" name="salePriceL"
-                                                            id="salePrice-L" placeholder="Sale" min="0" step="0.01">
-                                                        <div id="salePrice-L-error" class="error-message"></div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <label for="stock-L" class="form-label">Stock <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="stockL"
-                                                            id="stock-L" placeholder="Stock" min="0">
-                                                        <div id="stock-L-error" class="error-message"></div>
+                                            <!-- Cropper Modal -->
+                                            <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Crop Image</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="cropper-container">
+                                                                <img id="cropperImage" src="" style="max-width: 100%;">
+                                                            </div>
+                                                            <div class="d-flex justify-content-between mt-3">
+                                                                <div class="btn-group">
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-secondary active"
+                                                                        data-ratio="1">1:1</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-secondary"
+                                                                        data-ratio="4/3">4:3</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-secondary"
+                                                                        data-ratio="16/9">16:9</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-outline-secondary"
+                                                                        data-ratio="free">Free</button>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="button" class="btn btn-warning"
+                                                                        id="saveCroppedImage">Save</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- Size XL -->
-                                        <div class="variant-row mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="sizes" value="XL"
-                                                    id="size-XL" onchange="toggleVariantInputs(this, 'XL')">
-                                                <label class="form-check-label" for="size-XL">Size XL</label>
-                                            </div>
-                                            <div id="inputs-size-XL" class="variant-inputs mt-2">
-                                                <div class="row g-2">
-                                                    <div class="col-md-3">
-                                                        <label for="regularPrice-XL" class="form-label">Regular Price
-                                                            <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="regularPriceXL"
-                                                            id="regularPrice-XL" placeholder="Regular" min="0"
-                                                            step="0.01">
-                                                        <div id="regularPrice-XL-error" class="error-message"></div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="salePrice-XL" class="form-label">Sale Price</label>
-                                                        <input type="number" class="form-control" name="salePriceXL"
-                                                            id="salePrice-XL" placeholder="Sale" min="0" step="0.01">
-                                                        <div id="salePrice-XL-error" class="error-message"></div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <label for="stock-XL" class="form-label">Stock <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="stockXL"
-                                                            id="stock-XL" placeholder="Stock" min="0">
-                                                        <div id="stock-XL-error" class="error-message"></div>
-                                                    </div>
-                                                </div>
+                                            <div class="d-flex justify-content-end mt-4">
+                                                <button type="button" class="btn btn-secondary me-2"
+                                                    id="cancelBtn">Cancel</button>
+                                                <button type="submit" class="btn btn-warning"
+                                                    id="publishBtn">Publish</button>
                                             </div>
-                                        </div>
-                                        <!-- Size XXL -->
-                                        <div class="variant-row mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="sizes" value="XXL"
-                                                    id="size-XXL" onchange="toggleVariantInputs(this, 'XXL')">
-                                                <label class="form-check-label" for="size-XXL">Size XXL</label>
-                                            </div>
-                                            <div id="inputs-size-XXL" class="variant-inputs mt-2">
-                                                <div class="row g-2">
-                                                    <div class="col-md-3">
-                                                        <label for="regularPrice-XXL" class="form-label">Regular Price
-                                                            <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="regularPriceXXL"
-                                                            id="regularPrice-XXL" placeholder="Regular" min="0"
-                                                            step="0.01">
-                                                        <div id="regularPrice-XXL-error" class="error-message"></div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label for="salePrice-XXL" class="form-label">Sale Price</label>
-                                                        <input type="number" class="form-control" name="salePriceXXL"
-                                                            id="salePrice-XXL" placeholder="Sale" min="0" step="0.01">
-                                                        <div id="salePrice-XXL-error" class="error-message"></div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <label for="stock-XXL" class="form-label">Stock <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control" name="stockXXL"
-                                                            id="stock-XXL" placeholder="Stock" min="0">
-                                                        <div id="stock-XXL-error" class="error-message"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
-                                    <div id="variants-error" class="error-message"></div>
-                                </div>
-
-                                <!-- Product Images Card -->
-                                <div class="card mb-4">
-                                    <div class="card-header">Product Images (Max 4) <span class="text-danger">*</span>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <div class="upload-area" id="uploadArea">
-                                                <i class="fas fa-cloud-upload-alt mb-2" style="font-size: 24px;"></i>
-                                                <p>Drag & drop images here or click to browse</p>
-                                                <small>Recommended size: 800x800px (max 5MB each)</small>
-                                                <input type="file" id="imageUpload" name="images" accept="image/*"
-                                                    multiple style="display: none;">
-                                            </div>
-                                            <div id="images-error" class="error-message"></div>
-                                            <div id="imagePreviews" class="mt-3"></div>
-                                            <input type="hidden" id="mainImageIndex" name="mainImageIndex" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Cropper Modal -->
-                                <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Crop Image</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="cropper-container">
-                                                    <img id="cropperImage" src="" style="max-width: 100%;">
-                                                </div>
-                                                <div class="d-flex justify-content-between mt-3">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            data-ratio="1">1:1</button>
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            data-ratio="4/3">4:3</button>
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            data-ratio="16/9">16:9</button>
-                                                        <button type="button" class="btn btn-outline-secondary"
-                                                            data-ratio="free">Free</button>
-                                                    </div>
-                                                    <div>
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="button" class="btn btn-primary"
-                                                            id="saveCroppedImage">Save</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="button" class="btn btn-secondary me-2" id="cancelBtn">Cancel</button>
-                                <button type="submit" class="btn btn-primary" id="publishBtn">Publish</button>
-                            </form>
-                        </main>
-                    </div>
+                                </main>
+                            </div>
                 </div>
             </div>
 
@@ -465,459 +667,630 @@
             <!-- Cropper.js -->
             <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
 
+            <script>
+                // Global variables
+                const MIN_IMAGES = 3;
+                const MAX_IMAGES = 5;
+                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                let cropper;
+                let currentFile;
+                let uploadedImages = [];
+                let currentImageIndex = 0;
 
-        <script>
-    // Global variables
-    const MIN_IMAGES = 3;
-    const MAX_IMAGES = 5;
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-    let cropper;
-    let currentFile;
-    let uploadedImages = [];
-    let currentImageIndex = 0;
-
-    // Toggle variant inputs
-    function toggleVariantInputs(checkbox, size) {
-        const inputsDiv = document.getElementById(`inputs-size-${size}`);
-        if (checkbox.checked) {
-            inputsDiv.classList.add('show');
-            inputsDiv.querySelectorAll('input').forEach(input => input.setAttribute('required', 'true'));
-        } else {
-            inputsDiv.classList.remove('show');
-            inputsDiv.querySelectorAll('input').forEach(input => {
-                input.removeAttribute('required');
-                input.value = '';
-            });
-        }
-    }
-
-    // Form validation
-    function validateForm() {
-        let isValid = true;
-        let errorFields = [];
-
-        // Reset error states
-        document.querySelectorAll('.error-message').forEach(el => {
-            el.style.display = 'none';
-        });
-        document.querySelectorAll('.is-invalid').forEach(el => {
-            el.classList.remove('is-invalid');
-        });
-
-        // Validate product name
-        const productName = document.getElementById('productName').value.trim();
-        if (!productName) {
-            displayError('productName', 'Product name is required');
-            errorFields.push('Product Name');
-            isValid = false;
-        } else if (productName.length > 100) {
-            displayError('productName', 'Product name must be less than 100 characters');
-            errorFields.push('Product Name');
-            isValid = false;
-        }
-
-        // Validate description
-        const description = document.getElementById('descriptionid').value.trim();
-        if (!description) {
-            displayError('descriptionid', 'Description is required');
-            errorFields.push('Description');
-            isValid = false;
-        } else if (description.length > 1000) {
-            displayError('descriptionid', 'Description must be less than 1000 characters');
-            errorFields.push('Description');
-            isValid = false;
-        }
-
-        // Validate category
-        const category = document.getElementById('category').value;
-        if (!category) {
-            displayError('category', 'Category is required');
-            errorFields.push('Category');
-            isValid = false;
-        }
-
-        // Validate color
-        const color = document.getElementById('colour').value.trim();
-        if (!color) {
-            displayError('colour', 'Color is required');
-            errorFields.push('Color');
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]+$/.test(color)) {
-            displayError('colour', 'Color should contain only letters');
-            errorFields.push('Color');
-            isValid = false;
-        }
-
-        // Validate variants
-        const checkedSizes = document.querySelectorAll('input[name="sizes"]:checked');
-        if (checkedSizes.length === 0) {
-            displayError('variants-error', 'At least one size variant is required');
-            errorFields.push('Size Variants');
-            isValid = false;
-        } else {
-            checkedSizes.forEach(checkbox => {
-                const size = checkbox.value;
-                const regularPrice = document.getElementById(`regularPrice-${size}`).value;
-                const salePrice = document.getElementById(`salePrice-${size}`).value;
-                const stock = document.getElementById(`stock-${size}`).value;
-
-                // Regular price validation
-                if (!regularPrice || isNaN(regularPrice)) {
-                    displayError(`regularPrice-${size}`, 'Regular price is required');
-                    errorFields.push(`Size ${size} Regular Price`);
-                    isValid = false;
-                } else if (parseFloat(regularPrice) <= 0) {
-                    displayError(`regularPrice-${size}`, 'Regular price must be greater than 0');
-                    errorFields.push(`Size ${size} Regular Price`);
-                    isValid = false;
-                } else if (parseFloat(regularPrice) > 10000) {
-                    displayError(`regularPrice-${size}`, 'Regular price must be less than 10,000');
-                    errorFields.push(`Size ${size} Regular Price`);
-                    isValid = false;
-                }
-
-                // Sale price validation
-                if (salePrice) {
-                    if (isNaN(salePrice) || parseFloat(salePrice) <= 0) {
-                        displayError(`salePrice-${size}`, 'Sale price must be greater than 0');
-                        errorFields.push(`Size ${size} Sale Price`);
-                        isValid = false;
-                    } else if (parseFloat(salePrice) > parseFloat(regularPrice)) {
-                        displayError(`salePrice-${size}`, 'Sale price must be less than regular price');
-                        errorFields.push(`Size ${size} Sale Price`);
-                        isValid = false;
+                // Toggle variant inputs
+                function toggleVariantInputs(checkbox, size) {
+                    const inputsDiv = document.getElementById(`inputs-size-${size}`);
+                    if (checkbox.checked) {
+                        document.getElementById('variants-error').style.display='none'
+                        inputsDiv.classList.add('show');
+                        inputsDiv.querySelectorAll('input').forEach(input => input.setAttribute('required', 'true'));
+                    } else {
+                        inputsDiv.classList.remove('show');
+                        inputsDiv.querySelectorAll('input').forEach(input => {
+                            input.removeAttribute('required');
+                            input.value = '';
+                        });
                     }
                 }
 
-                // Stock validation
-                if (!stock || isNaN(stock) || parseInt(stock) < 0) {
-                    displayError(`stock-${size}`, 'Valid stock quantity is required (minimum 0)');
-                    errorFields.push(`Size ${size} Stock`);
-                    isValid = false;
-                } else if (parseInt(stock) > 10000) {
-                    displayError(`stock-${size}`, 'Stock quantity must be less than 10,000');
-                    errorFields.push(`Size ${size} Stock`);
-                    isValid = false;
+                // Clear validation errors for a specific field
+                function clearFieldError(fieldId) {
+                    const field = document.getElementById(fieldId);
+                    const errorElement = document.getElementById(`${fieldId}-error`);
+                    
+                    if (field) {
+                        field.classList.remove('is-invalid');
+                    }
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
                 }
-            });
-        }
 
-        // Validate images
-        if (uploadedImages.length < MIN_IMAGES) {
-            displayError('images-error', `Minimum ${MIN_IMAGES} images are required`);
-            errorFields.push('Product Images');
-            isValid = false;
-        } else if (uploadedImages.length > MAX_IMAGES) {
-            displayError('images-error', `Maximum ${MAX_IMAGES} images allowed`);
-            errorFields.push('Product Images');
-            isValid = false;
-        }
-
-        // Validate mainImageIndex
-        const mainImageIndex = parseInt(document.getElementById('mainImageIndex').value);
-        if (uploadedImages.length > 0 && (isNaN(mainImageIndex) || mainImageIndex < 0 || mainImageIndex >= uploadedImages.length)) {
-            displayError('images-error', 'Please select a main image');
-            errorFields.push('Main Image Selection');
-            isValid = false;
-        }
-
-        // Display all error fields in the summary
-        if (errorFields.length > 0) {
-            const errorMessage = document.getElementById('error-message');
-            errorMessage.innerHTML = `
-                <strong>Please fix the following errors:</strong>
-                <ul>
-                    ${errorFields.map(field => `<li>${field}</li>`).join('')}
-                </ul>
-            `;
-            errorMessage.classList.remove('d-none');
-            window.scrollTo(0, 0);
-        }
-
-        return isValid;
-    }
-
-    function displayError(fieldId, message) {
-        const field = document.getElementById(fieldId);
-        const errorElement = document.getElementById(`${fieldId}-error`);
-        if (field) {
-            field.classList.add('is-invalid');
-        }
-        if (errorElement) {
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
-    }
-
-    function submitForm() {
-        // Update the file input with cropped images
-        const imageUpload = document.getElementById('imageUpload');
-        const dataTransfer = new DataTransfer();
-        uploadedImages.forEach(image => {
-            dataTransfer.items.add(image.file);
-        });
-        imageUpload.files = dataTransfer.files;
-
-        // Trigger native form submission
-        document.getElementById('add-product-form').submit();
-    }
-
-    function validateAndSubmit() {
-        if (validateForm()) {
-            submitForm();
-        }
-    }
-
-    // Image upload and cropping functionality
-    document.addEventListener('DOMContentLoaded', function () {
-        const imageUpload = document.getElementById('imageUpload');
-        const uploadArea = document.getElementById('uploadArea');
-        const imagePreviews = document.getElementById('imagePreviews');
-        const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
-        const cropperImage = document.getElementById('cropperImage');
-        const saveCroppedBtn = document.getElementById('saveCroppedImage');
-        const errorElement = document.getElementById('images-error');
-        const publishBtn = document.getElementById('publishBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-
-        // Event listeners
-        imageUpload.addEventListener('change', handleImageSelection);
-        uploadArea.addEventListener('click', () => imageUpload.click());
-        saveCroppedBtn.addEventListener('click', saveCroppedImage);
-        publishBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            validateAndSubmit();
-        });
-        cancelBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-                window.location.href = '/admin/products';
-            }
-        });
-
-        // Setup drag and drop
-        setupDragAndDrop();
-
-        // Initialize cropper when modal is shown
-        document.getElementById('cropperModal').addEventListener('shown.bs.modal', initCropper);
-        document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        });
-
-        // Aspect ratio buttons
-        document.querySelectorAll('.btn-group button[data-ratio]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const ratio = btn.dataset.ratio;
-                setAspectRatio(ratio);
-            });
-        });
-
-        function handleImageSelection(event) {
-            const files = event.target.files;
-            errorElement.textContent = '';
-
-            if (!files || files.length === 0) return;
-
-            if (uploadedImages.length + files.length > MAX_IMAGES) {
-                errorElement.textContent = `Maximum ${MAX_IMAGES} images allowed (you already have ${uploadedImages.length})`;
-                event.target.value = '';
-                return;
-            }
-
-            Array.from(files).forEach(file => {
-                if (!validateImage(file)) return;
-                currentFile = file;
-                previewImageForCropping(file);
-            });
-
-            event.target.value = '';
-        }
-
-        function validateImage(file) {
-            if (!file.type.match('image.*')) {
-                errorElement.textContent = 'Only image files are allowed (JPEG, PNG, etc.)';
-                return false;
-            }
-            if (file.size > MAX_FILE_SIZE) {
-                errorElement.textContent = 'Image size should be less than 5MB';
-                return false;
-            }
-            return true;
-        }
-
-        function previewImageForCropping(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                cropperImage.src = e.target.result;
-                cropperModal.show();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function initCropper() {
-            if (cropper) cropper.destroy();
-            cropper = new Cropper(cropperImage, {
-                aspectRatio: 1,
-                viewMode: 1,
-                autoCropArea: 0.8,
-                responsive: true,
-                guides: false,
-                movable: true,
-                zoomable: true,
-                rotatable: true,
-                scalable: true
-            });
-        }
-
-        function setAspectRatio(ratio) {
-            if (!cropper) return;
-            if (ratio === 'free') {
-                cropper.setAspectRatio(NaN);
-            } else {
-                cropper.setAspectRatio(eval(ratio));
-            }
-        }
-
-        function saveCroppedImage() {
-            if (!cropper) return;
-
-            cropper.getCroppedCanvas({
-                width: 800,
-                height: 800,
-                fillColor: '#fff',
-                imageSmoothingQuality: 'high'
-            }).toBlob(blob => {
-                const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
-                const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
-
-                const imageObj = {
-                    file: croppedFile,
-                    url: URL.createObjectURL(blob),
-                    isMain: uploadedImages.length === 0
-                };
-
-                uploadedImages.push(imageObj);
-                createThumbnail(imageObj, uploadedImages.length - 1);
-                cropperModal.hide();
-            }, 'image/jpeg', 0.9);
-        }
-
-        function createThumbnail(image, index) {
-            const thumb = document.createElement('div');
-            thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
-            thumb.dataset.index = index;
-
-            thumb.innerHTML = `
-                <img src="${image.url}" alt="Product Image">
-                <button class="remove-btn"><i class="fas fa-times"></i></button>
-                ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
-            `;
-
-            thumb.addEventListener('click', function (e) {
-                if (!e.target.closest('.remove-btn')) {
-                    setAsMainImage(thumb);
+                // Clear all validation errors
+                function clearAllErrors() {
+                    document.querySelectorAll('.error-message').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    document.querySelectorAll('.is-invalid').forEach(el => {
+                        el.classList.remove('is-invalid');
+                    });
                 }
-            });
 
-            thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
-                e.stopPropagation();
-                removeImage(thumb);
-            });
-
-            imagePreviews.appendChild(thumb);
-
-            if (image.isMain) {
-                document.getElementById('mainImageIndex').value = index;
-            }
-        }
-
-        function setAsMainImage(thumbElement) {
-            document.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.classList.remove('main-image');
-                const badge = thumb.querySelector('.main-image-badge');
-                if (badge) badge.remove();
-            });
-
-            thumbElement.classList.add('main-image');
-            thumbElement.innerHTML += '<span class="main-image-badge">Main</span>';
-
-            const index = thumbElement.dataset.index;
-            document.getElementById('mainImageIndex').value = index;
-
-            uploadedImages.forEach((img, i) => {
-                img.isMain = i == index;
-            });
-        }
-
-        function removeImage(thumbElement) {
-            const index = thumbElement.dataset.index;
-
-            URL.revokeObjectURL(uploadedImages[index].url);
-            uploadedImages.splice(index, 1);
-
-            if (thumbElement.classList.contains('main-image')) {
-                if (uploadedImages.length > 0) {
-                    uploadedImages[0].isMain = true;
-                    document.getElementById('mainImageIndex').value = 0;
-                } else {
-                    document.getElementById('mainImageIndex').value = '';
+                // Find and focus on the first error field
+                function focusFirstError() {
+                    const firstErrorField = document.querySelector('.is-invalid');
+                    if (firstErrorField) {
+                        firstErrorField.focus();
+                        firstErrorField.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
                 }
-            }
 
-            thumbElement.remove();
-
-            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-                thumb.dataset.index = i;
-            });
-
-            if (uploadedImages.some(img => img.isMain)) {
-                const mainIndex = uploadedImages.findIndex(img => img.isMain);
-                document.getElementById('mainImageIndex').value = mainIndex;
-            }
-        }
-
-        function setupDragAndDrop() {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight() {
-                uploadArea.classList.add('dragover');
-            }
-
-            function unhighlight() {
-                uploadArea.classList.remove('dragover');
-            }
-
-            uploadArea.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-
-                if (files.length) {
-                    const event = { target: { files } };
-                    handleImageSelection(event);
+                // Validate individual fields on input
+                function validateField(fieldId) {
+                    switch(fieldId) {
+                        case 'productName':
+                            validateProductName();
+                            break;
+                        case 'description':
+                            validateDescription();
+                            break;
+                        case 'category':
+                            validateCategory();
+                            break;
+                        case 'colour':
+                            validateColor();
+                            break;
+                        default:
+                            // Check if it's a variant field
+                            if (fieldId.includes('regularPrice-') || fieldId.includes('salePrice-') || fieldId.includes('stock-')) {
+                                const size = fieldId.split('-')[1];
+                                validateVariant(size);
+                            }
+                    }
                 }
-            }
-        }
-    });
-</script>
+
+                // Individual field validation functions
+                function validateProductName() {
+                    const productName = document.getElementById('productName').value.trim();
+                    clearFieldError('productName');
+                    
+                    if (!productName) {
+                        displayError('productName', 'Product name is required');
+                    } else if (!/^[a-zA-Z\s]+$/.test(productName)) {
+                        displayError('productName', 'Product name should contain only letters');
+                    } else if (productName.length < 3) {
+                        displayError('productName', 'Product name must be at least 3 characters');
+                    } else if (productName.length > 15) {
+                        displayError('productName', 'Product name must be less than 15 characters');
+                    }
+                }
+
+                function validateDescription() {
+                    const description = document.getElementById('description').value.trim();
+                    clearFieldError('description');
+                    
+                    if (!description) {
+                        displayError('description', 'Description is required');
+                    } else if (description.length < 15) {
+                        displayError('description', 'Description must be at least 15 characters');
+                    } else if (description.length > 1000) {
+                        displayError('description', 'Description must be less than 1000 characters');
+                    } else if (!/[a-zA-Z]/.test(description)) {
+                        displayError('description', 'Description must contain alphabets (not just numbers or symbols)');
+                    }
+                }
+
+                function validateCategory() {
+                    const category = document.getElementById('category').value;
+                    clearFieldError('category');
+                    
+                    if (!category) {
+                        displayError('category', 'Category is required');
+                    }
+                }
+
+                function validateColor() {
+                    const colour = document.getElementById('colour').value.trim();
+                    clearFieldError('colour');
+                    
+                    if (!colour) {
+                        displayError('colour', 'Color is required');
+                    } else if (!/^[a-zA-Z\s]+$/.test(colour)) {
+                        displayError('colour', 'Color should contain only letters');
+                    } else if (colour.length < 3) {
+                        displayError('colour', 'Color must be at least 3 characters');
+                    } else if (colour.length >= 15) {
+                        displayError('colour', 'Color must be less then or equal 15');
+                    }
+                }
+
+                function validateVariant(size) {
+                    const regularPrice = document.getElementById(`regularPrice-${size}`).value
+                    const salePrice = document.getElementById(`salePrice-${size}`).value;
+                  
+                    const stock = document.getElementById(`stock-${size}`).value
+                     // Validate variants
+                    
+
+                    
+                    // Clear previous errors
+
+                    clearFieldError(`regularPrice-${size}`)
+                    clearFieldError(`salePrice-${size}`);
+                    clearFieldError(`stock-${size}`);
+                    
+                    // Regular price validation
+                    if (!regularPrice || isNaN(regularPrice)) {
+                        displayError(`regularPrice-${size}`, 'Regular price is required');
+                    } else if (parseFloat(regularPrice) <= 0) {
+                        displayError(`regularPrice-${size}`, 'Regular price must be greater than 0');
+                    } else if (parseFloat(regularPrice) > 10000) {
+                        displayError(`regularPrice-${size}`, 'Regular price must be less than 10,000');
+                    }
+
+                    // Sale price validation
+                   
+                        if(!salePrice||isNaN(salePrice)){
+                            displayError(`salePrice-${size}`, 'salePrice are required');
+                        }else if ( parseFloat(salePrice) <= 0) {
+                            displayError(`salePrice-${size}`, 'Sale price must be greater than 0');
+                        } else if (parseFloat(salePrice) > parseFloat(regularPrice)) {
+                            displayError(`salePrice-${size}`, 'Sale price must be less than regular price');
+                        }
+                   
+
+                    // Stock validation
+                    if (!stock || isNaN(stock) || parseInt(stock) < 0) {
+                        displayError(`stock-${size}`, 'Valid stock quantity is required (minimum 0)');
+                    } else if (parseInt(stock) > 10000) {
+                        displayError(`stock-${size}`, 'Stock quantity must be less than 10,000');
+                    }
+                }
+
+                // Form validation
+                function validateForm() {
+                    let isValid = true;
+
+                    // Reset error states
+                    clearAllErrors();
+
+                    // Validate product name
+                    const productName = document.getElementById('productName').value.trim();
+                    if (!productName) {
+                        displayError('productName', 'Product name is required');
+                        isValid = false;
+                    } else if (!/^[a-zA-Z\s]+$/.test(productName)) {
+                        displayError('productName', 'Product name should contain only letters');
+                        isValid = false;
+                    } else if (productName.length < 3) {
+                        displayError('productName', 'Product name must be at least 3 characters');
+                        isValid = false;
+                    } else if (productName.length > 15) {
+                        displayError('productName', 'Product name must be less than 15 characters');
+                        isValid = false;
+                    }
+
+                    // Validate description
+                    const description = document.getElementById('description').value.trim();
+                    if (!description) {
+                        displayError('description', 'Description is required');
+                        isValid = false;
+                    } else if (description.length < 15) {
+                        displayError('description', 'Description must be at least 15 characters');
+                        isValid = false;
+                    } else if (description.length > 1000) {
+                        displayError('description', 'Description must be less than 1000 characters');
+                        isValid = false;
+                    } else if (!/[a-zA-Z]/.test(description)) {
+                        displayError('description', 'Description must contain alphabets (not just numbers or symbols)');
+                        isValid = false;
+                    }
+
+                    // Validate category
+                    const category = document.getElementById('category').value;
+                    if (!category) {
+                        displayError('category', 'Category is required');
+                        isValid = false;
+                    }
+
+                    // Validate color
+                    const colour = document.getElementById('colour').value.trim();
+                    if (!colour) {
+                        displayError('colour', 'Color is required');
+                        isValid = false;
+                    } else if (!/^[a-zA-Z\s]+$/.test(colour)) {
+                        displayError('colour', 'Color should contain only letters');
+                        isValid = false;
+                    } else if (colour.length < 3) {
+                        displayError('colour', 'Color must be at least 3 characters');
+                        isValid = false;
+                    } else if (colour.length >= 15) {
+                        displayError('colour', 'Color must be less then or equal 15');
+                        isValid = false;
+                    }
+
+                    // Validate variants
+                    const checkedSizes = document.querySelectorAll('input[name="sizes"]:checked');
+                    if (checkedSizes.length === 0) {
+                        displayError('variants', 'At least one size variant is required');
+                        document.getElementById('variants-error').classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        checkedSizes.forEach(checkbox => {
+                           
+                            const size = checkbox.value;
+        
+                            const regularPrice = document.getElementById(`regularPrice-${size}`).value;
+              
+                            const salePrice = document.getElementById(`salePrice-${size}`).value;
+                      
+                            const stock = document.getElementById(`stock-${size}`).value;
+
+                            // Regular price validation
+                            if (!regularPrice || isNaN(regularPrice)) {
+                                displayError(`regularPrice-${size}`, 'Regular price is required');
+                                isValid = false;
+                            } else if (parseFloat(regularPrice) <= 0) {
+                                displayError(`regularPrice-${size}`, 'Regular price must be greater than 0');
+                                isValid = false;
+                            } else if (parseFloat(regularPrice) > 10000) {
+                                displayError(`regularPrice-${size}`, 'Regular price must be less than 10,000');
+                                isValid = false;
+                            }
+
+                            // Sale price validation
+                            if (!salePrice) {
+                               displayError(`salePrice-${size}`, 'Sale price are required');
+                                    isValid = false;
+                            }else if (isNaN(salePrice) || parseFloat(salePrice) <= 0) {
+                                    displayError(`salePrice-${size}`, 'Sale price must be greater than 0');
+                                    isValid = false;
+                                } else if (parseFloat(salePrice) > parseFloat(regularPrice)) {
+                                    displayError(`salePrice-${size}`, 'Sale price must be less than regular price');
+                                    isValid = false;
+                                }
+
+                            // Stock validation
+                            if (!stock || isNaN(stock) || parseInt(stock) < 0) {
+                                displayError(`stock-${size}`, 'Valid stock quantity is required (minimum 0)');
+                                isValid = false;
+                            } else if (parseInt(stock) > 10000) {
+                                displayError(`stock-${size}`, 'Stock quantity must be less than 10,000');
+                                isValid = false;
+                            }
+                        });
+                    }
+
+                    // Validate images
+                    if (uploadedImages.length < MIN_IMAGES) {
+                        displayError('images-error', `Minimum ${MIN_IMAGES} images are required`);
+                        isValid = false;
+                    } else if (uploadedImages.length > MAX_IMAGES) {
+                        displayError('images-error', `Maximum ${MAX_IMAGES} images allowed`);
+                        isValid = false;
+                    }
+
+                    // Validate mainImageIndex
+                    const mainImageIndex = parseInt(document.getElementById('mainImageIndex').value);
+                    if (uploadedImages.length > 0 && (isNaN(mainImageIndex) || mainImageIndex < 0 || mainImageIndex >= uploadedImages.length)) {
+                        displayError('images-error', 'Please select a main image');
+                        isValid = false;
+                    }
+
+                    // Focus on first error field if validation fails
+                    if (!isValid) {
+                        setTimeout(focusFirstError, 100);
+                    }
+
+                    return isValid;
+                }
+
+                function displayError(fieldId, message) {
+                    const field = document.getElementById(fieldId);
+                    const errorElement = document.getElementById(`${fieldId}-error`);
+
+                    if (field) {
+                      
+                        field.classList.add('is-invalid');
+                    }
+                    if (errorElement) {
+                       
+                        errorElement.textContent = message;
+                        errorElement.style.display = 'block';
+                    }
+                }
+
+                function submitForm() {
+                    // Update the file input with cropped images
+                    const imageUpload = document.getElementById('imageUpload');
+                    const dataTransfer = new DataTransfer();
+                    uploadedImages.forEach(image => {
+                        dataTransfer.items.add(image.file);
+                    });
+                    imageUpload.files = dataTransfer.files;
+
+                    // Trigger native form submission
+                    document.getElementById('add-product-form').submit();
+                }
+
+                function validateAndSubmit() {
+                    if (validateForm()) {
+                        submitForm();
+                    }
+                }
+
+                // Image upload and cropping functionality
+                document.addEventListener('DOMContentLoaded', function () {
+                    const imageUpload = document.getElementById('imageUpload');
+                    const uploadArea = document.getElementById('uploadArea');
+                    const imagePreviews = document.getElementById('imagePreviews');
+                    const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+                    const cropperImage = document.getElementById('cropperImage');
+                    const saveCroppedBtn = document.getElementById('saveCroppedImage');
+                    const errorElement = document.getElementById('images-error');
+                    const publishBtn = document.getElementById('publishBtn');
+                    const cancelBtn = document.getElementById('cancelBtn');
+                    const ratioButtons = document.querySelectorAll('.btn-group button[data-ratio]');
+
+                    // Add event listeners for real-time validation
+                    document.getElementById('productName').addEventListener('input', () => validateField('productName'));
+                    document.getElementById('description').addEventListener('input', () => validateField('description'));
+                    document.getElementById('category').addEventListener('change', () => validateField('category'));
+                    document.getElementById('colour').addEventListener('input', () => validateField('colour'));
+                    
+                    // Add event listeners for variant fields
+                    document.querySelectorAll('input[id^="regularPrice-"], input[id^="salePrice-"], input[id^="stock-"]').forEach(input => {
+                        input.addEventListener('input', () => {
+                            const fieldId = input.id;
+                            const size = fieldId.split('-')[1];
+                            
+                            validateVariant(size);
+                        });
+                    });
+
+                    // Event listeners
+                    imageUpload.addEventListener('change', handleImageSelection);
+                    uploadArea.addEventListener('click', () => imageUpload.click());
+                    saveCroppedBtn.addEventListener('click', saveCroppedImage);
+                    publishBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        validateAndSubmit();
+                    });
+                    cancelBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                            window.location.href = '/admin/products';
+                        }
+                    });
+
+                    // Setup drag and drop
+                    setupDragAndDrop();
+
+                    // Initialize cropper when modal is shown
+                    document.getElementById('cropperModal').addEventListener('shown.bs.modal', initCropper);
+                    document.getElementById('cropperModal').addEventListener('hidden.bs.modal', () => {
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+                    });
+
+                    // Aspect ratio buttons
+                    ratioButtons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            ratioButtons.forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            const ratio = btn.dataset.ratio;
+                            setAspectRatio(ratio);
+                        });
+                    });
+
+                    function handleImageSelection(event) {
+                        const files = event.target.files;
+                        errorElement.textContent = '';
+
+                        if (!files || files.length === 0) return;
+
+                        if (uploadedImages.length + files.length > MAX_IMAGES) {
+                            errorElement.textContent = `Maximum ${MAX_IMAGES} images allowed (you already have ${uploadedImages.length})`;
+                            event.target.value = '';
+                            return;
+                        }
+
+                        Array.from(files).forEach(file => {
+                            if (!validateImage(file)) return;
+                            currentFile = file;
+                            previewImageForCropping(file);
+                        });
+
+                        event.target.value = '';
+                    }
+
+                    function validateImage(file) {
+                        if (!file.type.match('image.*')) {
+                            errorElement.textContent = 'Only image files are allowed (JPEG, PNG, etc.)';
+                            return false;
+                        }
+                        if (file.size > MAX_FILE_SIZE) {
+                            errorElement.textContent = 'Image size should be less than 5MB';
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    function previewImageForCropping(file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            cropperImage.src = e.target.result;
+                            cropperModal.show();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+
+                    function initCropper() {
+                        if (cropper) cropper.destroy();
+                        cropper = new Cropper(cropperImage, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 0.8,
+                            responsive: true,
+                            guides: false,
+                            movable: true,
+                            zoomable: true,
+                            rotatable: true,
+                            scalable: true
+                        });
+                    }
+
+                    function setAspectRatio(ratio) {
+                        if (!cropper) return;
+                        if (ratio === 'free') {
+                            cropper.setAspectRatio(NaN);
+                        } else {
+                            cropper.setAspectRatio(eval(ratio));
+                        }
+                    }
+
+                    function saveCroppedImage() {
+                        if (!cropper) return;
+
+                        cropper.getCroppedCanvas({
+                            width: 800,
+                            height: 800,
+                            fillColor: '#fff',
+                            imageSmoothingQuality: 'high'
+                        }).toBlob(blob => {
+                            const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
+                            const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                            const imageObj = {
+                                file: croppedFile,
+                                url: URL.createObjectURL(blob),
+                                isMain: uploadedImages.length === 0
+                            };
+
+                            uploadedImages.push(imageObj);
+                            createThumbnail(imageObj, uploadedImages.length - 1);
+                            cropperModal.hide();
+                        }, 'image/jpeg', 0.9);
+                    }
+
+                    function createThumbnail(image, index) {
+                        const thumb = document.createElement('div');
+                        thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
+                        thumb.dataset.index = index;
+
+                        thumb.innerHTML = `
+                    <img src="${image.url}" alt="Product Image">
+                    <button class="remove-btn"><i class="fas fa-times"></i></button>
+                    ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
+                `;
+
+                        thumb.addEventListener('click', function (e) {
+                            if (!e.target.closest('.remove-btn')) {
+                                setAsMainImage(thumb);
+                            }
+                        });
+
+                        thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            removeImage(thumb);
+                        });
+
+                        imagePreviews.appendChild(thumb);
+
+                        if (image.isMain) {
+                            document.getElementById('mainImageIndex').value = index;
+                        }
+                    }
+
+                    function setAsMainImage(thumbElement) {
+                        document.querySelectorAll('.thumbnail').forEach(thumb => {
+                            thumb.classList.remove('main-image');
+                            const badge = thumb.querySelector('.main-image-badge');
+                            if (badge) badge.remove();
+                        });
+
+                        thumbElement.classList.add('main-image');
+                        thumbElement.innerHTML += '<span class="main-image-badge">Main</span>';
+
+                        const index = thumbElement.dataset.index;
+                        document.getElementById('mainImageIndex').value = index;
+
+                        uploadedImages.forEach((img, i) => {
+                            img.isMain = i == index;
+                        });
+                    }
+
+                    function removeImage(thumbElement) {
+                        const index = thumbElement.dataset.index;
+
+                        URL.revokeObjectURL(uploadedImages[index].url);
+                        uploadedImages.splice(index, 1);
+
+                        if (thumbElement.classList.contains('main-image')) {
+                            if (uploadedImages.length > 0) {
+                                uploadedImages[0].isMain = true;
+                                document.getElementById('mainImageIndex').value = 0;
+                            } else {
+                                document.getElementById('mainImageIndex').value = '';
+                            }
+                        }
+
+                        thumbElement.remove();
+
+                        document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                            thumb.dataset.index = i;
+                        });
+
+                        if (uploadedImages.some(img => img.isMain)) {
+                            const mainIndex = uploadedImages.findIndex(img => img.isMain);
+                            document.getElementById('mainImageIndex').value = mainIndex;
+                        }
+                    }
+
+                    function setupDragAndDrop() {
+                        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                            uploadArea.addEventListener(eventName, preventDefaults, false);
+                        });
+
+                        function preventDefaults(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+
+                        ['dragenter', 'dragover'].forEach(eventName => {
+                            uploadArea.addEventListener(eventName, highlight, false);
+                        });
+
+                        ['dragleave', 'drop'].forEach(eventName => {
+                            uploadArea.addEventListener(eventName, unhighlight, false);
+                        });
+
+                        function highlight() {
+                            uploadArea.classList.add('dragover');
+                        }
+
+                        function unhighlight() {
+                            uploadArea.classList.remove('dragover');
+                        }
+
+                        uploadArea.addEventListener('drop', handleDrop, false);
+
+                        function handleDrop(e) {
+                            const dt = e.dataTransfer;
+                            const files = dt.files;
+
+                            if (files.length) {
+                                const event = { target: { files } };
+                                handleImageSelection(event);
+                            }
+                        }
+                    }
+                });
+            </script>
 </body>
 
 </html>

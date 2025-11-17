@@ -1,151 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-:root {
-  --navbar-bg: #2c3e50;
-  --text-color: #ecf0f1;
-  --hover-color: #f1c40f;
-  --danger-color: #e74c3c;
-  --navbar-height: 70px;
-}
-
-.navbar {
-  background-color: var(--navbar-bg);
-  height: var(--navbar-height);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  z-index: 90;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.navbar-brand i {
-  color: var(--hover-color);
-  margin-right: 10px;
-  font-size: 1.5rem;
-}
-
-.navbar-controls {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.navbar-toggle {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: none;
-}
-
-.notification {
-  position: relative;
-  color: var(--text-color);
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: var(--danger-color);
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: bold;
-}
-
-.user-profile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #ecf0f1;
-  overflow: hidden;
-}
-
-.user-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.user-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: white;
-  min-width: 200px;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.user-profile:hover .user-menu {
-  opacity: 1;
-  visibility: visible;
-}
-
-.user-menu a {
-  display: block;
-  padding: 10px 15px;
-  color: #333;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.user-menu a:hover {
-  background: #f5f5f5;
-}
-
-.user-menu a i {
-  margin-right: 8px;
-  color: #2c3e50;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-toggle {
-    display: block;
-  }
-  
-  .navbar-brand span {
-    display: none;
-  }
-}
-</style>
+<link rel="stylesheet" href="/admin/navbar.css">
+<title>OLD RICH</title>
+<link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
 </head>
 <body>
 <nav class="navbar">
@@ -153,30 +11,31 @@
     <button class="navbar-toggle">
       <i class="fas fa-bars"></i>
     </button>
-    <a href="/admin/dashboard" class="navbar-brand">
+    <!-- <a href="/admin/dashboard" class="navbar-brand">
       <i class="fas fa-gem"></i>
       <span>OLD RICH</span>
-    </a>
+    </a> -->
   </div>
   
   <div class="navbar-controls">
-    <div class="notification">
+    <!-- <div class="notification">
       <i class="fas fa-bell"></i>
       <span class="notification-badge">3</span>
-    </div>
+    </div> -->
     
     <div class="user-profile">
       <div class="user-avatar">
+        <i class="fas fa-user"></i>
         <!-- <img src="https://via.placeholder.com/40" alt="User"> -->
       </div>
       <div class="user-menu">
-        <a href="/admin/profile"><i class="fas fa-user"></i> Profile</a>
-        <a href="/admin/settings"><i class="fas fa-cog"></i> Settings</a>
         <a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
     </div>
   </div>
 </nav>
+
+
 
 <!-- Font Awesome for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>

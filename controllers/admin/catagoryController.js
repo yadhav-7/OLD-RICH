@@ -1,6 +1,6 @@
 const Category = require('../../models/catagory')
 const Product = require('../../models/productSchema')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const categoryInfo = async (req, res) => {
     try {
@@ -11,12 +11,12 @@ const categoryInfo = async (req, res) => {
 
         const query = {
             name: { $regex: new RegExp(search, 'i') }
-        };
+        }
 
         const categoryData = await Category.find(query)
             .sort({ createdOn: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
 
         const totalCategories = await Category.countDocuments(query);
         const totalPages = Math.ceil(totalCategories / limit);
@@ -33,7 +33,7 @@ const categoryInfo = async (req, res) => {
             });
         }
 
-        res.render('category', {
+        return res.render('category', {
             cat: categoryData,
             currentPage: page,
             totalPages: totalPages,
@@ -43,7 +43,7 @@ const categoryInfo = async (req, res) => {
         console.error('error from categoryInfo', error);
         res.redirect('/admin/pageError');
     }
-};
+}
 
 
 
@@ -57,7 +57,8 @@ const addCategory = async (req, res) => {
 
         const existingCategory = await Category.findOne({
             name: { $regex: categoryName, $options: 'i' }
-        });
+        })
+
 
         if (existingCategory) {
             return res.status(400).json({ error: 'Category already exists' })
@@ -99,10 +100,10 @@ const addCategoryOffer = async (req, res) => {
         const percentage = parseFloat(offerPercentage)
 
 
-        console.log('categoryId',categoryId)
-        console.log('typeof categoryId',typeof categoryId)
+        console.log('categoryId', categoryId)
+        console.log('typeof categoryId', typeof categoryId)
         const category = await Category.findById(categoryId)
-        console.log('category',category)
+        console.log('category', category)
 
         if (!category) {
             return res.status(404).json({ status: false, message: 'Category not found' })
@@ -111,26 +112,26 @@ const addCategoryOffer = async (req, res) => {
 
         const products = await Product.find({ category: category._id })
 
-        console.log('products',products)
-        if(products.length>0){
+        console.log('products', products)
+        if (products.length > 0) {
             for (let p of products) {
-                let productOfferRemoved=false
-                if(p.productOffer>percentage)continue
-            for (let variant of p.variants) {
-                console.log('variant.salePrice * percentage/100', (variant.salePrice * percentage/100))
-                console.log('variant.salePrice',variant.salePrice)
-                if(p.productOffer>0){
-                    variant.salePrice = Math.floor(variant.salePrice / (1 - p.productOffer / 100))
-                    productOfferRemoved=true
+                let productOfferRemoved = false
+                if (p.productOffer > percentage) continue
+                for (let variant of p.variants) {
+                    console.log('variant.salePrice * percentage/100', (variant.salePrice * percentage / 100))
+                    console.log('variant.salePrice', variant.salePrice)
+                    if (p.productOffer > 0) {
+                        variant.salePrice = Math.floor(variant.salePrice / (1 - p.productOffer / 100))
+                        productOfferRemoved = true
+                    }
+                    variant.salePrice = variant.salePrice - (variant.salePrice * percentage / 100)
                 }
-                variant.salePrice = variant.salePrice - (variant.salePrice * percentage / 100)
+                if (productOfferRemoved) p.productOffer = 0
+                await p.save()
             }
-            if(productOfferRemoved)p.productOffer=0
-            await p.save()
-        }
         }
 
-    
+
         await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } })
 
         return res.json({ status: true, message: `Offer of ${percentage}% added to category ${categoryId}` })
@@ -146,31 +147,31 @@ const { ObjectId } = require('mongoose').Types;
 
 const removeCategoryOffer = async (req, res) => {
     try {
-      
+
         const { categoryId } = req.body;
         if (!categoryId || !ObjectId.isValid(categoryId)) {
             return res.status(400).json({ status: false, message: 'Invalid or missing categoryId' });
         }
 
-       
+
         const category = await Category.findById(categoryId);
         if (!category) {
             return res.status(404).json({ status: false, message: 'Category not found' });
-        }        
+        }
         const percentage = category.categoryOffer;
         const products = await Product.find({ category: category._id });
         if (products.length > 0) {
             for (const product of products) {
 
-                if(product.productOffer>0)continue
-                for(let variant of product.variants){
+                if (product.productOffer > 0) continue
+                for (let variant of product.variants) {
                     variant.salePrice = Math.floor(variant.salePrice / (1 - percentage / 100))
                 }
                 await product.save();
             }
         }
 
-      
+
         category.categoryOffer = 0
         await category.save()
 
@@ -189,19 +190,17 @@ const getListCategory = async (req, res) => {
         // Update the category document
         await Category.updateOne({ _id: id }, { $set: { isListed: true } });
 
-        const products = await Product.find({category:id})
+        const products = await Product.find({ category: id })
 
-        for(let product of products){
-            product.status='Available'
+        for (let product of products) {
+            product.status = 'Available'
 
             await product.save()
         }
 
-      
+
         // Fetch the updated document to check the isListed value
         const updatedCategory = await Category.findById(id);
-        console.log(id);
-        console.log(updatedCategory.isListed); // This will log the isListed value of the document
 
         return res.json({ status: true })
     } catch (error) {
@@ -215,10 +214,10 @@ const getUnlistCategory = async (req, res) => {
         console.log('unListCategory')
         let id = req.body.id
         await Category.updateOne({ _id: id }, { $set: { isListed: false } })
-        const products = await Product.find({category:id})
+        const products = await Product.find({ category: id })
 
-        for(let product of products){
-            product.status='notAvailable'
+        for (let product of products) {
+            product.status = 'notAvailable'
 
             await product.save()
         }
@@ -242,13 +241,15 @@ const getEditCategory = async (req, res) => {
 
 const editCategory = async (req, res) => {
     try {
+
         const id = req.params.id;
+
+
         const { name, description } = req.body;
 
-        // Check for existing category with same name (case-insensitive), excluding current one
         const existsCategory = await Category.findOne({
             name: { $regex: `^${name}$`, $options: 'i' },
-            _id: { $ne: id }
+            _id: { $ne: new mongoose.Types.ObjectId(id) }
         });
 
         if (existsCategory) {

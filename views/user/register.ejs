@@ -3,105 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register Page</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="flex items-center justify-center min-h-screen bg-gray-100">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-6">REGISTER</h1>
+  <title>Register | Old Money Outfits</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ 
+    <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
 
-    <!-- Display server-side error message -->
-    <% if(typeof message!=='undefined') {%>
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"><%=message %></span>
-      </div>
-    <% } %>
-
-    <form method="post" action="/register" id="register-form" novalidate>
+ <style>
+    :root {
+      --primary-green: #4CAF50;
+      --light-green: #E8F5E9;
+      --dark-green: #388E3C;
+      --white: #FFFFFF;
+      --light-gray: #F5F5F5;
+      --dark-gray: #333333;
+      --medium-gray: #757575;
+      --error-red: #E53935;
+      --gold: #D4AF37;
+      --dark-blue: #285b3b;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    #brandImageLogo img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    
+    body {
+      background-color: var(--light-gray);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+      background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" stroke="%23D4AF37" stroke-width="0.5" x="0" y="0" width="100" height="100"/></svg>');
+    }
+    
+    .register-wrapper {
+      display: flex;
+      width: 100%;
+      max-width: 900px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .brand-section {
+      flex: 1;
+      background: linear-gradient(135deg, var(--dark-blue) 0%, #2C3E50 100%);
+      color: white;
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .brand-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23D4AF37" opacity="0.1" d="M20,20 L80,20 L80,80 L20,80 Z M30,30 L70,30 L70,70 L30,70 Z"/></svg>');
+      background-size: 150px;
+      opacity: 0.1;
+    }
+    
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .brand-logo i {
+      font-size: 28px;
+      color: var(--gold);
+      margin-right: 12px;
+    }
+    
+    .brand-logo h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    .brand-tagline {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #E0E0E0;
+      line-height: 1.5;
+    }
+    
+    .brand-features {
+      list-style: none;
+      margin-top: 15px;
+    }
+    
+    .brand-features li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+    
+    .brand-features i {
+      color: var(--gold);
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    
+    .register-container {
+      flex: 1;
+      background-color: var(--white);
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .register-container h2 {
+      color: var(--dark-green);
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 24px;
+      text-align: center;
+    }
+    
+    .register-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      text-align: left;
+      margin-bottom: 5px;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--dark-gray);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .register-form input {
+      width: 100%;
+      padding: 12px 45px 12px 16px;
+      border: 1px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .register-form input.error {
+      border-color: var(--error-red);
+    }
+    
+    .register-form input:focus {
+      outline: none;
+      border-color: var(--primary-green);
+      box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+    
+    .password-container {
+      position: relative;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 1px;
+    top: 30%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--medium-gray);
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+    }
+    
+    .register-form button {
+      background-color: var(--primary-green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+    
+    .register-form button:hover {
+      background-color: var(--dark-green);
+    }
+    
+    .error-message {
+      color: var(--error-red);
+      font-size: 12px;
+      margin-top: 5px;
+      display: block;
+      text-align: left;
+    }
+    
+    .google-register {
+      margin-bottom: 20px;
+    }
+    
+    .google-register a {
+      display: inline-block;
+      background-color: var(--light-green);
+      color: var(--dark-green);
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      width: 100%;
+      transition: all 0.3s ease;
+      border: 1px solid #C8E6C9;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .google-register a:hover {
+      background-color: #DCF2DC;
+    }
+    
+    .text-center {
+      color: var(--medium-gray);
+      font-size: 13px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    
+    .text-center a {
+      color: var(--primary-green);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .text-center a:hover {
+      color: var(--dark-green);
+      text-decoration: underline;
+    }
+    
+    .register-message {
+      color: var(--error-red);
+      font-size: 13px;
+      margin-top: 10px;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .loader {
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .strength-meter {
+      height: 4px;
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    
+    .strength-meter-fill {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .password-requirements {
+      font-size: 11px;
+      color: var(--medium-gray);
+      margin-top: 5px;
+    }
+    
+    .password-requirements ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+    }
+    
+    .password-requirements li {
+      margin-bottom: 2px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .register-wrapper {
+        flex-direction: column;
+        max-width: 450px;
+      }
       
-      <!-- FULL NAME -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="fullname">FULL NAME</label>
-        <input type="text" id="fullname" name="username"
-          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-          required
-          minlength="3"
-          maxlength="50"/>
-        <div id="register-error1" class="text-red-500 text-sm mt-1"></div>
+      .brand-section {
+        padding: 25px 20px;
+        text-align: center;
+      }
+      
+      .brand-logo {
+        justify-content: center;
+      }
+      
+      .register-container {
+        padding: 25px 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .brand-section, .register-container {
+        padding: 20px 15px;
+      }
+      
+      .register-container h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-wrapper">
+    <!-- Brand Information Section -->
+    <div class="brand-section">
+      <div class="brand-logo">
+        <i class="fas fa-crown"></i>
+        <h1>Old Money Outfits</h1>
       </div>
-
-      <!-- EMAIL -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="email">EMAIL ADDRESS</label>
-        <input type="email" id="email" name="email"
-          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-          required/>
-        <div id="register-error2" class="text-red-500 text-sm mt-1"></div>
+      <div id="brandImageLogo">
+        <img src="/userLogo/Gemini_Generated_Image_6n51zl6n51zl6n51.png" alt="Old Money Outfits Logo">
       </div>
-
-      <!-- PHONE -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">PHONE</label>
-        <input type="tel" id="phone" name="phone"
-          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-          required
-          pattern="[0-9]{10}"
-          maxlength="10"/>
-        <div id="register-error3" class="text-red-500 text-sm mt-1"></div>
-      </div>
-
-      <!-- PASSWORD -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="password">PASSWORD</label>
-        <input type="password" id="password" name="password"
-          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-          required
-          minlength="8"/>
-        <div id="password-strength" class="text-xs mt-1">
-          <div class="flex items-center mt-1">
-            <div id="strength-meter" class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div id="strength-meter-fill" class="h-full w-0 transition-all duration-300"></div>
-            </div>
-          </div>
-          <ul class="list-disc list-inside text-gray-600 mt-1">
-            <li id="length-requirement">At least 8 characters</li>
-            <li id="number-requirement">Contains a number</li>
-            <li id="letter-requirement">Contains a letter</li>
-            <li id="special-requirement">Contains a special character (optional)</li>
-          </ul>
+      <p class="brand-tagline">
+        Timeless elegance for the modern gentleman. Our collections embody sophistication, quality, and the enduring style of classic menswear.
+      </p>
+      <ul class="brand-features">
+        <li><i class="fas fa-check-circle"></i> Premium quality fabrics</li>
+        <li><i class="fas fa-check-circle"></i> Timeless designs</li>
+        <li><i class="fas fa-check-circle"></i> Expert craftsmanship</li>
+        <li><i class="fas fa-check-circle"></i> Exclusive collections</li>
+      </ul>
+    </div>
+    
+    <!-- Register Form Section -->
+    <div class="register-container">
+      <h2>Register</h2>
+      
+      <!-- Display server-side error message -->
+      <% if(typeof message!=='undefined') {%>
+        <div class="alert alert-danger" role="alert">
+          <%=message %>
         </div>
-      </div>
+      <% } %>
+      
+      <form class="register-form" id="register-form" action="/register" method="POST" novalidate>
+        <!-- FULL NAME -->
+        <div class="form-group">
+          <label for="fullname">FULL NAME</label>
+          <input type="text" id="fullname" name="username" placeholder="Enter your full name"
+                 aria-describedby="nameError" required minlength="3" maxlength="50">
+          <span id="register-error1" class="error-message" aria-live="polite"></span>
+        </div>
 
-      <!-- CONFIRM PASSWORD -->
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">CONFIRM PASSWORD</label>
-        <input type="password" id="confirm-password" name="cpassword"
-          class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-          required/>
-        <div id="register-error4" class="text-red-500 text-sm mt-1"></div>
-      </div>
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email">EMAIL ADDRESS</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email address"
+                 aria-describedby="emailError" required>
+          <span id="register-error2" class="error-message" aria-live="polite"></span>
+        </div>
 
-      <!-- REGISTER BUTTON -->
-      <button type="submit"
-        class="w-full bg-green-500 text-white font-semibold py-2 rounded-lg hover:bg-green-600 transition duration-200 mb-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-        REGISTER
-      </button>
+        <!-- PHONE -->
+        <div class="form-group">
+          <label for="phone">PHONE</label>
+          <input type="tel" id="phone" name="phone" placeholder="Enter your 10-digit phone number"
+                 aria-describedby="phoneError" required pattern="[0-9]{10}" maxlength="10">
+          <span id="register-error3" class="error-message" aria-live="polite"></span>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label for="password">PASSWORD</label>
+          <div class="password-container">
+            <input type="password" id="password" name="password" placeholder="Enter your password"
+                   aria-describedby="passwordError" required minlength="8">
+            <button type="button" class="toggle-password" id="togglePassword">
+              <i class="far fa-eye"></i>
+            </button>
+          </div>
+          <div class="strength-meter">
+            <div id="strength-meter-fill" class="strength-meter-fill"></div>
+          </div>
+          <div class="password-requirements">
+            <ul class="list-unstyled">
+              <li id="length-requirement">At least 8 characters</li>
+              <li id="number-requirement">Contains a number</li>
+              <li id="letter-requirement">Contains a letter</li>
+              <li id="special-requirement">Contains a special character (optional)</li>
+            </ul>
+          </div>
+          <span id="register-error4" class="error-message" aria-live="polite"></span>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group">
+          <label for="confirm-password">CONFIRM PASSWORD</label>
+          <div class="password-container">
+            <input type="password" id="confirm-password" name="cpassword" placeholder="Confirm your password"
+                   aria-describedby="confirmPasswordError" required>
+          
+          </div>
+          <span id="register-error5" class="error-message" aria-live="polite"></span>
+        </div>
+
+        <!-- REGISTER BUTTON -->
+        <button type="submit" id="registerBtn" class="btn btn-success w-100 py-2">
+          <span id="btnText">REGISTER</span>
+          <span id="btnLoader" class="loader" style="display: none; margin-left: 8px;"></span>
+        </button>
+      </form>
 
       <!-- GOOGLE BUTTON -->
-      <a type="button"
-      href="/auth/google/register"
-      class="w-full flex items-center justify-center bg-white text-gray-800 font-semibold py-2 border rounded-lg hover:bg-gray-100 transition duration-200 mb-3 focus:outline-none focus:ring-2 focus:ring-gray-300">
-        <img src="https://www.google.com/favicon.ico" alt="Google Icon" class="w-5 h-5 mr-2">
-        REGISTER WITH GOOGLE
-      </a>
+      <div class="google-register">
+        <a href="/auth/google/register" class="d-flex align-items-center justify-content-center">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="vertical-align: middle; margin-right: 8px;">
+            <path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3635H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2526 17.64 11.9456 17.64 9.2045Z" fill="#4285F4"/>
+            <path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/>
+            <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957273C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
+            <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/>
+          </svg>
+          REGISTER WITH GOOGLE
+        </a>
+      </div>
 
-      <p class="text-center text-sm text-gray-600">
-        ALREADY HAVE AN ACCOUNT? <a href="/login" class="text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-300 rounded">LOGIN</a>
+      <p class="text-center">
+        ALREADY HAVE AN ACCOUNT? <a href="/login">LOGIN</a>
       </p>
-    </form>
+    </div>
   </div>
-
-  <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('register-form');
       const nameInput = document.getElementById('fullname');
@@ -114,6 +487,7 @@
       const emailError = document.getElementById('register-error2');
       const phoneError = document.getElementById('register-error3');
       const passwordError = document.getElementById('register-error4');
+      const confirmPasswordError = document.getElementById('register-error5');
       
       // Password strength elements
       const strengthMeterFill = document.getElementById('strength-meter-fill');
@@ -121,6 +495,25 @@
       const numberRequirement = document.getElementById('number-requirement');
       const letterRequirement = document.getElementById('letter-requirement');
       const specialRequirement = document.getElementById('special-requirement');
+      
+      // Password toggle elements
+      const togglePassword = document.getElementById('togglePassword');
+
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        const icon = this.querySelector('i');
+        if (type === 'text') {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      });
 
       // Real-time validation for each field
       nameInput.addEventListener('input', validateName);
@@ -132,7 +525,15 @@
       // Password strength indicator
       passwordInput.addEventListener('input', updatePasswordStrength);
 
-      form.addEventListener('submit', function(e) {
+      const registerBtn = document.getElementById('registerBtn');
+      const btnText = document.getElementById('btnText');
+      const btnLoader = document.getElementById('btnLoader');
+
+      // When form is submitted
+      form.addEventListener('submit', function (e) {
+        // Prevent default first
+        e.preventDefault();
+       
         // Validate all fields before submission
         const isNameValid = validateName();
         const isEmailValid = validateEmail();
@@ -141,19 +542,27 @@
         const isConfirmPasswordValid = validateConfirmPassword();
         
         if (!isNameValid || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid) {
-          e.preventDefault();
           // Scroll to the first error
           const firstErrorElement = [
             nameError.textContent && nameInput,
             emailError.textContent && emailInput,
             phoneError.textContent && phoneInput,
-            passwordError.textContent && passwordInput
+            passwordError.textContent && passwordInput,
+            confirmPasswordError.textContent && confirmPasswordInput
           ].find(el => el);
           
           if (firstErrorElement) {
             firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             firstErrorElement.focus();
           }
+        } else {
+          // Show loader and disable button
+          btnLoader.style.display = 'inline-block';
+          btnText.textContent = 'Please wait...';
+          registerBtn.disabled = true;
+          
+          // Submit the form since validation passed
+          this.submit();
         }
       });
 
@@ -163,19 +572,19 @@
         
         if (!value) {
           nameError.textContent = 'Full name is required';
-          nameInput.classList.add('border-red-500');
+          nameInput.classList.add('error');
           return false;
         } else if (value.length < 3) {
           nameError.textContent = 'Name must be at least 3 characters';
-          nameInput.classList.add('border-red-500');
+          nameInput.classList.add('error');
           return false;
         } else if (!namePattern.test(value)) {
           nameError.textContent = 'Name can only contain letters, spaces, hyphens, and apostrophes';
-          nameInput.classList.add('border-red-500');
+          nameInput.classList.add('error');
           return false;
         } else {
           nameError.textContent = '';
-          nameInput.classList.remove('border-red-500');
+          nameInput.classList.remove('error');
           return true;
         }
       }
@@ -186,46 +595,46 @@
         
         if (!value) {
           emailError.textContent = 'Email is required';
-          emailInput.classList.add('border-red-500');
+          emailInput.classList.add('error');
           return false;
         } else if (!emailPattern.test(value)) {
           emailError.textContent = 'Please enter a valid email address';
-          emailInput.classList.add('border-red-500');
+          emailInput.classList.add('error');
           return false;
         } else {
           emailError.textContent = '';
-          emailInput.classList.remove('border-red-500');
+          emailInput.classList.remove('error');
           return true;
         }
       }
 
-   function validatePhone() {
-  const value = phoneInput.value.trim();
+      function validatePhone() {
+        const value = phoneInput.value.trim();
 
-  // Pattern: 10 digits, not all zeros
-  const phonePattern = /^(?!0{10})\d{10}$/;
+        // Pattern: 10 digits, not all zeros
+        const phonePattern = /^(?!0{10})\d{10}$/;
 
-  // Pattern: Reject if all digits are same (e.g. 1111111111)
-  const repeatedDigitPattern = /^(\d)\1{9}$/;
+        // Pattern: Reject if all digits are same (e.g. 1111111111)
+        const repeatedDigitPattern = /^(\d)\1{9}$/;
 
-  if (!value) {
-    phoneError.textContent = 'Phone number is required';
-    phoneInput.classList.add('border-red-500');
-    return false;
-  } else if (!phonePattern.test(value)) {
-    phoneError.textContent = 'Phone number must be exactly 10 digits and not all zeros';
-    phoneInput.classList.add('border-red-500');
-    return false;
-  } else if (repeatedDigitPattern.test(value)) {
-    phoneError.textContent = 'Phone number cannot have all digits the same';
-    phoneInput.classList.add('border-red-500');
-    return false;
-  } else {
-    phoneError.textContent = '';
-    phoneInput.classList.remove('border-red-500');
-    return true;
-  }
-}
+        if (!value) {
+          phoneError.textContent = 'Phone number is required';
+          phoneInput.classList.add('error');
+          return false;
+        } else if (!phonePattern.test(value)) {
+          phoneError.textContent = 'Phone number must be exactly 10 digits and not all zeros';
+          phoneInput.classList.add('error');
+          return false;
+        } else if (repeatedDigitPattern.test(value)) {
+          phoneError.textContent = 'Phone number cannot have all digits the same';
+          phoneInput.classList.add('error');
+          return false;
+        } else {
+          phoneError.textContent = '';
+          phoneInput.classList.remove('error');
+          return true;
+        }
+      }
 
       function validatePassword() {
         const value = passwordInput.value;
@@ -235,19 +644,19 @@
         
         if (!value) {
           passwordError.textContent = 'Password is required';
-          passwordInput.classList.add('border-red-500');
+          passwordInput.classList.add('error');
           return false;
         } else if (value.length < 8) {
           passwordError.textContent = 'Password must be at least 8 characters';
-          passwordInput.classList.add('border-red-500');
+          passwordInput.classList.add('error');
           return false;
         } else if (!hasLetter || !hasNumber) {
           passwordError.textContent = 'Password must contain both letters and numbers';
-          passwordInput.classList.add('border-red-500');
+          passwordInput.classList.add('error');
           return false;
         } else {
           passwordError.textContent = '';
-          passwordInput.classList.remove('border-red-500');
+          passwordInput.classList.remove('error');
           return true;
         }
       }
@@ -257,16 +666,16 @@
         const confirmValue = confirmPasswordInput.value;
         
         if (!confirmValue) {
-          passwordError.textContent = 'Please confirm your password';
-          confirmPasswordInput.classList.add('border-red-500');
+          confirmPasswordError.textContent = 'Please confirm your password';
+          confirmPasswordInput.classList.add('error');
           return false;
         } else if (confirmValue !== passwordValue) {
-          passwordError.textContent = 'Passwords do not match';
-          confirmPasswordInput.classList.add('border-red-500');
+          confirmPasswordError.textContent = 'Passwords do not match';
+          confirmPasswordInput.classList.add('error');
           return false;
         } else {
-          passwordError.textContent = '';
-          confirmPasswordInput.classList.remove('border-red-500');
+          confirmPasswordError.textContent = '';
+          confirmPasswordInput.classList.remove('error');
           return true;
         }
       }

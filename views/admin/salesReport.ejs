@@ -9,19 +9,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-light: #e0e7ff;
-            --secondary: #3a0ca3;
+            --primary: #ffc107;
+            --primary-light: #fff9e6;
+            --secondary: #e6b800;
             --dark: #1e1e2e;
             --light: #ffffff;
             --gray: #f8fafc;
-            --gray-dark: #cbd5e1;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
+            --gray-dark: #e5e7eb;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
         }
 
         * {
@@ -30,8 +32,6 @@
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', sans-serif;
         }
-
-
 
         .pagination {
             display: flex;
@@ -52,18 +52,49 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease;
+            border: 1px solid var(--gray-dark);
         }
 
+     
+.view-btn {
+    text-decoration: none;
+    background: #fff;
+    color: #fbc02d;
+    border: none;
+    transition: all 0.25s ease;
+    font-weight: 500;
+}
+
+.view-btn:hover {
+    background: #fbc02d;
+    color: #fff !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+    transform: translateY(-2px);
+}
+
+.view-btn i {
+    transition: all 0.25s ease;
+}
+
+.view-btn:hover i {
+    transform: scale(1.15);
+}
+
+
+
+
         .page-btn:hover {
-            background: #007bff;
+            background: var(--primary);
             color: white;
             transform: translateY(-2px);
+            border-color: var(--primary);
         }
 
         .page-btn.active {
-            background: #007bff;
+            background: var(--primary);
             color: white;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
         }
 
         .page-btn.prev,
@@ -77,8 +108,8 @@
             color: #999;
             cursor: not-allowed;
             box-shadow: none;
+            border-color: var(--gray-dark);
         }
-
 
         body {
             background: #f8fafc;
@@ -490,7 +521,7 @@
             padding: 12px 10px;
             text-align: left;
             font-weight: 600;
-            color: var(--primary);
+            color: var(--dark);
             font-size: 13px;
             border-bottom: 1px solid var(--gray-dark);
         }
@@ -860,13 +891,13 @@
                         </div>
                         <div class="stat-card">
                             <h3>Overall Order Amount</h3>
-                            <div class="stat-value" id="OverallOrderAmount">₹<%= OverallOrderAmount %>
+                            <div class="stat-value" id="OverallOrderAmount">₹<%= OverallOrderAmount.toFixed(2) %>
                             </div>
                             <div class="stat-trend trend-up"></div>
                         </div>
                         <div class="stat-card">
                             <h3>Overall Discount</h3>
-                            <div class="stat-value" id="OverallDiscount">₹<%= OverallDiscount %>
+                            <div class="stat-value" id="OverallDiscount">₹<%= OverallDiscount.toFixed(2) %>
                             </div>
                             <div class="stat-trend trend-down"></div>
                         </div>
@@ -924,25 +955,26 @@
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th>No</th>
                                             <th>Date</th>
-                                            <th>Order ID</th>
                                             <th>Customer</th>
                                             <th>Amount</th>
                                             <th>Discount</th>
                                             <th>Coupon</th>
                                             <th>Status</th>
-                                            <th>Refund for<br>cancell/return</th>
+                                            <!-- <th>Refund for<br>cancell/return</th> -->
+                                             <th>Detailed view</th>
                                         </tr>
                                     </thead>
                                     <tbody id="sales-table-body">
-                                        <% orders.forEach(order=> { %>
+                                        <% orders.forEach((order,index)=> { %>
                                             <tr>
+                                                 <td>
+                                                    <%= index+1 %>
+                                                </td>
                                                 <td>
                                                     <%= new Date(order.createdOn).toLocaleDateString('en-IN', {
                                                         day: '2-digit' , month: 'short' , year: 'numeric' }) %>
-                                                </td>
-                                                <td>
-                                                    <%= order.orderId %>
                                                 </td>
                                                 <td>
                                                     <%= order.userId?.username %>
@@ -963,38 +995,35 @@
                                                             <td class="status <%= order.status.toLowerCase() %>">
                                                                 <%= order.status %>
                                                             </td>
-                                                            <% let totalRefund=0; if (order.orderedItems &&
-                                                                order.orderedItems.length> 0) {
-                                                                order.orderedItems.forEach(item => {
-                                                                totalRefund += item.reFund || 0
-                                                                });
-                                                                }
-                                                                %>
-                                                                <% if (totalRefund>0) { %>
-                                                                    <td class="refund">
-                                                                        <%= totalRefund %>
-                                                                    </td>
-                                                                    <% } else { %>
-                                                                        <td class="refund">—</td>
-                                                                        <% } %>
-                                            </tr>
-                                            <% }) %>
+                                                      
+
+                                                            <td>
+                                                              <a href="/admin/orderDetails?orderId=<%= order.orderId %>" class="btn btn-sm view-btn">
+    <i class="bi bi-eye me-1"></i> View
+</a>
+
+
+                                                            </td>
+
+                                            <% }) %> 
                                     </tbody>
                                 </table>
+                              
+
                                 <div class="pagination">
-                                        <% if(currentPage>1){ %>
-                                            <button onclick="pagination('previous')" id="prevBtn"
-                                                class="page-btn prev">&laquo;</button>
-                                            <% } %>
-                                                <button id="currentPage" class="page-btn active">
-                                                    <%= currentPage %>
-                                                </button>
+                                    <% if(currentPage>1){ %>
+                                        <button onclick="pagination('previous')" id="prevBtn"
+                                            class="page-btn prev">&laquo;</button>
+                                        <% } %>
+                                            <button id="currentPage" class="page-btn active">
+                                                <%= currentPage %>
+                                            </button>
 
-                                                <% if (currentPage<totalPage) { %>
-                                                    <button onclick="pagination('next')" id="nextBtn"
-                                                        class="page-btn next">&raquo;</button>
+                                            <% if (currentPage<totalPage) { %>
+                                                <button onclick="pagination('next')" id="nextBtn"
+                                                    class="page-btn next">&raquo;</button>
 
-                                                    <% } %>
+                                                <% } %>
                                 </div>
 
 
@@ -1205,24 +1234,24 @@
                     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
 
-                // Generate report with AJAX
                 document.getElementById('generate-report').addEventListener('click', async function () {
                     try {
                         // Show loading state
                         loadingSpinner.classList.add('active');
                         statsGrid.classList.add('loading');
-                        reportSection.style.display = 'none';
+                        reportSection.style.display = 'none'; // Hide initially
 
-                        let filterParam = ''
-                        let endDate
-                        let startDate
+                        let filterParam = '';
+                        let startDate = '';
+                        let endDate = '';
 
+                        // Determine filter parameters
                         switch (currentFilter.preset) {
                             case 'today':
-                                filterParam = 'Today'
+                                filterParam = 'Today';
                                 break;
                             case 'week':
-                                filterParam = 'Last 7 Days'
+                                filterParam = 'Last 7 Days';
                                 break;
                             case 'month':
                                 filterParam = 'Last 30 Days';
@@ -1235,15 +1264,13 @@
                                 startDate = document.getElementById('start-date').value;
                                 endDate = document.getElementById('end-date').value;
 
-
-                                let today = new Date()
-                                //today.setHours(0, 0, 0, 0)
+                                // Validate custom dates
+                                let today = new Date();
+                                today.setHours(23, 59, 59, 999);
 
                                 let start = new Date(startDate);
                                 let end = new Date(endDate);
-                                console.log('start', start)
-                                console.log('end', end)
-                                console.log('today', today)
+                                end.setHours(23, 59, 59, 999);
 
                                 if (start > today) {
                                     Toastify({
@@ -1253,8 +1280,10 @@
                                         position: "right",
                                         backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
                                         stopOnFocus: true
-                                    }).showToast()
-                                    return
+                                    }).showToast();
+                                    loadingSpinner.classList.remove('active');
+                                    statsGrid.classList.remove('loading');
+                                    return;
                                 }
 
                                 if (end > today) {
@@ -1265,8 +1294,10 @@
                                         position: "right",
                                         backgroundColor: "linear-gradient(to right, #36d1dc, #5b86e5)",
                                         stopOnFocus: true
-                                    }).showToast()
-                                    return
+                                    }).showToast();
+                                    loadingSpinner.classList.remove('active');
+                                    statsGrid.classList.remove('loading');
+                                    return;
                                 }
 
                                 if (start > end) {
@@ -1277,24 +1308,23 @@
                                         position: "right",
                                         backgroundColor: "linear-gradient(to right, #ff512f, #dd2476)",
                                         stopOnFocus: true
-                                    }).showToast()
-                                    return
+                                    }).showToast();
+                                    loadingSpinner.classList.remove('active');
+                                    statsGrid.classList.remove('loading');
+                                    return;
                                 }
-
                                 break;
                         }
 
-
-
                         const response = await fetch(`/admin/salesReport?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
                             headers: { 'Accept': 'application/json' }
-                        })
+                        });
 
                         if (!response.ok) {
-                            throw new Error('Network response was not ok')
+                            throw new Error('Network response was not ok');
                         }
 
-                        const data = await response.json()
+                        const data = await response.json();
 
                         // Update stats
                         document.getElementById('totalSalesCount').textContent = data.totalSalesCount;
@@ -1335,113 +1365,6 @@
                                     : `<td class="refund">—</td>`;
 
                                 const row = `
-                            <tr>
-                                <td>${orderDate}</td>
-                                <td>${order.orderId}</td>
-                                <td>${order.userId?.username || 'Guest'}</td>
-                                <td>${order.finalAmount}</td>
-                                <td><span class="discount-badge">${order.discount}</span></td>
-                                <td>${couponBadge}</td>
-                                <td class="status ${order.status.toLowerCase()}">${order.status}</td>
-                                ${refundCell}
-                            </tr>
-                        `;
-                                tableBody.insertAdjacentHTML('beforeend', row);
-                            });
-
-                            renderPagination(data.currentPage,data.totalPage)
-
-                            reportSection.style.display = 'block';
-                        } else {
-                            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found for the selected filter</td></tr>';
-                            reportSection.style.display = 'block';
-                        }
-
-                        // Show success toast
-                        Toastify({
-                            text: `Report loaded successfully!`,
-                            duration: 3000,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "#10b981",
-                        }).showToast();
-
-                    } catch (error) {
-                        console.error('Error fetching sales data:', error);
-                        Toastify({
-                            text: "Error loading data. Please try again!",
-                            backgroundColor: "#ef4444",
-                            gravity: "top",
-                            position: "right"
-                        }).showToast();
-                    } finally {
-                        // Hide loading state
-                        loadingSpinner.classList.remove('active');
-                        statsGrid.classList.remove('loading');
-                    }
-                });
-
-                // Reset filters and reload report to initial state
-document.getElementById('reset-filters').addEventListener('click', async function () {
-    try {
-        // Reset filter inputs
-        document.getElementById('start-date').value = '';
-        document.getElementById('end-date').value = '';
-        currentFilter.preset = 'today'; // default filter
-
-        // Show loading state
-        loadingSpinner.classList.add('active');
-        statsGrid.classList.add('loading');
-        reportSection.style.display = 'none';
-
-        // Fetch the **first page** with default filter
-        const response = await fetch(`/admin/salesReport?date=Today&page=1`, {
-            headers: { 'Accept': 'application/json' }
-        });
-
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const data = await response.json();
-
-        // Update stats (same as initial render)
-        document.getElementById('totalSalesCount').textContent = data.totalSalesCount;
-        document.getElementById('OverallOrderAmount').textContent = '₹' + data.OverallOrderAmount.toFixed(2);
-        document.getElementById('OverallDiscount').textContent = '₹' + data.OverallDiscount.toFixed(2);
-        document.getElementById('CouponUsage').textContent = data.CouponUsage;
-        document.getElementById('CouponDisCount').textContent = data.CouponDisCount.toFixed(2);
-        document.getElementById('returnedAmount').textContent = data.returnedAmount.toFixed(2);
-        document.getElementById('returnCount').textContent = data.returnCount;
-        document.getElementById('cancelledAmount').textContent = data.cancelledAmount.toFixed(2);
-        document.getElementById('cancelledCount').textContent = data.cancelledCount;
-
-        // Update table
-        const tableBody = document.getElementById('sales-table-body');
-        tableBody.innerHTML = '';
-
-        if (data.orders && data.orders.length > 0) {
-            data.orders.forEach(order => {
-                const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                });
-
-                let totalRefund = 0;
-                if (order.orderedItems && order.orderedItems.length > 0) {
-                    order.orderedItems.forEach(item => {
-                        totalRefund += item.reFund || 0;
-                    });
-                }
-
-                const couponBadge = order.couponApplied?.applied
-                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
-                    : `<span class="coupon-badge-notused">None</span>`;
-
-                const refundCell = totalRefund > 0
-                    ? `<td class="refund">${totalRefund}</td>`
-                    : `<td class="refund">—</td>`;
-
-                const row = `
                     <tr>
                         <td>${orderDate}</td>
                         <td>${order.orderId}</td>
@@ -1453,57 +1376,178 @@ document.getElementById('reset-filters').addEventListener('click', async functio
                         ${refundCell}
                     </tr>
                 `;
-                tableBody.insertAdjacentHTML('beforeend', row);
-            });
+                                tableBody.insertAdjacentHTML('beforeend', row);
+                            });
 
-            // Reset pagination to first page
-            renderPagination(1, data.totalPage);
-        } else {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found</td></tr>';
-        }
+                            // FIX: Make sure to show the report section after populating data
+                            reportSection.style.display = 'block';
 
-        reportSection.style.display = 'block';
+                            renderPagination(data.currentPage, data.totalPage);
 
-        Toastify({
-            text: "Report reset to initial state.",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            backgroundColor: "#10b981",
-        }).showToast();
+                        } else {
+                            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found for the selected filter</td></tr>';
+                            // FIX: Show the report section even when no data
+                            reportSection.style.display = 'block';
+                        }
 
-    } catch (error) {
-        console.error('Error resetting report:', error);
-        Toastify({
-            text: "Error resetting report. Please try again!",
-            backgroundColor: "#ef4444",
-            gravity: "top",
-            position: "right"
-        }).showToast();
-    } finally {
-        loadingSpinner.classList.remove('active');
-        statsGrid.classList.remove('loading');
-    }
-});
+                        // Show success toast
+                        Toastify({
+                            text: `Report loaded successfully!`,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#28a745",
+                        }).showToast();
+
+                    } catch (error) {
+                        console.error('Error fetching sales data:', error);
+                        Toastify({
+                            text: "Error loading data. Please try again!",
+                            backgroundColor: "#dc3545",
+                            gravity: "top",
+                            position: "right"
+                        }).showToast();
+                        // FIX: Make sure to show report section even on error
+                        reportSection.style.display = 'block';
+                    } finally {
+                        // Hide loading state
+                        loadingSpinner.classList.remove('active');
+                        statsGrid.classList.remove('loading');
+                    }
+                });
+                // Reset filters and reload report to initial state
+                document.getElementById('reset-filters').addEventListener('click', async function () {
+                    try {
+                        // Reset filter inputs
+                        document.getElementById('start-date').value = '';
+                        document.getElementById('end-date').value = '';
+                        currentFilter.preset = 'today'; // default filter
+
+                        // Show loading state
+                        loadingSpinner.classList.add('active');
+                        statsGrid.classList.add('loading');
+                        reportSection.style.display = 'none';
+
+                        // Fetch the **first page** with default filter
+                        const response = await fetch(`/admin/salesReport?date=Today&page=1`, {
+                            headers: { 'Accept': 'application/json' }
+                        });
+
+                        if (!response.ok) throw new Error('Network response was not ok');
+
+                        const data = await response.json();
+
+                        // Update stats (same as initial render)
+                        document.getElementById('totalSalesCount').textContent = data.totalSalesCount;
+                        document.getElementById('OverallOrderAmount').textContent = '₹' + data.OverallOrderAmount.toFixed(2);
+                        document.getElementById('OverallDiscount').textContent = '₹' + data.OverallDiscount.toFixed(2);
+                        document.getElementById('CouponUsage').textContent = data.CouponUsage;
+                        document.getElementById('CouponDisCount').textContent = data.CouponDisCount.toFixed(2);
+                        document.getElementById('returnedAmount').textContent = data.returnedAmount.toFixed(2);
+                        document.getElementById('returnCount').textContent = data.returnCount;
+                        document.getElementById('cancelledAmount').textContent = data.cancelledAmount.toFixed(2);
+                        document.getElementById('cancelledCount').textContent = data.cancelledCount;
+
+                        // Update table
+                        const tableBody = document.getElementById('sales-table-body');
+                        tableBody.innerHTML = '';
+
+                        if (data.orders && data.orders.length > 0) {
+                            data.orders.forEach(order => {
+                                const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+
+                                let totalRefund = 0;
+                                if (order.orderedItems && order.orderedItems.length > 0) {
+                                    order.orderedItems.forEach(item => {
+                                        totalRefund += item.reFund || 0;
+                                    });
+                                }
+
+                                const couponBadge = order.couponApplied?.applied
+                                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
+                                    : `<span class="coupon-badge-notused">None</span>`;
+
+                                const refundCell = totalRefund > 0
+                                    ? `<td class="refund">${totalRefund}</td>`
+                                    : `<td class="refund">—</td>`;
+
+                                const row = `
+                    <tr>
+                        <td>${orderDate}</td>
+                        <td>${order.orderId}</td>
+                        <td>${order.userId?.username || 'Guest'}</td>
+                        <td>${order.finalAmount}</td>
+                        <td><span class="discount-badge">${order.discount}</span></td>
+                        <td>${couponBadge}</td>
+                        <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+                        ${refundCell}
+                    </tr>
+                `;
+                                tableBody.insertAdjacentHTML('beforeend', row);
+                            });
+
+                            // Reset pagination to first page
+                            renderPagination(1, data.totalPage);
+                        } else {
+                            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No orders found</td></tr>';
+                        }
+
+                        reportSection.style.display = 'block';
+
+                        Toastify({
+                            text: "Report reset to initial state.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#28a745",
+                        }).showToast();
+
+                    } catch (error) {
+                        console.error('Error resetting report:', error);
+                        Toastify({
+                            text: "Error resetting report. Please try again!",
+                            backgroundColor: "#dc3545",
+                            gravity: "top",
+                            position: "right"
+                        }).showToast();
+                    } finally {
+                        loadingSpinner.classList.remove('active');
+                        statsGrid.classList.remove('loading');
+                    }
+                });
 
                 document.getElementById('export-pdf').addEventListener('click', function () {
+                    alert('export-pdf is working')
                     switch (currentFilter.preset) {
                         case 'today':
-                            filterParam = 'Today'
+                            filterParam = 'Today';
                             break;
+
                         case 'week':
-                            filterParam = 'Last 7 Days'
+                            filterParam = 'Last 7 Days';
                             break;
+
                         case 'month':
                             filterParam = 'Last 30 Days';
                             break;
+
                         case 'year':
                             filterParam = 'Last Year';
                             break;
+
                         case 'custom':
                             filterParam = 'custom';
                             startDate = document.getElementById('start-date').value;
                             endDate = document.getElementById('end-date').value;
+                            break;
+
+                        default:
+                           
+                            filterParam = 'All';
                             break;
                     }
 
@@ -1513,24 +1557,34 @@ document.getElementById('reset-filters').addEventListener('click', async functio
                 document.getElementById('export-excel').addEventListener('click', function () {
                     switch (currentFilter.preset) {
                         case 'today':
-                            filterParam = 'Today'
+                            filterParam = 'Today';
                             break;
+
                         case 'week':
-                            filterParam = 'Last 7 Days'
+                            filterParam = 'Last 7 Days';
                             break;
+
                         case 'month':
                             filterParam = 'Last 30 Days';
                             break;
+
                         case 'year':
                             filterParam = 'Last Year';
                             break;
+
                         case 'custom':
                             filterParam = 'custom';
                             startDate = document.getElementById('start-date').value;
                             endDate = document.getElementById('end-date').value;
                             break;
+
+                        default:
+
+                            filterParam = 'All';
+                            break;
                     }
-                  
+
+
                     window.location.href = `/admin/salesReportExcel?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
                 });
 
@@ -1572,16 +1626,16 @@ document.getElementById('reset-filters').addEventListener('click', async functio
                             startDate = document.getElementById('start-date').value;
                             endDate = document.getElementById('end-date').value;
                             break;
-                             default:
-        filterParam = 'All Time';
-        startDate = null;
-        endDate = null;
-        break;
+                        default:
+                            filterParam = 'All Time';
+                            startDate = null;
+                            endDate = null;
+                            break;
                     }
-                  
-                  
 
-                    console.log('currentFilter',currentFilter)
+
+
+                    console.log('currentFilter', currentFilter)
                     const response = await fetch(`/admin/salesReport?page=${encodeURIComponent(currentPage)}&date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
                         headers: { 'Accept': 'application/json' }
                     })
@@ -1617,40 +1671,40 @@ document.getElementById('reset-filters').addEventListener('click', async functio
                         tbody.appendChild(tr)
                     })
 
-                    
-                    renderPagination(data.currentPage,data.totalPage)
+
+                    renderPagination(data.currentPage, data.totalPage)
 
                 }
 
                 function renderPagination(currentPage, totalPage) {
-    const paginationContainer = document.querySelector('.pagination')
-    
-    paginationContainer.innerHTML = ''
+                    const paginationContainer = document.querySelector('.pagination')
 
-    
-    if (currentPage > 1) {
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'page-btn prev';
-        prevBtn.innerHTML = '&laquo;';
-        prevBtn.onclick = () => pagination('previous');
-        paginationContainer.appendChild(prevBtn);
-    }
+                    paginationContainer.innerHTML = ''
 
-    
-    const currentBtn = document.createElement('button');
-    currentBtn.id = 'currentPage';
-    currentBtn.className = 'page-btn active';
-    currentBtn.textContent = currentPage;
-    paginationContainer.appendChild(currentBtn);
 
-    if (currentPage < totalPage) {
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'page-btn next';
-        nextBtn.innerHTML = '&raquo;';
-        nextBtn.onclick = () => pagination('next');
-        paginationContainer.appendChild(nextBtn);
-    }
-}
+                    if (currentPage > 1) {
+                        const prevBtn = document.createElement('button');
+                        prevBtn.className = 'page-btn prev';
+                        prevBtn.innerHTML = '&laquo;';
+                        prevBtn.onclick = () => pagination('previous');
+                        paginationContainer.appendChild(prevBtn);
+                    }
+
+
+                    const currentBtn = document.createElement('button');
+                    currentBtn.id = 'currentPage';
+                    currentBtn.className = 'page-btn active';
+                    currentBtn.textContent = currentPage;
+                    paginationContainer.appendChild(currentBtn);
+
+                    if (currentPage < totalPage) {
+                        const nextBtn = document.createElement('button');
+                        nextBtn.className = 'page-btn next';
+                        nextBtn.innerHTML = '&raquo;';
+                        nextBtn.onclick = () => pagination('next');
+                        paginationContainer.appendChild(nextBtn);
+                    }
+                }
 
             </script>
 </body>
