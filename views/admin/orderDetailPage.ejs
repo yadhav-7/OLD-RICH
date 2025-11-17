@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details - Admin Panel</title>
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,7 +31,7 @@
         }
 
         .header {
-            background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+            background: linear-gradient(90deg, #ffc107 0%, #ffc107 100%);
             color: #fff;
             padding: 32px 40px 24px 40px;
             border-bottom-left-radius: 40px 20px;
@@ -52,7 +54,7 @@
         }
 
         .section-title {
-            color: #1976d2;
+            color: #ffc107;
             margin-top: 0;
             margin-bottom: 18px;
             font-size: 1.25rem;
@@ -84,7 +86,7 @@
             font-size: 13px;
             letter-spacing: 0.2px;
             background: #e3f2fd;
-            color: #1976d2;
+            color: #ffc107;
         }
 
         .status-return {
@@ -94,7 +96,7 @@
 
         .status-clarify {
             background: #e3f2fd;
-            color: #1976d2;
+            color: #ffc107;
         }
 
         .status-completed {
@@ -169,7 +171,7 @@
 
         .items-table th {
             background: #e3f2fd;
-            color: #1976d2;
+            color: #ffc107;
             font-weight: 700;
             padding: 14px 10px;
             border-radius: 6px 6px 0 0;
@@ -209,7 +211,7 @@
             }
         }
     </style>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
         <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 </head>
@@ -256,14 +258,15 @@
                 </div>
             </div>
 
-            <% if (order.status==='returnRequested' ) { %>
+            <% if ((order.status==='returned' || order.status==='returnRequested') && order.returnReason) { %>
                 <div class="return-notification">
                     <p>
                         <strong>Return Requested</strong> for Order: <%= order.productName %>
                             <% if(order.size){ %> (Size: <%= order.size %>) <% } %>
                     </p>
                     <div class="return-actions">
-                        <button class="btn btn-approve"
+                        <% if(order.status==='returnRequested'){ %>
+                            <button class="btn btn-approve"
                             onclick="handleReturnAction('<%= null %>', '<%= order.orderId %>', 'returned')">
                             Accept
                         </button>
@@ -271,154 +274,215 @@
                             onclick="handleReturnAction('<%= null %>', '<%= order.orderId %>', 'reutrnRejected')">
                             Reject
                         </button>
+                       <% }else if(order.status==='returned' ){ %>
+                        <span class="returned-seal">✔ Returned</span>
+                      <% }else if(order.status==='returnRejected' ){ %>
+                        <span class="rejected-seal">✖ Rejected</span>
+                     <% } %>
                     </div>
+
+                    <p>
+                        Reason: <%= order.returnReason || 'No reason given' %>
+                    </p>
+
                 </div>
                 <% }else{ %>
 
-                <% order.orderedItems?.forEach((element) => { %>
-    <% if (element.status === 'returnRequested') { %>
-        <div class="return-notification">
-            <p>
-                <strong>Return Requested</strong> for item: <%= element.product.productName %>
-                <% if (element.size) { %> (Size: <%= element.size %>) <% } %>
-            </p>
-            <div>
-                <img src="/uploads/<%= element.product.productImage[0] %>" alt="Product Image" style="width: 100px;">
-            </div>
-            <div class="return-actions">
-                <button class="btn btn-approve"
-                    onclick="handleReturnAction( '<%= element._id %>','<%= order.orderId %>', 'returned')">
-                    Accept
-                </button>
-                <button class="btn btn-reject"
-                    onclick="handleReturnAction( '<%= element._id %>','<%= order.orderId %>', 'returnRejected')">
-                    Reject
-                </button>
-            </div>
-        </div>
-    <% } %>
-<% }); %>
+                    <% order.orderedItems?.forEach((element)=> { %>
+                        <% if (element.status==='returnRequested' && element.returnReason) { %>
+                            <div class="return-notification">
+                                <p>
+                                    <strong>Return Requested</strong> for item:
+                                    <%= element.product.productName %>
+                                        <% if (element.size) { %>
+                                            (Size: <%= element.size %>)
+                                                <% } %>
+                                                    <br>
+                                                    Reason: <%= element.returnReason || 'No reason given' %>
+                                </p>
 
-            
-               <% } %>
+                                <div>
+                                    <img src="/uploads/<%= element.product.productImage[0] %>" alt="Product Image"
+                                        style="width: 100px;">
+                                </div>
+                                <div class="return-actions">
+                                    <button class="btn btn-approve"
+                                        onclick="handleReturnAction( '<%= element._id %>','<%= order.orderId %>', 'returned')">
+                                        Accept
+                                    </button>
+                                    <button class="btn btn-reject"
+                                        onclick="handleReturnAction( '<%= element._id %>','<%= order.orderId %>', 'returnRejected')">
+                                        Reject
+                                    </button>
+                                </div>
 
-                    <div class="section">
-                        <h2 class="section-title">Shipping Address</h2>
-                        <div class="info-grid">
-                            <div class="info-label">Name:</div>
-                            <div class="info-value">
-                                <%= order?.address?.name %>
-                            </div>
-                            <div class="info-label">Address:</div>
-                            <div class="info-value">
-                                <%= order?.address?.street %><br>
-                                    <%= order?.address?.city %>, <%= order?.address?.state %><br>
-                                            <%= order?.address?.country %> - <%= order?.address?.pincode %>
-                            </div>
-                            <div class="info-label">Phone:</div>
-                            <div class="info-value">
-                                <%= order?.address?.phone %>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="section">
-                        <h2 class="section-title">Order Items</h2>
-                        <table class="items-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Size</th>
-                                    <th>Quantity</th>
-                                    <th>Status</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% order?.orderedItems?.forEach(element=> { %>
-                                    <tr>
-                                        <td>
-                                            <%= element.productName %>
-                                        </td>
-                                        <td>
-                                            <%= element.size %>
-                                        </td>
-                                        <td>
-                                            <%= element.quantity %>
-                                        </td>
-                                        <td>
-                                            <% if(element.status==='returnRequested' ){ %>
-                                                <span class="status-badge status-return">Return Requested</span>
-                                                <% } else if(element.status==='Completed' ){ %>
-                                                    <span class="status-badge status-completed">Completed</span>
-                                                    <% } else if(element.status==='Cancelled' ){ %>
-                                                        <span class="status-badge status-cancelled">Cancelled</span>
-                                                        <% } else { %>
-                                                            <span class="status-badge status-clarify">
-                                                                <%= element.status %>
-                                                            </span>
-                                                            <% } %>
-                                        </td>
-                                        <td>₹<%= element.price %>
-                                        </td>
-                                        <td>₹<%= (element.price * element.quantity).toFixed(2) %>
-                                        </td>
-                                    </tr>
-                                    <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
+                            </div>
+                            <% }else if(element.status==='returned'||element.status==='reutrnRejected'){%>
+                                <div class="return-notification">
+    <p>
+        <strong>Return Requested</strong> for item: 
+        <%= element.product.productName %> 
+        <% if (element.size) { %> 
+            (Size: <%= element.size %>) 
+        <% } %>
+        <br>
+        Reason: <%= element.returnReason || 'No reason given' %>
+    </p>
+
+    <div>
+        <img src="/uploads/<%= element.product.productImage[0] %>" alt="Product Image" style="width: 100px;">
+    </div>
+
+    <div class="return-actions">
+        <% if (element.status === 'returnRequested') { %>
+            <!-- Show Accept / Reject buttons only if currently requested -->
+            <button class="btn btn-approve"
+                onclick="handleReturnAction('<%= element._id %>', '<%= order.orderId %>', 'returned')">
+                Accept
+            </button>
+            <button class="btn btn-reject"
+                onclick="handleReturnAction('<%= element._id %>', '<%= order.orderId %>', 'returnRejected')">
+                Reject
+            </button>
+        <% } else if (element.status === 'returned') { %>
+            <!-- Show Returned seal -->
+            <span class="returned-seal">✔ Returned</span>
+        <% } else if (element.status === 'reutrnRejected') { %>
+            <!-- Show Rejected seal -->
+            <span class="rejected-seal">✖ Rejected</span>
+        <% } %>
+    </div>
+</div>
+
+                            <% } %>
+                                <% }); %>
+
+
+                                    <% } %>
+
+                                        <div class="section">
+                                            <h2 class="section-title">Shipping Address</h2>
+                                            <div class="info-grid">
+                                                <div class="info-label">Name:</div>
+                                                <div class="info-value">
+                                                    <%= order?.address?.name %>
+                                                </div>
+                                                <div class="info-label">Address:</div>
+                                                <div class="info-value">
+                                                    <%= order?.address?.street %><br>
+                                                        <%= order?.address?.city %>, <%= order?.address?.state %><br>
+                                                                <%= order?.address?.country %> - <%=
+                                                                        order?.address?.pincode %>
+                                                </div>
+                                                <div class="info-label">Phone:</div>
+                                                <div class="info-value">
+                                                    <%= order?.address?.phone %>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="section">
+                                            <h2 class="section-title">Order Items</h2>
+                                            <table class="items-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Size</th>
+                                                        <th>Quantity</th>
+                                                        <th>Status</th>
+                                                        <th>Price</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% order?.orderedItems?.forEach(element=> { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= element.productName %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.size %>
+                                                            </td>
+                                                            <td>
+                                                                <%= element.quantity %>
+                                                            </td>
+                                                            <td>
+                                                                <% if(element.status==='returnRequested' ){ %>
+                                                                    <span class="status-badge status-return">Return
+                                                                        Requested</span>
+                                                                    <% } else if(element.status==='Completed' ){ %>
+                                                                        <span
+                                                                            class="status-badge status-completed">Completed</span>
+                                                                        <% } else if(element.status==='Cancelled' ){ %>
+                                                                            <span
+                                                                                class="status-badge status-cancelled">Cancelled</span>
+                                                                            <% } else { %>
+                                                                                <span
+                                                                                    class="status-badge status-clarify">
+                                                                                    <%= element.status %>
+                                                                                </span>
+                                                                                <% } %>
+                                                            </td>
+                                                            <td>₹<%= element.price %>
+                                                            </td>
+                                                            <td>₹<%= (element.price * element.quantity).toFixed(2) %>
+                                                            </td>
+                                                        </tr>
+                                                        <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
         </div>
     </div>
     <script>
-        
-        // Example handler for Accept/Reject (replace with your AJAX logic)
-     async function handleReturnAction(itemId,orderId,newStatus) {
-    try {
-        const response = await fetch('/admin/handleReturnReq?_method=PATCH', {
-            method: 'post',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                itemId,
-                orderId,
-                newStatus
-            })
-        })
 
-        const data = await response.json()
-        if (response.ok) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: data.message||'Order status updated successfully.',
-                timer: 1800,
-                showConfirmButton: false
-            }).then(() => {
-                location.reload();
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Failed!',
-                text: data.message||'Failed to update order status.',
-                timer: 2000,
-                showConfirmButton: false
-            });
+        // Example handler for Accept/Reject (replace with your AJAX logic)
+        async function handleReturnAction(itemId, orderId, newStatus) {
+            try {
+                const response = await fetch('/admin/handleReturnReq?_method=PATCH', {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        itemId,
+                        orderId,
+                        newStatus
+                    })
+                })
+
+                const data = await response.json()
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message || 'Order status updated successfully.',
+                        timer: 1800,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed!',
+                        text: data.message || 'Failed to update order status.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
         }
-    } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: 'Something went wrong. Please try again.',
-            timer: 2000,
-            showConfirmButton: false
-        });
-    }
-}
-  </script>
+    </script>
 </body>
 
 </html>

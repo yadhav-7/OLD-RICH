@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verify Password</title>
+      <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
   <style>
     * {
       box-sizing: border-box;
@@ -155,6 +157,16 @@
   </div>
 
   <script>
+    window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      // Hide content instantly
+      document.body.style.display = "none";
+      // Force reload from server
+      window.location.href='/home';
+    }
+  })
+
+  
     function verifyPassword() {
       const password = document.getElementById('passwordInput').value.trim();
       const errorMessage = document.getElementById('errorMessage');

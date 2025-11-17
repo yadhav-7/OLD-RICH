@@ -3,13 +3,15 @@
 <head>
 <style>
 :root {
-  --sidebar-bg: #2c3e50;
-  --text-color: #ecf0f1;
-  --hover-bg: #34495e;
-  --active-bg: #1abc9c;
+  --sidebar-bg: #ffffff;
+  --text-color: #333333;
+  --hover-bg: #fff9e6;
+  --active-bg: #ffc107;
+  --accent-color: #ffc107;
   --transition: all 0.3s ease;
   --sidebar-width: 250px;
   --collapsed-width: 70px;
+  --border-color: #e0e0e0;
 }
 
 .sidebar {
@@ -21,18 +23,19 @@
   left: 0;
   overflow-y: auto;
   padding-top: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid var(--border-color);
   transition: var(--transition);
   z-index: 100;
 }
 
 .sidebar-header {
   padding: 15px 20px;
-  color: white;
+  color: var(--text-color);
   font-size: 1.2rem;
   font-weight: bold;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 15px;
 }
 
@@ -62,16 +65,24 @@
   font-size: 18px;
   min-width: 20px;
   text-align: center;
+  color: var(--accent-color);
 }
 
 .sidebar-nav a:hover {
   background-color: var(--hover-bg);
   padding-left: 25px;
+  color: var(--text-color);
 }
 
 .sidebar-nav a.active {
-  background-color: var(--active-bg);
-  border-left-color: white;
+  background-color: var(--hover-bg);
+  border-left-color: var(--active-bg);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.sidebar-nav a.active i {
+  color: var(--active-bg);
 }
 
 /* Collapsed State */
@@ -103,24 +114,161 @@
     transform: translateX(0);
   }
 }
+
+/* Toggle Button */
+.sidebar-toggle {
+  position: absolute;
+  top: 15px;
+  right: -15px;
+  width: 30px;
+  height: 30px;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: var(--transition);
+  z-index: 101;
+}
+
+.sidebar-toggle:hover {
+  background-color: #e0a800;
+  transform: scale(1.1);
+}
+
+.sidebar.collapsed .sidebar-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Mobile Toggle */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 99;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: block;
+  }
+}
+
+/* Overlay for mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 90;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar.open ~ .sidebar-overlay {
+    display: block;
+  }
+}
 </style>
 </head>
 <body>
-<aside class="sidebar">
-  <div class="sidebar-header">OLD RICH</div>
+<!-- Mobile Toggle Button -->
+<button class="mobile-toggle" id="mobileToggle">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  
+  <div class="sidebar-header">
+    <a href="/admin/dashboard" class="navbar-brand">
+      <i class="fas fa-gem"></i>
+      <span>OLD RICH</span>
+    </a>
+  </div>
+  
   <ul class="sidebar-nav">
-    <li><a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+    <li><a href="/admin/dashboard" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+    <li><a href="/admin/salesReport"><i class="fas fa-chart-line"></i> <span>Sales Report</span></a></li>
     <li><a href="/admin/users"><i class="fas fa-users"></i> <span>Customers</span></a></li>
     <li><a href="/admin/category"><i class="fas fa-folder-open"></i> <span>Category</span></a></li>
     <li><a href="/admin/getAddProduct"><i class="fas fa-plus-circle"></i> <span>Add Product</span></a></li>
     <li><a href="/admin/getAllProducts"><i class="fas fa-boxes"></i> <span>Products</span></a></li>
     <li><a href="/admin/getCouponPage"><i class="fas fa-ticket-alt"></i> <span>Coupon</span></a></li>
-    <li><a href="/admin/banners"><i class="fas fa-image"></i> <span>Banner</span></a></li>
+<li>
+  <a href="javascript:void(0)" style="pointer-events:none; opacity:0.6; cursor:not-allowed;">
+    <i class="fas fa-image"></i> <span>Banner (Coming Soon)</span>
+  </a>
+</li>
     <li><a href="/admin/orderManagement"><i class="fas fa-shopping-cart"></i> <span>Orders</span></a></li>
   </ul>
 </aside>
 
+<!-- Overlay for mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- Font Awesome for icons -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+
+<script>
+// Sidebar toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const mobileToggle = document.getElementById('mobileToggle');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+ const sidebarLink = document.querySelectorAll('.sidebar-nav a');
+
+sidebarLink.forEach(link => {
+  link.addEventListener('click', () => {
+    // Remove 'active' from all links
+    sidebarLinks.forEach(l => l.classList.remove('active'));
+    // Add 'active' to the clicked link
+    link.classList.add('active');
+  });
+});
+
+  // Desktop toggle
+  sidebarToggle.addEventListener('click', function() {
+    sidebar.classList.toggle('collapsed');
+  });
+  
+  // Mobile toggle
+  mobileToggle.addEventListener('click', function() {
+    sidebar.classList.add('open');
+  });
+  
+  // Close sidebar when clicking overlay
+  sidebarOverlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+  });
+  
+  // Close sidebar when clicking on a link (mobile)
+  const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('open');
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>

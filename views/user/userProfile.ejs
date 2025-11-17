@@ -11,8 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> -->
 
 
-
-
+    <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
@@ -317,11 +316,12 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 </head>
 
 <body>
     <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
+ 
         <div class="container py-5">
             <div class="profile-header">
                 <div class="row align-items-center">
@@ -346,7 +346,7 @@
 
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <button class="btn btn-primary me-2 mb-2" data-bs-toggle="modal"
+                        <button class="btn btn-success me-2 mb-2" data-bs-toggle="modal"
                             data-bs-target="#editProfileModal">
                             <i class="fas fa-edit me-1"></i> Edit Profile
                         </button>
@@ -543,7 +543,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-home me-2"></i> Saved Addresses</span>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            <button class="btn btn-success btn-sm " data-bs-toggle="modal"
                                 data-bs-target="#addAddressModal">
                                 <i class="fas fa-plus me-1"></i> Add New Address
                             </button>
@@ -734,24 +734,15 @@
 
                     </div>
 
-                    <!-- PASSWORD AND SECURITY -->
+                  
+
+                </div>
+
+
+                  <!-- PASSWORD AND SECURITY -->
 
                     <div class="tab-pane fade" id="security">
 
-                        <!-- Flash Toast Message -->
-                        <% if (flash) { %>
-                            <script>
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: '<%= flash.type %>', // 'success', 'error', etc.
-                                    title: '<%= flash.message %>',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true
-                                });
-                            </script>
-                            <% } %>
 
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -820,8 +811,6 @@
                                     </div>
                                 </div>
                     </div>
-
-                </div>
             </div>
 
             <!-- Edit Profile Modal -->
@@ -846,6 +835,7 @@
 
 
                                         <button type="button"
+                                        id="openFiles"
                                             class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle">
                                             <i class="fas fa-camera"></i>
                                             <input type="file" id="profilePhotoUpload" accept="image/*" class="d-none">
@@ -1219,8 +1209,7 @@
                 </div>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
             <script>
 
@@ -1644,7 +1633,7 @@
                     }
 
                     // Open file input on camera button click
-                    const cameraBtn = document.querySelector('.btn-success.btn-sm');
+                    const cameraBtn = document.querySelector('#openFiles');
                     if (cameraBtn && fileInput) {
                         cameraBtn.addEventListener('click', () => fileInput.click());
                     }
@@ -1898,8 +1887,8 @@
                                 city: document.getElementById('city').value.trim(),
                                 street: document.getElementById('street').value.trim(),
                                 pincode: document.getElementById('pincode').value.trim()
-                            };
-
+                            }
+                            
                             try {
                                 const response = await fetch('/addAddress', {
                                     method: 'POST',
@@ -1920,9 +1909,10 @@
                                             timer: 1000
                                         });
                                     }
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 1000);
+                                    
+                                    const addModal = bootstrap.Modal.getInstance(document.getElementById('addAddressModal'));
+                                    if (addModal) addModal.hide()
+                                    await reloadAddressSection()
                                 } else {
                                     throw new Error(result.message || 'Failed to add address');
                                 }
@@ -2015,7 +2005,7 @@
                                     }
                                     const editModal = bootstrap.Modal.getInstance(document.getElementById('editAddressModal'));
                                     if (editModal) editModal.hide();
-                                    window.location.reload();
+                                   await reloadAddressSection()
                                 } else {
                                     if (typeof Swal !== 'undefined') {
                                         await Swal.fire('Error!', result.message || 'Failed to update address.', 'error');

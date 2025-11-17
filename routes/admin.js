@@ -7,6 +7,7 @@ let prodouctContoller = require('../controllers/admin/productController')
 const orderController = require('../controllers/admin/orderController')
 const couponManagement = require('../controllers/admin/couponController')
 const dashboardController = require('../controllers/admin/dashboardController')
+const getSalesReport = require('../controllers/admin/salesReport')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 const {upload,profileUpload} = require('../middlewares/multer')
 const { route } = require('./user')
@@ -21,9 +22,6 @@ router.get('/pageError',adminController.pageError)
 
 //DASHBOARD MANAGEMENT
 router.get('/dashboard',adminAuth,dashboardController.loadDashboard)
-router.get('/generate-pdf',adminAuth,dashboardController.salesReport)
-router.get('/salesReportExcel',adminAuth,dashboardController.salesReportExcel)
-
 
 //customer management
 router.get('/users',adminAuth,customerController.costomerInfo)
@@ -45,7 +43,6 @@ router.post('/editCategory/:id',adminAuth,catagoryController.editCategory)
 
 router.get('/getAddProduct',adminAuth,prodouctContoller.getAddProducts)
 router.post('/addProducts',adminAuth,upload.array('images', 5),prodouctContoller.addProducts);
-
 router.get('/getAllProducts',adminAuth,prodouctContoller.getAllProducts)
 router.post('/productVarintsModal',adminAuth,prodouctContoller.productVarintsModal)
 router.post('/addProductOffer',adminAuth,prodouctContoller.addProductOffer)
@@ -76,4 +73,9 @@ router.post('/addCoupon',adminAuth,couponManagement.addCoupons)
 router.get('/listUnlistCoupon',adminAuth,couponManagement.listUnlistCoupon)
 router.delete('/deleteCoupon',adminAuth,couponManagement.deleteCoupon)
 router.patch('/editCoupon',adminAuth,couponManagement.editCoupon)
+
+//SALES REPORT
+router.get('/salesReport',adminAuth,getSalesReport.getSalesReport)
+router.get('/generate-pdf',adminAuth,getSalesReport.salesReport)
+router.get('/salesReportExcel',adminAuth,getSalesReport.salesReportExcel)
 module.exports=router

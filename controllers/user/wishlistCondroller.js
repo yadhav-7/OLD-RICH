@@ -6,11 +6,12 @@ const mongoose = require('mongoose');
 const getWishList = async (req, res) => {
     try {
         const userId = req.session.user
+        if(!userId)return res.redirect('/login')
         const cart = await Cart.findOne({ userId })
         const userData = await User.findById(userId)
 
 
-        const wishList = await Wishlist.findOne({ userId: userId })
+        let wishList = await Wishlist.findOne({ userId: userId })
             .populate({
                 path: 'products.productId',
                 select: 'productName productImage description variants status' // keep it lean
@@ -19,8 +20,11 @@ const getWishList = async (req, res) => {
             if(cart && cart.items){
                 length = cart.items?.length < 1 ? 0 : cart.items?.length
             }
-         
-
+            if(wishList){
+         wishList.products?.sort((a,b)=>b.addedOn-a.addedOn)
+            }else{
+                wishList=[]
+            }
         return res.render('wishlist', { wishList, length, user: userData })
     } catch (error) {
         console.error('error in getWishList', error)
@@ -92,6 +96,9 @@ const removeProduct = async (req, res) => {
     try {
         const productId = req.query.productId
         const userId = req.session.user
+
+        console.log('productId',productId)
+        console.log('typeof productId',typeof productId)
 
         const remove = await Wishlist.updateOne(
             { userId: userId },

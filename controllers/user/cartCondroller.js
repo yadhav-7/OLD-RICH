@@ -16,6 +16,7 @@ const getCart = async (req, res) => {
         }
       });
 
+  
     
     if (!userCart || !Array.isArray(userCart.items) || userCart.items.length === 0) {
       return res.render('cart', {
@@ -26,7 +27,7 @@ const getCart = async (req, res) => {
       });
     }
 
-    
+        userCart.items?.sort((a,b)=>b.addedOn-a.addedOn)
     userCart.total = 0;
     for (let item of userCart.items) {
       const product = item.productId;
@@ -57,7 +58,6 @@ const getCart = async (req, res) => {
 
 const addProductToCart = async (req, res) => {
   try {
-    console.log('yes im reached hear')
     const { productId, selectedSize } = req.query;
     const userId = req.session.user;
 
@@ -95,17 +95,20 @@ const addProductToCart = async (req, res) => {
         item.size === selectedSize
     );
 
-    const requestedQty = existingItem ? existingItem.quantity + 1 : 1;
+    const requestedQty = existingItem ? existingItem.quantity + 1 : 1
 
     if (requestedQty > 5) {
+      console.log('123')
       return res.status(400).json({
         message: 'You can only add up to 5 units of this product',
+        success:false
       });
     }
 
     if (requestedQty > variant.quantity) {
+      console.log('321')
       return res.status(400).json({
-        message: `Only ${variant.quantity} unit(s) left in stock!`,
+        message: `Only ${variant.quantity} unit(${variant.size}) left in stock!`,
       });
     }
 
@@ -120,7 +123,8 @@ const addProductToCart = async (req, res) => {
           size: selectedSize,
           quantity: 1,
           price: variant.salePrice || variant.price,
-          totalPrice: findTotal
+          totalPrice: findTotal,
+          
         }],
         total: 1
       });
@@ -146,7 +150,9 @@ const addProductToCart = async (req, res) => {
     cart.total = findCartTotal
 
 
+    const exists=existingItem?true:false
 
+    console.log('exists',exists)
     const removedWish = await WishList.updateOne(
       { userId },
       { $pull: { products: { productId } } },
@@ -154,13 +160,13 @@ const addProductToCart = async (req, res) => {
     );
 
     if (!removedWish) {
-      return res.status(401).json({ message: 'Product not found in wishlist!' });
+      return res.status(401).json({ message: 'Product not found in wishlist!'});
     }
 
     await cart.save();
 
 
-    return res.status(200).json({ message: 'Added to cart!', cart });
+    return res.status(200).json({ message: 'Added to cart!', cart ,exists,success:true});
   } catch (error) {
     console.error('Cart Error:', error);
     return res.status(500).json({ message: 'Server error' });
