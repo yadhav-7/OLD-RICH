@@ -121,6 +121,10 @@ router.post('/procedToCheckOut',userAuth,checkOutPageController.procedToCheckOut
 router.post('/applyCoupon',userAuth,checkOutPageController.applyCoupon)
 router.post('/create-razorpay-order',userAuth,checkOutPageController.createRazorpayOrder)
 router.post('/verify-razorpay-payment',userAuth,checkOutPageController.verifyRazorpayPayment)
+router.get('/paymentFaildPage',userAuth,checkOutPageController.paymentFaild)
+router.get('/paymentFaildRetry',userAuth,checkOutPageController.paymentFaildRetry)
+router.post('/reCreateRazorpayOrder',userAuth,checkOutPageController.reCreateOrder)
+
 
 //ORDER SUCCESS PAGE
 router.get('/orderSuccess',userAuth,checkOutPageController.orderSuccess)

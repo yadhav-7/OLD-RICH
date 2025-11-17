@@ -47,6 +47,32 @@
             min-height: 100vh;
         }
 
+        
+  #filterButtons .btn {
+    transition: all 0.25s ease-in-out;
+  }
+
+  #filterButtons .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .custom-inputs {
+    transition: opacity 0.3s ease;
+  }
+
+  .custom-inputs input {
+    border-radius: 10px;
+  }
+
+  #applyCustomFilter {
+    transition: all 0.2s ease-in-out;
+    border-radius: 10px;
+  }
+
+  #applyCustomFilter:hover {
+    transform: scale(1.05);
+  }
+
         .logo {
             text-align: center;
             padding: 20px 0;
@@ -391,11 +417,12 @@
             }
         }
     </style>
+     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 </head>
 
 <body>
-    <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+   
 
             <div class="dashboard-container">
                 <!-- Main Content -->
@@ -410,56 +437,35 @@
                         </div>
                     </div>
 
+                    <!-- Filter Reports Section -->
+<div class="text-center my-4">
+  <h5 class="mb-3 fw-bold">Filter Reports</h5>
 
-                    <!-- Filters Section -->
-                    <div class="row g-3 align-items-center">
-                        <!-- Filter Type -->
-                        <div class="col-auto">
-                            <select class="form-select" id="filter">
-                                <option value="day">Day</option>
-                                <option value="month">Month</option>
-                                <option value="year">Year</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </div>
+  <!-- Filter Buttons -->
+  <div id="filterButtons" class="btn-group mb-3" role="group" aria-label="Report Filters">
+    <button type="button" class="btn btn-outline-primary" data-filter="daily">Daily</button>
+    <button type="button" class="btn btn-outline-primary" data-filter="weekly">Weekly</button>
+    <button type="button" class="btn btn-outline-primary" data-filter="monthly">Monthly</button>
+    <button type="button" class="btn btn-outline-primary" data-filter="yearly">Yearly</button>
+    <button type="button" class="btn btn-outline-primary" data-filter="custom">Custom</button>
+  </div>
 
-                        <!-- Day -->
-                        <div class="col-auto">
-                            <input type="date" class="form-control" id="dayFilter">
-                        </div>
-
-                        <!-- Month -->
-                        <div class="col-auto">
-                            <input type="month" class="form-control" id="monthFilter">
-                        </div>
-
-                        <!-- Year -->
-                        <div class="col-auto">
-                            <input type="number" class="form-control" id="yearFilter" placeholder="YYYY" min="1900"
-                                max="2100">
-                        </div>
-
-                        <!-- Custom Range -->
-                        <div class="col-auto d-flex gap-2">
-                            <input type="date" class="form-control" id="customStart">
-                            <span class="align-self-center">to</span>
-                            <input type="date" class="form-control" id="customEnd">
-                        </div>
-
-                        <!-- Apply Button -->
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary">Apply</button>
-                        </div>
-                    </div>
-
-
+  <!-- Custom Date Inputs -->
+  <div id="customDateInputs" class="custom-inputs mt-3" style="display: none;">
+    <div class="d-inline-flex align-items-center gap-2">
+      <input type="date" id="startDate" class="form-control w-auto">
+      <input type="date" id="endDate" class="form-control w-auto">
+      <button id="applyCustomFilter" class="btn btn-success">Apply</button>
+    </div>
+  </div>
+</div>
 
                     <div class="card filters">
                         <h2>Generate Sales Report</h2>
                         <div class="action-buttons">
                             <button id="salesReportPDF" class="btn btn-outline"><i class="fas fa-download"></i> Download
                                 PDF</button>
-                            <button id="salesReportEXCEl" class="btn btn-outline"><i class="fas fa-file-excel"></i>
+                            <button id="salesReportExcel" class="btn btn-outline"><i class="fas fa-file-excel"></i>
                                 Download Excel</button>
                         </div>
                     </div>
@@ -515,7 +521,9 @@
 
                                 <% if (topProducts && topProducts.length> 0) { %>
                                     <canvas id="productsChart"></canvas>
-                                    <% } %>
+                                    <% }else{ %>
+                                        <p>No Data</p>
+                                        <% } %>
 
                             </div>
                         </div>
@@ -549,60 +557,47 @@
                             <canvas id="salesChart"></canvas>
                         </div>
 
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Orders</th>
-                                    <th>Sales Amount</th>
-                                    <th>Discounts</th>
-                                    <th>Coupons</th>
-                                    <th>Net Sales</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Aug 1, 2023</td>
-                                    <td>42</td>
-                                    <td>₹1,15,650</td>
-                                    <td>₹9,300</td>
-                                    <td>8</td>
-                                    <td>₹1,06,350</td>
-                                </tr>
-                                <tr>
-                                    <td>Aug 2, 2023</td>
-                                    <td>38</td>
-                                    <td>₹1,04,025</td>
-                                    <td>₹7,350</td>
-                                    <td>5</td>
-                                    <td>₹96,675</td>
-                                </tr>
-                                <tr>
-                                    <td>Aug 3, 2023</td>
-                                    <td>51</td>
-                                    <td>₹1,59,300</td>
-                                    <td>₹12,525</td>
-                                    <td>12</td>
-                                    <td>₹1,46,775</td>
-                                </tr>
-                                <tr>
-                                    <td>Aug 4, 2023</td>
-                                    <td>47</td>
-                                    <td>₹1,40,700</td>
-                                    <td>₹10,650</td>
-                                    <td>9</td>
-                                    <td>₹1,30,050</td>
-                                </tr>
-                                <tr>
-                                    <td>Aug 5, 2023</td>
-                                    <td>55</td>
-                                    <td>₹1,75,875</td>
-                                    <td>₹15,075</td>
-                                    <td>15</td>
-                                    <td>₹1,60,800</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <% if(dailySales && dailySales.length> 0){ %>
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Orders</th>
+                                        <th>Sales Amount</th>
+                                        <th>Discounts</th>
+                                        <th>Coupons</th>
+
+                                    </tr>
+                                </thead>
+                                <% dailySales.forEach(element=> { %>
+                                    <% if(element.totalOrders>0){ %>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <%= element._id %>
+                                                </td>
+                                                <td>
+                                                    <%= element.totalOrders %>
+                                                </td>
+                                                <td>₹<%= element.totalSales %>
+                                                </td>
+                                                <td>₹<%= element.totalDiscount %>
+                                                </td>
+                                                <td>
+                                                    <%= element.totalCouponCount %>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                        <% } %>
+                                            <% }); %>
+                            </table>
+                            <% }else {%>
+
+                                <p>No Data</p>
+
+                                <% } %>
+
                     </div>
 
                     <!-- Returns & Cancellations Section -->
@@ -686,14 +681,124 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
+
                 // Initialize the sales chart
                 document.addEventListener('DOMContentLoaded', function () {
+
+                  <% if (topProducts && topProducts.length > 0) { %>
+                        console.log('if condition is working for top products');
+                        const productsCtx = document.getElementById('productsChart').getContext('2d');
+
+                        const productsChart = new Chart(productsCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: <%- JSON.stringify(topProducts.map((p) => p.productName)) %>,
+                                datasets: [
+                                    {
+                                        label: 'Units Sold',
+                                        data: <%- JSON.stringify(topProducts.map((p) => p.totalSold)) %>,
+                                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1,
+                                        yAxisID: 'y'
+                                    },
+                                    {
+                                        label: 'Revenue',
+                                        data: <%- JSON.stringify(topProducts.map((p) => p.totalRevenue)) %>,
+                                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                                        borderColor: 'rgba(255, 159, 64, 1)',
+                                        borderWidth: 1,
+                                        yAxisID: 'y1'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Top Selling Products (Units vs Revenue)',
+                                        font: { size: 16 }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: { display: true, text: 'Units Sold' }
+                                    },
+                                    y1: {
+                                        beginAtZero: true,
+                                        position: 'right',
+                                        grid: { drawOnChartArea: false },
+                                        title: { display: true, text: 'Revenue (₹)' }
+                                    }
+                                }
+                            }
+                        });
+<% } else { %>
+                        console.log('No top products found');
+<% } %>
+
+                    // Sales by Category Chart
+                    <% if (topCategory && topCategory.length > 0) { %>
+const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+
+                        const categoriesChart = new Chart(categoriesCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: <%- JSON.stringify(topCategory.map((c) => c.categoryName)) %>,
+                                datasets: [{
+                                    label: 'Total Sold',
+                                    data: <%- JSON.stringify(topCategory.map((c) => c.totalSold)) %>,
+                                    backgroundColor: [
+                                        'rgba(54, 162, 235, 0.7)',
+                                        'rgba(255, 99, 132, 0.7)',
+                                        'rgba(255, 206, 86, 0.7)',
+                                        'rgba(75, 192, 192, 0.7)',
+                                        'rgba(153, 102, 255, 0.7)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Sales Distribution by Category',
+                                        font: { size: 16 }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const index = context.dataIndex;
+                                                const sold = context.raw.toLocaleString('en-IN');
+                                                const revenue = <%- JSON.stringify(topCategory.map((c) => c.totalRevenue)) %> [index].toLocaleString('en-IN');
+                                                return `Sold: ${sold} | Revenue: ₹${revenue}`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                            <% } %>
+
+
 
 
                     // Sales Chart
                       <% if (dailySales && dailySales.length > 0) { %>
-                      const dailySalesData = <% - JSON.stringify(dailySales) %>
-                      const ctx = document.getElementById('salesChart').getContext('2d');
+                      const dailySalesData = <%- JSON.stringify(dailySales) %>;
+                        const ctx = document.getElementById('salesChart').getContext('2d');
 
                         const salesChart = new Chart(ctx, {
                             type: 'line',
@@ -742,157 +847,56 @@
                         });
   <% } %>
 
-                    // Returns Chart
-                    // const returnsCtx = document.getElementById('returnsChart').getContext('2d');
-                    // const returnsChart = new Chart(returnsCtx, {
-                    //     type: 'bar',
-                    //     data: {
-                    //         labels: ['Aug 1', 'Aug 2', 'Aug 3', 'Aug 4', 'Aug 5', 'Aug 6', 'Aug 7'],
-                    //         datasets: [{
-                    //             label: 'Returns',
-                    //             data: [3, 2, 5, 1, 4, 2, 3],
-                    //             backgroundColor: 'rgba(234, 67, 53, 0.7)',
-                    //         }, {
-                    //             label: 'Cancellations',
-                    //             data: [2, 3, 1, 2, 3, 1, 2],
-                    //             backgroundColor: 'rgba(251, 188, 4, 0.7)',
-                    //         }]
-                    //     },
-                    //     options: {
-                    //         responsive: true,
-                    //         maintainAspectRatio: false,
-                    //         plugins: {
-                    //             title: {
-                    //                 display: true,
-                    //                 text: 'Returns & Cancellations (August 2023)',
-                    //                 font: {
-                    //                     size: 16
-                    //                 }
-                    //             },
-                    //             tooltip: {
-                    //                 mode: 'index',
-                    //                 intersect: false
-                    //             }
-                    //         },
-                    //         scales: {
-                    //             y: {
-                    //                 beginAtZero: true,
-                    //                 title: {
-                    //                     display: true,
-                    //                     text: 'Number of Orders'
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // });
+                        // Returns Chart
+                        // const returnsCtx = document.getElementById('returnsChart').getContext('2d');
+                        // const returnsChart = new Chart(returnsCtx, {
+                        //     type: 'bar',
+                        //     data: {
+                        //         labels: ['Aug 1', 'Aug 2', 'Aug 3', 'Aug 4', 'Aug 5', 'Aug 6', 'Aug 7'],
+                        //         datasets: [{
+                        //             label: 'Returns',
+                        //             data: [3, 2, 5, 1, 4, 2, 3],
+                        //             backgroundColor: 'rgba(234, 67, 53, 0.7)',
+                        //         }, {
+                        //             label: 'Cancellations',
+                        //             data: [2, 3, 1, 2, 3, 1, 2],
+                        //             backgroundColor: 'rgba(251, 188, 4, 0.7)',
+                        //         }]
+                        //     },
+                        //     options: {
+                        //         responsive: true,
+                        //         maintainAspectRatio: false,
+                        //         plugins: {
+                        //             title: {
+                        //                 display: true,
+                        //                 text: 'Returns & Cancellations (August 2023)',
+                        //                 font: {
+                        //                     size: 16
+                        //                 }
+                        //             },
+                        //             tooltip: {
+                        //                 mode: 'index',
+                        //                 intersect: false
+                        //             }
+                        //         },
+                        //         scales: {
+                        //             y: {
+                        //                 beginAtZero: true,
+                        //                 title: {
+                        //                     display: true,
+                        //                     text: 'Number of Orders'
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        // });
 
-                   // Top Selling Products Chart
-<% if (topProducts && topProducts.length > 0) { %>
-const productsCtx = document.getElementById('productsChart').getContext('2d');
-
-                        const productsChart = new Chart(productsCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: <% - JSON.stringify(topProducts.map((p) => p.productName)) %>,
-                                datasets: [
-                                    {
-                                        label: 'Units Sold',
-                                        data: <% - JSON.stringify(topProducts.map((p) => p.totalSold)) %>,
-                                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                                        borderColor: 'rgba(54, 162, 235, 1)',
-                                        borderWidth: 1,
-                                        yAxisID: 'y'
-                                    },
-                                    {
-                                        label: 'Revenue',
-                                        data: <% - JSON.stringify(topProducts.map((p) => p.totalRevenue)) %>,
-                                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
-                                        borderColor: 'rgba(255, 159, 64, 1)',
-                                        borderWidth: 1,
-                                        yAxisID: 'y1'
-                                    }
-                                ]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Top Selling Products (Units vs Revenue)',
-                                        font: { size: 16 }
-                                    }
-                                },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        title: { display: true, text: 'Units Sold' }
-                                    },
-                                    y1: {
-                                        beginAtZero: true,
-                                        position: 'right',
-                                        grid: { drawOnChartArea: false },
-                                        title: { display: true, text: 'Revenue (₹)' }
-                                    }
-                                }
-                            }
-                        });
-<% } %>
-
-                    // Sales by Category Chart
-                    <% if (topCategory && topCategory.length > 0) { %>
-const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
-
-                        const categoriesChart = new Chart(categoriesCtx, {
-                            type: 'doughnut',
-                            data: {
-                                labels: <% - JSON.stringify(topCategory.map((c) => c.categoryName)) %>,
-                                datasets: [{
-                                    label: 'Total Sold',
-                                    data: <% - JSON.stringify(topCategory.map((c) => c.totalSold)) %>,
-                                    backgroundColor: [
-                                        'rgba(54, 162, 235, 0.7)',
-                                        'rgba(255, 99, 132, 0.7)',
-                                        'rgba(255, 206, 86, 0.7)',
-                                        'rgba(75, 192, 192, 0.7)',
-                                        'rgba(153, 102, 255, 0.7)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)'
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Sales Distribution by Category',
-                                        font: { size: 16 }
-                                    },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function (context) {
-                                                const index = context.dataIndex;
-                                                const sold = context.raw.toLocaleString('en-IN');
-                                                const revenue = <% - JSON.stringify(topCategory.map((c) => c.totalRevenue)) %> [index].toLocaleString('en-IN');
-                                                return `Sold: ${sold} | Revenue: ₹${revenue}`;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        });
-<% } %>
-
+                        // Top Selling Products Chart
 
                         // Handle report type change
+          
+          
+          
                         document.getElementById('report-type').addEventListener('change', function () {
                             const reportType = this.value;
                             const dateRange = document.querySelector('.date-range');
@@ -935,7 +939,71 @@ const categoriesCtx = document.getElementById('categoriesChart').getContext('2d'
 
                     document.getElementById('start-date').valueAsDate = sevenDaysAgo;
                     document.getElementById('end-date').valueAsDate = today;
+                })
+
+
+  const filterButtons = document.querySelectorAll('#filterButtons button');
+  const customDateInputs = document.getElementById('customDateInputs');
+  const applyButton = document.getElementById('applyCustomFilter');
+let filterDate
+  // Handle filter button clicks
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        filterDate = button.dataset.filter
+        
+      // Remove active class from all
+      filterButtons.forEach(btn => btn.classList.remove('btn-primary', 'text-white'));
+      filterButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+
+      // Activate clicked one
+      button.classList.remove('btn-outline-primary');
+      button.classList.add('btn-primary', 'text-white');
+
+      // Show or hide custom date section
+      if (button.dataset.filter === 'custom') {
+        customDateInputs.style.display = 'block';
+        customDateInputs.style.opacity = 0;
+        setTimeout(() => {
+          customDateInputs.style.opacity = 1;
+          customDateInputs.style.transition = 'opacity 0.3s ease';
+        }, 50);
+      } else {
+        fetchTheFilterData(filterDate)
+        customDateInputs.style.opacity = 0;
+        setTimeout(() => (customDateInputs.style.display = 'none'), 300);
+      }
+    });
+  });
+
+  // Handle Apply Button click (currently just logs)
+  applyButton.addEventListener('click', () => {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    if (!startDate || !endDate) {
+      alert('Please select both start and end dates.');
+      return;
+    }
+    fetchTheFilterData(startDate,endDate)
+
+  })
+
+   function fetchTheFilterData(...date) {
+    window.location.href=`/admin/dashboard?date=${encodeURIComponent(date)}`
+
+  }
+
+
+
+                document.getElementById('salesReportPDF').addEventListener('click', () => {
+                    window.location.href = `/admin/generate-pdf?date=${encodeURIComponent(filterDate)}`
+                })
+
+                  document.getElementById('salesReportExcel').addEventListener('click', () => {
+                    window.location.href = `/admin/salesReportExcel?date=${encodeURIComponent(filterDate)}`
                 });
+
+            
             </script>
 </body>
 

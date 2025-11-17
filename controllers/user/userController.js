@@ -25,6 +25,7 @@ const pageNOTfound = async (req, res) => {
 const loadHomePage = async (req, res) => {
 
   try {
+    console.log('helo')
     const user = req.session.user;
     const userData = await User.findOne({ _id: user })
     if(userData && userData?.refferalCodeApplied==='canUse'&&userData?.refferalCodeApplied!=='used'){
@@ -418,21 +419,21 @@ const loadShopingPage = async (req, res) => {
   }
 }
 
-
-
-
 const sortAndFilter = async (req, res) => {
   try {
     let page = parseInt(req.query.page) || 1;
     const { category, priceFilter, sort } = req.query;
     console.log(req.query);
     const limit = 6;
-    let skip = (page - 1) * limit;
+    let skip = (page - 1) * limit
+    const user = req.session.user
 
-    // Build filter object
+    const wishList = await Wishlist.findOne({userId:user})
+    const wishListArray = wishList?.products??[]
+    
     let filter = {};
 
-    // Handle categories
+    
     if (category) {
       const categoryArray = Array.isArray(category) ? category : [category];
       const validateCategory = categoryArray
@@ -444,7 +445,6 @@ const sortAndFilter = async (req, res) => {
       }
     }
 
-    // Handle price ranges
     if (priceFilter) {
       const ranges = Array.isArray(priceFilter) ? priceFilter : [priceFilter];
       filter.$or = ranges.map(range => {
@@ -453,7 +453,6 @@ const sortAndFilter = async (req, res) => {
       });
     }
 
-    // Build sort object
     let sortOption = {};
 
     if (sort) {
@@ -477,7 +476,7 @@ const sortAndFilter = async (req, res) => {
 
     const categories = await Category.find({});
 
-    // Find products and transform them
+ 
     let products = await Product.find(filter)
       .collation({ locale: 'en', strength: 2 })
       .sort(sortOption)
@@ -538,7 +537,8 @@ const sortAndFilter = async (req, res) => {
       selectedPriceFilters: priceFilter ? (Array.isArray(priceFilter) ? priceFilter : [priceFilter]) : [],
       sortBy: sort || '',
       totalPages: totalPage,
-      currentPage: page
+      currentPage: page,
+      wishListArray
     });
 
   } catch (error) {

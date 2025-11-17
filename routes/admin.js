@@ -9,6 +9,7 @@ const couponManagement = require('../controllers/admin/couponController')
 const dashboardController = require('../controllers/admin/dashboardController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 const {upload,profileUpload} = require('../middlewares/multer')
+const { route } = require('./user')
 //clear flash
 
 
@@ -21,6 +22,7 @@ router.get('/pageError',adminController.pageError)
 //DASHBOARD MANAGEMENT
 router.get('/dashboard',adminAuth,dashboardController.loadDashboard)
 router.get('/generate-pdf',adminAuth,dashboardController.salesReport)
+router.get('/salesReportExcel',adminAuth,dashboardController.salesReportExcel)
 
 
 //customer management
