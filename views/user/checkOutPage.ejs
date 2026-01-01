@@ -741,7 +741,7 @@
                             <div class="coupon-list" id="couponList">
                                 <% coupons.forEach((cpn)=>{%>
                                     <div onclick="setCoupon('<%= cpn.code %>')">
-                                        <%= cpn.name %>
+                                        <%= cpn.code %>
                                     </div>
                                     <% }) %>
                             </div>
@@ -1424,6 +1424,7 @@
 
         // Function to add new address to DOM
         function addAddressToDOM(address) {
+           
             const addressContainer = document.getElementById('addressContainer');
             const addressCard = document.createElement('div');
             addressCard.className = 'address-card';
@@ -1505,6 +1506,10 @@
             };
 
             try {
+
+                 
+
+            
                 const response = await fetch(`/editAddress?addressId=${encodeURIComponent(addAddressId)}`, {
                     method: 'PATCH',
                     headers: {
@@ -1621,7 +1626,7 @@ function updateAddressInDOM(addressId, addressData) {
         console.error('Error updating address in DOM:', error);
     }
 }
-
+zz
 
         // Payment function
         async function proceedToPayment(userId) {
@@ -1735,6 +1740,8 @@ function updateAddressInDOM(addressId, addressData) {
                     .then(res => res.json())
                     .then(order => {
                         if (!order || !order.orderId) {
+                            console.log('order',order)
+                            console.log('order.orderId',order.orderId)
                             let data = { message: 'Failed to initiate razorpay payment' };
                          
                             Toastify({

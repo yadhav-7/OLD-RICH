@@ -9,6 +9,9 @@ const productDetails = async (req, res) => {
         const userData = await User.findOne({ _id: userId });
         const productId = req.query.productId;
         const product = await Product.findById(productId).populate('category');
+        
+        const relatedProducts = await Product.find({category:product.category._id,_id:{$ne:product._id}})
+        console.log('relatedProducts',relatedProducts)
         const priceOftheProduct = req.query.slcPrice
         let cart 
         let length
@@ -46,7 +49,8 @@ const productDetails = async (req, res) => {
             totalOffer: totalOffer,
             category: findCategory,
             selectedVariantIndex: selectedVariantIndex,
-            length:length
+            length:length,
+            relatedProducts
         });
     } catch (error) {
         console.error('Error from productDetails:', error);

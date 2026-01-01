@@ -4,6 +4,8 @@ const Product = require('../../models/productSchema')
 const Cart = require('../../models/cartSchema')
 const Wallet = require('../../models/walletSchema')
 const PDFDocument = require('pdfkit')
+const fs = require("fs");
+
 const mongoose = require('mongoose'); // make sure you imported this
 const orderDetailPage = async (req, res) => {
     try {
@@ -259,6 +261,7 @@ const returnReq = async (req, res) => {
 
 const generateInvoice = async (req, res) => {
     try {
+
         const orderId = req.query.orderId;
 
         const order = await Order.findOne({ orderId })
@@ -277,17 +280,22 @@ const generateInvoice = async (req, res) => {
             `attachment; filename="${invoiceName}"`
         );
 
+        // ✅ Create the PDF first
         const doc = new PDFDocument({ margin: 50 });
+
+        // ✅ Register a font that supports ₹ symbol
+        doc.registerFont("Noto", "fonts/NotoSans-Regular.ttf");
+        doc.font("Noto");
+
+        // Pipe PDF to response
         doc.pipe(res);
 
-        // =========================
-        // HEADER SECTION
-        // =========================
+        // HEADER
         doc
             .fontSize(28)
             .fillColor("#000")
             .text("OLD RICH", { align: "center", underline: true });
-        
+
         doc.moveDown(0.5);
         doc
             .fontSize(14)
@@ -298,18 +306,14 @@ const generateInvoice = async (req, res) => {
         doc.fontSize(22).fillColor("#000").text("INVOICE", { align: "center" });
         doc.moveDown();
 
-        // =========================
-        // ORDER INFORMATION
-        // =========================
+        // ORDER INFO
         doc.fontSize(12).fillColor("#000");
         doc.text(`Invoice Date: ${order.invoiceDate || new Date().toDateString()}`);
         doc.text(`Order ID: ${order.orderId}`);
         doc.text(`Payment Method: ${order.paymentMethod}`);
         doc.moveDown();
 
-        // =========================
-        // CUSTOMER INFORMATION
-        // =========================
+        // CUSTOMER DETAILS
         doc.fontSize(14).text("Customer Details", { underline: true });
         doc.moveDown(0.5);
 
@@ -319,9 +323,7 @@ const generateInvoice = async (req, res) => {
             .text(`Address: ${order.address.street}, ${order.address.city}, ${order.address.state}`)
             .moveDown();
 
-        // =========================
-        // ORDER TABLE HEADER
-        // =========================
+        // TABLE HEADER
         const tableTop = doc.y + 10;
 
         doc.rect(50, tableTop, 500, 30).fill("#f2f2f2").stroke();
@@ -336,27 +338,23 @@ const generateInvoice = async (req, res) => {
         doc.moveDown(2);
 
         let yPos = tableTop + 40;
-        
-        // =========================
-        // ORDER TABLE ROWS
-        // =========================
+
+        // TABLE ROWS
         order.orderedItems.forEach((item) => {
             doc.rect(50, yPos, 500, 30).stroke();
 
             doc.text(item.productName, 60, yPos + 10);
             doc.text(item.size, 220, yPos + 10);
             doc.text(item.quantity.toString(), 300, yPos + 10);
-            doc.text(item.price.toFixed(2), 360, yPos + 10);
-            doc.text(item.finalPrice.toFixed(2), 450, yPos + 10);
+            doc.text(`₹${item.price.toFixed(2)}`, 360, yPos + 10);
+            doc.text(`₹${item.finalPrice.toFixed(2)}`, 450, yPos + 10);
 
             yPos += 30;
         });
 
         doc.moveDown(2);
 
-        // =========================
-        // TOTAL SUMMARY BOX
-        // =========================
+        // SUMMARY BOX
         const summaryTop = yPos + 20;
 
         doc.rect(300, summaryTop, 250, 90).fill("#f2f2f2").stroke();
@@ -370,20 +368,16 @@ const generateInvoice = async (req, res) => {
             summaryTop + 60
         );
 
-        // =========================
         // FOOTER
-        // =========================
         doc.moveDown(4);
         doc.fontSize(11).fillColor("#666").text(
             "Thank you for shopping with OLD RICH.",
             { align: "center" }
         );
-        doc.text(
-            "Luxury Delivered To Your Doorstep.",
-            { align: "center" }
-        );
+        doc.text("Luxury Delivered To Your Doorstep.", { align: "center" });
 
         doc.end();
+
     } catch (err) {
         console.error(err);
         res.status(500).json({
@@ -392,6 +386,9 @@ const generateInvoice = async (req, res) => {
         });
     }
 };
+
+
+
 
 
 module.exports = {

@@ -7,16 +7,15 @@ body {
   color: #333;
 }
 
-/* Container that plays nicely with sidebar + navbar */
-.form-container {
-  margin-left: 240px; /* Adjust to match your sidebar width */
-  margin-top: 80px;   /* Adjust based on your navbar height */
-  padding: 30px;
-  max-width: 800px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e2e2;
+.form-container{
+ margin-left: calc(var(--sidebar-width) + 10px);
+margin-right: 10px;
+margin-top: 50px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed ~ .form-container {
+  margin-left: var(--collapsed-width)
 }
 
 /* Heading */

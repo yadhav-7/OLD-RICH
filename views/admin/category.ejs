@@ -118,7 +118,7 @@
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
                                             <button class="btn btn-sm btn-warning text-white">
-                                                <a href="/admin/getEditCategory?id=<%= category._id %>"
+                                                <a href="/admin/editCategory?id=<%= category._id %>"
                                                     style="color: inherit; text-decoration: none; cursor: pointer;">
                                                     Edit
                                                 </a>
@@ -227,11 +227,12 @@ form.addEventListener('submit', async (e) => {
 
   if (!isValid) return;
 
-  
-  try {
-    const data = { categoryName, categoryDescription };
+try {
+  const data = { categoryName, categoryDescription };
 
-    const response = await apiReq('/admin/addCategory', 'POST', data);
+  const response = await apiReq('/admin/addCategory', 'POST', data);
+
+  if (response.message) {
 
     Swal.fire({
       icon: 'success',
@@ -239,21 +240,37 @@ form.addEventListener('submit', async (e) => {
       text: 'Category added successfully!',
       timer: 1500,
       showConfirmButton: false,
-    })
+    });
 
-    // Optionally reload or update UI
+    // Reload only on success
     setTimeout(() => location.reload(), 1500);
-
-  } catch (error) {
-    console.error(' Error:', error.message);
-
     
+
+
+  } else {
+
     Swal.fire({
       icon: 'error',
-      title: 'Oops!',
-      text: error.message||'something went wrong!',
+      title: 'Error',
+      text: response.error || 'Something went wrong!',
+      showConfirmButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'OK'
     });
+
+    // ❌ NO RELOAD HERE FOR ERRORS
   }
+
+} catch (error) {
+  console.error('Error:', error.message);
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops!',
+    text: error.message || 'Something went wrong!',
+  });
+}
+
 });
 
             // Reset form on modal close
@@ -426,7 +443,7 @@ form.addEventListener('submit', async (e) => {
         <td class="text-center">
           <div class="d-flex justify-content-center gap-2">
             <button class="btn btn-sm btn-warning text-white">
-              <a href="/admin/getEditCategory?id=${item._id}" style="color: inherit; text-decoration: none;">
+              <a href="/admin/editCategory?id=${item._id}" style="color: inherit; text-decoration: none;">
                 Edit
               </a>
             </button>

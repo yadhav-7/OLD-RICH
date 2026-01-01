@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const sharp = require('sharp')
 const { log } = require('console')
+const {uploadToCloudinary} = require('../../config/cloudinary')
 
 const getAddProducts = async (req, res) => {
     try {
@@ -97,38 +98,34 @@ const addProducts = async (req, res) => {
                 $regex: new RegExp(`^${products.productName}$`, 'i')
             }
         });
+
+        let imageUrls = [];
+
+   
+
         if (!productExist) {
-            const images = []
-            if (req.files && req.files.length > 0) {
-                console.log(3);
-                for (let i = 0; i < req.files.length; i++) {
-                    const originalImagePath = req.files[i].path;
-                    const ext = path.extname(req.files[i].originalname);
-                    const baseName = path.basename(req.files[i].originalname, ext);
-                 
-                    const resizedFileName = Date.now() + '-' + baseName + '-resized' + ext;
-                    const resizedImagePath = path.join('public', 'uploads', 'product-images', resizedFileName);
-
-                    fs.mkdirSync(path.join('public', 'uploads', 'product-images'), { recursive: true });
+         
 
 
-                    await sharp(originalImagePath)
-                        .resize({ width: 440, height: 440 })
-                        .toFile(resizedImagePath);
+         let images = [];
 
+for (const file of req.files) {
+ 
+  const resizedBuffer = await sharp(file.buffer)
+    .resize(440, 440)
+    .toBuffer();
 
-                    images.push(path.join('product-images', resizedFileName));
+  const url = await uploadToCloudinary(resizedBuffer, "products");
 
-                }
-            }
-
+  images.push(url);
+}
 
 
             const categoryId = await Category.findOne({ name: products.category })
 
             if (!categoryId) {
                 console.warn(categoryId)
-                return res.status(400).json({ error: 'Invalid category name' })
+                return res.status(400).json({ error: 'category name is required' })
             }
 
             const newProduct = new Product({
@@ -409,38 +406,33 @@ const editProduct = async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
 
-        // Handle new uploaded images
-        const newImages = [];
-        if (req.files && req.files.length > 0) {
-            console.log('New files uploaded:', req.files.length);
-            for (let i = 0; i < req.files.length; i++) {
-                newImages.push(req.files[i].filename);
-            }
-        }
+        let newImages = []
+        for (const file of req.files) {
+ 
+  const resizedBuffer = await sharp(file.buffer)
+    .resize(440, 440)
+    .toBuffer();
 
+  const url = await uploadToCloudinary(resizedBuffer, "products");
+
+  newImages.push(url);
+}
         // Handle existing images
         let finalImages = [];
 
         if (existingImages && existingImages.trim() !== '') {
-            // Split existing images and filter out empty strings
+           
             finalImages = existingImages.split(',').filter(img => img.trim() !== '');
             console.log('Existing images from form:', finalImages);
         } else if (newImages.length === 0) {
-            // If no existing images data sent and no new images, keep current images
+       
             finalImages = currentProduct.productImage || [];
-            console.log('No image changes, keeping current images:', finalImages);
         }
 
-        // Add new images to the final array
         if (newImages.length > 0) {
             finalImages = [...finalImages, ...newImages];
-            console.log('Final images with new additions:', finalImages);
         }
-
-
-        console.log('variants =================>', variants)
-
-        // Prepare update fields
+     
         const updateFields = {
             productName,
             description,
@@ -449,8 +441,6 @@ const editProduct = async (req, res) => {
             productImage: finalImages
         };
 
-
-        // Handle variants if they exist
 
 
         if (variants && Array.isArray(variants)) {
@@ -473,19 +463,17 @@ const editProduct = async (req, res) => {
             return curr.quantity + acc
         }, 0)
 
-        console.log('productStatus', productStatus)
-
         if (productStatus === 0) {
             updateFields.status = 'out of stock'
         }else if (productStatus>0){
             updateFields.status='Available'
         }
 
-        console.log('Update fields:', updateFields);
+        
 
         await Product.findByIdAndUpdate(id, updateFields, { new: true });
 
-       return res.redirect('/admin/getAllProducts');
+       return res.redirect('/admin/allProducts');
     } catch (error) {
         console.error('error from editProduct', error);
         res.redirect('/admin/pageError');

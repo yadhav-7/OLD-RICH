@@ -7,9 +7,9 @@
   <title>Admin Products</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+  <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
 
- <style>
+  <style>
     :root {
       --primary-color: #ffc107;
       --primary-light: #fff9e6;
@@ -32,19 +32,21 @@
       --radius-sm: 4px;
       --radius-md: 8px;
       --radius-lg: 12px;
+      --sidebar-width: 250px;
+      --collapsed-width: 70px;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
       background-color: #f5f7fa;
       color: #333;
       min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
     .admin-wrapper {
@@ -54,10 +56,40 @@
 
     .main-content {
       flex: 1;
-      padding: 80px 30px;
-      margin-left: 250px;
-      transition: all 0.3s;
-      overflow-x: hidden;
+      padding: 20px;
+      margin-left: var(--sidebar-width);
+      margin-top: 60px;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar.collapsed ~ .main-content {
+      margin-left: var(--collapsed-width);
+    }
+
+    .add-btn {
+      background: #fbc02d;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      font-weight: 600;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s ease;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .add-btn:hover {
+      background: #ffca2c;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(251, 192, 45, 0.4);
+    }
+
+    .add-btn:active {
+      transform: scale(0.97);
     }
 
     .header {
@@ -332,12 +364,13 @@
       z-index: 1050;
       justify-content: center;
       align-items: center;
+      padding: 15px;
     }
 
     .variant-modal-content {
       background-color: white;
       border-radius: var(--radius-md);
-      width: 90%;
+      width: 100%;
       max-width: 900px;
       max-height: 80vh;
       overflow: hidden;
@@ -399,6 +432,7 @@
     .variant-table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 500px;
     }
 
     .variant-table th {
@@ -519,11 +553,18 @@
       }
     }
 
+    /* Mobile-first responsive styles */
+    @media (max-width: 1200px) {
+      .main-content {
+        margin-left: var(--collapsed-width);
+      }
+    }
+
     @media (max-width: 992px) {
       .main-content {
         margin-left: 0;
         width: 100%;
-        padding: 20px 15px;
+        padding: 15px;
         padding-top: 70px;
       }
 
@@ -534,6 +575,10 @@
 
       .search-container {
         max-width: 100%;
+      }
+
+      .header-title {
+        font-size: 1.3rem;
       }
     }
 
@@ -555,15 +600,39 @@
       .products-table td {
         padding: 10px 12px;
       }
+
+      .variant-modal-header {
+        padding: 12px 20px;
+      }
+
+      .variant-modal-body {
+        padding: 15px 20px;
+      }
+
+      .variant-table th,
+      .variant-table td {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
     }
 
     @media (max-width: 576px) {
       .main-content {
-        padding: 15px;
+        padding: 10px;
+        padding-top: 60px;
       }
 
       .header-title {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+      }
+
+      .header-title i {
+        padding: 8px;
+        margin-right: 8px;
+      }
+
+      .search-input-group {
+        min-width: 100%;
       }
 
       .action-btn span {
@@ -576,8 +645,173 @@
 
       .variant-table th,
       .variant-table td {
+        padding: 8px 8px;
+        font-size: 0.8rem;
+      }
+
+      .variant-modal-title {
+        font-size: 1.1rem;
+      }
+
+      .page-link {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+      }
+
+      .empty-state i {
+        font-size: 2.5rem;
+      }
+
+      .empty-state p {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-table th,
+      .products-table td {
         padding: 8px 10px;
         font-size: 0.85rem;
+      }
+
+      .status-badge, .offer-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+      }
+
+      .action-btn {
+        padding: 5px 8px;
+      }
+
+      .add-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+
+      .variant-modal-content {
+        width: 100%;
+        margin: 10px;
+      }
+
+      .variant-table-container {
+        max-height: 50vh;
+      }
+    }
+
+    /* Card layout for mobile */
+    .products-card-container {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    .product-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .product-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark-color);
+    }
+
+    .product-category {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .product-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .product-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .detail-value {
+      font-weight: 500;
+    }
+
+    .product-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .card-action-btn {
+      padding: 6px 10px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+      flex: 1;
+      justify-content: center;
+      min-width: 120px;
+    }
+
+    @media (max-width: 768px) {
+      .products-table-container {
+        display: none;
+      }
+
+      .products-card-container {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-card-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .product-details {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .product-detail-item {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .product-actions {
+        flex-direction: column;
+      }
+
+      .card-action-btn {
+        min-width: 100%;
       }
     }
   </style>
@@ -588,8 +822,6 @@
   <div class="admin-wrapper">
     <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
       <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-
-
 
         <div class="main-content">
           <div class="header">
@@ -606,6 +838,12 @@
                 </div>
               </div>
             </div>
+
+            <div class="text-end mb-3">
+              <button id="addNewProduct" class="add-btn">
+                <i class="fas fa-plus-circle"></i> Add New Product
+              </button>
+            </div>
           </div>
 
           <div class="loading-spinner" id="loadingSpinner">
@@ -613,9 +851,8 @@
             <p>Loading products...</p>
           </div>
 
+          <!-- Table view for larger screens -->
           <div class="products-table-container" id="productsTableContainer">
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
             <% if(data && data.length> 0) { %>
               <table class="products-table">
                 <thead>
@@ -684,7 +921,7 @@
                             </button>
                           <% } %>
 
-                          <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
+                          <a href="/admin/editProduct?id=<%= data[i]._id %>" class="action-btn edit">
                             <i class="fas fa-edit"></i>
                             <span>Edit</span>
                           </a>
@@ -707,10 +944,97 @@
             <% } %>
           </div>
 
+          <!-- Card view for mobile screens -->
+          <div class="products-card-container" id="productsCardContainer">
+            <% if(data && data.length> 0) { %>
+              <% for(let i=0; i < data.length; i++) { %>
+                <div class="product-card">
+                  <div class="product-card-header">
+                    <div class="product-name">
+                      <%= data[i].productName %>
+                    </div>
+                    <div>
+                      <% if(data[i].isBlocked) { %>
+                        <span class="status-badge status-blocked" id="status-card-<%= data[i]._id %>">Blocked</span>
+                      <% } else { %>
+                        <span class="status-badge status-active" id="status-card-<%= data[i]._id %>">Active</span>
+                      <% } %>
+                    </div>
+                  </div>
+                  <div class="product-category">
+                    <%= data[i].category.name %>
+                  </div>
+                  <div class="product-details">
+                    <div class="product-detail-item">
+                      <span class="detail-label">Offer</span>
+                      <span class="detail-value">
+                        <% if(data[i].productOffer> 0) { %>
+                          <span class="offer-badge">
+                            <%= data[i].productOffer %>% OFF
+                          </span>
+                        <% } else { %>
+                          <span>-</span>
+                        <% } %>
+                      </span>
+                    </div>
+                    <div class="product-detail-item">
+                      <span class="detail-label">Stock</span>
+                      <span class="detail-value">
+                        <%= data[i].totalQuantity %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="product-actions">
+                    <% if(data[i].productOffer < 1) { %>
+                      <button class="card-action-btn add-offer" onclick="addOffer('<%= data[i]._id %>')">
+                        <i class="fas fa-tag"></i>
+                        <span>Add Offer</span>
+                      </button>
+                    <% } else { %>
+                      <button class="card-action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
+                        <i class="fas fa-tag"></i>
+                        <span>Remove Offer</span>
+                      </button>
+                    <% } %>
+
+                    <% if(data[i].isBlocked) { %>
+                      <button class="card-action-btn unblock" id="btn-card-<%= data[i]._id %>"
+                        onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                        <i class="fas fa-unlock"></i>
+                        <span>Unblock</span>
+                      </button>
+                    <% } else { %>
+                      <button class="card-action-btn block" id="btn-card-<%= data[i]._id %>"
+                        onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                        <i class="fas fa-ban"></i>
+                        <span>Block</span>
+                      </button>
+                    <% } %>
+
+                    <a href="/admin/editProduct?id=<%= data[i]._id %>" class="card-action-btn edit">
+                      <i class="fas fa-edit"></i>
+                      <span>Edit</span>
+                    </a>
+                    <button class="card-action-btn view-variants"
+                      onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                      <i class="fas fa-boxes"></i>
+                      <span>Variants</span>
+                    </button>
+                  </div>
+                </div>
+              <% } %>
+            <% } else { %>
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>No products found</p>
+              </div>
+            <% } %>
+          </div>
+
           <% if(data && data.length> 0) { %>
             <div class="pagination-container">
               <% if(currentPage> 1) { %>
-                <a href="/admin/getAllProducts?page=<%= currentPage - 1 %>" class="page-link">
+                <a href="/admin/allProducts?page=<%= currentPage - 1 %>" class="page-link">
                   <i class="fas fa-chevron-left"></i>
                 </a>
               <% } %>
@@ -718,7 +1042,7 @@
                 <%= currentPage %>
               </a>
               <% if(currentPage < totalPages) { %>
-                <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
+                <a href="/admin/allProducts?page=<%= currentPage + 1 %>" class="page-link">
                   <i class="fas fa-chevron-right"></i>
                 </a>
               <% } %>
@@ -752,32 +1076,44 @@
   </div>
 
   <!-- Toastify CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-<!-- Toastify JS -->
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <!-- Toastify JS -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <script>
-      const successMsg = localStorage.getItem('success');
-  if (successMsg) {
-    Toastify({
-      text: successMsg,
-      duration: 3000,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
-    }).showToast();
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) {
+        document.body.style.display = "none";
+        window.location.reload();
+      }
+    });
 
-    setTimeout(() => {
+    const successMsg = localStorage.getItem('success');
+    if (successMsg) {
+      Toastify({
+        text: successMsg,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+      }).showToast();
+
+      setTimeout(() => {
         localStorage.removeItem('success');
       }, 1000);
     }
-  
+
+    const addNewProduct = document.getElementById('addNewProduct');
+    addNewProduct.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = '/admin/addProduct';
+    });
+
     // DOM Elements
     const searchInput = document.getElementById('search-input');
     const clearBtn = document.getElementById('clear-button');
     const productsTableBody = document.getElementById('productsTableBody');
+    const productsCardContainer = document.getElementById('productsCardContainer');
 
     // Show variant modal
     async function showVariantModal(productId, productName) {
@@ -958,20 +1294,44 @@
           const result = await response.json();
 
           if (response.ok) {
+            // Update table view
             const btn = document.querySelector(`#btn-${productId}`);
-            btn.classList.remove('block');
-            btn.classList.add('unblock');
-            btn.innerHTML = `
-              <i class="fas fa-unlock"></i>
-              <span>Unblock</span>
-            `;
-            btn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
+            if (btn) {
+              btn.classList.remove('block');
+              btn.classList.add('unblock');
+              btn.innerHTML = `
+                <i class="fas fa-unlock"></i>
+                <span>Unblock</span>
+              `;
+              btn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
+            }
 
+            // Update card view
+            const cardBtn = document.querySelector(`#btn-card-${productId}`);
+            if (cardBtn) {
+              cardBtn.classList.remove('block');
+              cardBtn.classList.add('unblock');
+              cardBtn.innerHTML = `
+                <i class="fas fa-unlock"></i>
+                <span>Unblock</span>
+              `;
+              cardBtn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
+            }
+
+            // Update status in table view
             const status = document.querySelector(`#status-${productId}`);
             if (status) {
               status.classList.remove('status-active');
               status.classList.add('status-blocked');
               status.textContent = 'Blocked';
+            }
+
+            // Update status in card view
+            const cardStatus = document.querySelector(`#status-card-${productId}`);
+            if (cardStatus) {
+              cardStatus.classList.remove('status-active');
+              cardStatus.classList.add('status-blocked');
+              cardStatus.textContent = 'Blocked';
             }
 
             await Swal.fire({
@@ -1017,20 +1377,44 @@
           const result = await response.json();
 
           if (response.ok) {
+            // Update table view
             const btn = document.querySelector(`#btn-${productId}`);
-            btn.classList.remove('unblock');
-            btn.classList.add('block');
-            btn.innerHTML = `
-              <i class="fas fa-ban"></i>
-              <span>Block</span>
-            `;
-            btn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
+            if (btn) {
+              btn.classList.remove('unblock');
+              btn.classList.add('block');
+              btn.innerHTML = `
+                <i class="fas fa-ban"></i>
+                <span>Block</span>
+              `;
+              btn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
+            }
 
+            // Update card view
+            const cardBtn = document.querySelector(`#btn-card-${productId}`);
+            if (cardBtn) {
+              cardBtn.classList.remove('unblock');
+              cardBtn.classList.add('block');
+              cardBtn.innerHTML = `
+                <i class="fas fa-ban"></i>
+                <span>Block</span>
+              `;
+              cardBtn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
+            }
+
+            // Update status in table view
             const status = document.querySelector(`#status-${productId}`);
             if (status) {
               status.classList.remove('status-blocked');
               status.classList.add('status-active');
               status.textContent = 'Active';
+            }
+
+            // Update status in card view
+            const cardStatus = document.querySelector(`#status-card-${productId}`);
+            if (cardStatus) {
+              cardStatus.classList.remove('status-blocked');
+              cardStatus.classList.add('status-active');
+              cardStatus.textContent = 'Active';
             }
 
             await Swal.fire({
@@ -1054,7 +1438,7 @@
     }
 
     async function searchAndrender(search) {
-      const response = await fetch(`/admin/getAllProducts?search=${encodeURIComponent(search)}`, {
+      const response = await fetch(`/admin/allProducts?search=${encodeURIComponent(search)}`, {
         headers: {
           'Accept': 'application/json'
         }
@@ -1072,6 +1456,7 @@
 
       if (response.ok) {
         if (product.length > 0) {
+          // Update table view
           productsTableBody.innerHTML = ''
           for (let i = 0; i < product.length; i++) {
             productsTableBody.innerHTML += `
@@ -1111,7 +1496,7 @@
                         </button>`
                     }
 
-                    <a href="/admin/getEditProduct?id=${product[i]._id}" class="action-btn edit">
+                    <a href="/admin/editProduct?id=${product[i]._id}" class="action-btn edit">
                       <i class="fas fa-edit"></i><span>Edit</span>
                     </a>
 
@@ -1123,6 +1508,67 @@
               </tr>
             `;
           }
+
+          // Update card view
+          productsCardContainer.innerHTML = '';
+          for (let i = 0; i < product.length; i++) {
+            productsCardContainer.innerHTML += `
+              <div class="product-card">
+                <div class="product-card-header">
+                  <div class="product-name">${product[i].productName}</div>
+                  <div>
+                    ${product[i].isBlocked
+                      ? '<span class="status-badge status-blocked">Blocked</span>'
+                      : '<span class="status-badge status-active">Active</span>'
+                    }
+                  </div>
+                </div>
+                <div class="product-category">${product[i].category.name}</div>
+                <div class="product-details">
+                  <div class="product-detail-item">
+                    <span class="detail-label">Offer</span>
+                    <span class="detail-value">
+                      ${product[i].productOffer > 0
+                        ? `<span class="offer-badge">${product[i].productOffer}% OFF</span>`
+                        : '<span>-</span>'
+                      }
+                    </span>
+                  </div>
+                  <div class="product-detail-item">
+                    <span class="detail-label">Stock</span>
+                    <span class="detail-value">${product[i].totalQuantity||0}</span>
+                  </div>
+                </div>
+                <div class="product-actions">
+                  ${product[i].productOffer < 1
+                    ? `<button class="card-action-btn add-offer" onclick="addOffer('${product[i]._id}')">
+                        <i class="fas fa-tag"></i><span>Add Offer</span>
+                      </button>`
+                    : `<button class="card-action-btn remove-offer" onclick="removeOffer('${product[i]._id}')">
+                        <i class="fas fa-tag"></i><span>Remove Offer</span>
+                      </button>`
+                  }
+
+                  ${product[i].isBlocked
+                    ? `<button class="card-action-btn unblock" onclick="unblockProduct('${product[i]._id}', '${product[i].productName}')">
+                        <i class="fas fa-unlock"></i><span>Unblock</span>
+                      </button>`
+                    : `<button class="card-action-btn block" onclick="blockProduct('${product[i]._id}', '${product[i].productName}')">
+                        <i class="fas fa-ban"></i><span>Block</span>
+                      </button>`
+                  }
+
+                  <a href="/admin/editProduct?id=${product[i]._id}" class="card-action-btn edit">
+                    <i class="fas fa-edit"></i><span>Edit</span>
+                  </a>
+
+                  <button class="card-action-btn view-variants" onclick="showVariantModal('${product[i]._id}', '${product[i].productName}')">
+                    <i class="fas fa-boxes"></i><span>Variants</span>
+                  </button>
+                </div>
+              </div>
+            `;
+          }
         } else {
           productsTableBody.innerHTML = `
             <tr>
@@ -1131,6 +1577,12 @@
                 No products found.
               </td>
             </tr>
+          `;
+          productsCardContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-box-open"></i>
+              <p>No products found</p>
+            </div>
           `;
         }
       } else {

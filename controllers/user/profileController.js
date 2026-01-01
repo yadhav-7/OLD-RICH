@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
 const session = require('express-session')
 const { findById } = require('../../models/productSchema')
-
+const {profileUpload} = require('../../config/cloudinary')
 async function securePass(pass) {
     try {
         const hashedPassword = await bcrypt.hash(pass, 10);
@@ -301,7 +301,6 @@ const skip = (page - 1) * limit
             }
         }
 
-
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
             return res.status(200).json({ order: order, totalPage: totalPage, currentPage: page })
         }
@@ -349,6 +348,7 @@ const getPassCheckforEmailchange = async (req, res) => {
 
 const passCheckforEmailchange = async (req, res) => {
     try {
+        
         const enteredPass = req.body.password
 
         const userId = req.session.user
@@ -564,7 +564,7 @@ const changePassword = async (req, res) => {
 
 
         if (!user) {
-            return res.redirect('/home')
+            return res.redirect('/')
         }
         res.render('changePassword', {
             message: null
@@ -582,7 +582,7 @@ const updatePassword = async (req, res) => {
         const userData = await User.findById(user)
 
 
-        if (!user) return res.redirect('/home')
+        if (!user) return res.redirect('/')
 
 
         const { currentPassword, newPassword, confirmPassword } = req.body
@@ -608,10 +608,7 @@ const updatePassword = async (req, res) => {
             user,
             { password: hashedPass }
         )
-        // res.render('userProfile',{
-        //     user:userData,
-        //     addressData:addressData
-        // })
+       
         res.redirect('/userProfile')
 
     } catch (error) {
@@ -627,6 +624,7 @@ const path = require('path');
 const editProfile = async (req, res) => {
 
     try {
+        let url
         const user = req.session.user
         if (!user) return res.status(500).json({ message: 'Somethig went wrong please try again leter' })
         const { username, phone, profileDeleteReq } = req.body;
@@ -634,37 +632,41 @@ const editProfile = async (req, res) => {
         let profileImagePath;
 
         if (req.file) {
-            const croppedPath = path.join('public/Uploads/profile', 'cropped-' + req.file.filename);
-            await sharp(req.file.path)
-                .resize(160, 160)
-                .toFile(croppedPath);
+            // const croppedPath = path.join('public/Uploads/profile', 'cropped-' + req.file.filename);
+            // await sharp(req.file.path)
+            //     .resize(160, 160)
+            //     .toFile(croppedPath);
 
-            fs.unlinkSync(req.file.path); // Clean up the original
+            // fs.unlinkSync(req.file.path); // Clean up the original
 
-            console.log(req.file.path, 'req.file.path===============>\\')
-            console.log(path.basename(croppedPath), ' path.basename(croppedPath)======================>')
-            profileImagePath = '/Uploads/profile/' + path.basename(croppedPath);
+            // console.log(req.file.path, 'req.file.path===============>\\')
+            // console.log(path.basename(croppedPath), ' path.basename(croppedPath)======================>')
+            // profileImagePath = '/Uploads/profile/' + path.basename(croppedPath);
+
+
+             url = await profileUpload(req.file, "products");
+             console.log('req.file',req.file)
         }
         const currentImage = await User.findById(user);
 
-        if (currentImage.userProfileImage && profileDeleteReq) {
-            const imagePath = path.join(__dirname, '..', 'public', currentImage.userProfileImage);
+        // if (currentImage.userProfileImage && profileDeleteReq) {
+        //     const imagePath = path.join(__dirname, '..', 'public', currentImage.userProfileImage);
 
-            // Try removing file safely
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
-            }
+        //     // Try removing file safely
+        //     if (fs.existsSync(imagePath)) {
+        //         fs.unlinkSync(imagePath);
+        //     }
 
-            // Remove image path from DB
-            currentImage.userProfileImage = undefined; // or null
-            await currentImage.save(); // Save updated document
-        }
+        //     // Remove image path from DB
+        //     currentImage.userProfileImage = undefined; // or null
+        //     await currentImage.save(); // Save updated document
+        // }
 
 
 
 
         const updateData = { username, phone };
-        if (profileImagePath) updateData.userProfileImage = profileImagePath;
+        if (url) updateData.userProfileImage = url;
 
         const updatedUser = await User.findOneAndUpdate(
             { _id: user },

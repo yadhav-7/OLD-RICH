@@ -59,6 +59,17 @@
             line-height: 1.45;
         }
 
+
+          .main {
+ margin-left: var(--sidebar-width);
+margin-right: 10px;
+margin-top: 50px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed ~ .main {
+  margin-left: var(--collapsed-width)
+}
         .pagination {
             display: flex;
             align-items: center;
@@ -130,14 +141,7 @@
             opacity: .95;
         }
 
-        /* Main section */
-        .main {
-            max-width: 1089px;
-            margin: 20px auto;
-            padding: 48px 0px;
-            margin-left: 15rem;
-        }
-
+       
         .card {
             background: var(--white);
             border: 1px solid var(--border);
@@ -1357,7 +1361,7 @@
                 let page = btn === 'next' ? currentPage + 1 : currentPage - 1;
                 let query = document.getElementById('searchInput').value
 
-                const response = await fetch(`/admin/getCouponPage?page=${encodeURIComponent(page)}&search=${encodeURIComponent(query)}`, {
+                const response = await fetch(`/admin/couponPage?page=${encodeURIComponent(page)}&search=${encodeURIComponent(query)}`, {
                     headers: { "Accept": "application/json" }
                 });
 
@@ -1444,7 +1448,7 @@
                 const searchValue = searchInput.value.trim()
                 const currentPage = currentPageElement.textContent.trim()
 
-                const response = await fetch(`/admin/getCouponPage?search=${encodeURIComponent(searchValue)}&page=${encodeURIComponent(currentPage)}`, {
+                const response = await fetch(`/admin/couponPage?search=${encodeURIComponent(searchValue)}&page=${encodeURIComponent(currentPage)}`, {
                     headers: { 'Accept': 'application/json' }
                 });
 
@@ -1546,7 +1550,7 @@
                 searchInput.value = ''
                 const currentPage = currentPageElement.textContent.trim()
 
-                const response = await fetch(`/admin/getCouponPage?search=${encodeURIComponent(searchValue)}&page=${encodeURIComponent(currentPage)}`, {
+                const response = await fetch(`/admin/couponPage?search=${encodeURIComponent(searchValue)}&page=${encodeURIComponent(currentPage)}`, {
                     headers: { 'Accept': 'application/json' }
                 });
 

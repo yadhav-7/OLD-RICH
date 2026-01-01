@@ -7,13 +7,14 @@ require('dotenv').config();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: '/auth/google/callback',
+    // callbackURL: '/auth/google/callback',
+    callbackURL: 'http://oldrich.shop/auth/google/callback',
     passReqToCallback: true   //  This makes `req` available in callback
 },
     async (req, accessToken, refreshToken, profile, done) => {
         try {
             const email = profile.emails?.[0]?.value;
-            console.warn('email-------', email)
+           
             let user = await User.findOne({ googleId: profile.id, email: email });
 
 
@@ -81,7 +82,7 @@ passport.use(new GoogleStrategy({
         }
     }));
 
-// serialize is for assigning user details to session
+
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });

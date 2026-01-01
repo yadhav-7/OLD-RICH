@@ -8,7 +8,7 @@ const refferalCodeEnterPage = async (req, res) => {
 
     const userId = req.session.user
     const user = await User.findOne({ _id: userId })
-    if (user.refferalCodeApplied === 'notUsed' || user.refferalCodeApplied === 'used') return res.redirect('/home')
+    if (user.refferalCodeApplied === 'notUsed' || user.refferalCodeApplied === 'used') return res.redirect('/')
     res.render('refferalCodeEnterPage')
   } catch (error) {
     console.error('error in refferalCodeEnterPage', error)
@@ -73,7 +73,7 @@ const skipRefferal = async (req, res) => {
     const user = await User.findOne({ _id: userId })
     user.refferalCodeApplied = 'notUsed'
     await user.save()
-    return res.redirect('/home')
+    return res.redirect('/')
   } catch (error) {
     console.error('error in skipRefferal', error)
     return res.redirect('/pageNotFound')

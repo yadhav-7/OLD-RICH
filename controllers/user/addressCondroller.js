@@ -67,11 +67,13 @@ const addAddress = async (req, res) => {
             { userId: user },
             { $push: { address: newAddress } },
             { new: true, upsert: true }
-        );
+        )
+
+        let length = updatedUser?.address.length
 
         return res.status(201).json({
             message: 'Address added successfully',
-            address: newAddress
+            address: updatedUser.address[length-1]
         });
 
     } catch (error) {
@@ -137,6 +139,7 @@ const editAddress = async (req, res) => {
         
         const addressId = req.query.addressId;
       
+        console.log('addressId',addressId)
         const userId = req.session.user;
 
         if (!addressId || !userId) {
@@ -180,9 +183,15 @@ const editAddress = async (req, res) => {
 
          let updatedDoc 
 
+        
         for(let i of updated.address){
-            if(addressId===i._id)updatedDoc=i
+           
+            if(addressId===i._id.toString()){
+                updatedDoc=i
+            
+            }
         }
+
        
         console.log('updated',updatedDoc)
 
@@ -190,7 +199,7 @@ const editAddress = async (req, res) => {
             return res.status(404).json({ error: 'Address not found or not yours' });
         }
 
-        return res.status(200).json({ message: 'Address updated successfully', data: [updatedDoc] });
+        return res.status(200).json({ message: 'Address updated successfully', data: updatedDoc });
 
     } catch (error) {
         console.error("Update error:", error.message);

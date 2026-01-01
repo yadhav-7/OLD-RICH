@@ -1,113 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
 
-<link rel="stylesheet" href="/admin/editCategory.css">
+        .form-container {
+            margin-left: calc(var(--sidebar-width) + 10px);
+            margin-right: 10px;
+            margin-top: 50px;
+            transition: all 0.3s ease;
+        }
 
-<%- include('../../views/partials/admin/adminHeaders', { title: 'adminHeader-page' }) %>
-<%- include('../../views/partials/admin/adminSidebar', { title: 'adminSidebar-page' }) %>
+        .sidebar.collapsed ~ .form-container {
+            margin-left: var(--collapsed-width);
+        }
 
-<div class="form-container">
-    <h2>Edit Category</h2>
-    <form id="editForm" data-id="<%= category._id %>" novalidate>
-        <label for="name">Category Name</label>
-        <input type="text" id="name" data-name="<%= category.name %>" name="name" aria-label="Category Name" value="<%= category.name %>">
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
 
-        <label for="description">Description</label>
-        <textarea id="description" data-description="<%= category.description %>" name="description" aria-label="Description" rows="4" required><%= category.description %></textarea>
+        .form-container h2 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
 
-        <div class="button-group">
-            <button type="submit">Save Changes</button>
-            <button type="button" onclick="window.history.back()">Cancel</button>
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-container input[type="text"],
+        .form-container textarea {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-container input[type="text"]:focus,
+        .form-container textarea:focus {
+            border-color: #3c91e6;
+            box-shadow: 0 0 0 3px rgba(60, 145, 230, 0.1);
+            outline: none;
+        }
+
+        .form-container input[type="text"].is-invalid,
+        .form-container textarea.is-invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .form-container button {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-container button[type="submit"] {
+            background-color: #becf39;
+            color: white;
+        }
+
+        .form-container button[type="submit"]:hover {
+            background-color: #becf39;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container button[type="button"] {
+            background-color: #e0e0e0;
+            color: #333;
+            border: 2px solid #e74c3c;
+        }
+
+        .form-container button[type="button"]:hover {
+            background-color: #f9d6d5;
+            color: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #error-message {
+            margin-top: 15px;
+            color: #e74c3c;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 80px 15px 20px 15px;
+                max-width: 100%;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .form-container button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-container {
+                margin: 80px 10px 20px 10px;
+            }
+
+            .form-card {
+                padding: 15px;
+            }
+
+            .form-container h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+<%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+      <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+
+   
+
+    <!-- Main Content -->
+    <div class="form-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <div class="form-card">
+                        <h2>Edit Category</h2>
+                        <form id="editForm" data-id="<%= category._id %>" novalidate>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Category Name</label>
+                                <input type="text" class="form-control" id="name" data-name="<%= category.name %>" 
+                                       name="name" aria-label="Category Name" value="<%= category.name %>">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" data-description="<%= category.description %>" 
+                                          name="description" aria-label="Description" rows="4" required><%= category.description %></textarea>
+                            </div>
+
+                            <div class="button-group">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                            </div>
+
+                            <div id="error-message" class="mt-3"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div id="error-message" class="text-danger mt-2"></div>
-    </form>
-</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const form = document.getElementById('editForm');
+        const id = form.dataset.id;
+        const nameInput = document.getElementById('name');
+        const descInput = document.getElementById('description');
+        const errorBox = document.getElementById('error-message');
 
-<script>
-    const form = document.getElementById('editForm');
-const id = form.dataset.id;
-const nameInput = document.getElementById('name');
-const descInput = document.getElementById('description');
-const errorBox = document.getElementById('error-message');
+        // Get initial values from data attributes
+        const initialName = form.querySelector('#name').dataset.name.trim();
+        const initialDescription = form.querySelector('#description').dataset.description.trim();
 
-// Get initial values from data attributes
-const initialName = form.querySelector('#name').dataset.name.trim();
-const initialDescription = form.querySelector('#description').dataset.description.trim();
-
-form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    errorBox.innerText = '';
-
-    const name = nameInput.value.trim();
-    const description = descInput.value.trim();
-
-    // Check if values have actually changed
-    if (name === initialName && description === initialDescription) {
-        errorBox.innerText = 'No changes were made to the category.';
-        return;
-    }
-
-    const validationError = validateInputs(name, description);
-    if (validationError.length > 0) {
-        errorBox.innerText = validationError.join('\n');
-        return;
-    }
-
-    try {
-        const response = await fetch(`/admin/editCategory/${id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, description })
+        // Add input event listeners to clear errors when user types
+        nameInput.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid')) {
+                this.classList.remove('is-invalid');
+                errorBox.innerText = '';
+            }
         });
 
-        const result = await response.json();
+        descInput.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid')) {
+                this.classList.remove('is-invalid');
+                errorBox.innerText = '';
+            }
+        });
 
-        if (!response.ok) {
-            errorBox.innerText = result.message || 'Something went wrong!';
-        } else {
-            await Swal.fire({
-                title: result.message,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-            window.location.href = '/admin/category'; // redirect if needed
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            errorBox.innerText = '';
+            
+            // Remove any existing error classes
+            nameInput.classList.remove('is-invalid');
+            descInput.classList.remove('is-invalid');
+
+            const name = nameInput.value.trim();
+            const description = descInput.value.trim();
+
+            // Check if values have actually changed
+            if (name === initialName && description === initialDescription) {
+                errorBox.innerText = 'No changes were made to the category.';
+                return;
+            }
+
+            const validationError = validateInputs(name, description);
+            if (validationError.length > 0) {
+                errorBox.innerText = validationError.join('\n');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/admin/editCategory/${id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    errorBox.innerText = result.message || 'Something went wrong!';
+                } else {
+                    await Swal.fire({
+                        title: result.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    window.location.href = '/admin/category'; // redirect if needed
+                }
+            } catch (err) {
+                errorBox.innerText = 'Something went wrong. Please try again.';
+                console.error(err);
+            }
+        });
+
+        function validateInputs(name, description) {
+            const errors = [];
+
+            // Reset borders
+            nameInput.classList.remove('is-invalid');
+            descInput.classList.remove('is-invalid');
+
+            if (!name) {
+                errors.push("Category name is required.");
+                nameInput.classList.add('is-invalid');
+            } else if (name.length < 3) {
+                errors.push("Category name must be at least 3 characters.");
+                nameInput.classList.add('is-invalid');
+            } else if (!/^[A-Za-z][A-Za-z\s]*$/.test(name)) {
+                errors.push("Category name should start with a letter and contain only letters and spaces.");
+                nameInput.classList.add('is-invalid');
+            }
+
+            if (!description) {
+                errors.push("Description is required.");
+                descInput.classList.add('is-invalid');
+            } else if (description.length < 10) {
+                errors.push("Description must be at least 10 characters.");
+                descInput.classList.add('is-invalid');
+            } else if (/^(.)\1*$/.test(description)) {
+                errors.push("Description should not be repetitive or meaningless.");
+                descInput.classList.add('is-invalid');
+            }
+
+            return errors;
         }
-    } catch (err) {
-        errorBox.innerText = 'Something went wrong. Please try again.';
-        console.error(err);
-    }
-});
-
-function validateInputs(name, description) {
-    const errors = [];
-
-    // Reset borders
-    nameInput.style.border = '';
-    descInput.style.border = '';
-
-    if (!name) {
-        errors.push("Category name is required.");
-        nameInput.style.border = "2px solid red";
-    } else if (name.length < 3) {
-        errors.push("Category name must be at least 3 characters.");
-        nameInput.style.border = "2px solid red";
-    } else if (!/^[A-Za-z][A-Za-z\s]*$/.test(name)) {
-        errors.push("Category name should start with a letter and contain only letters and spaces.");
-        nameInput.style.border = "2px solid red";
-    }
-
-    if (!description) {
-        errors.push("Description is required.");
-        descInput.style.border = "2px solid red";
-    } else if (description.length < 10) {
-        errors.push("Description must be at least 10 characters.");
-        descInput.style.border = "2px solid red";
-    } else if (/^(.)\1*$/.test(description)) {
-        errors.push("Description should not be repetitive or meaningless.");
-        descInput.style.border = "2px solid red";
-    }
-
-    return errors;
-}
-</script>
+    </script>
+</body>
+</html>

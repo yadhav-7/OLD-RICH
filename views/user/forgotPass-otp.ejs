@@ -129,6 +129,8 @@
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+            background-color: #6c757d;
+            border-color: #6c757d;
         }
         
         .btn-loading .btn-text {
@@ -294,6 +296,18 @@
             margin-right: 8px;
         }
         
+        .verify-timer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        .verify-timer.expired {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 576px) {
             .login-container {
@@ -338,6 +352,7 @@
                         <label for="otp" class="form-label">Enter OTP Code</label>
                         <input type="text" id="otp" name="otp" class="form-control otp-input" maxlength="6" placeholder="••••••" required>
                     </div>
+                    <div class="verify-timer" id="verifyTimer">Verify available for 01:00</div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary" id="verifyBtn">
                             <span class="btn-text"><i class="fas fa-check-circle me-2"></i>Verify OTP</span>
@@ -371,9 +386,21 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        window.addEventListener("pageshow", function (event) {
+            const navType = performance.getEntriesByType("navigation")[0].type;
+
+            if (event.persisted || navType === "back_forward") {
+                document.body.style.display = "none";
+                window.location.replace('/login');
+            }
+        });
+
         let otpTimerInterval;
+        let verifyTimerInterval;
         let timer = 60;
+        let verifyTimer = 60;
         let canResend = false;
+        let canVerify = true;
 
         function startOtpTimer() {
             const timerElement = document.getElementById('otpTimer');
@@ -395,18 +422,50 @@
             }, 1000);
         }
 
+        function startVerifyTimer() {
+            const verifyTimerElement = document.getElementById('verifyTimer');
+            const verifyBtn = document.getElementById('verifyBtn');
+            
+            verifyTimerInterval = setInterval(function() {
+                const minutes = Math.floor(verifyTimer / 60);
+                const seconds = verifyTimer % 60;
+                verifyTimerElement.textContent = `Verify available for ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (verifyTimer <= 0) {
+                    clearInterval(verifyTimerInterval);
+                    verifyTimerElement.textContent = 'Verification time expired';
+                    verifyTimerElement.classList.add('expired');
+                    canVerify = false;
+                    verifyBtn.disabled = true;
+                }
+                verifyTimer--;
+            }, 1000);
+        }
+
         function initializeOtpTimer() {
             clearInterval(otpTimerInterval);
+            clearInterval(verifyTimerInterval);
+            
             timer = 60;
+            verifyTimer = 60;
             canResend = false;
+            canVerify = true;
+            
             const timerElement = document.getElementById('otpTimer');
+            const verifyTimerElement = document.getElementById('verifyTimer');
             const resendBtn = document.getElementById('resendBtn');
+            const verifyBtn = document.getElementById('verifyBtn');
             
             timerElement.textContent = '1:00';
             timerElement.classList.remove('timer-expired');
             resendBtn.disabled = true;
             
+            verifyTimerElement.textContent = 'Verify available for 01:00';
+            verifyTimerElement.classList.remove('expired');
+            verifyBtn.disabled = false;
+            
             startOtpTimer();
+            startVerifyTimer();
         }
 
         // Initialize timer on page load
@@ -416,6 +475,16 @@
 
         async function validateForm(event) {
             event.preventDefault();
+            
+            // Check if verification time has expired
+            if (!canVerify) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Verification Time Expired',
+                    text: 'Please request a new OTP to continue.'
+                });
+                return false;
+            }
             
             const verifyBtn = document.getElementById('verifyBtn');
             const originalText = verifyBtn.innerHTML;
@@ -464,8 +533,8 @@
                     text: 'Please check your connection or try again later.'
                 });
             } finally {
-                // Reset button state
-                verifyBtn.disabled = false;
+                // Reset button state only if verification is still allowed
+                verifyBtn.disabled = !canVerify;
                 verifyBtn.classList.remove('btn-loading');
             }
         }

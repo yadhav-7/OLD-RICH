@@ -9,7 +9,8 @@ const couponManagement = require('../controllers/admin/couponController')
 const dashboardController = require('../controllers/admin/dashboardController')
 const getSalesReport = require('../controllers/admin/salesReport')
 const {userAuth,adminAuth} = require('../middlewares/auth')
-const {upload,profileUpload} = require('../middlewares/multer')
+// const {upload,profileUpload} = require('../middlewares/multer')
+const { upload } = require('../config/cloudinary');
 const { route } = require('./user')
 //clear flash
 
@@ -36,20 +37,20 @@ router.post('/addCategoryOffer',adminAuth,catagoryController.addCategoryOffer)
 router.post('/removeCategoryOffer',adminAuth,catagoryController.removeCategoryOffer)
 router.post('/unListCategory',adminAuth,catagoryController.getUnlistCategory)
 router.post('/ListCategory',adminAuth,catagoryController.getListCategory)
-router.get('/getEditCategory',adminAuth,catagoryController.getEditCategory)
+router.get('/editCategory',adminAuth,catagoryController.getEditCategory)
 router.post('/editCategory/:id',adminAuth,catagoryController.editCategory)
 
 //product management
 
-router.get('/getAddProduct',adminAuth,prodouctContoller.getAddProducts)
+router.get('/addProduct',adminAuth,prodouctContoller.getAddProducts)
 router.post('/addProducts',adminAuth,upload.array('images', 5),prodouctContoller.addProducts);
-router.get('/getAllProducts',adminAuth,prodouctContoller.getAllProducts)
+router.get('/allProducts',adminAuth,prodouctContoller.getAllProducts)
 router.post('/productVarintsModal',adminAuth,prodouctContoller.productVarintsModal)
 router.post('/addProductOffer',adminAuth,prodouctContoller.addProductOffer)
 router.post('/removeProductOffer',adminAuth,prodouctContoller.removeProductOffer)
 router.post('/blockProduct',adminAuth,prodouctContoller.blockProduct)
 router.post('/unBlockProduct',adminAuth,prodouctContoller.unBlockProduct)
-router.get('/getEditProduct',adminAuth,prodouctContoller.getEditProduct)
+router.get('/editProduct',adminAuth,prodouctContoller.getEditProduct)
 router.post('/editProduct/:id',adminAuth,upload.array('images', 5),prodouctContoller.editProduct)
 
 router.post('/deleteImage',adminAuth,prodouctContoller.deleteSingleImage)
@@ -68,7 +69,7 @@ router.patch('/handleReturnReq',adminAuth,orderController.handleReturnReq)
 
 
 //COUPON MANAGEMENT
-router.get('/getCouponPage',adminAuth,couponManagement.getCouponPage)
+router.get('/couponPage',adminAuth,couponManagement.getCouponPage)
 router.post('/addCoupon',adminAuth,couponManagement.addCoupons)
 router.get('/listUnlistCoupon',adminAuth,couponManagement.listUnlistCoupon)
 router.delete('/deleteCoupon',adminAuth,couponManagement.deleteCoupon)

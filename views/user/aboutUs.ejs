@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Old Rich</title>
-      <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
     <style>
         /* Base Styles */
         :root {
@@ -20,14 +19,14 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Georgia', serif;
+            box-sizing: border-box; 
         }
         
         body {
             background-color: var(--white);
             color: var(--dark-text);
             line-height: 1.6;
+            font-family: 'Georgia', serif;
         }
         
         .container {
@@ -293,6 +292,7 @@
     
 </head>
 <body>
+      <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
 
     <!-- Our Story Section -->
     <section>

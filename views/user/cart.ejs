@@ -682,7 +682,7 @@
                                                             <td data-label="Product">
                                                                 <div class="product-cell">
                                                                     <% if (product?.productImage?.[0]) { %>
-                                                                        <img src="/Uploads/<%= product.productImage[0] %>"
+                                                                        <img src="<%= product.productImage[0] %>"
                                                                             class="product-image"
                                                                             alt="<%= product.productName || 'Product image' %>"
                                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -1095,7 +1095,7 @@
 
 
                             if (response.ok) {
-                                window.location.href = `/getcheckoutpage?item=${availableItems}`;
+                                window.location.href = `/checkOutPage?item=${availableItems}`;
                             } else {
                                 checkoutBtn.innerHTML = originalText;
                                 checkoutBtn.disabled = false;

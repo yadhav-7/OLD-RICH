@@ -10,14 +10,14 @@ const getSalesReport = async (req, res) => {
 
         const date = req.query.date || null
         const page = parseInt(req.query.page) || 1
-        console.log('date',date)
-        console.log('endDate',req.query.endDate||null)
-        console.log('startDate',req.query.startDate||null)
+
         let limit = 5
         let skip = (page - 1) * limit
 
         let filter = {}
 
+        console.log('data',date)
+        
         if (date) {
 
             const today = new Date()
@@ -85,20 +85,25 @@ const getSalesReport = async (req, res) => {
 
         }
 
-        const orders = await Order.find({
+        let orders = await Order.find({
             ...filter,
             status: { $nin: ['returned', 'cancelled'] }
         })
             .populate('userId', 'username')
             .sort({ createdOn: -1 })
-            .skip(skip)
-            .limit(limit)
 
         let totalDoc = await Order.countDocuments({
             ...filter,
             status: { $nin: ['returned', 'cancelled'] }
         })
 
+
+        console.log('totalDoc',totalDoc)
+
+        let j = 1
+        for(let i of orders){
+            console.log('order',j++,i)
+        }
 
         let totalPage = Math.ceil(totalDoc / limit);
 
@@ -138,6 +143,13 @@ const getSalesReport = async (req, res) => {
             }
         }
 
+        orders = orders.slice(skip,limit+skip) 
+
+        j = 1
+        for(let i of orders){
+            console.log('order',j++,i)
+        }
+
         const summary = {
             totalSalesCount,
             OverallOrderAmount,
@@ -153,6 +165,8 @@ const getSalesReport = async (req, res) => {
             totalPage
 
         };
+
+     
 
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
             return res.json(summary);

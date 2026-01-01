@@ -4,9 +4,9 @@ const loadDashboard = async (req, res) => {
         const date = req.query.date || null;
         let filter = {}
 
+        console.log('date',date)
         if (date !== null) {
-            const today = new Date();
-
+            const today = new Date()
             switch (date) {
                 case 'daily': {
                     const startOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0));
@@ -15,23 +15,23 @@ const loadDashboard = async (req, res) => {
                     filter.createdOn = {
                         $gte: startOfDay,
                         $lte: endOfDay
-                    };
-                    break;
+                    }
+                    break
                 }
 
 
 
                 case 'weekly': {
-                    const firstDayOfWeek = new Date(today);
-                    firstDayOfWeek.setDate(today.getDate() - today.getDay());
-                    firstDayOfWeek.setHours(0, 0, 0, 0);
+                    const firstDayOfWeek = new Date(today)
+                    firstDayOfWeek.setDate(today.getDate() - today.getDay())
+                    firstDayOfWeek.setHours(0, 0, 0, 0)
 
-                    const lastDayOfWeek = new Date(firstDayOfWeek);
-                    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-                    lastDayOfWeek.setHours(23, 59, 59, 999);
+                    const lastDayOfWeek = new Date(firstDayOfWeek)
+                    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+                    lastDayOfWeek.setHours(23, 59, 59, 999)
 
-                    filter.createdOn = { $gte: firstDayOfWeek, $lte: lastDayOfWeek };
-                    break;
+                    filter.createdOn = { $gte: firstDayOfWeek, $lte: lastDayOfWeek }
+                    break
                 }
 
                 case 'monthly': {
@@ -39,7 +39,7 @@ const loadDashboard = async (req, res) => {
                     const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
 
                     filter.createdOn = { $gte: firstDayOfMonth, $lte: lastDayOfMonth };
-                    break;
+                    break
                 }
 
                 case 'yearly': {
@@ -69,10 +69,6 @@ const loadDashboard = async (req, res) => {
         const topProducts = await getTopProducts(filter)
 
         const topCategory = await topSellingCategory(filter)
-
-        console.log('topProducts',topProducts)
-        console.log('topCategory',topCategory)
-
         return res.render('dashboard', {
             topProducts,
             topCategory,

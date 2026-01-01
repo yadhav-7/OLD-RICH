@@ -11,13 +11,16 @@ const orderController = require('../controllers/user/orderDetailsPage')
 const wishlistCondroller = require('../controllers/user/wishlistCondroller')
 const walletCondroller = require('../controllers/user/walletController')
 const refferalController = require('../controllers/user/refferalController')
+const { upload } = require('../config/cloudinary');
 
-const {upload,profileUpload} = require('../middlewares/multer')
+
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
 const passport = require('passport')
 
 //ABOUT US
 router.get('/aboutUs',aboutUs.aboutUs)
+
+
 
 //ERROR MANAGEMENT
 router.get('/pageNOTfound',userController.pageNOTfound)
@@ -45,7 +48,7 @@ failureMessage: true
   res.redirect('/refferalCodeEnter');
 }else if(authState === 'login'){
   req.session.user = req.user._id;
-  res.redirect('/home');
+  res.redirect('/');
 }
     
   });
@@ -90,12 +93,12 @@ router.get('/resendOTPwhileEmailchange',userAuth,profileController.resendOTPwhil
 
 router.get('/changePassword',userAuth,profileController.changePassword)
 router.patch('/updatePassword',userAuth,profileController.updatePassword)
-router.patch('/editProfile', userAuth, profileUpload.single('profilePhoto'), profileController.editProfile);
+router.patch('/editProfile', userAuth,upload.single('image'), profileController.editProfile);
 
 
 
 //HOME PAGE & SHOPING
-router.get('/home',guestAuth,userController.loadHomePage)
+router.get('/',guestAuth,userController.loadHomePage)
 router.get('/shop',guestAuth,userController.loadShopingPage)
 router.get('/check-user-block',guestAuth,userController.checkUserBlock)
 
@@ -118,7 +121,7 @@ router.get('/increaseCartItems',userAuth,cartCondroller.increaseCartItems)
 
 //CHECKOUTPAGE 
 router.post('/checkoutpage',userAuth,checkOutPageController.checkoutpage)
-router.get('/getCheckoutpage',userAuth,checkOutPageController.getCheckoutpage)
+router.get('/checkOutPage',userAuth,checkOutPageController.getCheckoutpage)
 router.post('/procedToCheckOut',userAuth,checkOutPageController.procedToCheckOut)
 router.post('/applyCoupon',userAuth,checkOutPageController.applyCoupon)
 router.post('/create-razorpay-order',userAuth,checkOutPageController.createRazorpayOrder)

@@ -50,7 +50,7 @@ const categoryInfo = async (req, res) => {
 const addCategory = async (req, res) => {
 
     try {
-        console.log('addCategory')
+      
         const { categoryName, categoryDescription } = req.body
         console.log(categoryName)
 

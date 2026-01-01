@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
     <style>
         :root {
             --primary-yellow: #FFD700;
@@ -22,6 +22,14 @@
             --return-color: #ea4335;
             --cancel-color: #fbbc04;
             --success-color: #34A853;
+            --sidebar-width: 250px;
+            --collapsed-width: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
@@ -30,21 +38,27 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            padding-left: var(--sidebar-width);
+          
+            transition: padding-left 0.3s ease;
+            overflow-x: hidden;
         }
 
         /* Dashboard Layout */
         .dashboard-container {
             display: flex;
-            min-height: 100vh;
+            min-height: calc(100vh - 70px);
+            width: 100%;
         }
 
         .main-content {
             flex: 1;
             padding: 20px;
             transition: all 0.3s ease;
-            max-width: 1200px;
-            margin: 70px auto;
-            margin-left: 250px;
+            width: 100%;
+            margin: 0;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         /* Header Styles */
@@ -140,6 +154,8 @@
             margin-bottom: 30px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
             border-left: 4px solid var(--primary-yellow);
+            height: 100%;
+            width: 100%;
         }
 
         .report-header {
@@ -161,6 +177,7 @@
         .chart-container {
             height: 300px;
             margin-bottom: 30px;
+            width: 100%;
         }
 
         /* Additional Charts Container */
@@ -169,6 +186,8 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
+            min-height: 400px;
+            width: 100%;
         }
 
         /* Filter Buttons */
@@ -198,13 +217,119 @@
             transform: scale(1.05);
         }
 
-        /* Responsive Styles */
+        .notification {
+            position: relative;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .notification:hover {
+            color: var(--primary-yellow);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--return-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            overflow: hidden;
+            border: 2px solid var(--primary-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-yellow);
+            font-weight: bold;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .user-profile:hover .user-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .user-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .user-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .user-menu a:hover {
+            background: var(--light-yellow);
+            color: #333;
+        }
+
+        .user-menu a i {
+            margin-right: 8px;
+            color: var(--primary-yellow);
+        }
+
+        /* Sidebar collapsed state */
+        body.sidebar-collapsed {
+            padding-left: var(--collapsed-width);
+        }
+
+        /* Desktop */
         @media (max-width: 1200px) {
             .additional-charts {
                 grid-template-columns: 1fr;
+                height: auto;
             }
         }
 
+        /* Tablet */
         @media (max-width: 992px) {
             .main-content {
                 padding: 15px;
@@ -213,13 +338,38 @@
             .date-range {
                 flex-wrap: wrap;
             }
+            
+            body {
+                padding-left: 220px;
+            }
+            
+            body.sidebar-collapsed {
+                padding-left: 70px;
+            }
         }
 
+        /* Mobile */
         @media (max-width: 768px) {
+            body {
+                padding-left: 0 !important;
+                padding-top: 60px;
+            }
+            
+            body.sidebar-collapsed {
+                padding-left: 0 !important;
+            }
+            
+            .main-content {
+                padding-top: 15px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+          
             .header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+                padding: 15px;
             }
             
             .report-header {
@@ -230,11 +380,21 @@
             .report-header .action-buttons {
                 width: 100%;
             }
+            
+            .additional-charts {
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
         }
 
+        /* Small Mobile */
         @media (max-width: 576px) {
             .main-content {
-                padding: 10px;
+                padding: 10px 5px;
             }
             
             .summary-card .value {
@@ -242,12 +402,21 @@
             }
             
             .chart-container {
-                height: 250px;
+                height: 220px;
             }
             
             #filterButtons .btn {
                 padding: 8px 12px;
                 font-size: 14px;
+                margin: 2px;
+            }
+            
+            .additional-charts {
+                grid-template-columns: 1fr;
+            }
+            
+            .report {
+                padding: 15px;
             }
         }
 
@@ -256,28 +425,32 @@
             opacity: 0.7;
             pointer-events: none;
         }
+
+        /* Ensure charts are responsive */
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Include Admin Header Partial -->
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
     <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 
-    <div class="dashboard-container">        
+    <!-- Dashboard Content -->
+    <div class="dashboard-container container-fluid px-0">
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <div class="header d-flex justify-content-between align-items-center">
-                <h1>Dashboard</h1>
-            </div>
 
-            <!-- Filter Reports Section -->
+            <!-- Filter Section -->
             <div class="text-center my-4">
                 <h5 class="mb-3 fw-bold">Filter Reports</h5>
 
                 <!-- Filter Buttons -->
-                <div id="filterButtons" class="btn-group mb-3 flex-wrap" role="group" aria-label="Report Filters">
+                <div id="filterButtons"
+                    class="btn-group mb-3 flex-wrap justify-content-center"
+                    role="group">
                     <button type="button" class="btn btn-outline-yellow" data-filter="daily">Daily</button>
                     <button type="button" class="btn btn-outline-yellow" data-filter="weekly">Weekly</button>
                     <button type="button" class="btn btn-outline-yellow" data-filter="monthly">Monthly</button>
@@ -287,47 +460,58 @@
 
                 <!-- Custom Date Inputs -->
                 <div id="customDateInputs" class="custom-inputs mt-3" style="display: none;">
-                    <div class="d-flex flex-column flex-md-row align-items-center gap-2 justify-content-center">
-                        <input type="date" id="startDate" class="form-control w-auto">
-                        <span class="d-none d-md-block">to</span>
-                        <input type="date" id="endDate" class="form-control w-auto">
-                        <button id="applyCustomFilter" class="btn btn-yellow mt-2 mt-md-0">Apply</button>
+                    <div class="row g-2 justify-content-center">
+                        <div class="col-12 col-md-auto">
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-12 col-md-auto d-flex align-items-center justify-content-center">
+                            <span>to</span>
+                        </div>
+                        <div class="col-12 col-md-auto">
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-12 col-md-auto">
+                            <button id="applyCustomFilter" class="btn btn-yellow w-100 w-md-auto">Apply</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Additional Charts for Top Selling Products and Categories -->
+            <!-- Charts Section -->
             <div class="additional-charts">
+                <!-- Top Products -->
                 <div class="report">
-                    <div class="report-header">
-                        <h2>Top Selling Products</h2>
+                    <div class="report-header mb-3">
+                        <h2 class="h5 m-0">Top Selling Products</h2>
                     </div>
                     <div class="chart-container">
-                        <% if (topProducts && topProducts.length> 0) { %>
+                        <% if (topProducts && topProducts.length > 0) { %>
                             <canvas id="productsChart"></canvas>
-                            <% } else { %>
-                                <div class="d-flex justify-content-center align-items-center h-100">
-                                    <p class="text-muted">No Data Available</p>
-                                </div>
-                                <% } %>
+                        <% } else { %>
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <p class="text-muted">No Data Available</p>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
 
+                <!-- Category Chart -->
                 <div class="report">
-                    <div class="report-header">
-                        <h2>Sales by Category</h2>
+                    <div class="report-header mb-3">
+                        <h2 class="h5 m-0">Sales by Category</h2>
                     </div>
                     <div class="chart-container">
-                        <% if (topCategory && topCategory.length> 0) { %>
+                        <% if (topCategory && topCategory.length > 0) { %>
                             <canvas id="categoriesChart"></canvas>
-                            <% } else { %>
-                                <div class="d-flex justify-content-center align-items-center h-100">
-                                    <p class="text-muted">No Data Available</p>
-                                </div>
-                                <% } %>
+                        <% } else { %>
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <p class="text-muted">No Data Available</p>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -353,6 +537,9 @@
             
             document.getElementById('startDate').valueAsDate = sevenDaysAgo;
             document.getElementById('endDate').valueAsDate = today;
+            
+            // Handle sidebar state changes
+            handleSidebarState();
         });
 
         // Chart initialization functions
@@ -459,8 +646,46 @@
             });
         }
 
+        // Handle sidebar state changes
+        function handleSidebarState() {
+            // Check if sidebar is collapsed
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.classList.contains('collapsed')) {
+                document.body.classList.add('sidebar-collapsed');
+            } else {
+                document.body.classList.remove('sidebar-collapsed');
+            }
+            
+            // Listen for sidebar toggle events
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    setTimeout(() => {
+                        if (sidebar.classList.contains('collapsed')) {
+                            document.body.classList.add('sidebar-collapsed');
+                        } else {
+                            document.body.classList.remove('sidebar-collapsed');
+                        }
+                        // Trigger window resize to update charts
+                        window.dispatchEvent(new Event('resize'));
+                    }, 300);
+                });
+            }
+        }
+
         // Event listener setup
         function setupEventListeners() {
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Reflow charts on resize
+                if (window.productsChart) {
+                    window.productsChart.resize();
+                }
+                if (window.categoriesChart) {
+                    window.categoriesChart.resize();
+                }
+            });
+            
             // Filter buttons
             const filterButtons = document.querySelectorAll('#filterButtons button');
             const customDateInputs = document.getElementById('customDateInputs');
@@ -471,7 +696,6 @@
                 button.addEventListener('click', () => {
                     filterDate = button.dataset.filter;
                     
-                    // Remove active class from all
                     filterButtons.forEach(btn => {
                         btn.classList.remove('btn-yellow', 'text-dark');
                         btn.classList.add('btn-outline-yellow');
@@ -518,6 +742,7 @@
             document.body.classList.add('loading');
             
             // In a real application, this would be an API call or form submission
+            alert(date)
             setTimeout(() => {
                 window.location.href = `/admin/dashboard?date=${encodeURIComponent(date)}`;
             }, 500);

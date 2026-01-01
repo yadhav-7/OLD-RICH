@@ -216,31 +216,51 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
           <!-- Search Bar -->
           <div class="flex-grow-1 w-100">
-            <form action="" method="" class="d-flex gap-2" id="search-form">
-              <div class="flex-grow-1">
-                <input type="text" name="query" placeholder="Search for products..." class="form-control"
-                  value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" id="search-input" />
-              </div>
-              <button type="submit" class="btn btn-success d-flex align-items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path
-                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg>
-                Search
-              </button>
-             <button type="button" id="clearSearch" class="btn btn-outline-secondary">
-                ✖
-              </button>
-            </form>
+            <form action="" method="" class="d-flex gap-2 flex-wrap" id="search-form">
+
+  <div class="flex-grow-1">
+    <input type="text" name="query" placeholder="Search for products..." 
+      class="form-control"
+      value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+      id="search-input" />
+  </div>
+
+  <!-- LARGE SCREEN SEARCH BUTTON -->
+  <button type="submit" 
+    class="btn btn-success d-none d-md-flex align-items-center gap-2 px-3">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+      viewBox="0 0 16 16">
+      <path
+        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+    </svg>
+    Search
+  </button>
+
+  <!-- SMALL SCREEN SEARCH BUTTON (ICON ONLY) -->
+  <button type="submit" 
+    class="btn btn-success d-flex d-md-none px-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+      viewBox="0 0 16 16">
+      <path
+        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+    </svg>
+  </button>
+
+  <button type="button" id="clearSearch" class="btn btn-outline-secondary">
+    ✖
+  </button>
+
+</form>
+
           </div>
           
-          <!-- Filter Toggle Button (Mobile) -->
-          <button class="btn btn-dark d-md-none d-flex align-items-center gap-2" id="filterToggle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-            </svg>
-            Filters
-          </button>
+          <!-- Small Filter Button (Mobile) -->
+<button class="btn btn-dark d-md-none px-2" id="filterToggle">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+  </svg>
+</button>
+
         </div>
       </div>
     </div>
@@ -356,7 +376,7 @@
                   
                   <a href="/productDetails?productId=<%= products[i]._id %>&slcPrice=<%= products[i].displayVariant?.salePrice || 0 %>"
                     style="text-decoration: none; color: inherit;">
-                    <img src="/Uploads/<%= products[i].productImage[0] %>" class="card-img-top" alt="<%= products[i].productName %>" 
+                    <img src="<%= products[i].productImage[0] %>" class="card-img-top" alt="<%= products[i].productName %>" 
                          style="height: 200px; object-fit: cover;" />
                     <div class="card-body d-flex flex-column">
 
@@ -462,7 +482,8 @@
    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="/helpers/fetchService.js"></script>
 <script>
-  // Mobile filter toggle
+  // Make sure wishListArray is available globally
+window.wishListArray = typeof wishListArray !== 'undefined' ? wishListArray : [];
   
   document.addEventListener('DOMContentLoaded', function() {
     const filterToggle = document.getElementById('filterToggle');
@@ -495,9 +516,18 @@
     
     try {
       if (action === 'addToWishList') {
-        const response = await fetch(`/addToWishList?productId=${encodeURIComponent(productId)}`);
+        const response = await fetch(`/addToWishList?productId=${encodeURIComponent(productId)}`,{
+          headers: {
+      "Accept": "application/json", 
+      "X-Requested-With": "XMLHttpRequest" 
+    }
+        })
         const body = await response.json();
 
+         if(body.redirect){
+            window.location.href='/login'
+            return
+          }
         if (response.ok) {
           button.classList.add('active');
           button.innerHTML = '❤️'; 
@@ -659,64 +689,56 @@ document.getElementById('search-input').value=''
   })
 
 
-  async function searchAndSortFilter(){
-      
-      try {
-        const params = new URLSearchParams(window.location.search)
+ async function searchAndSortFilter(){
+  try {
+    const params = new URLSearchParams(window.location.search)
 
-      const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb) => cb.value)
-
-      if (categoryFilter.length > 0) {
-        params.set('category', categoryFilter.join(','))
-      } else {
-        params.delete('category')
-      }
-
-     
-
-const sort = document.querySelector('select[name="sort"]').value;
-      
-      if (sort) {
-        params.set('sort', sort)
-      } else {
-        params.delete('sort')
-      }
-
-      const price = [...document.querySelectorAll('input[name="priceFilter"]')]
-        .filter(cb => cb.checked) 
-        .map(cb => cb.value)
-
-      if(price.length > 0) {
-        params.set('priceFilter', price.join(','))
-      } else {
-        params.delete('priceFilter')
-      }
-
-
-
-      let search = document.getElementById("search-input").value.trim()
-
-      if (search) {
-        params.set('query', search)
-      } else {
-        params.delete('query')
-      }
-
-      params.set('page', 1)
-      const basePath = '/shop'
-      const response = await apiReq(`${basePath}?${params.toString()}`)
-
-      updateProductGrid(response.products)
-      updatePagination(response.currentPage,response.totalPages)
-   
-
-      } catch (error) {
-
-        console.error('error in searchAndSortFilter',error)
-      }
-     
+    const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb) => cb.value)
+    if (categoryFilter.length > 0) {
+      params.set('category', categoryFilter.join(','))
+    } else {
+      params.delete('category')
     }
 
+    const sort = document.querySelector('select[name="sort"]').value;
+    if (sort) {
+      params.set('sort', sort)
+    } else {
+      params.delete('sort')
+    }
+
+    const price = [...document.querySelectorAll('input[name="priceFilter"]')]
+      .filter(cb => cb.checked) 
+      .map(cb => cb.value)
+
+    if(price.length > 0) {
+      params.set('priceFilter', price.join(','))
+    } else {
+      params.delete('priceFilter')
+    }
+
+    let search = document.getElementById("search-input").value.trim()
+    if (search) {
+      params.set('query', search)
+    } else {
+      params.delete('query')
+    }
+
+    params.set('page', 1)
+    const basePath = '/shop'
+    const response = await apiReq(`${basePath}?${params.toString()}`)
+
+    // Update wishListArray from response
+    if (response.wishListArray) {
+      window.wishListArray = response.wishListArray;
+    }
+
+    updateProductGrid(response.products)
+    updatePagination(response.currentPage, response.totalPages)
+  } catch (error) {
+    console.error('error in searchAndSortFilter', error)
+  }
+}
 
 function updateProductGrid(products = []) {
   const gridContainer = document.querySelector('.col-md-9 .row')
@@ -736,78 +758,131 @@ function updateProductGrid(products = []) {
     return;
   }
 
-  // 🔹 Build product cards
-  const html = products.map(p => `
+  const html = products.map(p => {
+    // Check if product has wishlist status from server response
+    const isInWishlist = p.isInWishlist || 
+      (Array.isArray(window.wishListArray) && 
+       window.wishListArray.some((item) => item.productId?.toString() === p._id?.toString()));
+    
+    const wishlistAction = isInWishlist ? 'removeWishList' : 'addToWishList';
+    const wishlistIcon = isInWishlist ? '❤️' : '<i class="fa-solid fa-heart"></i>';
+    const wishlistClass = isInWishlist ? 'wishlist-btn active' : 'wishlist-btn';
+
+    return `
     <div class="col-6 col-md-4 col-lg-3 mb-4">
       <div class="product-card card h-100">
-        <button class="wishlist-btn" data-product-id="${p._id}">❤</button>
+        <button class="${wishlistClass}" onclick="toggleWishlist(this, '${wishlistAction}')"
+          data-product-id="${p._id}">${wishlistIcon}</button>
         ${p.discountPercentage > 0 ? `<div class="discount-badge">${p.discountPercentage}% OFF</div>` : ''}
         <a href="/productDetails?productId=${p._id}&slcPrice=${p.displayVariant?.salePrice || 0}" style="text-decoration: none; color: inherit;">
-          <img src="/Uploads/${p.productImage[0]}" class="card-img-top" alt="${p.productName}" style="height: 200px; object-fit: cover;" />
+          <img src="${p.productImage[0]}" class="card-img-top" alt="${p.productName}" style="height: 200px; object-fit: cover;" />
           <div class="card-body d-flex flex-column">
             <h5 class="card-title" style="font-size: 16px; min-height: 48px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${p.productName}</h5>
             <div class="mt-auto">
               <div class="mb-2">
-                <span class="price-discount">₹${p.displayVariant?.salePrice?.toLocaleString('en-IN') || p.variants[0].salePrice}</span>
+                <span class="price-discount">₹${(p.displayVariant?.salePrice || p.variants[0]?.salePrice || 0).toLocaleString('en-IN')}</span>
+                ${p.displayVariant?.regularPrice && p.displayVariant.regularPrice > (p.displayVariant?.salePrice || 0) ? 
+                  `<span class="original-price">₹${p.displayVariant.regularPrice.toLocaleString('en-IN')}</span>` : 
+                  p.variants[0]?.regularPrice && p.variants[0].regularPrice > p.variants[0].salePrice ? 
+                  `<span class="original-price">₹${p.variants[0].regularPrice.toLocaleString('en-IN')}</span>` : ''}
               </div>
-              <button class="view-btn mt-2">View</button>
             </div>
           </div>
         </a>
+        <button class="view-btn mt-2 addToCartBtn"
+          data-product-id="${p._id}"
+          data-product-name="${p.productName}"
+          data-product-variants='${JSON.stringify(p.variants).replace(/'/g, "&#39;")}'>
+          Add To Cart
+        </button>
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 
   gridContainer.innerHTML = html;
+  
+  // Re-attach event listeners to the new Add to Cart buttons
+  reattachAddToCartListeners();
+}
+// Function to re-attach event listeners to Add to Cart buttons
+function reattachAddToCartListeners() {
+  const addToCartButtons = document.querySelectorAll('.addToCartBtn');
+  
+  addToCartButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const variants = JSON.parse(btn.dataset.productVariants || "[]");
+      const productName = btn.dataset.productName;
+      const productId = btn.dataset.productId;
+
+      currentProduct = { id: productId, variants };
+
+      // Update popup title
+      popupProductName.textContent = `Select Size for ${productName}`;
+
+      // Clear and render size options
+      sizeOptions.innerHTML = "";
+      variants.forEach((variant, i) => {
+        const sizeLabel = variant.size || variant.Size || variant.label || `Size ${i + 1}`;
+        const id = `sizeOption${productId}_${i}`;
+        sizeOptions.innerHTML += `
+          <input type="radio" class="btn-check" name="size" id="${id}" value="${sizeLabel}">
+          <label class="btn btn-outline-primary btn-sm" for="${id}">${sizeLabel}</label>
+        `;
+      });
+
+      // Show the popup
+      sizePopup.show();
+    });
+  });
 }
 
-async function pagination(page,action){
-    const params = new URLSearchParams(window.location.search)
 
-      const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb) => cb.value)
+async function pagination(page, action){
+  const params = new URLSearchParams(window.location.search)
 
-      if (categoryFilter.length > 0) {
-        params.set('category', categoryFilter.join(','))
-      } else {
-        params.delete('category')
-      }
+  const categoryFilter = [...document.querySelectorAll('input[name="category"]:checked')].map((cb) => cb.value)
+  if (categoryFilter.length > 0) {
+    params.set('category', categoryFilter.join(','))
+  } else {
+    params.delete('category')
+  }
 
-     
+  const sort = document.querySelector('select[name="sort"]').value;
+  if (sort) {
+    params.set('sort', sort)
+  } else {
+    params.delete('sort')
+  }
 
-const sort = document.querySelector('select[name="sort"]').value;
-      
-      if (sort) {
-        params.set('sort', sort)
-      } else {
-        params.delete('sort')
-      }
+  const price = [...document.querySelectorAll('input[name="priceFilter"]')]
+    .filter(cb => cb.checked) 
+    .map(cb => cb.value)
 
-      const price = [...document.querySelectorAll('input[name="priceFilter"]')]
-        .filter(cb => cb.checked) 
-        .map(cb => cb.value)
+  if(price.length > 0) {
+    params.set('priceFilter', price.join(','))
+  } else {
+    params.delete('priceFilter')
+  }
 
-      if(price.length > 0) {
-        params.set('priceFilter', price.join(','))
-      } else {
-        params.delete('priceFilter')
-      }
-
-
-
-      let search = document.getElementById("search-input").value.trim()
-
-      if (search) {
-        params.set('query', search)
-      } else {
-        params.delete('query')
-      }
+  let search = document.getElementById("search-input").value.trim()
+  if (search) {
+    params.set('query', search)
+  } else {
+    params.delete('query')
+  }
+  
   params.set('page', page)
   const response = await apiReq(`/shop?${params.toString()}`)
-  updatePagination(response.currentPage,response.totalPages)
+  
+  // Update wishListArray from response if available
+  if (response.wishListArray) {
+    window.wishListArray = response.wishListArray;
+  }
+  
+  updatePagination(response.currentPage, response.totalPages)
   updateProductGrid(response.products)
 }
-
-
 const addToCartButtons = document.querySelectorAll('.addToCartBtn');
 const sizePopup = new bootstrap.Modal(document.getElementById('sizePopup'));
 const sizeOptions = document.getElementById('sizeOptions');
@@ -955,5 +1030,6 @@ function updatePagination(currentPage, totalPages) {
     paginationContainer.appendChild(nextLi);
   }
 }
+
 
 </script> 

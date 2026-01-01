@@ -7,7 +7,6 @@ const userAuth = async (req, res, next) => {
       if (user && !user.isBlock) {
         return next();
       } else {
-        // If request comes via fetch, send JSON response
         if (req.xhr || req.headers.accept?.includes('json')) {
           return res.status(401).json({ redirect: '/login' });
         }
@@ -29,7 +28,7 @@ const userAuth = async (req, res, next) => {
 
 const guestAuth = async (req, res, next) => {
   try {
-   
+   console.log('the controller is working')
     if (!req.session.user) {
 
       res.locals.user = null; 

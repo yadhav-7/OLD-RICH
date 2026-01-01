@@ -32,6 +32,16 @@
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', sans-serif;
         }
+        .container{
+ margin-left: calc(var(--sidebar-width) + 10px);
+margin-right: 10px;
+margin-top: 50px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed ~ .container {
+  margin-left: var(--collapsed-width)
+}
 
         .pagination {
             display: flex;
@@ -117,13 +127,7 @@
             line-height: 1.5;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 70px auto;
-            padding: 20px;
-            margin-left: 250px;
-            transition: all 0.3s ease;
-        }
+      
 
         .dashboard-header {
             display: flex;
@@ -788,11 +792,8 @@
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
         <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
 
-            <div class="container">
+            <div class="container" id="content-wraper">
                 <div class="dashboard-header">
                     <div class="header-title">
                         <i class="fas fa-chart-pie"></i>
@@ -833,6 +834,7 @@
                                 <div class="filter-group">
                                     <label for="preset-select"><i class="fas fa-clock"></i> Quick Presets</label>
                                     <select class="preset-select" id="preset-select">
+                                        <option value="" disabled selected>Select Date</option>
                                         <option value="today">Today</option>
                                         <option value="week">Last 7 Days</option>
                                         <option value="month">Last 30 Days</option>
@@ -911,14 +913,14 @@
                         <div class="stat-card">
                             <h3>Coupon Discount</h3>
                             <div class="stat-value" id="CouponDisCount">
-                                <%= CouponDisCount %>
+                                <%= CouponDisCount.toFixed(2) %>
                             </div>
                             <div class="stat-trend trend-up"></div>
                         </div>
                         <div class="stat-card">
                             <h3>Returned Amount</h3>
                             <div class="stat-value" id="returnedAmount">
-                                <%= returnedAmount %>
+                                <%= returnedAmount.toFixed(2) %>
                             </div>
                             <div class="stat-trend trend-up"></div>
                         </div>
@@ -932,7 +934,7 @@
                         <div class="stat-card">
                             <h3>Cancelled Refund</h3>
                             <div class="stat-value" id="cancelledAmount">
-                                <%= cancelledAmount %>
+                                <%= cancelledAmount.toFixed(2) %>
                             </div>
                             <div class="stat-trend trend-up"></div>
                         </div>
@@ -1160,74 +1162,13 @@
                     //updateActiveFilters();
                 });
 
-                // Set dates based on preset
-                // function setDatesFromPreset(preset) {
-                //     const endDate = new Date();
-                //     const startDate = new Date();
-
-                //     switch(preset) {
-                //         case 'today':
-                //             startDate.setDate(endDate.getDate());
-                //             break;
-                //         case 'week':
-                //             startDate.setDate(endDate.getDate() - 7);
-                //             break;
-                //         case 'month':
-                //             startDate.setDate(endDate.getDate() - 30);
-                //             break;
-                //         case 'year':
-                //             startDate.setDate(endDate.getDate() - 365);
-                //             break;
-                //     }
-
-                //     startDateInput.valueAsDate = startDate;
-                //     endDateInput.valueAsDate = endDate;
-
-                //     currentFilter.startDate = formatDate(startDate);
-                //     currentFilter.endDate = formatDate(endDate);
-                // }
-
+               
                 // Format date for display
                 function formatDate(date) {
                     return date.toISOString().split('T')[0];
                 }
 
-                // Update active filters display
-                // function updateActiveFilters() {
-                //     const activeFiltersContainer = document.getElementById('active-filters');
-                //     activeFiltersContainer.innerHTML = '';
-
-                //     let filterText = '';
-
-                //     switch(currentFilter.preset) {
-                //         case 'today':
-                //             filterText = 'Today';
-                //             break;
-                //         case 'week':
-                //             filterText = 'Last 7 Days';
-                //             break;
-                //         case 'month':
-                //             filterText = 'Last 30 Days';
-                //             break;
-                //         case 'year':
-                //             filterText = 'Last Year';
-                //             break;
-                //         case 'custom':
-                //             filterText = `Custom: ${formatDisplayDate(currentFilter.startDate)} to ${formatDisplayDate(currentFilter.endDate)}`;
-                //             break;
-                //     }
-
-                //     if (filterText) {
-                //         const filterTag = document.createElement('div');
-                //         filterTag.className = 'active-filter-tag';
-                //         filterTag.innerHTML = `
-                //             <span>${filterText}</span>
-                //             <i class="fas fa-times" onclick="resetFilters()"></i>
-                //         `;
-                //         activeFiltersContainer.appendChild(filterTag);
-                //     }
-                // }
-
+              
                 // Format date for display (MM/DD/YYYY)
                 function formatDisplayDate(dateString) {
                     const date = new Date(dateString);
@@ -1237,14 +1178,28 @@
                 document.getElementById('generate-report').addEventListener('click', async function () {
                     try {
                         // Show loading state
+                        if(!currentFilter.preset){
+                            Toastify({
+    text: "Please select a date!",
+    duration: 3000,
+    gravity: "top",
+    position: "right",
+    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+    stopOnFocus: true
+}).showToast();
+
+                            return
+                        }
                         loadingSpinner.classList.add('active');
-                        statsGrid.classList.add('loading');
-                        reportSection.style.display = 'none'; // Hide initially
+                        statsGrid.classList.add('loading')
+                        reportSection.style.display = 'none'
 
                         let filterParam = '';
                         let startDate = '';
                         let endDate = '';
 
+                       
+                      
                         // Determine filter parameters
                         switch (currentFilter.preset) {
                             case 'today':
@@ -1311,10 +1266,11 @@
                                     }).showToast();
                                     loadingSpinner.classList.remove('active');
                                     statsGrid.classList.remove('loading');
-                                    return;
+                                    return
                                 }
-                                break;
+                                break
                         }
+
 
                         const response = await fetch(`/admin/salesReport?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
                             headers: { 'Accept': 'application/json' }
@@ -1341,43 +1297,55 @@
                         const tableBody = document.getElementById('sales-table-body');
                         tableBody.innerHTML = '';
 
-                        if (data.orders && data.orders.length > 0) {
-                            data.orders.forEach(order => {
-                                const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric'
-                                });
-
+                                let tableNumber = (data.currentPage-1)*5
+                                tableNumber+=1
+                              
                                 let totalRefund = 0;
-                                if (order.orderedItems && order.orderedItems.length > 0) {
-                                    order.orderedItems.forEach(item => {
-                                        totalRefund += item.reFund || 0;
-                                    });
-                                }
 
-                                const couponBadge = order.couponApplied?.applied
-                                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
-                                    : `<span class="coupon-badge-notused">None</span>`;
+                        if (data.orders && data.orders.length > 0) {
+                         data.orders.forEach(order => {
 
-                                const refundCell = totalRefund > 0
-                                    ? `<td class="refund">${totalRefund}</td>`
-                                    : `<td class="refund">—</td>`;
+    let totalRefund = 0; // RESET per order
 
-                                const row = `
-                    <tr>
-                        <td>${orderDate}</td>
-                        <td>${order.orderId}</td>
-                        <td>${order.userId?.username || 'Guest'}</td>
-                        <td>${order.finalAmount}</td>
-                        <td><span class="discount-badge">${order.discount}</span></td>
-                        <td>${couponBadge}</td>
-                        <td class="status ${order.status.toLowerCase()}">${order.status}</td>
-                        ${refundCell}
-                    </tr>
-                `;
-                                tableBody.insertAdjacentHTML('beforeend', row);
-                            });
+    const orderDate = new Date(order.createdOn).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+
+    // Calculate refund for this order
+    if (order.orderedItems && order.orderedItems.length > 0) {
+        order.orderedItems.forEach(item => {
+            totalRefund += item.reFund || 0;
+        });
+    }
+
+    const couponBadge = order.couponApplied?.applied
+        ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
+        : `<span class="coupon-badge-notused">None</span>`;
+
+   
+    const row = `
+        <tr>
+            <td>${tableNumber++}</td>
+            <td>${orderDate}</td>
+            <td>${order.userId?.username || 'User Not Exists'}</td>
+            <td>${order.finalAmount}</td>
+            <td><span class="discount-badge">${order.discount || 0}</span></td>
+            <td>${couponBadge}</td>
+            <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+            <td>
+                <a href="/admin/orderDetails?orderId=${encodeURIComponent(order.orderId)}" 
+                   class="btn btn-sm view-btn">
+                   <i class="bi bi-eye me-1"></i> View
+                </a>
+            </td>
+        </tr>
+    `;
+
+    tableBody.insertAdjacentHTML('beforeend', row);
+
+});
 
                             // FIX: Make sure to show the report section after populating data
                             reportSection.style.display = 'block';
@@ -1421,15 +1389,20 @@
                         // Reset filter inputs
                         document.getElementById('start-date').value = '';
                         document.getElementById('end-date').value = '';
-                        currentFilter.preset = 'today'; // default filter
+                        currentFilter.preset = ''
 
                         // Show loading state
                         loadingSpinner.classList.add('active');
                         statsGrid.classList.add('loading');
                         reportSection.style.display = 'none';
 
+                        const select = document.getElementById("preset-select");
+
+// Select the placeholder option
+select.selectedIndex = 0;
+
                         // Fetch the **first page** with default filter
-                        const response = await fetch(`/admin/salesReport?date=Today&page=1`, {
+                        const response = await fetch(`/admin/salesReport?date=Last 30 Days&page=1`, {
                             headers: { 'Accept': 'application/json' }
                         });
 
@@ -1450,7 +1423,7 @@
 
                         // Update table
                         const tableBody = document.getElementById('sales-table-body');
-                        tableBody.innerHTML = '';
+                        tableBody.innerHTML = ''
 
                         if (data.orders && data.orders.length > 0) {
                             data.orders.forEach(order => {
@@ -1486,7 +1459,7 @@
                         <td class="status ${order.status.toLowerCase()}">${order.status}</td>
                         ${refundCell}
                     </tr>
-                `;
+                `
                                 tableBody.insertAdjacentHTML('beforeend', row);
                             });
 
@@ -1521,7 +1494,7 @@
                 });
 
                 document.getElementById('export-pdf').addEventListener('click', function () {
-                    alert('export-pdf is working')
+                  
                     switch (currentFilter.preset) {
                         case 'today':
                             filterParam = 'Today';
@@ -1588,13 +1561,6 @@
                     window.location.href = `/admin/salesReportExcel?date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
                 });
 
-
-                // Mobile menu toggle
-                const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-                mobileMenuToggle.addEventListener('click', function () {
-                    alert('Sidebar toggle functionality would go here');
-                });
-
                 // Initialize
                 setDatesFromPreset('today');
                 updateActiveFilters();
@@ -1633,9 +1599,7 @@
                             break;
                     }
 
-
-
-                    console.log('currentFilter', currentFilter)
+                   
                     const response = await fetch(`/admin/salesReport?page=${encodeURIComponent(currentPage)}&date=${encodeURIComponent(filterParam)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`, {
                         headers: { 'Accept': 'application/json' }
                     })
@@ -1649,27 +1613,48 @@
                     const tbody = document.getElementById('sales-table-body')
                     tbody.innerHTML = ''
 
-                    orders.forEach(order => {
-                        let totalRefund = 0;
-                        if (order.orderedItems && order.orderedItems.length > 0) {
-                            order.orderedItems.forEach(item => {
-                                totalRefund += item.reFund || 0
-                            })
-                        }
+                    let tableNumber = (currentPage-1)*5
+                 
+                    
+                    tableNumber+=1
+                   
+             orders.forEach(order => {
+    let totalRefund = 0;
 
-                        const tr = document.createElement('tr')
-                        tr.innerHTML = `
-            <td>${new Date(order.createdOn).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-            <td>${order.orderId}</td>
-            <td>${order.userId?.username || '-'}</td>
-            <td>${order.finalAmount}</td>
-            <td><span class="discount-badge">${order.discount || 0}</span></td>
-            <td>${order.couponApplied?.applied ? `<span class="coupon-badge">${order.couponApplied.code}</span>` : `<span class="coupon-badge-notused">None</span>`}</td>
-            <td class="status ${order.status.toLowerCase()}">${order.status}</td>
-            <td class="refund">${totalRefund > 0 ? totalRefund : '—'}</td>
-        `;
-                        tbody.appendChild(tr)
-                    })
+    if (order.orderedItems && order.orderedItems.length > 0) {
+        order.orderedItems.forEach(item => {
+            totalRefund += item.reFund || 0;
+        });
+    }
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${tableNumber++}</td>
+        <td>${new Date(order.createdOn).toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        })}</td>
+        <td>${order.userId?.username || '-'}</td>
+        <td>${order.finalAmount}</td>
+        <td><span class="discount-badge">${order.discount || 0}</span></td>
+        <td>
+            ${
+                order.couponApplied?.applied
+                    ? `<span class="coupon-badge">${order.couponApplied.code}</span>`
+                    : `<span class="coupon-badge-notused">None</span>`
+            }
+        </td>
+        <td class="status ${order.status.toLowerCase()}">${order.status}</td>
+        <td>
+            <a href="/admin/orderDetails?orderId=${order.orderId}" class="btn btn-sm view-btn">
+                <i class="bi bi-eye me-1"></i> View
+            </a>
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+});
 
 
                     renderPagination(data.currentPage, data.totalPage)

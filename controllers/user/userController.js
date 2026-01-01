@@ -8,8 +8,7 @@ const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose').Types;
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv').config();
-const bcrypt = require('bcrypt');
-
+const bcrypt = require('bcrypt')
 
 // 404 Page
 const pageNOTfound = async (req, res) => {
@@ -25,7 +24,7 @@ const pageNOTfound = async (req, res) => {
 const loadHomePage = async (req, res) => {
 
   try {
-    console.log('helo')
+   
     const user = req.session.user;
     const userData = await User.findOne({ _id: user })
     if (userData && userData?.refferalCodeApplied === 'canUse' && userData?.refferalCodeApplied !== 'used') {
@@ -46,13 +45,15 @@ const loadHomePage = async (req, res) => {
     productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 
 
-
-    productData = productData.slice(0, 4)
+console.log('productData.length',productData.length)
+if(productData.length > 3) productData = productData.slice(0, 4)
 
     if (user && !userData.isBlock) {
       const cart = await Cart.findOne({ userId: user })
+      console.log('perfect fine')
       res.render('home', { user: userData, products: productData, length: cart?.items?.length })
     } else {
+      console.log('perfect fine')
       return res.render('home', { products: productData })
     }
 
@@ -66,7 +67,7 @@ const loadHomePage = async (req, res) => {
 const loadRegister = async (req, res) => {
   try {
     if (req.session.user) {
-      return res.redirect('/home')
+      return res.redirect('/')
     } else {
       res.render('register.ejs');
 
@@ -251,30 +252,40 @@ const securePassword = async (password) => {
 // Verify OTP
 const verifyOtp = async (req, res) => {
   try {
-    const { otp } = req.body;
+    console.log(1)
+    const { otp } = req.body
+    console.log(2)
     if (!req.session.userData || !req.session.userOTP) {
+      console.log(3)
       return res.status(400).json({ success: false, message: 'Session expired. Please try registering again.' });
     }
+    console.log(4)
     if (!otp.trim()) {
+      console.log(5)
       return res.status(400).json({ success: false, message: 'Enter OTP for verification' })
     }
-
+console.log(6)
     if (otp === req.session.userOTP) {
+      console.log(7)
       const user = req.session.userData;
 
-      // Re-check if email already exists
       const findUser = await User.findOne({ email: user.email });
 
-      if (findUser) {
-
+      console.log('findUser',findUser)
+      if(findUser){
+        console.log('fuck........................')
         return res.status(400).json({ success: false, message: 'User with this email already exists' });
-
       }
+      console.log(8)
       function genarateRefferalCode() {
+        console.log(9)
         return Math.floor(100000 + Math.random() * 900000).toString();
       }
+      console.log(10)
       const refferalCode = genarateRefferalCode()
+      console.log(11)
       const passwordHash = await securePassword(user.password)
+      console.log(11)
       const saveUserData = new User({
         username: user.username,
         email: user.email,
@@ -283,8 +294,9 @@ const verifyOtp = async (req, res) => {
         referralCode: refferalCode
       })
 
+      console.log(12)
       await saveUserData.save()
-
+console.log(13)
       const wallet = new Wallet({
         userId: saveUserData._id
       })
@@ -304,6 +316,7 @@ const verifyOtp = async (req, res) => {
     console.error('verify OTP error:', error);
     if (error.code === 11000) {
 
+      console.log('error 11000')
       return res.status(400).json({ success: false, message: 'User with this email already exists' });
     }
 
@@ -339,7 +352,7 @@ const loadlogin = async (req, res) => {
     console.log('🧩 Entered loadLogin')
     if (req.session.user) {
       console.log('🧩 User found in session -> redirect home')
-      return res.redirect('/home')
+      return res.redirect('/')
     } else {
       console.log('🧩 No session user -> render login page')
       return res.render('login')
@@ -380,7 +393,7 @@ const login = async (req, res) => {
     req.session.user = findUser._id;
 
 
-    res.redirect('/home');
+    res.redirect('/');
   } catch (error) {
     console.log('login error', error);
     res.render('login', { message: 'login failed Please try again leter' });
@@ -407,6 +420,8 @@ const logout = async (req, res) => {
 
 const loadShopingPage = async (req, res) => {
   try {
+
+
     const user = req.session.user
     const page = parseInt(req.query.page) || 1
     const query = req.query.query || ''
@@ -555,6 +570,7 @@ const loadShopingPage = async (req, res) => {
     })
    }else{
      
+    console.log('products',products)
      return res.render('shop', {
       user: userData,
       products: products,
@@ -593,5 +609,5 @@ module.exports = {
   login,
   logout,
   loadShopingPage,
-  checkUserBlock
+  checkUserBlock,
 };

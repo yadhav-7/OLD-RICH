@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OLDRICH - Premium Fashion</title>
   <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet">
   <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
 
@@ -575,7 +574,7 @@
                 <span class="product-badge">NEW</span>
               <% } %>
               <div class="product-image-container">
-                <img src="/uploads/<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>"
+                <img src="<%= products[i].productImage[0] %>" alt="<%= products[i].productName %>"
                   class="product-image">
                 <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
                   <div class="product-overlay">
@@ -619,7 +618,6 @@
               <div class="product-image-container">
                 <img src="https://i.pinimg.com/736x/bf/3b/4d/bf3b4d8102c1500670416ec2ae3b1897.jpg"
                   class="product-image" alt="Fashion item">
-                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
                   <div class="product-overlay">
                     <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
                   </div>
@@ -628,7 +626,6 @@
               <div class="product-info">
                 <h3 class="product-title">GRAILD FIT</h3>
                 <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
                   <button class="btn btn-success add-to-cart-btn">VIEW</button>
                 </a>
               </div>
@@ -656,7 +653,6 @@
               <div class="product-image-container">
                 <img src="https://i.pinimg.com/736x/69/28/58/6928580f902f47636c98947dd63a3ec5.jpg"
                   class="product-image" alt="Polo shirt">
-                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
                   <div class="product-overlay">
                     <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
                   </div>
@@ -665,7 +661,6 @@
               <div class="product-info">
                 <h3 class="product-title">POLO SHIRTS</h3>
                 <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                <a href="/productDetails?productId=<%= products[i]._id %>" style="text-decoration: none;">
                   <button class="btn btn-success add-to-cart-btn">VIEW</button>
                 </a>
               </div>

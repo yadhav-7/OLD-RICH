@@ -13,26 +13,25 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          
         }
 
         body {
             background-color: #f8fafc;
             color: #1a202c;
-
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding:  0px;
+            padding:  40px;
             margin-bottom: 30px;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -319,17 +318,17 @@
             <div class="wallet-grid">
                 <div class="card balance-card">
                     <h2>Wallet Balance</h2>
-                    <div class="balance-amount">₹ <%= wallet.balance     %>
+                    <div class="balance-amount">₹ <%= wallet.balance.toFixed(2) %>
                     </div>
 
                     <div class="stats-container">
                         <div class="stat-item">
-                            <div class="stat-value">₹ <%= wallet.totalCredited %>
+                            <div class="stat-value">₹ <%= wallet.totalCredited.toFixed(2) %>
                             </div>
                             <div class="stat-label">TOTAL CREDITED</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">₹ <%= wallet.totalDebited %>
+                            <div class="stat-value">₹ <%= wallet.totalDebited.toFixed(2) %>
                             </div>
                             <div class="stat-label">TOTAL DEBITED</div>
                         </div>
@@ -381,7 +380,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="transaction-amount credit">+₹ <%= transaction.amount %>
+                                    <div class="transaction-amount credit">+₹ <%= transaction.amount.toFixed(2) %>
                                     </div>
                                 </li>
                                 <% }else if(transaction.type==='debit'){ %>
@@ -401,7 +400,7 @@
                                                    
                                                 </div>
                                             </div>
-                                            <div class="transaction-amount debit">-₹ <%= transaction.amount %></div>
+                                            <div class="transaction-amount debit">-₹ <%= transaction.amount.toFixed(2) %></div>
                                         </li>
                                     <% } %>
 

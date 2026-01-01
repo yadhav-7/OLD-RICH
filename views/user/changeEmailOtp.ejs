@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verify OTP</title>
-      <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+  <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
 
   <style>
     body {
@@ -64,6 +64,7 @@
       margin-top: 10px;
       margin-bottom: 10px;
       width: 100%;
+      position: relative;
     }
     .verify-btn:disabled {
       background-color: #c8e6c9 !important;
@@ -82,6 +83,7 @@
       margin-bottom: 8px;
       width: auto;
       display: inline-block;
+      position: relative;
     }
     .verify-btn:hover:not(:disabled),
     .resend-btn:hover:not(:disabled) {
@@ -104,6 +106,40 @@
       background-color: #c8e6c9 !important;
       cursor: not-allowed;
     }
+    .verify-timer {
+      font-size: 13px;
+      color: #388e3c;
+      margin-bottom: 8px;
+    }
+    .verify-timer.expired {
+      color: #d32f2f;
+    }
+    .btn-loading .btn-text {
+      visibility: hidden;
+    }
+    .btn-loading::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s ease infinite;
+    }
+    @keyframes button-loading-spinner {
+      from {
+        transform: rotate(0turn);
+      }
+      to {
+        transform: rotate(1turn);
+      }
+    }
     @media (max-width: 500px) {
       .container { padding: 25px 8px; }
       .otp-input, .verify-btn { font-size: 15px; }
@@ -116,29 +152,35 @@
     <h2 id="otp-title">Verify OTP</h2>
     <div class="error-message" id="errorBox" aria-live="polite"></div>
     <input name="otp" id="otpInput" type="text" class="otp-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="Enter 6-digit OTP" autocomplete="one-time-code" required aria-label="Enter 6-digit OTP">
-    <button class="verify-btn" id="verifyBtn" onclick="verifyOTP()" disabled>Verify</button>
+    <div class="verify-timer" id="verifyTimer">Verify available for 01:00</div>
+    <button class="verify-btn" id="verifyBtn" onclick="verifyOTP()" disabled>
+      <span class="btn-text">Verify</span>
+    </button>
     <div class="resend-wrapper">
-      <div class="resend-text">Didn’t receive the code?</div>
+      <div class="resend-text">Didn't receive the code?</div>
       <div id="timer">Resend available in 01:00</div>
-      <button onclick="resendOtp()" class="resend-btn disabled-btn" id="resendBtn" disabled>Resend OTP</button>
+      <button onclick="resendOtp()" class="resend-btn disabled-btn" id="resendBtn" disabled>
+        <span class="btn-text">Resend OTP</span>
+      </button>
     </div>
   </div>
   <script>
+    window.addEventListener("pageshow", function (event) {
+      const navType = performance.getEntriesByType("navigation")[0].type;
 
-     window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      // Hide content instantly
-      document.body.style.display = "none";
-      // Force reload from server
-      window.location.href='/home';
-    }
-  })
-
+      if (event.persisted || navType === "back_forward") {
+        document.body.style.display = "none";
+        window.location.replace('/');
+      }
+    });
 
     // --- TIMER LOGIC ---
     let countdown = 60;
+    let verifyCountdown = 60;
     let timerInterval = null;
+    let verifyTimerInterval = null;
     const timerDisplay = document.getElementById("timer");
+    const verifyTimerDisplay = document.getElementById("verifyTimer");
     const resendBtn = document.getElementById("resendBtn");
     const verifyBtn = document.getElementById("verifyBtn");
     const otpInput = document.getElementById("otpInput");
@@ -163,7 +205,31 @@
         }
       }, 1000);
     }
+
+    function startVerifyTimer() {
+      clearInterval(verifyTimerInterval);
+      verifyCountdown = 60;
+      verifyBtn.disabled = false;
+      verifyTimerDisplay.textContent = `Verify available for 01:00`;
+      verifyTimerDisplay.classList.remove('expired');
+      verifyTimerInterval = setInterval(() => {
+        verifyCountdown--;
+        const minutes = String(Math.floor(verifyCountdown / 60)).padStart(2, '0');
+        const seconds = String(verifyCountdown % 60).padStart(2, '0');
+        verifyTimerDisplay.textContent = `Verify available for ${minutes}:${seconds}`;
+        
+        if (verifyCountdown <= 0) {
+          clearInterval(verifyTimerInterval);
+          verifyBtn.disabled = true;
+          verifyTimerDisplay.textContent = 'Verification time expired';
+          verifyTimerDisplay.classList.add('expired');
+        }
+      }, 1000);
+    }
+
+    // Start both timers on page load
     startTimer();
+    startVerifyTimer();
 
     // --- OTP INPUT HANDLING ---
     otpInput.addEventListener('input', function(e) {
@@ -172,8 +238,8 @@
       // Hide error on input
       errorBox.style.display = 'none';
       errorBox.textContent = '';
-      // Enable verify button only if 6 digits
-      verifyBtn.disabled = (this.value.length !== 6);
+      // Enable verify button only if 6 digits and verify timer hasn't expired
+      verifyBtn.disabled = (this.value.length !== 6 || verifyCountdown <= 0);
     });
 
     // Autofocus input on load
@@ -181,8 +247,10 @@
 
     // --- RESEND OTP ---
     async function resendOtp() {
+      // Show loading state
       resendBtn.disabled = true;
-      resendBtn.classList.add('disabled-btn');
+      resendBtn.classList.add('btn-loading');
+      
       try {
         const response = await fetch('/resendOTPwhileEmailchange');
         const result = await response.json();
@@ -196,7 +264,12 @@
             timer: 2000,
             showConfirmButton: false
           });
+          // Reset both timers when resending OTP
           startTimer();
+          startVerifyTimer();
+          // Clear input and disable verify button
+          otpInput.value = '';
+          verifyBtn.disabled = true;
         } else {
           Swal.fire({
             icon: 'error',
@@ -205,7 +278,6 @@
             confirmButtonColor: '#f44336'
           });
           resendBtn.disabled = false;
-          resendBtn.classList.remove('disabled-btn');
         }
       } catch (error) {
         Swal.fire({
@@ -215,7 +287,9 @@
           confirmButtonColor: '#f44336'
         });
         resendBtn.disabled = false;
-        resendBtn.classList.remove('disabled-btn');
+      } finally {
+        // Remove loading state
+        resendBtn.classList.remove('btn-loading');
       }
     }
 
@@ -224,13 +298,25 @@
       const otp = otpInput.value.trim();
       errorBox.style.display = 'none';
       errorBox.textContent = '';
+      
+      // Check if verification time has expired
+      if (verifyCountdown <= 0) {
+        errorBox.style.display = 'block';
+        errorBox.textContent = 'Verification time has expired. Please request a new OTP.';
+        return;
+      }
+      
       if (otp.length !== 6 || isNaN(otp)) {
         errorBox.style.display = 'block';
         errorBox.textContent = 'Please enter a valid 6-digit OTP.';
         otpInput.focus();
         return;
       }
+      
+      // Show loading state
       verifyBtn.disabled = true;
+      verifyBtn.classList.add('btn-loading');
+      
       try {
         const response = await fetch('/verifychangeEmailOtp?_method=PATCH', {
           method: 'POST',
@@ -253,6 +339,9 @@
           confirmButtonColor: '#f44336'
         });
         verifyBtn.disabled = false;
+      } finally {
+        // Remove loading state
+        verifyBtn.classList.remove('btn-loading');
       }
     }
 

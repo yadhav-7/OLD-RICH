@@ -252,12 +252,13 @@ const procedToCheckOut = async (req, res) => {
             const order = await Order.findOne({ orderId: retryOrderId })
             if (!order) return res.status(401).json({ message: 'Order not found' })
             if (paymentMethod === 'COD') {
-                if(totalAmount>1000)return res.status(401).json({message:'Order above Rs 1000 not be allowed for COD'})
+                if(order.finalAmount>1000)return res.status(401).json({message:'Order above Rs 1000 not be allowed for COD'})
                 order.status = 'Pending'
                 order.paymentStatus = 'Pending'
                 for (let item of order.orderedItems) {
                     item.status = 'Pending'
                 }
+                order.paymentMethod='COD'
             } else if (paymentMethod === 'WALLET') {
                 order.paymentStatus = 'Completed'
                 order.paymentMethod='WALLET'
@@ -670,7 +671,7 @@ const createRazorpayOrder = async (req, res) => {
             status: "Pending",
             returnStatus: null,
             paymentMethod: 'RPAY',
-            paymentStatus: 'Completed',
+            paymentStatus: 'Pending',
             razorPay: { orderId: razorpayOrder.id },
             couponApplied: appliedCoupon,
             createdOn: new Date()
@@ -684,38 +685,14 @@ const createRazorpayOrder = async (req, res) => {
             await coupon.save()
         }
 
-        // Update stock quantities
-        let productQuantityStatus = 0
-        for (let p of products) {
-            const product = await Product.findById(p.productId)
-            productQuantityStatus = product.variants?.reduce((acc,curr)=>{
-                return acc+curr
-            },0)
-            if (product) {
-                let variant = product.variants?.find(v => v.size === p.size);
-                if (variant) {
-                    variant.quantity -= p.quantity;
-                    await product.save();
-                } else {
-                    console.log(`Variant not found: ${product._id} ${product.productName} size ${p.size}`);
-                }
-            } else {
-                console.log(`Product not found: ${p.productId}`);
-            }
-            if(productQuantityStatus===0){
-                product.status='out of stock'
-                await product.save()
-            }
-        }
 
-        // Remove items from cart
-        for (let item of products) {
+          for (let item of products) {
             await Cart.updateOne(
                 { userId: userId },
                 { $pull: { items: { productId: item.productId } } }
             );
         }
-
+        
 
 
         return res.status(200).json({
@@ -774,6 +751,36 @@ const verifyRazorpayPayment = async (req, res) => {
         }
         await order.save()
 
+
+        let products = order.orderedItems
+        // Update stock quantities
+        let productQuantityStatus = 0
+        for (let p of products) {
+            const product = await Product.findById(p.product)
+            productQuantityStatus = product.variants?.reduce((acc,curr)=>{
+                return acc+curr
+            },0)
+            if (product) {
+                let variant = product.variants?.find(v => v.size === p.size);
+                if (variant) {
+                    variant.quantity -= p.quantity;
+                    await product.save();
+                } else {
+                    console.log(`Variant not found: ${product._id} ${product.productName} size ${p.size}`);
+                }
+            } else {
+                console.log(`Product not found: ${p.productId}`);
+            }
+            if(productQuantityStatus===0){
+                product.status='out of stock'
+                await product.save()
+            }
+        }
+
+      
+
+
+
         console.log('verifyRazorpayPayment end')
         return res.status(200).json({ success: true, message: "Payment verified and order placed", orderId: order.orderId });
 
@@ -812,15 +819,15 @@ const paymentFaild = async (req, res) => {
         
         const order = await Order.findOne({ "razorPay.orderId": razorPayOrderId })
 
-        for(let item of order.orderedItems){
-            const product = await Product.findOne({_id:item.product})
-            for(let variant of product.variants){
-                if(variant.size===item.size){
-                    variant.quantity+=item.quantity
-                }
-            }
-            await product.save()
-        }
+        // for(let item of order.orderedItems){
+        //     const product = await Product.findOne({_id:item.product})
+        //     for(let variant of product.variants){
+        //         if(variant.size===item.size){
+        //             variant.quantity+=item.quantity
+        //         }
+        //     }
+        //     await product.save()
+        // }
         
         if (!order) {
             return res.redirect('/pageNotFound')
@@ -845,15 +852,7 @@ const paymentFaildRetry = async (req, res) => {
 
         const orderId = req.query.orderId
         const order = await Order.findOne({ orderId: orderId })
-          for(let item of order.orderedItems){
-            const product = await Product.findOne({_id:item.product})
-            for(let variant of product.variants){
-                if(variant.size===item.size){
-                    variant.quantity-=item.quantity
-                }
-            }
-            await product.save()
-        }
+       
         if (!order) {
             
             return res.redirect('/pageNotFoud')
@@ -896,6 +895,7 @@ const paymentFaildRetry = async (req, res) => {
 
         const walletBalance = userWallet.balance
 
+        console.log(1111)
         return res.render('checkOutPage', {
             user,
             products,
@@ -926,7 +926,16 @@ const reCreateOrder = async (req, res) => {
 
         const retryOrder = await Order.findOne({ orderId: retryOrderId })
         if (!retryOrder) return res.status(401).json({ message: 'Order Not Found!' })
-        if (retryOrder.paymentStatus !== 'Failed') return res.status(401).json({ message: `order status is ${retryOrder.status}` })
+if (
+    !(
+        retryOrder.status === 'Failed' ||
+        (retryOrder.paymentMethod === 'RPAY' && retryOrder.paymentStatus === 'Pending')
+    )
+) {
+    return res.status(401).json({
+        message: `Retry not allowed. Order status: ${retryOrder.status}`
+    });
+}
         const razorPay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_KEY_SECRET
