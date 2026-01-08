@@ -117,7 +117,7 @@ for (const file of req.files) {
 
   const url = await uploadToCloudinary(resizedBuffer, "products");
 
-  images.push(url);
+  images.push(url)
 }
 
 

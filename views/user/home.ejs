@@ -8,6 +8,7 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
 
   <style>
@@ -310,6 +311,96 @@
       line-height: 1.6;
     }
 
+    /* Categories Section */
+    .categories-section {
+      background-color: var(--white);
+    }
+
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--border-radius);
+      transition: all var(--transition-speed) ease;
+      height: 400px;
+      box-shadow: var(--box-shadow);
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .category-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .category-card:hover .category-image {
+      transform: scale(1.1);
+    }
+
+    .category-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+      color: white;
+    }
+
+    .category-title {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: white;
+      font-weight: 600;
+    }
+
+    .category-description {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+
+    .category-btn {
+      background-color: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-radius: var(--border-radius);
+      transition: all var(--transition-speed) ease;
+      align-self: flex-start;
+    }
+
+    .category-btn:hover {
+      background-color: white;
+      color: var(--primary-color);
+      border-color: white;
+    }
+
+    .category-count {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+    }
+
     /* Newsletter Section */
     .newsletter-section {
       background-color: var(--dark-color);
@@ -379,6 +470,10 @@
       .section-title h2 {
         font-size: 2.2rem;
       }
+      
+      .category-card {
+        height: 350px;
+      }
     }
 
     @media (max-width: 992px) {
@@ -404,6 +499,14 @@
       
       .product-image {
         height: 250px;
+      }
+      
+      .category-card {
+        height: 300px;
+      }
+      
+      .category-title {
+        font-size: 1.6rem;
       }
     }
 
@@ -436,6 +539,19 @@
       
       .product-image {
         height: 220px;
+      }
+      
+      .category-card {
+        height: 250px;
+        margin-bottom: 1.5rem;
+      }
+      
+      .category-title {
+        font-size: 1.4rem;
+      }
+      
+      .category-description {
+        font-size: 0.9rem;
       }
       
       .newsletter-text h3 {
@@ -481,6 +597,23 @@
         padding: 2rem 1rem;
       }
       
+      .category-card {
+        height: 220px;
+      }
+      
+      .category-overlay {
+        padding: 1.5rem;
+      }
+      
+      .category-title {
+        font-size: 1.2rem;
+      }
+      
+      .category-description {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+      }
+      
       .newsletter-text h3 {
         font-size: 1.5rem;
       }
@@ -497,6 +630,10 @@
       
       .product-image {
         height: 180px;
+      }
+      
+      .category-card {
+        height: 200px;
       }
     }
 
@@ -601,75 +738,73 @@
     </div>
   </section>
 
-  <!-- BEST SELLING PRODUCTS -->
-  <section class="section best-sellers bg-light">
-    <div class="container">
-      <div class="section-title">
-        <h2>BEST SELLERS</h2>
-        <p class="section-subtitle">Customer favorites</p>
-      </div>
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-        <% for(let i=0 ; i < 4 ; i++){ %>
-          <div class="col">
-            <div class="product-card">
-              <% if(i===1) { %>
-                <span class="product-badge">BESTSELLER</span>
-              <% } %>
-              <div class="product-image-container">
-                <img src="https://i.pinimg.com/736x/bf/3b/4d/bf3b4d8102c1500670416ec2ae3b1897.jpg"
-                  class="product-image" alt="Fashion item">
-                  <div class="product-overlay">
-                    <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                  </div>
-                </a>
-              </div>
-              <div class="product-info">
-                <h3 class="product-title">GRAILD FIT</h3>
-                <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                  <button class="btn btn-success add-to-cart-btn">VIEW</button>
-                </a>
-              </div>
-            </div>
-          </div>
-        <% } %>
-      </div>
+  <!-- OLD MONEY CATEGORIES -->
+<section class="section categories-section bg-light">
+  <div class="container">
+    <div class="section-title">
+      <h2>OLD MONEY ESSENTIALS</h2>
+      <p class="section-subtitle">Timeless clothing for refined gentlemen</p>
     </div>
-  </section>
 
-  <!-- TOP WEARS -->
-  <section class="section top-wears">
-    <div class="container">
-      <div class="section-title">
-        <h2>TOP WEAR</h2>
-        <p class="section-subtitle">Elevate your upper style</p>
-      </div>
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-        <% for(let i=0 ; i < 4 ; i++){ %>
-          <div class="col">
-            <div class="product-card">
-              <% if(i===1) { %>
-                <span class="product-badge">TRENDING</span>
-              <% } %>
-              <div class="product-image-container">
-                <img src="https://i.pinimg.com/736x/69/28/58/6928580f902f47636c98947dd63a3ec5.jpg"
-                  class="product-image" alt="Polo shirt">
-                  <div class="product-overlay">
-                    <button class="btn btn-sm btn-outline-light quick-view-btn">QUICK VIEW</button>
-                  </div>
-                </a>
-              </div>
-              <div class="product-info">
-                <h3 class="product-title">POLO SHIRTS</h3>
-                <div class="product-price">$<%= [180, 150, 95, 55][i] %>.00</div>
-                  <button class="btn btn-success add-to-cart-btn">VIEW</button>
-                </a>
-              </div>
-            </div>
+    <div class="row g-4">
+
+      <!-- Polo Shirts -->
+      <div class="col-md-4">
+        <div class="category-card">
+          <img 
+            src="https://voraodi.shop/images/homePage-polo-img.png"
+            alt="Polo Shirts"
+            class="category-image">
+          <div class="category-overlay">
+            <h3 class="category-title">Polo Shirts</h3>
+            <p class="category-description">
+              Effortless luxury polos inspired by classic European leisurewear
+            </p>
+            <a href="/shop?category=686e9f627813452882732142" class="category-btn">EXPLORE</a>
           </div>
-        <% } %>
+        </div>
       </div>
+
+      <!-- Linen Pants -->
+      <div class="col-md-4">
+        <div class="category-card">
+          <img 
+            src="	https://voraodi.shop/images/homePage-linen-img.png"
+            alt="Linen Pants"
+            class="category-image">
+          <div class="category-overlay">
+        
+            <h3 class="category-title">Linen Shirts</h3>
+            <p class="category-description">
+              Lightweight linen trousers for relaxed, timeless sophistication
+            </p>
+            <a href="/shop?category=685904cff2f119b1ea7724d2" class="category-btn">EXPLORE</a>
+          </div>
+        </div>
+      </div>
+
+    
+      <div class="col-md-4">
+        <div class="category-card">
+          <img 
+            src="https://voraodi.shop/images/homePage-linen-pant.png"
+            alt="Striped Shirts"
+            class="category-image">
+          <div class="category-overlay">
+         
+            <h3 class="category-title">Linen pants</h3>
+            <p class="category-description">
+              Iconic striped shirts rooted in traditional old-money style
+            </p>
+            <a href="/shop?category=686e9b0d7813452882731fbc" class="category-btn">EXPLORE</a>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- Newsletter Section -->
   <section class="newsletter-section">
@@ -689,7 +824,6 @@
 
   <%- include('../../views/partials/user/footer',{title:'Home-page'}) %>
 
- 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize Bootstrap dropdowns explicitly
@@ -698,22 +832,18 @@
         new bootstrap.Dropdown(dropdown);
       });
 
-      // Check user block status
-      setInterval(() => {
-        fetch('/check-user-block')
-          .then(res => {
-            if (!res.ok) throw new Error('Network response was not ok');
-            return res.json();
-          })
-          .then(data => {
-            if (data.findUser && data.findUser.isBlock) {
-              window.location.href = '/login';
-            }
-          })
-          .catch(err => {
-            console.error('Block check failed:', err);
-          });
-      }, 3000);
+   
+      // Category card animations
+      const categoryCards = document.querySelectorAll('.category-card');
+      categoryCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'translateY(-10px)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'translateY(0)';
+        });
+      });
     });
   </script>
 </body>

@@ -630,7 +630,7 @@
                             <% const product=products.find(p=> p._id.toString() === productId.toString()) %>
                                 <% if (product) { %>
                                     <div class="cart-item">
-                                        <img class="product-image" src="/Uploads/<%= product.productImage[0] %>">
+                                        <img class="product-image" src="<%= product.productImage[0] %>">
                                         <div class="product-info">
                                             <h6 class="product-name">
                                                 <%= product.productName %>

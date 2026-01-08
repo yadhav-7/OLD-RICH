@@ -22,9 +22,8 @@ const pageNOTfound = async (req, res) => {
 
 // Load Home Page
 const loadHomePage = async (req, res) => {
-
   try {
-   
+  
     const user = req.session.user;
     const userData = await User.findOne({ _id: user })
     if (userData && userData?.refferalCodeApplied === 'canUse' && userData?.refferalCodeApplied !== 'used') {
@@ -32,7 +31,7 @@ const loadHomePage = async (req, res) => {
       await userData.save()
     }
 
-    const categoryData = await Category.find({ isListed: true })
+    const categoryData = await Category.find({ isListed: true }).sort({createdOn:1})
     let productData = await Product.find(
       {
         isBlocked: false,
@@ -42,18 +41,20 @@ const loadHomePage = async (req, res) => {
 
 
 
+
+
+
     productData.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 
 
-console.log('productData.length',productData.length)
 if(productData.length > 3) productData = productData.slice(0, 4)
 
     if (user && !userData.isBlock) {
       const cart = await Cart.findOne({ userId: user })
-      console.log('perfect fine')
+     
       res.render('home', { user: userData, products: productData, length: cart?.items?.length })
     } else {
-      console.log('perfect fine')
+  
       return res.render('home', { products: productData })
     }
 
@@ -80,17 +81,25 @@ const loadRegister = async (req, res) => {
 
 const checkUserBlock = async (req, res) => {
   try {
+ 
     const userId = req.session.user;
+    
+    if (!userId) {
+    
+      return res.json({ message: 'User not found' });
+     
+    }
+ 
     const findUser = await User.findById(userId);
-
+ 
     if (!findUser) {
-      return res.status(404).json({ message: 'User not found' });
+
+      return res.json({ message: 'User not found' });
     }
 
-
-
-
-    res.json({ findUser });
+    if(findUser?.isBlock)delete req.session.user
+  
+    return res.json({ findUser });
   } catch (error) {
     console.error('Error from checkUserBlock:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -114,7 +123,13 @@ async function sendVerificationEmail(email, otp) {
         user: process.env.NODEMAILER_EMAIL,
         pass: process.env.NODEMAILER_PASSWORD
       }
-    });
+    })
+
+
+    console.log(1)
+
+    console.log('email',email)
+    console.log('otp',otp)
 
     const info = await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
@@ -154,12 +169,13 @@ async function sendVerificationEmail(email, otp) {
     </div>
   </div>
   `
-    });
+    })
 
+    console.log(2)
 
     return info.accepted.length > 0;
   } catch (error) {
-    console.log('Error sending email:', error);
+    console.log('Error sending email:', error)
     return false;
   }
 }
@@ -168,6 +184,7 @@ async function sendVerificationEmail(email, otp) {
 const register = async (req, res) => {
 
   try {
+    console.log('processenvNODEMAILER_EMAIL',process.env.NODEMAILER_PASSWORD)
     const { username, email, phone, password, cpassword } = req.body;
     const findUser = await User.findOne({ email });
 
@@ -181,7 +198,7 @@ const register = async (req, res) => {
     console.log('Generated OTP:', otp);
     const emailSent = await sendVerificationEmail(email, otp);
     if (!emailSent) {
-      return res.json({ success: false, message: 'email-error' });
+      return res.render('register', { message: 'Something went wrong please try again leter' });
     }
 
     // Store OTP and user data in session
@@ -349,12 +366,9 @@ const reSendOtp = async (req, res) => {
 //load login
 const loadlogin = async (req, res) => {
   try {
-    console.log('🧩 Entered loadLogin')
     if (req.session.user) {
-      console.log('🧩 User found in session -> redirect home')
       return res.redirect('/')
     } else {
-      console.log('🧩 No session user -> render login page')
       return res.render('login')
     }
   } catch (error) {
@@ -420,8 +434,7 @@ const logout = async (req, res) => {
 
 const loadShopingPage = async (req, res) => {
   try {
-
-
+ 
     const user = req.session.user
     const page = parseInt(req.query.page) || 1
     const query = req.query.query || ''
@@ -451,7 +464,6 @@ const loadShopingPage = async (req, res) => {
       productName: { $regex: query, $options: 'i' }
     }
 
-    console.log('priceFilter',priceFilter)
    if (priceFilter) {
   const ranges = Array.isArray(priceFilter)
     ? priceFilter

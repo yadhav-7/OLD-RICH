@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
 const session = require('express-session')
 const { findById } = require('../../models/productSchema')
-const {profileUpload} = require('../../config/cloudinary')
+const {uploadToCloudinary} = require('../../config/cloudinary')
+
 async function securePass(pass) {
     try {
         const hashedPassword = await bcrypt.hash(pass, 10);
@@ -114,7 +115,7 @@ If you did not request this, please ignore this email.`,
 
 const getForgotPasspage = async (req, res) => {
     try {
-        res.render('forgotPassword')
+        res.render('forgotPassword',{message:null})
     } catch (error) {
         console.log('error from getForgotPassPage')
         res.redirect('/page-404')
@@ -128,6 +129,12 @@ const forgotEmailValid = async (req, res) => {
 
         const findEmail = await User.findOne({ email: email })
         if (findEmail) {
+            if(findEmail.googleId){
+                
+                return res.render('forgotPassword', {
+                message: 'This account was created with Google. Please sign in using Google.'
+            })
+            }
             const otp = generateOtp()
             const emailSent = await sendVerificationEmail(email, otp)
 
@@ -141,11 +148,13 @@ const forgotEmailValid = async (req, res) => {
                 return res.render('forgotPass-otp')
 
             } else {
-                res.json({ success: false, message: 'Failed to send OTP, Please try again' })
+                return res.render('forgotPassword', {
+                message: 'Failed to send OTP, Please try again'
+            })
             }
         } else {
-            return res.render('forgotPass-otp', {
-                messege: 'User with this email does not exists'
+            return res.render('forgotPassword', {
+                message: 'User with this email does not exists'
             })
         }
     } catch (error) {
@@ -156,7 +165,7 @@ const forgotEmailValid = async (req, res) => {
 
 const verifyForgotPassOtp = async (req, res) => {
     try {
-        console.log('start verifyForgotPassotp')
+     
         const enteredOtp = (req.body.otp || '').trim();
 
         if (!enteredOtp) {
@@ -617,66 +626,37 @@ const updatePassword = async (req, res) => {
     }
 }
 
-const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
-
 const editProfile = async (req, res) => {
 
     try {
-        let url
+ 
         const user = req.session.user
         if (!user) return res.status(500).json({ message: 'Somethig went wrong please try again leter' })
         const { username, phone, profileDeleteReq } = req.body;
 
-        let profileImagePath;
+    
+let imageUrl
+       
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file.buffer, "profiles");
+    }
 
-        if (req.file) {
-            // const croppedPath = path.join('public/Uploads/profile', 'cropped-' + req.file.filename);
-            // await sharp(req.file.path)
-            //     .resize(160, 160)
-            //     .toFile(croppedPath);
+let updateData = { $set: { username, phone } };
 
-            // fs.unlinkSync(req.file.path); // Clean up the original
+if (imageUrl) {
+  updateData.$set.userProfileImage = imageUrl;
+}
 
-            // console.log(req.file.path, 'req.file.path===============>\\')
-            // console.log(path.basename(croppedPath), ' path.basename(croppedPath)======================>')
-            // profileImagePath = '/Uploads/profile/' + path.basename(croppedPath);
-
-
-             url = await profileUpload(req.file, "products");
-             console.log('req.file',req.file)
-        }
-        const currentImage = await User.findById(user);
-
-        // if (currentImage.userProfileImage && profileDeleteReq) {
-        //     const imagePath = path.join(__dirname, '..', 'public', currentImage.userProfileImage);
-
-        //     // Try removing file safely
-        //     if (fs.existsSync(imagePath)) {
-        //         fs.unlinkSync(imagePath);
-        //     }
-
-        //     // Remove image path from DB
-        //     currentImage.userProfileImage = undefined; // or null
-        //     await currentImage.save(); // Save updated document
-        // }
+if (profileDeleteReq && !imageUrl) {
+  updateData.$unset = { userProfileImage: "" };
+}
 
 
-
-
-        const updateData = { username, phone };
-        if (url) updateData.userProfileImage = url;
-
-        const updatedUser = await User.findOneAndUpdate(
-            { _id: user },
-            { $set: updateData },
-            { new: true }
-        );
+     let updatedUser = await User.findOneAndUpdate({ _id: user }, updateData, { new: true });
 
         if (!updatedUser) return res.status(404).json({ message: 'User not found' });
 
-        res.status(200).json({ message: 'Profile updated successfully!' });
+        return res.status(200).json({ message: 'Profile updated successfully!' });
     } catch (error) {
         console.error('Error in editProfile:', error);
         res.status(500).json({ message: 'Server error' });

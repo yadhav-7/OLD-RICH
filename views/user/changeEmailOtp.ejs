@@ -198,12 +198,13 @@
         const seconds = String(countdown % 60).padStart(2, '0');
         timerDisplay.textContent = `Resend available in ${minutes}:${seconds}`;
         if (countdown <= 0) {
-          clearInterval(timerInterval);
-          timerDisplay.textContent = '';
+          errorBox.style.display = 'none'
+          clearInterval(timerInterval)
+          timerDisplay.textContent = ''
           resendBtn.disabled = false;
-          resendBtn.classList.remove('disabled-btn');
+          resendBtn.classList.remove('disabled-btn')
         }
-      }, 1000);
+      }, 1000)
     }
 
     function startVerifyTimer() {
@@ -227,22 +228,19 @@
       }, 1000);
     }
 
-    // Start both timers on page load
     startTimer();
     startVerifyTimer();
 
-    // --- OTP INPUT HANDLING ---
     otpInput.addEventListener('input', function(e) {
-      // Only allow numbers
+
       this.value = this.value.replace(/\D/g, '');
-      // Hide error on input
+
       errorBox.style.display = 'none';
       errorBox.textContent = '';
-      // Enable verify button only if 6 digits and verify timer hasn't expired
-      verifyBtn.disabled = (this.value.length !== 6 || verifyCountdown <= 0);
-    });
 
-    // Autofocus input on load
+      verifyBtn.disabled = (this.value.length !== 6 || verifyCountdown <= 0);
+    })
+
     window.onload = () => { otpInput.focus(); };
 
     // --- RESEND OTP ---
@@ -263,11 +261,11 @@
             text: result.message || 'A new OTP has been sent to your email!',
             timer: 2000,
             showConfirmButton: false
-          });
-          // Reset both timers when resending OTP
+          })
+          
           startTimer();
           startVerifyTimer();
-          // Clear input and disable verify button
+        
           otpInput.value = '';
           verifyBtn.disabled = true;
         } else {

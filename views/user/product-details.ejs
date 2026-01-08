@@ -67,107 +67,262 @@
             color: #777;
         }
 
-        /*
-      .related-products-section {
-    margin-top: 30px;
-    padding: 15px;
-    background: #f4fff4;
-    border-radius: 10px;
-    border: 1px solid #b6e8b6;
-}
+        /* ==================== */
+        /* RELATED PRODUCTS - PREMIUM REDESIGN */
+        /* ==================== */
 
-.related-title {
-    color: #2d7d2d;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 20px;
-}
+        .related-products-section {
+            margin: 60px 0 30px;
+            padding: 40px 0;
+            position: relative;
+        }
 
-.related-products-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-}
+        .related-products-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 100%;
+           
+            z-index: -1;
+        }
 
-.related-card {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #d7f1d7;
-    transition: all .3s ease;
-}
+        .related-title {
+            text-align: start;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
 
-.related-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 3px 12px rgba(0, 128, 0, 0.12);
-}
+        .related-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 7%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--primary-green);
+        }
 
-.related-card img {
-    width: 50%;
-    height: 140px;       
-    object-fit: cover;    
-    border-radius: 8px;
-}
-*/
-        .product-name {
-            margin: 8px 0 4px;
+        .related-products-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .related-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.08);
+            border: 1px solid rgba(46, 139, 87, 0.1);
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(46, 139, 87, 0.15);
+            border-color: rgba(46, 139, 87, 0.2);
+        }
+
+        .related-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-green), var(--light-green));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .related-card:hover::before {
+            opacity: 1;
+        }
+
+        .related-image-container {
+            position: relative;
+            padding-top: 75%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+        }
+
+        .related-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+           
+            transition: transform 0.5s ease;
+        }
+
+        .related-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .related-card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+        .related-product-name {
             font-size: 14px;
             font-weight: 600;
-            color: #2d7d2d;
+            color: #333;
+            padding: 7px 12px 0px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 40px;
         }
 
-        .product-price {
-            color: #388e3c;
+        .related-product-price {
+            color: var(--dark-green);
             font-weight: 700;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .view-btn {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #2d7d2d;
-            color: #fff;
-            border-radius: 6px;
-            font-size: 13px;
-            text-decoration: none;
-            transition: background .3s;
-        }
-
-        .view-btn:hover {
-            background: #1e5c1e;
-        }
-
-
-        .product-name {
-            margin: 10px 0 5px;
             font-size: 16px;
+            padding: 7px 12px 0px;
+        }
+
+        .related-view-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            background: transparent;
+            color: var(--primary-green);
+            border: 1.5px solid var(--primary-green);
+            border-radius: 12px;
+            font-size: 13px;
             font-weight: 600;
-            color: #2d7d2d;
-        }
-
-        .product-price {
-            color: #388e3c;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .view-btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background: #2d7d2d;
-            color: #fff;
-            border-radius: 6px;
             text-decoration: none;
-            transition: background .3s;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .view-btn:hover {
-            background: #1e5c1e;
+        .related-view-btn:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-1px);
         }
 
+        /* Premium badge for featured products */
+        .premium-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+            color: #333;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+        }
+
+
+        /* Responsive adjustments for related products */
+        @media (max-width: 1200px) {
+            .related-products-wrapper {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .related-products-section {
+                padding: 30px 0;
+                margin: 40px 0 20px;
+            }
+            
+            .related-products-wrapper {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            
+            .related-title {
+                font-size: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .related-card-content {
+                padding: 15px 12px 12px;
+            }
+            
+            .related-product-name {
+                font-size: 13px;
+                min-height: 36px;
+            }
+            
+            .related-product-price {
+                font-size: 15px;
+            }
+            
+            .related-view-btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .related-products-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .related-card-content {
+                padding: 12px 10px 10px;
+            }
+            
+            .quick-add-btn {
+                font-size: 11px;
+                padding: 8px 15px;
+            }
+        }
+
+        /* Animation for cards entrance */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .related-card {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .related-card:nth-child(1) { animation-delay: 0.1s; }
+        .related-card:nth-child(2) { animation-delay: 0.2s; }
+        .related-card:nth-child(3) { animation-delay: 0.3s; }
+        .related-card:nth-child(4) { animation-delay: 0.4s; }
+        .related-card:nth-child(5) { animation-delay: 0.5s; }
+        .related-card:nth-child(6) { animation-delay: 0.6s; }
 
         /* Product Layout */
         .product-details {
@@ -957,56 +1112,33 @@
                 </div>
             </div>
 
-            <!-- Reviews Section -->
-            <section class="reviews-section" id="reviews" aria-label="Customer reviews">
-                <h2 class="section-title">Customer Reviews</h2>
+            
 
-                <% if(product.reviews && product.reviews.length> 0) { %>
-                    <% product.reviews.forEach(review=> { %>
-                        <article class="review">
-                            <div class="reviewer">
-                                <%= review.userName %>
-                                    <span class="review-date">- <%= new Date(review.date).toLocaleDateString('en-US', {
-                                            year: 'numeric' , month: 'long' , day: 'numeric' }) %></span>
-                            </div>
-                            <div class="rating" role="img" aria-label="Review rating">
-                                <div class="stars">
-                                    <% for(let i=0; i < 5; i++) { %>
-                                        <span aria-hidden="true">
-                                            <%= i < review.rating ? '★' : '☆' %>
-                                        </span>
-                                        <% } %>
-                                </div>
-                            </div>
-                            <div class="review-content">
-                                <%= review.comment %>
-                            </div>
-                        </article>
-                        <% }); %>
-                            <% } else { %>
-                                <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
-                                <% } %>
-            </section>
-
-            <!-- 
-        <div class="related-products-section"> -->
-            <!-- <h3 class="related-title">Related Products</h3> -->
-
-            <!-- <div class="related-products-wrapper">
-
-      
-         <%# relatedProducts.forEach(product => { %>
-            <div class="related-card">
-            <img src="/Uploads/<%#= product.productImage[0] %>" alt="Product">
-            <h4 class="product-name">Sample Product 3</h4>
-            <p class="product-price">₹699</p>
-            <a href="#" class="view-btn">View</a>
-        </div>
-        <%# }) %>
-
-    </div>  -->
-            <!-- </div> -->
-
+            <!-- Related Products Section - Premium Redesign -->
+            <div class="related-products-section">
+                <h3 class="related-title">You May Also Like</h3>
+                
+                <div class="related-products-wrapper">
+                    <% relatedProducts.forEach((product, index) => { %>
+                    <div class="related-card">
+                        <% if(product.isPremium || product.isFeatured) { %>
+                        <span class="premium-badge">PREMIUM</span>
+                        <% } %>
+                        
+                        <div class="related-image-container">
+                            <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" loading="lazy">
+                        </div>
+                        
+                        <div class="related-card-content">
+                            <h4 class="related-product-name"><%= product.productName %></h4>
+                            <p class="related-product-price">Rs ₹<%= product.variants[0].salePrice || product.variants[0].regularPrice %></p>
+                            <a href="/productDetails?productId=<%= product._id %>" class="related-view-btn">View Details</a>
+                        </div>
+                     
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
 
         </div>
 
@@ -1550,6 +1682,9 @@
                             console.error(error);
                         }
                     });
+
+                
+                 
 
                     // Initialize default size selection
                     const defaultSelected = document.querySelector('.size-option.selected');

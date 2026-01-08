@@ -54,12 +54,12 @@ const costomerInfo = async (req, res) => {
 
 const blockUser = async (req, res) => {
     try {
-        console.log('flsdfjldjlj')
         const id = req.body.userId
         await User.updateOne({ _id: id }, { $set: { isBlock: true } })
-        return res.status(200).json({as:'true'})
+        console.log('req.session.admin',req.session.admin)
+        return res.status(200).json({message:true})
     } catch (error) {
-        console.log('error from block user')
+        console.log('error from block user',error)
         return res.redirect('/admin/pageError')
     }
 }

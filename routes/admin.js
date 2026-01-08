@@ -9,8 +9,7 @@ const couponManagement = require('../controllers/admin/couponController')
 const dashboardController = require('../controllers/admin/dashboardController')
 const getSalesReport = require('../controllers/admin/salesReport')
 const {userAuth,adminAuth} = require('../middlewares/auth')
-// const {upload,profileUpload} = require('../middlewares/multer')
-const { upload } = require('../config/cloudinary');
+const { upload } = require('../config/cloudinary')
 const { route } = require('./user')
 //clear flash
 

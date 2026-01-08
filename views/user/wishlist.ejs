@@ -511,7 +511,8 @@
                                                 { %>
                                                 <a
                                                     href="/productDetails?productId=<%= product.productId._id%>&slcPrice=<%= product.productId?.displayVariant?.salePrice || 0 %>">
-                                                    <img src="/uploads/<%= product.productId.productImage[0] %>"
+                                                    <img src="<%= product.productId.productImage[0] %>"
+                                                  
                                                         class="product-image" alt="<%= product.productId.productName %>"
                                                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                     <div class="product-image-placeholder" style="display: none;">

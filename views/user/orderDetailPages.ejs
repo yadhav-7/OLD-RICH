@@ -1171,7 +1171,7 @@
                             
                             <div class="item-image">
                                 <% if (item.product && item.product.productImage && item.product.productImage[0]) { %>
-                                    <img src="/Uploads/<%= item.product.productImage[0] %>" 
+                                    <img src="<%= item.product.productImage[0] %>" 
                                          alt="<%= item.productName %>"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     <div class="product-image-placeholder" style="display: none;">

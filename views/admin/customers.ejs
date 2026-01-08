@@ -9,246 +9,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/admin/customers.css">
-    <style>
-        :root {
-            --sidebar-width: 250px;
-            --collapsed-width: 70px;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            overflow-x: hidden;
-        }
-        
-        .main-content {
-            margin-left: calc(var(--sidebar-width) + 20px);
-            margin-right: 20px;
-            margin-top: 70px;
-            transition: all 0.3s ease;
-            padding: 0 15px;
-        }
-        
-        .sidebar.collapsed ~ .main-content {
-            margin-left: calc(var(--collapsed-width) + 20px);
-        }
-        
-        .page-title {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .search-container {
-            margin-bottom: 1.5rem;
-        }
-        
-        .search-wrapper {
-            position: relative;
-            max-width: 400px;
-        }
-        
-        #search-input {
-            padding-right: 40px;
-        }
-        
-        #clear-button {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: #777;
-            z-index: 5;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #2c3e50;
-            border-bottom: 1px solid #dee2e6;
-        }
-        
-        .table-responsive {
-            border-radius: 8px;
-        }
-        
-        .block-btn, .unblock-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            color: white;
-            min-width: 80px;
-        }
-        
-        .block-btn {
-            background-color: #dc3545;
-        }
-        
-        .block-btn:hover {
-            background-color: #c82333;
-        }
-        
-        .unblock-btn {
-            background-color: #28a745;
-        }
-        
-        .unblock-btn:hover {
-            background-color: #218838;
-        }
-        
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 2rem 0;
-        }
-        
-        .pagination .page-link {
-            color: #333;
-            border: 1px solid #dee2e6;
-            padding: 8px 16px;
-            min-width: 40px;
-            text-align: center;
-        }
-        
-        .pagination .page-item.active .page-link {
-            color: white;
-            background-color: #0b8030;
-            border-color: #0b8030;
-            font-weight: bold;
-        }
-        
-        .pagination .page-link:hover {
-            background-color: #e9ecef;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #777;
-        }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #ddd;
-        }
-        
-        /* Mobile-first responsive adjustments */
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 15px !important;
-                margin-right: 15px;
-                margin-top: 60px;
-                padding: 0 10px;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .search-wrapper {
-                max-width: 100%;
-            }
-            
-            .table th, .table td {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.875rem;
-            }
-            
-            .block-btn, .unblock-btn {
-                padding: 5px 10px;
-                font-size: 0.8rem;
-                min-width: 70px;
-            }
-            
-            .pagination .page-link {
-                padding: 6px 12px;
-                min-width: 35px;
-                font-size: 0.875rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .main-content {
-                margin-left: 10px !important;
-                margin-right: 10px;
-                padding: 0 5px;
-            }
-            
-            .page-title {
-                font-size: 1.3rem;
-                margin-bottom: 1rem;
-            }
-            
-            .table th, .table td {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.8rem;
-            }
-            
-            .block-btn, .unblock-btn {
-                padding: 4px 8px;
-                font-size: 0.75rem;
-                min-width: 65px;
-            }
-            
-            .pagination .page-link {
-                padding: 4px 8px;
-                min-width: 30px;
-                font-size: 0.8rem;
-            }
-        }
-        
-        /* Card layout for very small screens */
-        @media (max-width: 480px) {
-            .table-container {
-                display: none;
-            }
-            
-            .card-container {
-                display: block;
-            }
-            
-            .customer-card {
-                background: white;
-                border-radius: 8px;
-                padding: 15px;
-                margin-bottom: 15px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            
-            .customer-info {
-                margin-bottom: 10px;
-            }
-            
-            .customer-info strong {
-                display: inline-block;
-                min-width: 80px;
-                color: #2c3e50;
-            }
-        }
-        
-        @media (min-width: 481px) {
-            .card-container {
-                display: none;
-            }
-        }
-    </style>
+     <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+    
 </head>
 <body>
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
@@ -264,7 +26,6 @@
             </div>
         </div>
         
-        <!-- Table View for larger screens -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -396,7 +157,6 @@
                     });
 
                     if (res.ok) {
-                        // Update table button
                         const btn = document.getElementById(`btn-${userId}`);
                         if (btn) {
                             btn.textContent = 'Unblock';
@@ -405,18 +165,19 @@
                         }
                         
                         // Update card button
-                        const cardBtn = document.getElementById(`card-btn-${userId}`);
+                        const cardBtn = document.getElementById(`card-btn-${userId}`)
                         if (cardBtn) {
-                            cardBtn.textContent = 'Unblock';
-                            cardBtn.className = 'unblock-btn';
-                            cardBtn.setAttribute('onclick', `unblockPermission('${userId}', '${userName}')`);
+                            cardBtn.textContent = 'Unblock'
+                            cardBtn.className = 'unblock-btn'
+                            cardBtn.setAttribute('onclick', `unblockPermission('${userId}', '${userName}')`)
                         }
                         
-                        Swal.fire('Blocked!', '', 'success');
+                        Swal.fire('Blocked!', '', 'success')
                     }
                 }
             } catch (error) {
-                console.error('Error blocking user:', error);
+                console.error('Error blocking user:', error)
+                 Swal.fire('something went wrong!', '', 'error')
             }
         }
 

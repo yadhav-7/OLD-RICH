@@ -11,7 +11,7 @@ const orderController = require('../controllers/user/orderDetailsPage')
 const wishlistCondroller = require('../controllers/user/wishlistCondroller')
 const walletCondroller = require('../controllers/user/walletController')
 const refferalController = require('../controllers/user/refferalController')
-const { upload } = require('../config/cloudinary');
+const { upload } = require('../config/cloudinary')
 
 
 const {userAuth,guestAuth,adminAuth} = require('../middlewares/auth')
@@ -51,13 +51,13 @@ failureMessage: true
   res.redirect('/');
 }
     
-  });
-// Handle Google OAuth failure and redirect accordingly
+  })
+
 router.get('/handle-auth-failure', (req, res) => {
   const messages = req.session.messages || []
   req.session.messages = []
 
-  const state = req.query.state || 'signin'; // Fallback to signin
+  const state = req.query.state || 'signin'
   const message = messages[0] || 'Authentication failed';
 
   return res.render(state === 'signup' ? 'register' : 'register', { message });
@@ -93,14 +93,14 @@ router.get('/resendOTPwhileEmailchange',userAuth,profileController.resendOTPwhil
 
 router.get('/changePassword',userAuth,profileController.changePassword)
 router.patch('/updatePassword',userAuth,profileController.updatePassword)
-router.patch('/editProfile', userAuth,upload.single('image'), profileController.editProfile);
+router.patch('/editProfile', userAuth,upload.single('profilePhoto'), profileController.editProfile);
 
 
 
 //HOME PAGE & SHOPING
 router.get('/',guestAuth,userController.loadHomePage)
 router.get('/shop',guestAuth,userController.loadShopingPage)
-router.get('/check-user-block',guestAuth,userController.checkUserBlock)
+router.get('/check-user-block',userController.checkUserBlock)
 
 
 //PRODUCT MANAGEMENT

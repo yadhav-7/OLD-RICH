@@ -417,7 +417,7 @@ nav.navbar-custom .navbar-toggler-icon {
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/home">HOME</a>
+            <a class="nav-link" href="/">HOME</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/shop">COLLECTIONS</a>
@@ -469,55 +469,62 @@ nav.navbar-custom .navbar-toggler-icon {
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Save which main menu user clicked
-    document.querySelectorAll(".nav-link").forEach(link => {
-        link.addEventListener("click", () => {
-            sessionStorage.setItem("activeParent", link.getAttribute("href"));
-        });
-    });
 
-    let path = window.location.pathname.toLowerCase();
+     setInterval(() => {
+  fetch('/check-user-block', {
+    method: 'GET',
+    credentials: 'include' 
+  })
+    .then(res => {
+  
+      if (!res.ok) {
+     
+        window.location.href='/login'
+      }
+     
 
-    // Remove existing active
-    document.querySelectorAll(".nav-link").forEach(link =>
-        link.classList.remove("active")
-    );
+      return res.json()
+    })
+    .then(data => {
 
-    // Read stored parent
-    let activeParent = sessionStorage.getItem("activeParent");
 
-    // ------- PRODUCT PAGE LOGIC -------
-    if (path.startsWith("/product")) {
+      if (data?.findUser?.isBlock === true) {
+        window.location.href='/login'
+      }
+ 
+    })
+    .catch((err) => {
+    
+       console.log('error',err)
+      window.location.href='/login'
+    })
+}, 3000)
 
-        if (activeParent) {
-            document.querySelector(`a[href="${activeParent}"]`)?.classList.add("active");
-        } else {
-            document.querySelector(`a[href="/shop"]`)?.classList.add("active");
-        }
-        return;
+ 
+  const currentPath = window.location.pathname.toLowerCase();
+
+  // Remove active from all nav links
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.classList.remove("active");
+  });
+
+  // Find matching nav link
+  document.querySelectorAll(".nav-link").forEach(link => {
+    const linkPath = link.getAttribute("href");
+
+    // HOME exact match
+    if (linkPath === "/" && currentPath === "/") {
+      link.classList.add("active");
     }
-
-    // ------- NORMAL PAGE LOGIC -------
-    const navMap = {
-        "/home": ["", "home"],
-        "/shop": ["shop", "collections"],
-        "/aboutUs": ["aboutus"],
-        "/contact": ["contact"]
-    };
-
-    const firstSegment = path.split("/")[1];
-
-    for (const navLink in navMap) {
-        if (navMap[navLink].includes(firstSegment)) {
-            document.querySelector(`a[href="${navLink}"]`)?.classList.add("active");
-            return;
-        }
+    // Other exact matches
+    else if (linkPath !== "/" && currentPath === linkPath.toLowerCase()) {
+      link.classList.add("active");
     }
-
-});
+  })
+})
 </script>
 
 

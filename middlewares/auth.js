@@ -28,7 +28,6 @@ const userAuth = async (req, res, next) => {
 
 const guestAuth = async (req, res, next) => {
   try {
-   console.log('the controller is working')
     if (!req.session.user) {
 
       res.locals.user = null; 
@@ -39,7 +38,7 @@ const guestAuth = async (req, res, next) => {
 
     if (!user || user.isBlock) {
         console.log('no user or isBlocked')
-      req.session.destroy();
+        delete req.session.user
       return res.redirect('/login');
     }
 
@@ -59,6 +58,7 @@ const adminAuth = async(req, res, next) => {
             console.log('yes adminAuth is working',req.url)
             const userId = req.session.admin
             if(!userId){
+              console.log('adminAuth 1')
                 return res.redirect('/admin/login')
             }
 
@@ -67,9 +67,11 @@ const adminAuth = async(req, res, next) => {
 
             
             if (data.isAdmin) {
+              console.log('adminAuth 2')
                 next();
             } else {
-                res.redirect('/admin/login');
+              console.log('adminAuth 3')
+               return res.redirect('/admin/login');
             }
 
         } catch (error) {

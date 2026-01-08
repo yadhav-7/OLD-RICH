@@ -7,8 +7,6 @@
     <title>User Profile | <%= user.username %>
     </title>
 
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> -->
 
 
     <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
@@ -896,8 +894,11 @@
                                 <div class="modal-footer bg-light">
                                     <button id="cancellProfileEditBtn" type="button" class="btn btn-outline-secondary"
                                         data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-success" id="saveProfileChanges">Save
-                                        Changes</button>
+                                    <button type="button" class="btn btn-success" id="saveProfileChanges">
+  <span class="btn-text">Save Changes</span>
+  <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+</button>
+
                                 </div>
                             </form>
                         </div>
@@ -1721,94 +1722,116 @@
                         }
                     }
 
-                    const cropImageBtn = document.getElementById('cropImageBtn');
-                    if (cropImageBtn) {
-                        cropImageBtn.onclick = () => {
-                            const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
-                            canvas.toBlob(blob => {
-                                if (previewImage) previewImage.src = URL.createObjectURL(blob);
-                                if (cropModal) cropModal.hide();
-                                if (editModal) editModal.show();
-                            }, 'image/jpeg');
-                        };
-                    }
+                 
+
+
+                    // Add at the top with your other variables
+
+let croppedImageBlob = null;  // ← Add this
+
+// In cropImageBtn click handler:
+if (cropImageBtn) {
+    cropImageBtn.onclick = () => {
+        const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+        canvas.toBlob(blob => {
+            croppedImageBlob = blob;  // ← Store the cropped blob
+            if (previewImage) previewImage.src = URL.createObjectURL(blob);
+            if (cropModal) cropModal.hide();
+            if (editModal) editModal.show();
+        }, 'image/jpeg');
+    };
+}
+
 
                     // Save profile with validation and fetch
-                    const saveProfileBtn = document.getElementById('saveProfileChanges');
-                    if (saveProfileBtn) {
-                        saveProfileBtn.addEventListener('click', async function (e) {
-                            e.preventDefault();
-                            let isValid = true;
+const saveProfileBtn = document.getElementById('saveProfileChanges')
+const spinner = saveProfileBtn.querySelector('.spinner-border');
+const text = saveProfileBtn.querySelector('.btn-text');
 
-                            // Username validation
-                            const usernameInput = document.getElementById('editUsername');
-                            if (usernameInput) {
-                                const username = usernameInput.value.trim();
-                                if (!patterns.username.test(username)) {
-                                    showFieldError(usernameInput, usernameInput.nextElementSibling,
-                                        "Username must be 3-20 letters only, no numbers or spaces");
-                                    isValid = false;
-                                } else {
-                                    usernameInput.classList.remove('is-invalid');
-                                    usernameInput.classList.add('is-valid');
-                                    usernameInput.nextElementSibling.style.display = 'none';
-                                }
-                            }
+if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        let isValid = true;
 
-                            // Phone validation
-                            const phoneInput = document.getElementById('editphone');
-                            if (phoneInput) {
-                                const phone = phoneInput.value.trim();
-                                const countryCode = document.getElementById('editCountry')?.value || 'IN';
-                                const countryInfo = getCountryValidation(countryCode);
+        // Username validation
+        const usernameInput = document.getElementById('editUsername');
+        if (usernameInput) {
+            const username = usernameInput.value.trim();
+            if (!patterns.username.test(username)) {
+                showFieldError(usernameInput, usernameInput.nextElementSibling,
+                    "Username must be 3-20 letters only, no numbers or spaces");
+                isValid = false;
+            } else {
+                usernameInput.classList.remove('is-invalid');
+                usernameInput.classList.add('is-valid');
+                usernameInput.nextElementSibling.style.display = 'none';
+            }
+        }
 
-                                if (!countryInfo.phonePattern.test(phone)) {
-                                    showFieldError(phoneInput, phoneInput.nextElementSibling,
-                                        `Enter a valid ${countryInfo.phoneFormat}`);
-                                    isValid = false;
-                                } else {
-                                    phoneInput.classList.remove('is-invalid');
-                                    phoneInput.classList.add('is-valid');
-                                    phoneInput.nextElementSibling.style.display = 'none';
-                                }
-                            }
+        // Phone validation
+        const phoneInput = document.getElementById('editphone');
+        if (phoneInput) {
+            const phone = phoneInput.value.trim();
+            const countryCode = document.getElementById('editCountry')?.value || 'IN';
+            const countryInfo = getCountryValidation(countryCode);
 
-                       
-                            if (!isValid) return;
+            if (!countryInfo.phonePattern.test(phone)) {
+                showFieldError(phoneInput, phoneInput.nextElementSibling,
+                    `Enter a valid ${countryInfo.phoneFormat}`);
+                isValid = false;
+            } else {
+                phoneInput.classList.remove('is-invalid');
+                phoneInput.classList.add('is-valid');
+                phoneInput.nextElementSibling.style.display = 'none';
+            }
+        }
 
-                           
-                            try {
-                                const formData = new FormData();
-                                const usernameInput = document.getElementById('editUsername');
-                                const phoneInput = document.getElementById('editphone');
+        if (!isValid) return;
 
-                                if (usernameInput) formData.append('username', usernameInput.value.trim());
-                                if (phoneInput) formData.append('phone', phoneInput.value.trim());
-                                if (fileInput?.files[0]) formData.append('profilePhoto', fileInput.files[0]);
-                                if (profileDeleteReq) formData.append('profileDeleteReq', profileDeleteReq);
+        try {
+            const formData = new FormData();
+            const usernameInput = document.getElementById('editUsername');
+            const phoneInput = document.getElementById('editphone');
 
-                                const res = await fetch('/editProfile', {
-                                    method: 'PATCH',
-                                    body: formData
-                                });
+            if (usernameInput) formData.append('username', usernameInput.value.trim());
+            if (phoneInput) formData.append('phone', phoneInput.value.trim());
+            
+            // FIXED: Only append profilePhoto ONCE, not twice!
+            // Use croppedImageBlob if it exists, otherwise fallback to original file
+            if (croppedImageBlob) {
+                formData.append('profilePhoto', croppedImageBlob, 'profile.jpg');
+            } else if (fileInput?.files[0]) {
+                formData.append('profilePhoto', fileInput.files[0]);
+            }
+            
+            if (profileDeleteReq) formData.append('profileDeleteReq', profileDeleteReq);
 
-                                profileDeleteReq = false;
+            saveProfileBtn.disabled = true;
+            spinner.classList.remove('d-none');
+            text.textContent = "Saving...";
+            
+            const res = await fetch('/editProfile', {
+                method: 'PATCH',
+                body: formData
+            });
 
-                                if (res.ok) {
-                                    sessionStorage.setItem('profileToast', 'success');
-                                } else {
-                                    sessionStorage.setItem('profileToast', 'error');
-                                }
+            profileDeleteReq = false;
+            croppedImageBlob = null; // Clear the blob after sending
 
-                                window.location.reload();
+            if (res.ok) {
+                sessionStorage.setItem('profileToast', 'success');
+            } else {
+                sessionStorage.setItem('profileToast', 'error');
+            }
 
-                            } catch (error) {
-                                sessionStorage.setItem('profileToast', 'error');
-                                window.location.reload();
-                            }
-                        });
-                    }
+            window.location.reload();
 
+        } catch (error) {
+            sessionStorage.setItem('profileToast', 'error');
+            window.location.reload();
+        }
+    });
+}
                     // Toast notifications
                     const toast = sessionStorage.getItem('profileToast');
                     if (toast === 'success' && typeof Swal !== 'undefined') {
