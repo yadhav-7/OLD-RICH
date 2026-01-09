@@ -100,11 +100,7 @@ const getSalesReport = async (req, res) => {
 
         console.log('totalDoc',totalDoc)
 
-        let j = 1
-        for(let i of orders){
-            console.log('order',j++,i)
-        }
-
+        
         let totalPage = Math.ceil(totalDoc / limit);
 
 
@@ -145,10 +141,7 @@ const getSalesReport = async (req, res) => {
 
         orders = orders.slice(skip,limit+skip) 
 
-        j = 1
-        for(let i of orders){
-            console.log('order',j++,i)
-        }
+       
 
         const summary = {
             totalSalesCount,

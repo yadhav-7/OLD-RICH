@@ -6,22 +6,21 @@ const Wallet = require('../../models/walletSchema')
 const PDFDocument = require('pdfkit')
 const fs = require("fs");
 
-const mongoose = require('mongoose'); // make sure you imported this
+const mongoose = require('mongoose')
 const orderDetailPage = async (req, res) => {
     try {
         const userId = req.session.user
         const user = await User.findOne({ _id: userId, isBlock: false })
 
         const id = req.query.orderId;
-        console.log('req.query.orderId', req.query.orderId)
-        console.log('id', id)
+       
         const order = await Order.findOne({ orderId: id }).populate('orderedItems.product') // or findOne({ orderId: id }) if it's a custom ID
 
         const cart = await Cart.findOne({ userId: userId })
 
         const length = cart.items?.length
 
-        res.render('orderDetailPages', { order, user, length });
+       return res.render('orderDetailPages', { order, user, length });
 
     } catch (error) {
         console.error('error in orderDetailPages', error);

@@ -4,17 +4,17 @@ const mongoose = require('mongoose');
 const getCouponPage = async (req, res) => {
     try {
 
-        
+
         let search = req.query.search || ''
-          
+
 
         const regex = new RegExp(search, 'i')
-        
+
         let currentPage = parseInt(req.query.page || 1);
-        console.log('currentPage',currentPage)
+        console.log('currentPage', currentPage)
         let limit = 3;
 
- 
+
         const query = {
             $or: [
                 { name: { $regex: regex } },
@@ -31,7 +31,7 @@ const getCouponPage = async (req, res) => {
         let totalPage = Math.ceil(totalCount / limit)
         const currentDate = new Date();
 
-    
+
 
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
             return res.status(200).json({ coupons, currentDate, currentPage, totalPage });
@@ -46,7 +46,7 @@ const getCouponPage = async (req, res) => {
 
 const addCoupons = async (req, res) => {
     try {
-       
+
         const { formData } = req.body;
 
         if (!formData) {
@@ -81,7 +81,7 @@ const addCoupons = async (req, res) => {
             });
         }
 
-        
+
         const newCoupon = new Coupon({
             name: formData.name,
             code: formData.code,
@@ -174,37 +174,34 @@ const editCoupon = async (req, res) => {
         const id = req.query.id
 
         const { ObjectId } = mongoose.Types;
- 
-        const {couponData} = req.body
 
-        console.log('id',id)
-        console.log('req.query.id',req.query.id)
+        const { couponData } = req.body
 
-      
+        console.log('id', id)
+        console.log('req.query.id', req.query.id)
+
+
         if (!couponData) return res.status(401).json({ message: 'no data' })
 
-            if(couponData.name===couponData.code)return res.status(401).json({message:'Coupon name and code shuold be different'})
+        if (couponData.name === couponData.code) return res.status(401).json({ message: 'Coupon name and code shuold be different' })
         const checkExists = await Coupon.findOne({
-            $or: [
-                { name: { $regex: new RegExp(couponData.name, "i") } },
-                { code: { $regex: new RegExp(couponData.code, "i") } }
-            ],
-            _id:{$ne:id}
+            code: { $regex: new RegExp(couponData.code, "i") },
+            _id: { $ne: id }
         });
 
         if (checkExists) return res.status(400).json({ message: 'Coupon already exists use another code or name!' })
 
-            const updatedCoupon = await Coupon.findByIdAndUpdate(
-                id,
-                {$set:couponData},
-                {new:true}
-            )
+        const updatedCoupon = await Coupon.findByIdAndUpdate(
+            id,
+            { $set: couponData },
+            { new: true }
+        )
 
-            if(!updatedCoupon){
-                return res.json({message:'Something went wrong try again!'})
-            }
+        if (!updatedCoupon) {
+            return res.json({ message: 'Something went wrong try again!' })
+        }
 
-            return res.status(200).json({message:'Coupon Updated Succussfull',updatedCoupon})
+        return res.status(200).json({ message: 'Coupon Updated Succussfull', updatedCoupon })
 
     } catch (error) {
         console.error('error in editCoupon', error)

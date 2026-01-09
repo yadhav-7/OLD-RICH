@@ -314,7 +314,7 @@ const procedToCheckOut = async (req, res) => {
         if (coupon?.amount) {
             discountPerItem = coupon.amount / selectedItems.length
         }
-        console.log('selectedItems')
+       
         for (const item of selectedItems) {
             const product = await Product.findById(item.productId);
             if (!product) return res.status(500).json({ message: `Product with ID ${item.productId} not found.` });
@@ -347,7 +347,6 @@ const procedToCheckOut = async (req, res) => {
                 finalPrice: finalPrice,
                 totalPrice: totalPrice
             })
-            console.log('variant.regularPrice',variant.regularPrice)
         }
 
 
@@ -585,6 +584,7 @@ const createRazorpayOrder = async (req, res) => {
         let discountPerItem = coupon?.amount ? coupon.amount / selectedItems.length : 0
         let finalPrice = 0
 
+        let i=0
         for (const item of selectedItems) {
             const product = await Product.findById(item.productId);
             if (!product) return res.status(400).json({ message: `Product ${item.productId} not found` });
@@ -601,7 +601,9 @@ const createRazorpayOrder = async (req, res) => {
             finalPrice = variant.salePrice - (discountPerItem / item.quantity)
 
             finalAmount += finalPrice * item.quantity
-            discount += variant.regularPrice - variant.salePrice
+
+            discount += (variant.regularPrice - variant.salePrice)*item.quantity
+
             products.push({
                 productId: product._id,
                 name: product.productName,
@@ -680,7 +682,7 @@ const createRazorpayOrder = async (req, res) => {
         await newOrder.save()
 
         if (couponApplied) {
-            console.log('coupon',coupon)
+           
             coupon.usedBy?.push(newOrder.userId)
             await coupon.save()
         }
@@ -715,7 +717,7 @@ const createRazorpayOrder = async (req, res) => {
 const verifyRazorpayPayment = async (req, res) => {
     try {
 
-        console.log('verifyRazorpayPayment start')
+        
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature, selectedItems, userId, address, couponApplied, couponCode } = req.body;
 
         if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
@@ -797,12 +799,10 @@ const orderSuccess = async (req, res) => {
         const orderId = req.query.orderId
 
         const order = await Order.findOne({ orderId }).sort({ createdOn: 1 })
-        console.log('orderId', orderId)
-        console.log('typeof orderId', typeof orderId)
-        console.log('order', order)
-        console.log('order.orderedItems', order.orderedItems)
+       
+    
         const products = order.orderedItems
-        console.log('order', order)
+        
         res.render('orderSuccessPage', {
             order: order,
             products: products

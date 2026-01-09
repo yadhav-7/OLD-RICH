@@ -1117,7 +1117,7 @@
                 </div>
             </div>
             
-            <!-- Shipping Information -->
+           
             <% if (order.status === 'Shipped' || order.status === 'Delivered') { %>
             <div class="shipping-info">
                 <div class="shipping-row">
@@ -1209,7 +1209,8 @@
     item.status !== 'returnRequested' &&
     item.status !== 'returned' &&
     item.status !== 'reutrnRejected' &&
-    !(order.paymentMethod === 'RPAY' && order.paymentStatus === 'Pending')
+    !(order.paymentMethod === 'RPAY' && order.paymentStatus === 'Pending')&&
+    !(order.paymentMethod === 'RPAY' && order.paymentStatus === 'Failed')
 ) { %>
 
     <button type="button"

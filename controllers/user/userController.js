@@ -125,9 +125,6 @@ async function sendVerificationEmail(email, otp) {
       }
     })
 
-
-    console.log(1)
-
     console.log('email',email)
     console.log('otp',otp)
 

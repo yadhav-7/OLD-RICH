@@ -242,7 +242,7 @@ const handleReturnReq = async (req, res) => {
 
 
 
-        console.log('orderedItems',orderedItems)
+        
         let checkTotalReturn = orderedItems.every((i) => i.status === 'returned')
         if (checkTotalReturn) order.status = 'returned'
 
