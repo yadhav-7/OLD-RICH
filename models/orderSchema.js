@@ -39,6 +39,10 @@ const orderSchema = new mongoose.Schema({
             type: Number,
             required: true
         },
+        regularPrice: {
+            type:Number,
+            default:0
+        },
         price: {
             type: Number,
             default: 0
@@ -51,12 +55,20 @@ const orderSchema = new mongoose.Schema({
         status: {
             type: String,
             required: true,
-            enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected']
+            enum: ['Failed', 'Pending', 'Processing', 'Shipped', 'Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected']
         },
         returnReason: {
             type: String,
             default: null
         },
+        reFund: {
+            type: Number,
+            default:0
+        },
+        reFundStatus: {
+            type: String,
+            enum: ['Pending', 'Completed', 'Failed']
+        }
     }],
     totalPrice: {
         type: Number,
@@ -87,17 +99,31 @@ const orderSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected']
+        enum: ['Failed', 'Pending', 'Processing', 'Shipped', 'Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected']
     },
     returnReason: {
         type: String,
         default: null
     },
+    reFundStatus: {
+        type: String,
+        enum: ['Pending', 'Completed', 'Failed']
+    },
+    reFund: {
+        type: Number,
+        default:0
+    },
     paymentMethod: {
         type: String,
-        enum: ['COD', 'RPAY', 'Wallet'],
+        enum: ['COD', 'RPAY', 'WALLET'],
         required: true
     },
+    razorPay: {
+        orderId: { type: String },
+        paymentId: { type: String },
+        signature: { type: String }
+    },
+
     paymentStatus: {
         type: String,
         enum: ['Pending', 'Completed', 'Failed']
@@ -107,10 +133,7 @@ const orderSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
-    // couponApplied: {
-    //     type: Boolean,
-    //     default: false
-    // },
+
     couponApplied: {
         applied: {
             type: Boolean,

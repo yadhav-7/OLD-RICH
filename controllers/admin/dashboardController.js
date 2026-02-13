@@ -1,141 +1,99 @@
 const Orders = require('../../models/orderSchema')
-const Users = require('../../models/userSchema')
-const PDFDocument = require('pdfkit')
-const fs = require('fs')
-
 const loadDashboard = async (req, res) => {
     try {
-        const orders = await Orders.find()
-        const usersCount = await Users.countDocuments()
-        const totalOrders = await Orders.countDocuments()
-        console.log('totalOrders', totalOrders)
-        let totalAmount = 0
-        let totalDiscound = 0
+        const date = req.query.date || null;
+        let filter = {}
 
-        for (let doc of orders) {
-            totalAmount += doc.finalAmount
-            totalDiscound += doc.discount
-        }
+        if (date !== null) {
+            const today = new Date();
 
-        const rawDailySales = await Orders.aggregate([
-            { $match: { status: { $nin: ["cancelled", "returned"] } } },
-            {
-                $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdOn" } },
-                    totalSales: { $sum: "$finalAmount" },
-                    totalDiscount: { $sum: "$discount" }
+            switch (date) {
+                case 'daily': {
+                    const startOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0));
+                    const endOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999));
+
+                    filter.createdOn = {
+                        $gte: startOfDay,
+                        $lte: endOfDay
+                    };
+                    break;
                 }
-            },
-            { $sort: { "_id": 1 } }
-        ]);
 
 
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-        const dailySales = [];
-        for (let d = startOfMonth; d <= endOfMonth; d.setDate(d.getDate() + 1)) {
-            const dateStr = d.toISOString().split('T')[0];
-            const dayData = rawDailySales.find(ds => ds._id === dateStr);
-            dailySales.push({
-                _id: dateStr,
-                totalSales: dayData ? dayData.totalSales : 0,
-                totalDiscount: dayData ? dayData.totalDiscount : 0
-            });
+                case 'weekly': {
+                    const firstDayOfWeek = new Date(today);
+                    firstDayOfWeek.setDate(today.getDate() - today.getDay());
+                    firstDayOfWeek.setHours(0, 0, 0, 0);
+
+                    const lastDayOfWeek = new Date(firstDayOfWeek);
+                    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+                    lastDayOfWeek.setHours(23, 59, 59, 999);
+
+                    filter.createdOn = { $gte: firstDayOfWeek, $lte: lastDayOfWeek };
+                    break;
+                }
+
+                case 'monthly': {
+                    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+
+                    filter.createdOn = { $gte: firstDayOfMonth, $lte: lastDayOfMonth };
+                    break;
+                }
+
+                case 'yearly': {
+                    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+                    const lastDayOfYear = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+
+                    filter.createdOn = { $gte: firstDayOfYear, $lte: lastDayOfYear };
+                    break;
+                }
+
+                case 'custom': {
+                    const { startDate, endDate } = req.query;
+
+                    if (startDate && endDate) {
+                        filter.createdOn = {
+                            $gte: new Date(startDate),
+                            $lte: new Date(endDate)
+                        };
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+            }
         }
+        const topProducts = await getTopProducts(filter)
 
-        console.log('dailySales', dailySales)
+        const topCategory = await topSellingCategory(filter)
 
-        const topProducts = await getTopProducts()
+        console.log('topProducts',topProducts)
+        console.log('topCategory',topCategory)
 
-        const topCategory = await topSellingCategory()
-
-        res.render('dashboard', {
-            orders,
-            totalOrders,
-            totalAmount,
-            totalDiscound,
-            usersCount,
+        return res.render('dashboard', {
             topProducts,
             topCategory,
-            dailySales
         })
     } catch (error) {
         console.log('Load Dashboard function error', error)
-        return res.redirect('/admin/pageError')
+        return res.redirect('/admin/pageNotFound')
     }
 }
 
-
-const salesReport = async (req, res) => {
-    console.log('i reach hear!')
-  try {
-    // Fetch all orders from database
-    const orders = await Orders.find();
-
-    if (!orders || orders.length === 0) {
-      return res.status(404).send('No orders found');
-    }
-
-    // Flatten all ordered items with human-readable date
-    const sales = orders.flatMap(order =>
-      order.orderedItems.map(item => {
-        const options = { day: '2-digit', month: 'short', year: 'numeric' };
-        const humanDate = new Date(order.createdOn).toLocaleDateString('en-US', options);
-
-        return {
-          date: humanDate,
-          product: item.productName,
-          quantity: item.quantity,
-          amount: item.finalPrice
-        };
-      })
-    );
-
-    // Calculate total sales
-    const totalSales = orders.reduce((acc, order) => acc + order.finalAmount, 0);
-
-    // Set headers to trigger download
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="sales_report.pdf"');
-
-    // Generate PDF
-    const doc = new PDFDocument({ margin: 30 });
-    doc.pipe(res);
-
-    // PDF Header
-    doc.fontSize(18).text('Sales Report', { align: 'center' });
-    doc.moveDown();
-    doc.fontSize(12).text(`Total Sales: ₹${totalSales}`);
-    doc.moveDown();
-
-    // Table Header
-    doc.text('Date       Product     Quantity     Amount');
-    doc.moveDown(0.5);
-
-    // Table rows
-    sales.forEach(s => {
-      doc.text(`${s.date}   ${s.product}   ${s.quantity}   ₹${s.amount}`);
-    });
-
-    doc.end();
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error generating sales report PDF');
-  }
-};
-
-module.exports = salesReport;
-
-const getTopProducts = async () => {
+const getTopProducts = async (filter) => {
     try {
+
+        console.log('fileter',filter)
+
 
         console.log('i reach hear...................... getTopProducts')
         const topSellingProducts = await Orders.aggregate([
             {
                 $match: {
+                    ...filter,
                     status: { $nin: ["cancelled", "returned"] }
                 }
             },
@@ -192,12 +150,13 @@ const getTopProducts = async () => {
     }
 }
 
-const topSellingCategory = async () => {
+const topSellingCategory = async (filter) => {
     try {
         console.log('i reach hear...................... topSellingCategory')
         const totalSold = await Orders.aggregate([
             {
                 $match: {
+                    ...filter,
                     status: { $nin: ["cancelled", "returned"] }
                 }
             },
@@ -247,5 +206,4 @@ const topSellingCategory = async () => {
 
 module.exports = {
     loadDashboard,
-    salesReport
 }

@@ -9,35 +9,31 @@ const productDetails = async (req, res) => {
         const userData = await User.findOne({ _id: userId });
         const productId = req.query.productId;
         const product = await Product.findById(productId).populate('category');
-        const priceOftheProduct = req.query.slcPrice;
-        const cart = await Cart.findOne({userId:userId})
-        // const length = cart.items?.length||0
+        const priceOftheProduct = req.query.slcPrice
+        let cart 
+        let length
+        if(userId){
+            cart = await Cart.findOne({userId:userId})
+            if(cart&&cart.items){
+            length = cart.items?.length||0
+                 }
+            }
 
-        // Debug logs
-        console.log('Price from query:', priceOftheProduct);
-        console.log('Product variants:', product.variants);
 
-        let selectedVariantIndex = 0; // Default to first variant
+        let selectedVariantIndex = 0
 
         if (priceOftheProduct && product.variants?.length) {
-            // Compare against salePrice instead of price
             selectedVariantIndex = product.variants.findIndex(variant => {
                 if (!variant || variant.salePrice === undefined) {
                     return false;
                 }
-                // Compare as numbers to avoid string comparison issues
                 return Number(variant.salePrice) === Number(priceOftheProduct);
-            });
+            })
 
-            if (selectedVariantIndex === -1) {
-                console.log('No variant found with the given price. Defaulting to index 0.');
-            } else {
-                console.log(`Matching variant found at index: ${selectedVariantIndex}`);
-            }
+            
         }
 
 
-        console.log(`Matching variant found at index: ${selectedVariantIndex}`);
         const findCategory = product.category;
         const categoryOffer = findCategory.categoryOffer || 0;
         const productOffer = product.productOffer || 0;
@@ -50,7 +46,7 @@ const productDetails = async (req, res) => {
             totalOffer: totalOffer,
             category: findCategory,
             selectedVariantIndex: selectedVariantIndex,
-            // length:length
+            length:length
         });
     } catch (error) {
         console.error('Error from productDetails:', error);

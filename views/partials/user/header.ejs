@@ -10,9 +10,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* ===== Scoped Navbar CSS ===== */
-/* Preserves all original styling but prevents leaks */
+ 
+ 
+  <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
+ <style>
+
+    
 :root {
   --navbar-primary: #2a2a2a;
   --navbar-secondary: #e63946;
@@ -40,9 +44,41 @@ nav.navbar-custom .navbar-brand:hover {
   color: var(--navbar-secondary);
 }
 
-/* nav.navbar-custom .nav-item { */
-  /* Added for better dropdown scoping */
-/* } */
+/* Style dropdown items */
+.dropdown-itm {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #2d6a4f;              /* Dark green */
+  text-decoration: none;
+  transition: 0.25s ease;
+  border-radius: 8px;
+}
+
+/* Icons inside the item */
+.dropdown-itm i {
+  font-size: 16px;
+  color: #2d6a4f;              /* Match text color */
+  transition: 0.25s ease;
+}
+
+/* Hover style */
+.dropdown-itm:hover {
+  background: #d8f3dc;      
+  color: #1b4332;             
+}
+
+/* Hover icon color change */
+.dropdown-itm:hover i {
+  color: #1b4332;
+}
+
+/* Divider spacing optional (looks cleaner) */
+.dropdown-divider {
+  margin: 8px 0;
+}
+
 
 nav.navbar-custom .nav-link {
   font-weight: 600;
@@ -134,13 +170,13 @@ nav.navbar-custom .dropdown-menu {
   margin-top: 10px;
 }
 
-nav.navbar-custom .dropdown-item {
+nav.navbar-custom .dropdown-itm {
   font-weight: 500;
   padding: 8px 15px;
   transition: all var(--navbar-transition) ease;
 }
 
-nav.navbar-custom .dropdown-item:hover {
+nav.navbar-custom .dropdown-itm:hover {
   background-color: var(--navbar-light);
   color: var(--navbar-secondary);
   padding-left: 20px;
@@ -206,20 +242,21 @@ nav.navbar-custom .navbar-toggler-icon {
             <a class="nav-link" href="#">contact</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/about">ABOUT US</a>
+            <a class="nav-link" href="/aboutUs">ABOUT US</a>
           </li>
         </ul>
         
         <div class="d-flex align-items-center">
           <div class="nav-icons">
-            <a href="/search" class="nav-icon">
+            <!-- <a href="/search" class="nav-icon">
               <i class="bi bi-search"></i>
-            </a>
+            </a> -->
             <a href="/wishlist" class="nav-icon">
               <i class="bi bi-heart"></i>
             </a>
             <a href="/cart" class="nav-icon">
               <i class="bi bi-cart"></i>
+              
                <span class="cart-count"><%= locals.length || 0 %></span>
 
             </a>
@@ -231,10 +268,10 @@ nav.navbar-custom .navbar-toggler-icon {
                 <i class="bi bi-person"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="/userProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                <li><a class="dropdown-itm" href="/userProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
                 <!-- <li><a class="dropdown-item" href="/orders"><i class="bi bi-bag me-2"></i>Orders</a></li> -->
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                <li><a class="dropdown-itm" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
               </ul>
             </div>
           <% } else { %>
@@ -251,6 +288,8 @@ nav.navbar-custom .navbar-toggler-icon {
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+
+   
   setInterval(() => {
     fetch('/check-user-block')
       .then((res) => res.json()) 

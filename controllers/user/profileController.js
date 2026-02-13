@@ -28,8 +28,7 @@ function generateOtp() {
 
 const sendVerificationEmail = async (email, otp) => {
     try {
-        console.log(`email:${email}  otp:${otp}`)
-        console.log(1)
+        
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             port: 587,
@@ -40,18 +39,71 @@ const sendVerificationEmail = async (email, otp) => {
                 pass: process.env.NODEMAILER_PASSWORD
             }
         })
-        console.log(2)
+     
         const mailOptions = {
-            from: process.env.NODEMAILER_EMAIL,
-            to: email,
-            subject: 'Your OTP for password reset',
-            text: `Your OTP is ${otp}`,
-            html: `<b><h4>Your OTP :${otp}</h4></b>`
-        }
-        console.log(3)
+    from: process.env.NODEMAILER_EMAIL,
+    to: email,
+    subject: 'OLD RICH | Password Reset OTP',
+
+    text: `Hello,
+Your request to reset your OLD RICH account password has been received.
+Your OTP is: ${otp}
+This OTP is valid for 10 minutes.
+If you did not request this, please ignore this email.`,
+
+    html: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #d8f3dc; border-radius: 10px; background: #ffffff;">
+    
+    <h2 style="color: #1b4332; text-align: center; font-weight: 700; margin-bottom: 5px;">
+        OLD RICH
+    </h2>
+    <p style="text-align:center; margin-top:-5px; color:#2d6a4f; font-size:14px;">
+        Premium Old Money Clothing for Men
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #95d5b2; margin: 20px 0;">
+
+    <p style="font-size: 15px; color: #1b4332;">
+        Hi,
+        <br><br>
+        We received a request to reset your <strong>OLD RICH</strong> account password.  
+        Please use the One-Time Password (OTP) below to continue.
+    </p>
+
+    <div style="text-align:center; margin: 30px 0;">
+        <div style="
+            display: inline-block; 
+            padding: 15px 25px; 
+            background: #2d6a4f; 
+            color: #ffffff; 
+            font-size: 26px; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            letter-spacing: 3px;
+        ">
+            ${otp}
+        </div>
+    </div>
+
+    <p style="font-size: 14px; color: #2d6a4f;">
+        This OTP is valid for <strong>10 minutes</strong>.  
+        If you did not request this, simply ignore this email.
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #95d5b2; margin-top: 30px;">
+
+    <p style="font-size: 13px; color: #40916c; text-align:center;">
+        © OLD RICH — Redefining Classic Men's Fashion<br>
+        This is an automated message. Please do not reply.
+    </p>
+</div>
+`
+
+};
+
+       
         const info = await transporter.sendMail(mailOptions)
-        console.log(4)
-        console.log('Email Send:', info.messageId)
+        
         return true
     } catch (error) {
         console.error('error from sending email', error)
@@ -182,54 +234,62 @@ const postNewPassword = async (req, res) => {
 const userProfile = async (req, res) => {
     try {
 
-        console.log('reached at userprofile ')
 
-        const page = req.query.page||1
-        const limit = 2
-        const skip = (page-1)*limit
+        let page = req.query.page
+        page = parseInt(page) || 1
+const limit = 3
+const skip = (page - 1) * limit
+
+        
+   
         const filter = req.query.filter || ''
+       
         const sort = req.query.sort || ''
         const userId = req.session.user;
-        let query={}
-        if(userId){
-         query.userId=userId
+         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+        let query = {}
+        if (userId) {
+            query.userId = userId
+            
         }
-        if(filter&&filter!=='all'){
-           query.status=filter
+        if (filter && filter !== 'all') {
+            query.status = filter
         }
-       
-        console.log(query)
+
+
+
         const order = await Order.find(query)
             .sort({ createdOn: -1 })
             .skip(skip)
             .limit(limit)
 
-            const totalDoc = await Order.countDocuments(query)
+        const totalDoc = await Order.countDocuments(query)
 
-            const totalPage = Math.ceil(totalDoc/limit)
+        const totalPage = Math.ceil(totalDoc / limit)
         const totalOrders = await Order.countDocuments({ userId: userId })
         const completedOrders = await Order.countDocuments({ userId: userId, status: 'Delivered' })
         const cancelledOrders = await Order.countDocuments({ userId: userId, status: 'cancelled' })
         const inProgress = await Order.countDocuments({ userId: userId, status: { $nin: ['Delivered', 'cancelled', 'returnRequested', 'returned', 'reutrnRejected'] } })
-            .populate('orderedItems.product')
+        .populate('orderedItems.product')
 
-            
-console.log(1)
         const cart = await Cart.findOne({ userId: userId })
         let length
-        console.log(2)
-        if(cart && cart.items?.length){
+    
+        if (cart && cart.items?.length) {
             length = cart.items?.length
         }
-        
+
         const userData = await User.findById(userId)
-        console.log(3)
+      
         const addressDoc = await Address.findOne({ userId });
-console.log(4)
+  
         const addressData = addressDoc?.address || []
-        console.log(5)
+    
         function getStatusBadgeClass(status) {
             switch (status.toLowerCase()) {
+                case 'Failed': return 'bg-danger text-white';
                 case 'pending': return 'bg-warning text-dark';
                 case 'processing': return 'bg-info text-white';
                 case 'shipped': return 'bg-primary text-white';
@@ -241,15 +301,11 @@ console.log(4)
             }
         }
 
-        console.log(6)
-        
+
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-            console.log(7)
-            console.log('order datas',order)
-            return res.status(200).json({order:order,totalPage:totalPage,currentPage:page})
+            return res.status(200).json({ order: order, totalPage: totalPage, currentPage: page })
         }
-console.log(8)
-        res.render('userProfile', {
+        return res.render('userProfile', {
             user: userData,
             addressData: addressData,
             order: order,
@@ -258,14 +314,10 @@ console.log(8)
             cancelledOrders: cancelledOrders,
             inProgress: inProgress,
             length: length,
-            totalPage:totalPage,
-            currentPage:page,
+            totalPage: totalPage,
+            currentPage: page,
             getStatusBadgeClass
-        });
-
-
-
-
+        })
     } catch (error) {
         console.error('Error from userProfile:', error);
         res.redirect('/pageNotFound');
@@ -273,7 +325,7 @@ console.log(8)
 }
 
 
-const getPassCheckforEmailchange = async (req,res) => {
+const getPassCheckforEmailchange = async (req, res) => {
     try {
         const user = req.session.user
         const userData = await User.findById(user)
@@ -305,6 +357,8 @@ const passCheckforEmailchange = async (req, res) => {
             return redirect('/pageNotFound')
         }
 
+
+
         const user = await User.findById(userId)
         const isMatch = await bcrypt.compare(enteredPass, user.password)
 
@@ -313,6 +367,8 @@ const passCheckforEmailchange = async (req, res) => {
                 message: 'Incorrect Password'
             })
         }
+
+        req.session.passwordVerified=true
 
         res.redirect('/newEmail')
 
@@ -325,7 +381,15 @@ const passCheckforEmailchange = async (req, res) => {
 
 const getNewMail = async (req, res) => {
     try {
-        res.render('newMail')
+
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+        if(req.session.passwordVerified){
+         return res.render('newMail')
+        }else{
+            return res.redirect('/passCheckforEmailchange')
+        }
     } catch (error) {
         console.error('error in getNewMail', error)
         res.redirect('/pageNotFound')
@@ -493,9 +557,14 @@ const resendOTPwhileEmailchange = async (req, res) => {
 const changePassword = async (req, res) => {
     try {
         const user = req.session.user
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+
 
         if (!user) {
-            return res.redirect('home')
+            return res.redirect('/home')
         }
         res.render('changePassword', {
             message: null
@@ -508,7 +577,7 @@ const changePassword = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        console.error('updatePassword is working------------------------')
+ 
         const user = req.session.user
         const userData = await User.findById(user)
 
@@ -521,7 +590,7 @@ const updatePassword = async (req, res) => {
 
         if (newPassword !== confirmPassword) return res.render('changePassword', { message: 'password is not match' })
 
-        const checkExistsNewPass = await bcrypt.compare(userData.password, newPassword)
+        const checkExistsNewPass = await bcrypt.compare(newPassword , userData.password)
 
         if (checkExistsNewPass) return res.render('changePassword', { message: 'New password cannot be same as current password' })
 
@@ -534,7 +603,7 @@ const updatePassword = async (req, res) => {
 
         const addressDoc = await Address.findOne({ user });
 
-        const addressData = addressDoc?.address || []; // Safely extract the embedded address array
+        const addressData = addressDoc?.address || [];
         await User.findByIdAndUpdate(
             user,
             { password: hashedPass }

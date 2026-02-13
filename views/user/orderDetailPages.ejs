@@ -11,7 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
 </head>
+
 <style>
     :root {
     --primary-green: #2e7d32;
@@ -28,6 +30,8 @@
     --info-blue: #2196f3;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --transition: all 0.3s ease;
+    --premium-gradient: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+    --hover-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
 }
 
 body {
@@ -42,7 +46,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    
+    padding: 20px;
 }
 
 /* Order Header */
@@ -56,6 +60,11 @@ body {
     align-items: center;
     justify-content: space-between;
     border-left: 5px solid var(--primary-green);
+    transition: var(--transition);
+}
+
+.order-header:hover {
+    box-shadow: var(--hover-shadow);
 }
 
 .order-header-left h1 {
@@ -134,6 +143,11 @@ body {
     border-radius: 10px;
     box-shadow: var(--box-shadow);
     padding: 25px;
+    transition: var(--transition);
+}
+
+.order-items-section:hover {
+    box-shadow: var(--hover-shadow);
 }
 
 .section-title {
@@ -173,8 +187,8 @@ body {
 }
 
 .order-item:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
 }
 
 .item-image {
@@ -189,6 +203,11 @@ body {
     border: 1px solid var(--medium-gray);
     background-color: var(--light-gray);
     padding: 5px;
+    transition: var(--transition);
+}
+
+.order-item:hover .item-image img {
+    transform: scale(1.05);
 }
 
 .product-image-placeholder {
@@ -295,6 +314,37 @@ body {
     align-items: center;
     gap: 8px;
     transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20);
+        opacity: 0;
+    }
 }
 
 .btn-sm {
@@ -305,31 +355,37 @@ body {
 .btn-primary {
     background-color: var(--primary-green);
     color: white;
+    box-shadow: 0 2px 5px rgba(46, 125, 50, 0.2);
 }
 
 .btn-primary:hover {
     background-color: var(--light-green);
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
 }
 
 .btn-secondary {
     background-color: var(--dark-gray);
     color: white;
+    box-shadow: 0 2px 5px rgba(97, 97, 97, 0.2);
 }
 
 .btn-secondary:hover {
     background-color: #424242;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(97, 97, 97, 0.3);
 }
 
 .btn-danger {
     background-color: var(--error-red);
     color: white;
+    box-shadow: 0 2px 5px rgba(211, 47, 47, 0.2);
 }
 
 .btn-danger:hover {
     background-color: #c62828;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
 }
 
 .btn-outline {
@@ -341,6 +397,7 @@ body {
 .btn-outline:hover {
     background-color: var(--primary-green);
     color: white;
+    transform: translateY(-2px);
 }
 
 /* Order Sidebar */
@@ -358,6 +415,13 @@ body {
     border-radius: 10px;
     box-shadow: var(--box-shadow);
     padding: 25px;
+    transition: var(--transition);
+}
+
+.order-summary:hover,
+.payment-details:hover,
+.delivery-address:hover {
+    box-shadow: var(--hover-shadow);
 }
 
 .order-summary {
@@ -507,6 +571,11 @@ body {
     background-color: var(--white);
     border-radius: 10px;
     box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.order-actions:hover {
+    box-shadow: var(--hover-shadow);
 }
 
 .btn-lg {
@@ -669,12 +738,257 @@ body {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* Order Tracker Styles */
+.order-tracker {
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: var(--transition);
+}
+
+.order-tracker:hover {
+    box-shadow: var(--hover-shadow);
+}
+
+.tracker-title {
+    color: var(--primary-green);
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--medium-gray);
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 0 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: var(--medium-gray);
+    z-index: 1;
+}
+
+.timeline-progress {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    height: 4px;
+    background-color: var(--primary-green);
+    z-index: 2;
+    transition: width 0.5s ease;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    flex: 1;
+}
+
+.step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--white);
+    border: 4px solid var(--medium-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    transition: var(--transition);
+}
+
+.step-icon.active {
+    border-color: var(--primary-green);
+    background-color: var(--primary-green);
+    color: var(--white);
+}
+
+.step-icon.completed {
+    border-color: var(--primary-green);
+    background-color: var(--primary-green);
+    color: var(--white);
+}
+
+.step-label {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--dark-gray);
+    transition: var(--transition);
+}
+
+.step-label.active {
+    color: var(--primary-green);
+}
+
+.step-label.completed {
+    color: var(--primary-green);
+}
+
+.step-date {
+    font-size: 12px;
+    color: var(--dark-gray);
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Shipping Info */
+.shipping-info {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.shipping-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.shipping-label {
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.shipping-value {
+    font-weight: 600;
+    color: var(--black);
+}
+
+/* Payment Details in Summary */
+.payment-summary {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--medium-gray);
+}
+
+.payment-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 15px;
+}
+
+.payment-label {
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.payment-value {
+    font-weight: 600;
+    color: var(--black);
+}
+
+.payment-method-icon {
+    margin-right: 8px;
+    color: var(--primary-green);
+}
+
+/* Loading Spinner */
+.btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-loading .btn-text {
+    visibility: hidden;
+}
+
+.btn-loading::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Premium Invoice Button */
+.btn-invoice {
+    background: var(--premium-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-invoice::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn-invoice:hover::before {
+    left: 100%;
+}
+
+.btn-invoice:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+}
+
+/* Return/Cancellation Status in Tracker */
+.step-icon.returned {
+    border-color: #e17055;
+    background-color: #e17055;
+    color: white;
+}
+
+.step-icon.cancelled {
+    border-color: var(--error-red);
+    background-color: var(--error-red);
+    color: white;
+}
+
+.step-label.returned {
+    color: #e17055;
+}
+
+.step-label.cancelled {
+    color: var(--error-red);
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <body>
-    <%- include('../../views/partials/user/header', {title: 'Order Details' }) %>
-    
     <div class="container">
         <!-- Order Header -->
         <div class="order-header">
@@ -696,8 +1010,128 @@ body {
                 <span class="order-status status-<%= order.status.toLowerCase().replace(' ', '-') %>">
                     <%= order.status %>
                 </span>
-                
+                <!-- Invoice Download Button - Always visible -->
+                <a class="btn btn-invoice btn-sm" href="/generateInvoice?orderId=<%= order.orderId %>">
+                    <i class="fas fa-download"></i> 
+                    <span class="btn-text">Download Invoice</span>
+                </a>
             </div>
+        </div>
+
+        <!-- Order Tracker -->
+        <div class="order-tracker">
+            <h2 class="tracker-title">
+                <i class="fas fa-shipping-fast"></i> Order Tracking
+            </h2>
+            
+            <div class="timeline">
+                <div class="timeline-progress" id="timelineProgress"></div>
+                
+                <div class="timeline-step">
+                    <div class="step-icon <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="step-label <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">Order Placed</div>
+                    <div class="step-date">
+                        <%= new Date(order.createdOn).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-icon <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="step-label <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">Processing</div>
+                    <% if (order.processingDate) { %>
+                    <div class="step-date">
+                        <%= new Date(order.processingDate).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                    <% } %>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-icon <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="step-label <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">Shipped</div>
+                    <% if (order.shippedDate) { %>
+                    <div class="step-date">
+                        <%= new Date(order.shippedDate).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                    <% } %>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-icon <%= order.status === 'Delivered' ? 'completed' : (order.status === 'returned' ? 'returned' : (order.status === 'cancelled' ? 'cancelled' : (['returnRequested', 'reutrnRejected'].includes(order.status) ? 'active' : ''))) %>">
+                        <% if (order.status === 'returned') { %>
+                            <i class="fas fa-undo"></i>
+                        <% } else if (order.status === 'cancelled') { %>
+                            <i class="fas fa-times"></i>
+                        <% } else if (['returnRequested', 'reutrnRejected'].includes(order.status)) { %>
+                            <i class="fas fa-clock"></i>
+                        <% } else { %>
+                            <i class="fas fa-check-circle"></i>
+                        <% } %>
+                    </div>
+                    <div class="step-label <%= order.status === 'Delivered' ? 'completed' : (order.status === 'returned' ? 'returned' : (order.status === 'cancelled' ? 'cancelled' : (['returnRequested', 'reutrnRejected'].includes(order.status) ? 'active' : ''))) %>">
+                        <% if (order.status === 'returned') { %>
+                            Returned
+                        <% } else if (order.status === 'cancelled') { %>
+                            Cancelled
+                        <% } else if (order.status === 'returnRequested') { %>
+                            Return Requested
+                        <% } else if (order.status === 'reutrnRejected') { %>
+                            Return Rejected
+                        <% } else { %>
+                            Delivered
+                        <% } %>
+                    </div>
+                    <% if (order.deliveredDate) { %>
+                    <div class="step-date">
+                        <%= new Date(order.deliveredDate).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <!-- Shipping Information -->
+            <% if (order.status === 'Shipped' || order.status === 'Delivered') { %>
+            <div class="shipping-info">
+                <div class="shipping-row">
+                    <span class="shipping-label">Tracking Number:</span>
+                    <span class="shipping-value"><%= order.trackingNumber || 'TRK-' + order.orderId %></span>
+                </div>
+                <div class="shipping-row">
+                    <span class="shipping-label">Carrier:</span>
+                    <span class="shipping-value"><%= order.carrier || 'Standard Shipping' %></span>
+                </div>
+                <% if (order.estimatedDelivery) { %>
+                <div class="shipping-row">
+                    <span class="shipping-label">Estimated Delivery:</span>
+                    <span class="shipping-value">
+                        <%= new Date(order.estimatedDelivery).toLocaleDateString('en-US', { 
+                            weekday: 'long',
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %>
+                    </span>
+                </div>
+                <% } %>
+            </div>
+            <% } %>
         </div>
 
         <div class="order-container">
@@ -762,7 +1196,8 @@ body {
                                         id="cancelItem<%= index %>"
                                                 class="btn btn-danger btn-sm" 
                                                 onclick="cancelItem('<%= order.orderId%>' ,'<%= item._id %>','<%= index %>')">
-                                            <i class="fas fa-times"></i> Cancel Item
+                                            <i class="fas fa-times"></i> 
+                                            <span class="btn-text">Cancel Item</span>
                                         </button>
                                     <% } %>
                                     
@@ -770,7 +1205,8 @@ body {
                                         <button type="button" 
                                                 class="btn btn-outline btn-sm" 
                                                 onclick="returnItem( '<%= item._id %>','<%= order.orderId %>')">
-                                            <i class="fas fa-undo"></i> Return Item
+                                            <i class="fas fa-undo"></i> 
+                                            <span class="btn-text">Return Item</span>
                                         </button>
                                     <% } %>
                                     
@@ -846,41 +1282,35 @@ body {
                         <span>Total Amount</span>
                         <span id="finalAmountValue">₹<%= order.finalAmount.toFixed(2) %></span>
                     </div>
-                </div>
-
-                <!-- Payment Details -->
-                <div class="payment-details">
-                    <h3 class="section-title">
-                        <i class="fas fa-credit-card"></i> Payment Details
-                    </h3>
                     
-                    <div class="payment-info">
-                        <div class="payment-method">
-                            <span class="label">Payment Method:</span>
-                            <span class="value">
+                    <!-- Payment Details in Summary -->
+                    <div class="payment-summary">
+                        <div class="payment-summary-row">
+                            <span class="payment-label">Payment Method:</span>
+                            <span class="payment-value">
                                 <% if (order.paymentMethod === 'COD') { %>
-                                    <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+                                    <i class="fas fa-money-bill-wave payment-method-icon"></i> Cash on Delivery
                                 <% } else if (order.paymentMethod === 'RPAY') { %>
-                                    <i class="fas fa-credit-card"></i> Online Payment
+                                    <i class="fas fa-credit-card payment-method-icon"></i> Online Payment
                                 <% } else if (order.paymentMethod === 'Wallet') { %>
-                                    <i class="fas fa-wallet"></i> Wallet
+                                    <i class="fas fa-wallet payment-method-icon"></i> Wallet
                                 <% } %>
                             </span>
                         </div>
                         
                         <% if (order.paymentStatus) { %>
-                            <div class="payment-status-detail">
-                                <span class="label">Payment Status:</span>
-                                <span class="value payment-<%= order.paymentStatus.toLowerCase() %>">
+                            <div class="payment-summary-row">
+                                <span class="payment-label">Payment Status:</span>
+                                <span class="payment-value payment-<%= order.paymentStatus.toLowerCase() %>">
                                     <%= order.paymentStatus %>
                                 </span>
                             </div>
                         <% } %>
                         
                         <% if (order.invoiceDate) { %>
-                            <div class="invoice-date">
-                                <span class="label">Invoice Date:</span>
-                                <span class="value">
+                            <div class="payment-summary-row">
+                                <span class="payment-label">Invoice Date:</span>
+                                <span class="payment-value">
                                     <%= new Date(order.invoiceDate).toLocaleDateString('en-US', { 
                                         year: 'numeric', 
                                         month: 'short', 
@@ -934,12 +1364,15 @@ body {
         <!-- Action Buttons -->
         <div class="order-actions">
             <a href="/shop" class="btn btn-secondary btn-lg">
-                <i class="fas fa-arrow-left"></i> Back to Orders
+                <i class="fas fa-arrow-left"></i> 
+                <span class="btn-text">Back to Orders</span>
             </a>
             
-            <button class="btn btn-primary btn-lg" onclick="downloadInvoice()">
-                <i class="fas fa-download"></i> Download Invoice
-            </button>
+            <!-- Invoice button always visible -->
+            <a class="btn btn-invoice btn-lg" href="/generateInvoice?orderId=<%= order.orderId %>">
+                <i class="fas fa-download"></i> 
+                <span class="btn-text">Download Invoice</span>
+            </a>
         </div>
     </div>
 
@@ -951,6 +1384,10 @@ body {
         async function cancelItem(orderId, itemId,index) {
             const cancelBtn = document.getElementById(`cancelItem${index}`)
             const stausBtn = document.getElementById(`itemStaus${index}`)
+            
+            // Add loading state to button
+            cancelBtn.classList.add('btn-loading');
+            
             const { isConfirmed } = await Swal.fire({
                 title: 'Cancel Item?',
                 text: "Are you sure you want to cancel this item? This action cannot be undone.",
@@ -1018,6 +1455,9 @@ stausBtn.className='status-indicator status-cancelled'
                     });
                 }
             }
+            
+            // Remove loading state
+            cancelBtn.classList.remove('btn-loading');
         }
 
         // Return Individual Item Function
@@ -1042,6 +1482,14 @@ stausBtn.className='status-indicator status-cancelled'
                 });
 
                 if (reason) {
+                    // Find and add loading state to return button
+                    const returnButtons = document.querySelectorAll(`button[onclick*="${itemId}"]`);
+                    returnButtons.forEach(btn => {
+                        if (btn.textContent.includes('Return Item')) {
+                            btn.classList.add('btn-loading');
+                        }
+                    });
+                    
                     const response = await fetch('/returnReq?_method=PATCH', {
                         method: 'POST',
                         headers: {
@@ -1081,6 +1529,13 @@ stausBtn.className='status-indicator status-cancelled'
                             timer: 2000
                         });
                     }
+                    
+                    // Remove loading state
+                    returnButtons.forEach(btn => {
+                        if (btn.textContent.includes('Return Item')) {
+                            btn.classList.remove('btn-loading');
+                        }
+                    });
                 }
             } catch (error) {
                 Swal.fire({
@@ -1094,11 +1549,28 @@ stausBtn.className='status-indicator status-cancelled'
             }
         }
 
-        // Download Invoice Function
-        function downloadInvoice() {
-            // Add your download invoice logic here
-            window.print();
-        }
+        // Timeline Progress Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineProgress = document.getElementById('timelineProgress');
+            const orderStatus = '<%= order.status %>';
+            
+            let progressWidth = 0;
+            
+            if (orderStatus === 'Processing') {
+                progressWidth = 33;
+            } else if (orderStatus === 'Shipped') {
+                progressWidth = 66;
+            } else if (['Delivered', 'returnRequested', 'returned', 'reutrnRejected', 'cancelled'].includes(orderStatus)) {
+                progressWidth = 100;
+            } else {
+                progressWidth = 0;
+            }
+            
+            setTimeout(() => {
+                timelineProgress.style.width = `${progressWidth}%`;
+            }, 300);
+        });
+
     </script>
 </body>
 </html>

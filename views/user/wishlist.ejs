@@ -12,6 +12,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <%- include('../../views/partials/user/header',{title:'Wishlist'}) %>
+        <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
         <style>
             :root {
                 --primary-green: #2e7d32;
@@ -524,7 +526,7 @@
                                                     <% } %>
                                                         <div class="product-info">
                                                             <div class="product-name">
-                                                                <a href="/productDetails?productId=<%= product.productId._id%>&slcPrice=<%= product.productId?.displayVariant?.salePrice || 0 %>"
+                                                                <a href="/productDetails?productId=<%= product.productId %> &slcPrice=<%= product.productId?.displayVariant?.salePrice || 0 %>"
                                                                     style="text-decoration: none;">
                                                                     <%= product.productId?.productName %>
                                                                 </a>

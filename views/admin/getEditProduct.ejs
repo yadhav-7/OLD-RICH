@@ -8,11 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <style>
+   <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
+   <style>
         :root {
             --sidebar-width: 250px;
             --navbar-height: 60px;
-            --primary-color: #4e73df;
+            --primary-color: #ffc107;
             --secondary-color: #f8f9fc;
         }
 
@@ -67,7 +69,7 @@
             border-bottom: 1px solid #e3e6f0;
             padding: 1rem 1.35rem;
             font-weight: 600;
-            color: #4e73df;
+            color: #ffc107;
         }
 
         .form-control {
@@ -105,7 +107,7 @@
         }
 
         .image-uploader:hover {
-            border-color: #4e73df;
+            border-color: #ffc107;
             background-color: #f8f9fe;
         }
 
@@ -144,7 +146,7 @@
         }
 
         .thumbnail.main-image {
-            border: 2px solid #4e73df;
+            border: 2px solid #ffc107;
         }
 
         .remove-btn {
@@ -173,7 +175,7 @@
             position: absolute;
             bottom: 5px;
             left: 5px;
-            background: #4e73df;
+            background: #ffc107;
             color: white;
             padding: 2px 8px;
             border-radius: 4px;
@@ -181,13 +183,13 @@
         }
 
         .btn-primary {
-            background-color: #4e73df;
-            border-color: #4e73df;
+            background-color: #ffc107;
+            border-color: #ffc107;
         }
 
         .btn-primary:hover {
-            background-color: #2e59d9;
-            border-color: #2653d4;
+            background-color: #ffc107;
+            border-color: #ffc107;
         }
 
         .cropper-actions {
@@ -210,7 +212,7 @@
         }
 
         .dragover {
-            border-color: #4e73df !important;
+            border-color: #ffc107 !important;
             background-color: #f8f9fe !important;
         }
 
@@ -233,16 +235,17 @@
             }
         }
     </style>
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
 </head>
 
 <body>
     <!-- Navbar -->
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 
-        <div class="d-flex">
-            <!-- Sidebar -->
-            <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
-
+            <div class="d-flex">
                 <!-- Main Content -->
                 <div class="main-content">
                     <div class="container">
@@ -291,12 +294,13 @@
                                             <div class="form-group">
                                                 <label class="form-label required">Category</label>
                                                 <select class="form-control" name="category" id="category">
-                                                    <% for(let i=0; i < category.length; i++) { %>
-                                                        <option value="<%= category[i].name %>"
-                                                            <%=product.category===category[i].name ? 'selected' : '' %>>
-                                                            <%= category[i].name %>
+                                                    <% category.forEach(cat=> { %>
+                                                        <option value="<%= cat.name %>" <%=product.category &&
+                                                            product.category._id.toString()===cat._id.toString()
+                                                            ? 'selected' : '' %>>
+                                                            <%= cat.name %>
                                                         </option>
-                                                        <% } %>
+                                                        <% }) %>
                                                 </select>
                                                 <div id="category-error" class="error-message"></div>
                                             </div>
@@ -333,7 +337,8 @@
                                                         <td>
                                                             <% const sizes=['S', 'M' , 'L' , 'XL' , 'XXL' ]; const
                                                                 currentSize=product.variants[i]?.size; %>
-                                                                <input type="hidden" name="variants[<%= i %>][_id]"
+                                                                <input type="hidden" id="size<%= i %>"
+                                                                    name="variants[<%= i %>][_id]"
                                                                     value="<%= product.variants[i]?._id %>">
                                                                 <select name="variants[<%= i %>][size]"
                                                                     class="form-control size-select">
@@ -346,15 +351,18 @@
                                                                 </select>
                                                         </td>
 
-                                                        <td><input type="number" class="form-control regular-price"
+                                                        <td><input type="number" id="regularPrice<%= i %>"
+                                                                class="form-control regular-price"
                                                                 name="variants[<%= i %>][regularPrice]"
                                                                 value="<%= product.variants[i]?.regularPrice%>"></td>
 
-                                                        <td><input type="number" class="form-control sale-price"
+                                                        <td><input type="number" id="salePrice<%= i %>"
+                                                                class="form-control sale-price"
                                                                 name="variants[<%= i %>][salePrice]"
                                                                 value="<%= product.variants[i]?.salePrice%>"></td>
 
-                                                        <td><input type="number" class="form-control quantity"
+                                                        <td><input type="number" id="quantity<%= i %>"
+                                                                class="form-control quantity"
                                                                 name="variants[<%= i %>][quantity]"
                                                                 value="<%= product.variants[i]?.quantity%>"></td>
                                                         <td>
@@ -363,7 +371,7 @@
                                                                 onclick="event.preventDefault(); removeVariantSize('<%= product.variants[i]?.size %>', '<%= product._id %>')"
                                                                 data-variant="<%= product.variants[i]?.size %>"
                                                                 data-productid="<%= product._id %>"
-                                                                <%= product.variants.length <= 1 ? 'disabled' : '' %>>
+                                                                <%=product.variants.length <=1 ? 'disabled' : '' %>>
                                                                 Remove Variant
                                                             </button>
                                                         </td>
@@ -386,8 +394,7 @@
                                                     <div class="thumbnail <%= index === 0 ? 'main-image' : '' %>"
                                                         data-type="existing" data-name="<%= image %>">
                                                         <img src="/Uploads/<%= image %>" alt="Product Image">
-                                                        <button class="remove-btn <%= product.productImage.length <= 3 ? 'disabled-remove' : '' %>"
-                                                            <%= product.productImage.length <= 3 ? 'disabled' : '' %>>
+                                                        <button class="remove-btn">
                                                             <i class="fas fa-times"></i>
                                                         </button>
                                                         <% if (index===0) { %>
@@ -470,253 +477,396 @@
                         </form>
                     </div>
                 </div>
-        </div>
+            </div>
 
-        <!-- Cropper Modal -->
-        <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Crop Image</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="aspect-ratio-buttons mb-3">
-                            <button type="button" class="btn btn-outline-secondary" data-ratio="1">1:1 (Square)</button>
-                            <button type="button" class="btn btn-outline-secondary" data-ratio="0.75">4:3</button>
-                            <button type="button" class="btn btn-outline-secondary" data-ratio="0.5625">16:9</button>
-                            <button type="button" class="btn btn-outline-secondary" data-ratio="free">Free</button>
+            <!-- Cropper Modal -->
+            <div class="modal fade" id="cropperModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Crop Image</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="img-container">
-                            <img id="cropperImage" src="" alt="">
+                        <div class="modal-body">
+                            <div class="aspect-ratio-buttons mb-3">
+                                <button type="button" class="btn btn-outline-secondary" data-ratio="1">1:1
+                                    (Square)</button>
+                                <button type="button" class="btn btn-outline-secondary" data-ratio="0.75">4:3</button>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-ratio="0.5625">16:9</button>
+                                <button type="button" class="btn btn-outline-secondary" data-ratio="free">Free</button>
+                            </div>
+                            <div class="img-container">
+                                <img id="cropperImage" src="" alt="">
+                            </div>
                         </div>
-                    </div>
-                    <div class="cropper-actions">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="saveCroppedImage">Save</button>
+                        <div class="cropper-actions">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveCroppedImage">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Configuration constants
-                const MAX_IMAGES = 5;
-                const MIN_IMAGES = 3;
-                const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-                const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-                
-                // DOM elements
-                const elements = {
-                    form: document.getElementById('productForm'),
-                    imageUpload: document.getElementById('imageUpload'),
-                    uploadArea: document.getElementById('uploadArea'),
-                    addedImagesContainer: document.getElementById('addedImagesContainer'),
-                    existingImagesInput: document.getElementById('existingImagesInput'),
-                    mainImageInput: document.getElementById('mainImageInput'),
-                    cropperImage: document.getElementById('cropperImage'),
-                    saveCroppedBtn: document.getElementById('saveCroppedImage'),
-                    imagesError: document.getElementById('images-error'),
-                    productNameError: document.getElementById('productName-error'),
-                    descriptionError: document.getElementById('description-error'),
-                    categoryError: document.getElementById('category-error'),
-                    colorError: document.getElementById('color-error')
-                };
-                
-                // State variables
-                let cropper;
-                let currentFile;
-                const uploadedImages = [];
-                let existingImages = [];
-                
-                // Initialize existing images from thumbnails
-                document.querySelectorAll('.thumbnail[data-type="existing"]').forEach(thumb => {
-                    const imageName = thumb.dataset.name;
-                    if (imageName) existingImages.push(imageName);
-                });
-                
-                // Update hidden fields with current state
-                function updateHiddenFields() {
-                    elements.existingImagesInput.value = existingImages.join(',');
-                    if (!elements.mainImageInput.value && existingImages.length > 0) {
-                        elements.mainImageInput.value = existingImages[0];
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+            <!-- Toastify JS -->
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Configuration constants
+                    const MAX_IMAGES = 5;
+                    const MIN_IMAGES = 0;
+                    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                    const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+                    // DOM elements
+                    const elements = {
+                        form: document.getElementById('productForm'),
+                        imageUpload: document.getElementById('imageUpload'),
+                        uploadArea: document.getElementById('uploadArea'),
+                        addedImagesContainer: document.getElementById('addedImagesContainer'),
+                        existingImagesInput: document.getElementById('existingImagesInput'),
+                        mainImageInput: document.getElementById('mainImageInput'),
+                        cropperImage: document.getElementById('cropperImage'),
+                        saveCroppedBtn: document.getElementById('saveCroppedImage'),
+                        imagesError: document.getElementById('images-error'),
+                        productNameError: document.getElementById('productName-error'),
+                        descriptionError: document.getElementById('description-error'),
+                        categoryError: document.getElementById('category-error'),
+                        colorError: document.getElementById('color-error')
+                    };
+
+                    // State variables
+                    let cropper;
+                    let currentFile;
+                    const uploadedImages = [];
+                    let existingImages = [];
+
+                    // Initialize existing images from thumbnails
+                    document.querySelectorAll('.thumbnail[data-type="existing"]').forEach(thumb => {
+                        const imageName = thumb.dataset.name;
+                        if (imageName) existingImages.push(imageName);
+                    });
+
+                    // Update hidden fields with current state
+                    function updateHiddenFields() {
+                        elements.existingImagesInput.value = existingImages.join(',');
+                        if (!elements.mainImageInput.value && existingImages.length > 0) {
+                            elements.mainImageInput.value = existingImages[0];
+                        }
                     }
-                }
-                
-                // Show error message
-                function showError(element, message) {
-                    element.textContent = message;
-                    element.style.display = 'block';
-                    setTimeout(() => element.style.display = 'none', 5000);
-                }
-                
-                // Validate form before submission
-                function validateForm() {
-                    let isValid = true;
-                    
-                    // Product name validation
-                    const productName = elements.form.querySelector('#product_name').value.trim();
-                    if (!productName) {
-                        showError(elements.productNameError, 'Product name is required');
-                        isValid = false;
+
+                    // Show error message
+                    function showError(element, message) {
+                        element.textContent = message;
+                        element.style.display = 'block';
+                        setTimeout(() => element.style.display = 'none', 50000);
                     }
-                    
-                    // Description validation
-                    const description = elements.form.querySelector('#description').value.trim();
-                    if (!description) {
-                        showError(elements.descriptionError, 'Description is required');
-                        isValid = false;
-                    }
-                    
-                    // Category validation
-                    const category = elements.form.querySelector('#category').value;
-                    if (!category) {
-                        showError(elements.categoryError, 'Category is required');
-                        isValid = false;
-                    }
-                    
-                    // Variants validation
-                    const variants = document.querySelectorAll('#sizeTableBody tr');
-                    if (variants.length === 0) {
-                        Swal.fire('Error', 'At least one size variant is required', 'error');
-                        isValid = false;
-                    } else {
-                        variants.forEach(row => {
-                            const regularPrice = row.querySelector('.regular-price').value;
-                            const quantity = row.querySelector('.quantity').value;
-                            
-                            if (!regularPrice || parseFloat(regularPrice) <= 0) {
-                                Swal.fire('Error', 'Regular price must be greater than 0 for all variants', 'error');
-                                isValid = false;
-                            }
-                            
-                            if (!quantity || parseInt(quantity) < 0) {
-                                Swal.fire('Error', 'Stock quantity must be 0 or more for all variants', 'error');
-                                isValid = false;
+
+
+                     // Helper to show error below the input
+                        function showerror(inputElement, message) {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'text-danger small variant-error';
+                            errorDiv.textContent = message;
+                            inputElement.parentElement.appendChild(errorDiv);
+                        }
+
+                        // Example usage on form submission
+                        const form = document.getElementById('productForm');
+                        form.addEventListener('submit', function (e) {
+                            if (!validateVariants()) {
+                                e.preventDefault(); // stop form submission
+                                Toastify({
+                                    text: "Please fix the errors in variants.",
+                                    duration: 3000,
+                                    gravity: 'top',
+                                    position: 'right',
+                                    backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                                }).showToast();
                             }
                         });
+                    // Validate form before submission
+                    function validateForm() {
+                        let isValid = true;
+
+                        // Product name validation
+                        const regex = /^[A-Za-z\s]+$/;
+                        const productName = elements.form.querySelector('#product_name').value.trim();
+                        if (!productName) {
+                            showError(elements.productNameError, 'Product name is required');
+                            isValid = false;
+                        } else if (productName.length < 3) {
+                            showError(elements.productNameError, 'Product minimum 3 letters');
+                            isValid = false;
+                        } else if (productName.length > 15) {
+                            showError(elements.productNameError, 'Product name maximum 15 letters');
+                            isValid = false;
+                        } else if (!regex.test(productName)) {
+                            showError(elements.productNameError, 'Product name must contain only letters');
+                            isValid = false;
+                        }
+
+                        // Description validation
+                        const description = elements.form.querySelector('#description').value.trim();
+                        if (!description) {
+                            showError(elements.descriptionError, 'Description is required');
+                            isValid = false;
+                        } else if (description.length < 10) {
+                            showError(elements.descriptionError, 'Description is minimum 10 letters');
+                            isValid = false;
+                        } else if (description.length > 1000) {
+                            showError(elements.descriptionError, 'Description is maximum 1000 letters');
+                            isValid = false;
+                        }
+
+                        const colorInput = document.querySelector('input[name="color"]').value.trim()
+                        const colorValue = colorInput.trim();
+
+                        if (!colorValue) {
+                            showError(elements.colorError, 'Product color is required');
+                            isValid = false;
+                        } else if (/\d/.test(colorValue)) {
+                            showError(elements.colorError, 'Color should not contain numbers');
+                            isValid = false;
+                        } else {
+                            elements.colorError.textContent = ''; // clear error
+                        }
+
+
+
+                        // Category validation
+                        const category = elements.form.querySelector('#category').value;
+                        if (!category) {
+                            showError(elements.categoryError, 'Category is required');
+                            isValid = false;
+                        }
+
+
+                        const rows = document.querySelectorAll('#sizeTableBody tr');
+                        const selectedSizes = new Set();
+
+                        // First remove any existing error messages
+                        document.querySelectorAll('.variant-error').forEach(el => el.remove());
+
+                        rows.forEach((row, index) => {
+                            const sizeSelect = row.querySelector('.size-select');
+                            const regularPriceInput = row.querySelector('.regular-price');
+                            const salePriceInput = row.querySelector('.sale-price');
+                            const quantityInput = row.querySelector('.quantity');
+
+                            const size = sizeSelect.value.trim();
+                            const regularPrice = parseFloat(regularPriceInput.value);
+                            const salePrice = parseFloat(salePriceInput.value);
+                            const quantity = parseInt(quantityInput.value);
+
+                            // Reset input styles
+                            sizeSelect.classList.remove('is-invalid');
+                            regularPriceInput.classList.remove('is-invalid');
+                            salePriceInput.classList.remove('is-invalid');
+                            quantityInput.classList.remove('is-invalid');
+
+                            // Validate size (duplicate check)
+                            if (!size) {
+                                sizeSelect.classList.add('is-invalid');
+                                showerror(sizeSelect, 'Please select a size.');
+                                isValid = false;
+                            } else if (selectedSizes.has(size)) {
+                                sizeSelect.classList.add('is-invalid');
+                                showerror(sizeSelect, 'Duplicate size is not allowed.');
+                                isValid = false;
+                            } else {
+                                selectedSizes.add(size);
+                            }
+
+                            const positiveNumberRegex = /^[1-9]\d*(\.\d+)?$/;
+
+                            const checkValIsSmallThenZero=/^0\d+/
+                            // Validate regular price > 0
+                            
+                            if(!regularPrice){
+                                regularPriceInput.classList.add('is-invalid');
+                                showerror(regularPriceInput, 'Enter ragular Price');
+                                isValid = false;
+                            }
+
+                            // if(!checkValIsSmallThenZero.test(regularPrice)){
+                            //     regularPriceInput.classList.add('is-invalid');
+                            //     showerror(regularPriceInput, 'Regular price must be greater then 0');
+                            //     isValid = false;
+                            // }
+
+
+                            if (isNaN(regularPrice) || !positiveNumberRegex.test(regularPrice)) {
+                                regularPriceInput.classList.add('is-invalid');
+                                showerror(regularPriceInput, 'Regular price must be a positive number.');
+                                isValid = false;
+                            }
+
+                            if(!salePrice){
+                                salePriceInput.classList.add('is-invalid');
+                                showerror(salePriceInput, 'Enter Sale Price');
+                                isValid = false;
+                            }
+                            if (isNaN(salePrice) || !positiveNumberRegex.test(salePrice)) {
+                                salePriceInput.classList.add('is-invalid');
+                                showerror(salePriceInput, 'Sales price must be a positive');
+                                isValid = false;
+                            }
+
+                            // Validate sale price >= regular price
+                            if (isNaN(salePrice) || salePrice > regularPrice) {
+                                salePriceInput.classList.add('is-invalid');
+                                showerror(salePriceInput, 'Sale price must be less than or equal to regular price.');
+                                isValid = false;
+                            }
+
+                            // Validate quantity > 0
+                            if(!quantity){
+                                quantityInput.classList.add('is-invalid');
+                                showerror(quantityInput, 'Enter Quantity');
+                                isValid = false;
+                            }
+                            if (isNaN(quantity) || !positiveNumberRegex.test(quantity)) {
+                                quantityInput.classList.add('is-invalid');
+                                showerror(quantityInput, 'Quantity must be greater than 0.');
+                                isValid = false;
+                            }
+                        })
+
+
+                       
+
+
+                        // Images validation
+                        const totalImages = existingImages.length + uploadedImages.length;
+                        if (totalImages < 3) {
+
+                            showError(elements.imagesError, `Minimum 3 images are required`);
+                            isValid = false;
+                        } else if (totalImages > MAX_IMAGES) {
+                            showError(elements.imagesError, `Maximum ${MAX_IMAGES} images allowed`);
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            Toastify({
+                                text: "Please fix errors.",
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                        }
+                        return isValid;
                     }
-                    
-                    // Images validation
-                    const totalImages = existingImages.length + uploadedImages.length;
-                    if (totalImages < MIN_IMAGES) {
-                        showError(elements.imagesError, `Minimum ${MIN_IMAGES} images are required`);
-                        isValid = false;
-                    } else if (totalImages > MAX_IMAGES) {
-                        showError(elements.imagesError, `Maximum ${MAX_IMAGES} images allowed`);
-                        isValid = false;
-                    }
-                    
-                    return isValid;
-                }
-                
-                // Handle image selection (file input or drag/drop)
-                function handleImageSelection(e) {
-                    const files = e.target.files || (e.dataTransfer && e.dataTransfer.files);
-                    if (!files || files.length === 0) return;
-                    
-                    const totalImages = existingImages.length + uploadedImages.length + files.length;
-                    if (totalImages > MAX_IMAGES) {
-                        showError(elements.imagesError, `Maximum ${MAX_IMAGES} images allowed (${totalImages - MAX_IMAGES} too many)`);
-                        return;
-                    }
-                    
-                    Array.from(files).forEach(file => {
-                        if (!ACCEPTED_TYPES.includes(file.type)) {
-                            showError(elements.imagesError, 'Only JPG, PNG, and WebP images are allowed');
+
+                    // Handle image selection (file input or drag/drop)
+                    function handleImageSelection(e) {
+                        const files = e.target.files || (e.dataTransfer && e.dataTransfer.files);
+                        if (!files || files.length === 0) return;
+
+                        const totalImages = existingImages.length + uploadedImages.length + files.length;
+                        if (totalImages > MAX_IMAGES) {
+                            showError(elements.imagesError, `Maximum ${MAX_IMAGES} images allowed (${totalImages - MAX_IMAGES} too many)`);
                             return;
                         }
-                        
-                        if (file.size > MAX_FILE_SIZE) {
-                            showError(elements.imagesError, 'Image size should be less than 5MB');
-                            return;
-                        }
-                        
-                        currentFile = file;
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            elements.cropperImage.src = e.target.result;
-                            const cropperModal = new bootstrap.Modal('#cropperModal');
-                            cropperModal.show();
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                    
-                    // Reset file input
-                    if (e.target.id === 'imageUpload') e.target.value = '';
-                }
-                
-                // Initialize cropper when modal is shown
-                document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
-                    if (cropper) cropper.destroy();
-                    cropper = new Cropper(elements.cropperImage, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.8,
-                        responsive: true,
-                        guides: false
-                    });
-                });
-                
-                // Destroy cropper when modal is hidden
-                document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
-                    if (cropper) {
-                        cropper.destroy();
-                        cropper = null;
+
+                        Array.from(files).forEach(file => {
+                            if (!ACCEPTED_TYPES.includes(file.type)) {
+                                showError(elements.imagesError, 'Only JPG, PNG, and WebP images are allowed');
+                                return;
+                            }
+
+                            if (file.size > MAX_FILE_SIZE) {
+                                showError(elements.imagesError, 'Image size should be less than 5MB');
+                                return;
+                            }
+
+                            currentFile = file;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                elements.cropperImage.src = e.target.result;
+                                const cropperModal = new bootstrap.Modal('#cropperModal');
+                                cropperModal.show();
+                            };
+                            reader.readAsDataURL(file);
+                        });
+
+                        // Reset file input
+                        if (e.target.id === 'imageUpload') e.target.value = '';
                     }
-                });
-                
-                // Set aspect ratio buttons
-                document.querySelectorAll('.aspect-ratio-buttons button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const ratio = this.dataset.ratio === 'free' ? NaN : parseFloat(this.dataset.ratio);
-                        cropper.setAspectRatio(ratio);
+
+                    // Initialize cropper when modal is shown
+                    document.getElementById('cropperModal').addEventListener('shown.bs.modal', function () {
+                        if (cropper) cropper.destroy();
+                        cropper = new Cropper(elements.cropperImage, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 0.8,
+                            responsive: true,
+                            guides: false
+                        });
                     });
-                });
-                
-                // Save cropped image
-                elements.saveCroppedBtn.addEventListener('click', function() {
-                    if (!cropper) return;
-                    
-                    cropper.getCroppedCanvas({
-                        width: 800,
-                        height: 800,
-                        fillColor: '#fff',
-                        imageSmoothingQuality: 'high'
-                    }).toBlob(blob => {
-                        const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
-                        const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
-                        
-                        const imageObj = {
-                            type: 'new',
-                            file: croppedFile,
-                            url: URL.createObjectURL(blob),
-                            isMain: existingImages.length + uploadedImages.length === 0
-                        };
-                        
-                        uploadedImages.push(imageObj);
-                        createThumbnail(imageObj);
-                        
-                        // Hide modal
-                        const cropperModal = bootstrap.Modal.getInstance(document.getElementById('cropperModal'));
-                        if (cropperModal) cropperModal.hide();
-                    }, 'image/jpeg', 0.9);
-                });
-                
-                // Create thumbnail element
-                function createThumbnail(image) {
-                    const thumb = document.createElement('div');
-                    thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
-                    thumb.dataset.type = image.type;
-                    thumb.dataset.name = image.file.name;
-                    
-                    // Create remove button (disabled if we're at minimum images)
-                    const removeBtnDisabled = (existingImages.length + uploadedImages.length) <= MIN_IMAGES;
-                    
-                    thumb.innerHTML = `
+
+                    // Destroy cropper when modal is hidden
+                    document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function () {
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+                    });
+
+                    // Set aspect ratio buttons
+                    document.querySelectorAll('.aspect-ratio-buttons button').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const ratio = this.dataset.ratio === 'free' ? NaN : parseFloat(this.dataset.ratio);
+                            cropper.setAspectRatio(ratio);
+                        });
+                    });
+
+                    // Save cropped image
+                    elements.saveCroppedBtn.addEventListener('click', function () {
+                        if (!cropper) return;
+
+                        cropper.getCroppedCanvas({
+                            width: 800,
+                            height: 800,
+                            fillColor: '#fff',
+                            imageSmoothingQuality: 'high'
+                        }).toBlob(blob => {
+                            const fileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_cropped.jpg';
+                            const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                            const imageObj = {
+                                type: 'new',
+                                file: croppedFile,
+                                url: URL.createObjectURL(blob),
+                                isMain: existingImages.length + uploadedImages.length === 0
+                            };
+
+                            uploadedImages.push(imageObj);
+                            createThumbnail(imageObj);
+
+                            // Hide modal
+                            const cropperModal = bootstrap.Modal.getInstance(document.getElementById('cropperModal'));
+                            if (cropperModal) cropperModal.hide();
+                        }, 'image/jpeg', 0.9);
+                    });
+
+                    // Create thumbnail element
+                    function createThumbnail(image) {
+                        const thumb = document.createElement('div');
+                        thumb.className = `thumbnail ${image.isMain ? 'main-image' : ''}`;
+                        thumb.dataset.type = image.type;
+                        thumb.dataset.name = image.file.name;
+
+                        // Create remove button (disabled if we're at minimum images)
+                        const removeBtnDisabled = (existingImages.length + uploadedImages.length) <= MIN_IMAGES;
+
+                        thumb.innerHTML = `
                         <img src="${image.url}" alt="Product Image">
                         <button class="remove-btn ${removeBtnDisabled ? 'disabled-remove' : ''}" 
                             ${removeBtnDisabled ? 'disabled' : ''}>
@@ -724,403 +874,432 @@
                         </button>
                         ${image.isMain ? '<span class="main-image-badge">Main</span>' : ''}
                     `;
-                    
-                    // Set as main image when clicked
-                    thumb.addEventListener('click', function(e) {
-                        if (!e.target.closest('.remove-btn')) setAsMainImage(thumb);
-                    });
-                    
-                    // Remove image when remove button is clicked
-                    thumb.querySelector('.remove-btn').addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        removeImage(thumb);
-                    });
-                    
-                    elements.addedImagesContainer.appendChild(thumb);
-                    
-                    // Update main image if this is the first one
-                    if (image.isMain) {
-                        elements.mainImageInput.value = image.file.name;
-                    }
-                    
-                    // Update remove buttons state based on image count
-                    updateRemoveButtonsState();
-                }
-                
-                // Set an image as the main image
-                function setAsMainImage(thumb) {
-                    document.querySelectorAll('.thumbnail').forEach(t => {
-                        t.classList.remove('main-image');
-                        const badge = t.querySelector('.main-image-badge');
-                        if (badge) badge.remove();
-                    });
-                    
-                    thumb.classList.add('main-image');
-                    thumb.innerHTML += '<span class="main-image-badge">Main</span>';
-                    
-                    // Update hidden input
-                    elements.mainImageInput.value = thumb.dataset.name;
-                }
-                
-                // Remove an image
-                function removeImage(thumb) {
-                    const imageType = thumb.dataset.type;
-                    const imageName = thumb.dataset.name;
-                    
-                    // Check if we're at minimum images
-                    const totalImages = existingImages.length + uploadedImages.length;
-                    if (totalImages <= MIN_IMAGES) {
-                        showError(elements.imagesError, `Minimum ${MIN_IMAGES} images are required`);
-                        return;
-                    }
-                    
-                    if (imageType === 'existing') {
-                        // Remove from existing images array
-                        existingImages = existingImages.filter(img => img !== imageName);
-                    } else {
-                        // Remove from uploaded images array
-                        const index = uploadedImages.findIndex(img => img.file.name === imageName);
-                        if (index !== -1) {
-                            URL.revokeObjectURL(uploadedImages[index].url);
-                            uploadedImages.splice(index, 1);
+
+                        // Set as main image when clicked
+                        thumb.addEventListener('click', function (e) {
+                            if (!e.target.closest('.remove-btn')) setAsMainImage(thumb);
+                        });
+
+                        // Remove image when remove button is clicked
+                        thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            removeImage(thumb);
+                        });
+
+                        elements.addedImagesContainer.appendChild(thumb);
+
+                        // Update main image if this is the first one
+                        if (image.isMain) {
+                            elements.mainImageInput.value = image.file.name;
                         }
+
+                        // Update remove buttons state based on image count
+                        updateRemoveButtonsState();
                     }
-                    
-                    // Handle main image reassignment if needed
-                    if (thumb.classList.contains('main-image')) {
-                        const firstThumb = document.querySelector('.thumbnail');
-                        if (firstThumb) {
-                            setAsMainImage(firstThumb);
+
+                    // Set an image as the main image
+                    function setAsMainImage(thumb) {
+                        document.querySelectorAll('.thumbnail').forEach(t => {
+                            t.classList.remove('main-image');
+                            const badge = t.querySelector('.main-image-badge');
+                            if (badge) badge.remove();
+                        });
+
+                        thumb.classList.add('main-image');
+                        thumb.innerHTML += '<span class="main-image-badge">Main</span>';
+
+                        // Update hidden input
+                        elements.mainImageInput.value = thumb.dataset.name;
+                    }
+
+                    // Remove an image
+                    function removeImage(thumb) {
+                        const imageType = thumb.dataset.type;
+                        const imageName = thumb.dataset.name;
+
+                        // Check if we're at minimum images
+                        const totalImages = existingImages.length + uploadedImages.length;
+                        if (totalImages <= MIN_IMAGES) {
+                            showError(elements.imagesError, `Minimum ${MIN_IMAGES} images are required`);
+                            return;
+                        }
+
+                        if (imageType === 'existing') {
+                            // Remove from existing images array
+                            existingImages = existingImages.filter(img => img !== imageName);
                         } else {
-                            elements.mainImageInput.value = '';
+                            // Remove from uploaded images array
+                            const index = uploadedImages.findIndex(img => img.file.name === imageName);
+                            if (index !== -1) {
+                                URL.revokeObjectURL(uploadedImages[index].url);
+                                uploadedImages.splice(index, 1);
+                            }
                         }
+
+                        // Handle main image reassignment if needed
+                        if (thumb.classList.contains('main-image')) {
+                            const firstThumb = document.querySelector('.thumbnail');
+                            if (firstThumb) {
+                                setAsMainImage(firstThumb);
+                            } else {
+                                elements.mainImageInput.value = '';
+                            }
+                        }
+
+                        thumb.remove();
+                        updateHiddenFields();
+                        updateRemoveButtonsState();
                     }
-                    
-                    thumb.remove();
+
+                    // Update state of all remove buttons based on image count
+                    function updateRemoveButtonsState() {
+                        const totalImages = existingImages.length + uploadedImages.length;
+                        const disableRemove = totalImages <= MIN_IMAGES;
+
+                        document.querySelectorAll('.thumbnail .remove-btn').forEach(btn => {
+                            btn.disabled = disableRemove;
+                            if (disableRemove) {
+                                btn.classList.add('disabled-remove');
+                            } else {
+                                btn.classList.remove('disabled-remove');
+                            }
+                        });
+                    }
+
+                    // Drag and drop events
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        elements.uploadArea.addEventListener(eventName, e => e.preventDefault());
+                    });
+
+                    ['dragenter', 'dragover'].forEach(eventName => {
+                        elements.uploadArea.addEventListener(eventName, () => {
+                            elements.uploadArea.classList.add('dragover');
+                        });
+                    });
+
+                    ['dragleave', 'drop'].forEach(eventName => {
+                        elements.uploadArea.addEventListener(eventName, () => {
+                            elements.uploadArea.classList.remove('dragover');
+                        });
+                    });
+
+                    elements.uploadArea.addEventListener('drop', handleImageSelection);
+
+                    // Click to browse files
+                    elements.uploadArea.addEventListener('click', () => {
+                        elements.imageUpload.click();
+                    });
+
+                    // File input change event
+                    elements.imageUpload.addEventListener('change', handleImageSelection);
+
+                    // Form submission
+                    elements.form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+
+                        if (!validateForm()) return;
+
+                        // Update hidden fields
+                        updateHiddenFields();
+
+                        // Create FormData and append all fields
+                        const formData = new FormData(elements.form);
+
+                        // Append new images
+                        uploadedImages.forEach(img => {
+                            formData.append('images', img.file);
+                        });
+
+                        // Submit form via fetch
+                        fetch(elements.form.action, {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+
+                                if (response.redirected) {
+                                    localStorage.setItem('success', 'Product Updating successfull')
+                                    window.location.href = response.url
+                                } else {
+                                    return response.json()
+                                }
+                            })
+                            .then(data => {
+                                if (data && data.error) {
+                                    throw new Error(data.error)
+                                }
+                            })
+                            .catch(error => {
+
+                               // Your toast code
+    Toastify({
+        text: error.message||'something went wrong!',
+        duration: 3000,
+        gravity: 'top',
+        position: 'right',
+        close: true,
+        backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)',
+        stopOnFocus: true
+    }).showToast();
+
+                            })
+                    })
+
+                    document.querySelectorAll('.thumbnail[data-type="existing"]').forEach(thumb => {
+                        thumb.querySelector('.remove-btn').addEventListener('click', function (e) {
+                            e.stopPropagation()
+                            removeImage(thumb)
+                        });
+
+                        thumb.addEventListener('click', function (e) {
+                            if (!e.target.closest('.remove-btn')) setAsMainImage(thumb);
+                        });
+                    });
+
+                    // Initialize variant validation
+                    document.querySelector('#sizeTableBody').addEventListener('change', function (e) {
+                        if (e.target.classList.contains('regular-price') || e.target.classList.contains('sale-price')) {
+                            const row = e.target.closest('tr');
+                            const regularPrice = parseFloat(row.querySelector('.regular-price').value) || 0;
+                            const salePrice = parseFloat(row.querySelector('.sale-price').value) || 0;
+
+                            if (salePrice > 0 && salePrice > regularPrice) {
+                                row.querySelector('.sale-price').value = '';
+                                row.querySelector('.sale-price').focus();
+                            }
+                        }
+                    });
+
+                    // Initial update of hidden fields
                     updateHiddenFields();
                     updateRemoveButtonsState();
+                });
+
+                function addNewVariant() {
+                    try {
+                        const size = document.getElementById('newSizeSelect').value;
+                        const regularPrice = parseFloat(document.getElementById('newRegularPrice').value);
+                        const salePriceInput = document.getElementById('newSalePrice').value;
+                        const salePrice = salePriceInput ? parseFloat(salePriceInput) : 0;
+                        const quantity = parseInt(document.getElementById('newStockQuantity').value);
+
+                        // Validate inputs
+                        if (!size || isNaN(regularPrice) || isNaN(quantity)) {
+                            Toastify({
+                                text: 'Please fill in all required fields (Size, Regular Price, and Stock)',
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                            return;
+                        }
+
+                        if (quantity <= 0) {
+                            Toastify({
+                                text: 'Quantity must be greater than 0',
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                            return;
+                        }
+
+                        if (salePrice <= 0) {
+                            Toastify({
+                                text: 'Sale price, must be greater than 0',
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                            return;
+                        }
+
+                        if (regularPrice <= 0) {
+                            Toastify({
+                                text: 'Regular price must be greater than 0',
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                            return;
+                        }
+
+                        if (salePrice > regularPrice) {
+                            Toastify({
+                                text: 'Sale price must be less or equal than regular price',
+                                duration: 3000,
+                                gravity: 'top',
+                                position: 'right',
+                                backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                            }).showToast();
+                            return;
+                        }
+
+                        // Check duplicate size
+                        const existingRows = document.querySelectorAll('#sizeTableBody tr');
+                        for (let row of existingRows) {
+                            const sizeInput = row.querySelector('.size-select');
+                            if (sizeInput && sizeInput.value === size) {
+                                Toastify({
+                                    text: 'This size already exists in the product variants',
+                                    duration: 3000,
+                                    gravity: 'top',
+                                    position: 'right',
+                                    backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                                }).showToast();
+                                return;
+                            }
+                        }
+
+                        // Create new row
+                        const tableBody = document.getElementById('sizeTableBody');
+                        const newRow = document.createElement('tr');
+                        const variantIndex = existingRows.length;
+
+                        newRow.innerHTML = `
+            <td>
+                <select name="variants[${variantIndex}][size]" class="form-control size-select">
+                    <option value="S" ${size === 'S' ? 'selected' : ''}>S</option>
+                    <option value="M" ${size === 'M' ? 'selected' : ''}>M</option>
+                    <option value="L" ${size === 'L' ? 'selected' : ''}>L</option>
+                    <option value="XL" ${size === 'XL' ? 'selected' : ''}>XL</option>
+                    <option value="XXL" ${size === 'XXL' ? 'selected' : ''}>XXL</option>
+                </select>
+            </td>
+            <td><input type="number" class="form-control regular-price" 
+                    name="variants[${variantIndex}][regularPrice]" value="${regularPrice}"></td>
+            <td><input type="number" class="form-control sale-price" 
+                    name="variants[${variantIndex}][salePrice]" value="${salePrice}"></td>
+            <td><input type="number" class="form-control quantity" 
+                    name="variants[${variantIndex}][quantity]" value="${quantity}"></td>
+            <td>
+                <button class="btn btn-sm btn-outline-secondary remove-variant-btn"
+                    onclick="event.preventDefault(); removeVariantSize('${size}', '<%= product._id %>')"
+                    data-variant="${size}"
+                    data-productid="<%= product._id %>">
+                    Remove Variant
+                </button>
+            </td>
+        `;
+
+                        tableBody.appendChild(newRow);
+
+                        // Close modal and reset form
+                        bootstrap.Modal.getInstance(document.getElementById('sizeModal')).hide();
+                        document.getElementById('newRegularPrice').value = '';
+                        document.getElementById('newSalePrice').value = '';
+                        document.getElementById('newStockQuantity').value = '';
+
+                        // Update remove buttons state for variants
+                        updateVariantRemoveButtons();
+
+                        Toastify({
+                            text: 'Variant added successfully!',
+                            duration: 3000,
+                            gravity: 'top',
+                            position: 'right',
+                            backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)'
+                        }).showToast();
+
+                    } catch (error) {
+                        console.error('Error in addNewVariant:', error);
+                        Toastify({
+                            text: 'An error occurred while adding the variant',
+                            duration: 3000,
+                            gravity: 'top',
+                            position: 'right',
+                            backgroundColor: 'linear-gradient(to right, #FF5F6D, #FFC371)'
+                        }).showToast();
+                    }
                 }
-                
-                // Update state of all remove buttons based on image count
-                function updateRemoveButtonsState() {
-                    const totalImages = existingImages.length + uploadedImages.length;
-                    const disableRemove = totalImages <= MIN_IMAGES;
-                    
-                    document.querySelectorAll('.thumbnail .remove-btn').forEach(btn => {
-                        btn.disabled = disableRemove;
-                        if (disableRemove) {
-                            btn.classList.add('disabled-remove');
-                        } else {
-                            btn.classList.remove('disabled-remove');
-                        }
-                    });
-                }
-                
-                // Drag and drop events
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    elements.uploadArea.addEventListener(eventName, e => e.preventDefault());
-                });
-                
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    elements.uploadArea.addEventListener(eventName, () => {
-                        elements.uploadArea.classList.add('dragover');
-                    });
-                });
-                
-                ['dragleave', 'drop'].forEach(eventName => {
-                    elements.uploadArea.addEventListener(eventName, () => {
-                        elements.uploadArea.classList.remove('dragover');
-                    });
-                });
-                
-                elements.uploadArea.addEventListener('drop', handleImageSelection);
-                
-                // Click to browse files
-                elements.uploadArea.addEventListener('click', () => {
-                    elements.imageUpload.click();
-                });
-                
-                // File input change event
-                elements.imageUpload.addEventListener('change', handleImageSelection);
-                
-                // Form submission
-                elements.form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (!validateForm()) return;
-                    
-                    // Update hidden fields
-                    updateHiddenFields();
-                    
-                    // Create FormData and append all fields
-                    const formData = new FormData(elements.form);
-                    
-                    // Append new images
-                    uploadedImages.forEach(img => {
-                        formData.append('images', img.file);
-                    });
-                    
-                    // Submit form via fetch
-                    fetch(elements.form.action, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.redirected) {
-                            window.location.href = response.url;
-                        } else {
-                            return response.json();
-                        }
-                    })
-                    .then(data => {
-                        if (data && data.error) {
-                            throw new Error(data.error);
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire('Error', error.message || 'Failed to update product', 'error');
-                    });
-                });
-                
-                // Initialize existing thumbnails
-                document.querySelectorAll('.thumbnail[data-type="existing"]').forEach(thumb => {
-                    thumb.querySelector('.remove-btn').addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        removeImage(thumb);
-                    });
-                    
-                    thumb.addEventListener('click', function(e) {
-                        if (!e.target.closest('.remove-btn')) setAsMainImage(thumb);
-                    });
-                });
-                
-                // Initialize variant validation
-                document.querySelector('#sizeTableBody').addEventListener('change', function(e) {
-                    if (e.target.classList.contains('regular-price') || e.target.classList.contains('sale-price')) {
-                        const row = e.target.closest('tr');
-                        const regularPrice = parseFloat(row.querySelector('.regular-price').value) || 0;
-                        const salePrice = parseFloat(row.querySelector('.sale-price').value) || 0;
-                        
-                        if (salePrice > 0 && salePrice > regularPrice) {
-                            Swal.fire('Error', 'Sale price must be less than regular price', 'error');
-                            row.querySelector('.sale-price').value = '';
-                            row.querySelector('.sale-price').focus();
-                        }
-                    }
-                });
-                
-                // Initial update of hidden fields
-                updateHiddenFields();
-                updateRemoveButtonsState();
-            });
-            
-            // Add new variant function
-            function addNewVariant() {
-                try {
-                    const size = document.getElementById('newSizeSelect').value;
-                    const regularPrice = document.getElementById('newRegularPrice').value;
-                    const salePrice = document.getElementById('newSalePrice').value;
-                    const quantity = document.getElementById('newStockQuantity').value;
-                    
-                    // Validate inputs
-                    if (!size || !regularPrice || !quantity) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Missing Information',
-                            text: 'Please fill in all required fields (Size, Regular Price, and Stock)',
-                            confirmButtonColor: '#d33'
-                        });
-                        return;
-                    }
-                    
-                    if (parseFloat(regularPrice) <= 0) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Price',
-                            text: 'Regular price must be greater than 0',
-                            confirmButtonColor: '#d33'
-                        });
-                        return;
-                    }
-                    
-                    if (salePrice && parseFloat(salePrice) >= parseFloat(regularPrice)) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Prices',
-                            text: 'Sale price must be less than regular price',
-                            confirmButtonColor: '#d33'
-                        });
-                        return;
-                    }
-                    
-                    if (parseInt(quantity) < 0) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Quantity',
-                            text: 'Stock quantity must be 0 or more',
-                            confirmButtonColor: '#d33'
-                        });
-                        return;
-                    }
-                    
-                    // Check if this size already exists
-                    const existingRows = document.querySelectorAll('#sizeTableBody tr');
-                    for (let row of existingRows) {
-                        const sizeInput = row.querySelector('.size-select');
-                        if (sizeInput && sizeInput.value === size) {
+
+                // Remove variant function
+                async function removeVariantSize(variant, productId) {
+                    try {
+                        const rows = document.querySelectorAll('#sizeTableBody tr');
+                        if (rows.length <= 1) {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Duplicate Size',
-                                text: 'This size already exists in the product variants',
+                                title: 'Cannot Remove',
+                                text: 'A product must have at least one size variant',
                                 confirmButtonColor: '#d33'
                             });
                             return;
                         }
-                    }
-                    
-                    // Create new row
-                    const tableBody = document.getElementById('sizeTableBody');
-                    const newRow = document.createElement('tr');
-                    const variantIndex = existingRows.length;
-                    
-                    newRow.innerHTML = `
-                        <td>
-                            <select name="variants[${variantIndex}][size]" class="form-control size-select">
-                                <option value="S" ${size === 'S' ? 'selected' : ''}>S</option>
-                                <option value="M" ${size === 'M' ? 'selected' : ''}>M</option>
-                                <option value="L" ${size === 'L' ? 'selected' : ''}>L</option>
-                                <option value="XL" ${size === 'XL' ? 'selected' : ''}>XL</option>
-                                <option value="XXL" ${size === 'XXL' ? 'selected' : ''}>XXL</option>
-                            </select>
-                        </td>
-                        <td><input type="number" class="form-control regular-price" 
-                                name="variants[${variantIndex}][regularPrice]" value="${regularPrice}"></td>
-                        <td><input type="number" class="form-control sale-price" 
-                                name="variants[${variantIndex}][salePrice]" value="${salePrice}"></td>
-                        <td><input type="number" class="form-control quantity" 
-                                name="variants[${variantIndex}][quantity]" value="${quantity}"></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary remove-variant-btn"
-                                onclick="event.preventDefault(); removeVariantSize('${size}', '<%= product._id %>')"
-                                data-variant="${size}"
-                                data-productid="<%= product._id %>">
-                                Remove Variant
-                            </button>
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(newRow);
-                    
-                    // Close modal and reset form
-                    bootstrap.Modal.getInstance(document.getElementById('sizeModal')).hide();
-                    document.getElementById('newRegularPrice').value = '';
-                    document.getElementById('newSalePrice').value = '';
-                    document.getElementById('newStockQuantity').value = '';
-                    
-                    // Update remove buttons state for variants
-                    updateVariantRemoveButtons();
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Variant Added',
-                        text: 'The new size variant has been added successfully',
-                        confirmButtonColor: '#3085d6'
-                    });
-                    
-                } catch (error) {
-                    console.error('Error in addNewVariant:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred while adding the variant',
-                        confirmButtonColor: '#d33'
-                    });
-                }
-            }
-            
-            // Remove variant function
-            async function removeVariantSize(variant, productId) {
-                try {
-                    const rows = document.querySelectorAll('#sizeTableBody tr');
-                    if (rows.length <= 1) {
+
+                        // Find and remove the table row
+                        let rowToRemove = null;
+                        rows.forEach(row => {
+                            const button = row.querySelector('button[data-variant]');
+                            if (button && button.dataset.variant === variant) {
+                                rowToRemove = row;
+                            }
+                        });
+
+                        if (rowToRemove) {
+                            rowToRemove.remove();
+
+                            // Update variant indexes in the form
+                            const remainingRows = document.querySelectorAll('#sizeTableBody tr');
+                            remainingRows.forEach((row, index) => {
+                                // Update all input names with new index
+                                const sizeSelect = row.querySelector('.size-select');
+                                const regularPrice = row.querySelector('.regular-price');
+                                const salePrice = row.querySelector('.sale-price');
+                                const quantity = row.querySelector('.quantity');
+
+                                if (sizeSelect) sizeSelect.name = `variants[${index}][size]`;
+                                if (regularPrice) regularPrice.name = `variants[${index}][regularPrice]`;
+                                if (salePrice) salePrice.name = `variants[${index}][salePrice]`;
+                                if (quantity) quantity.name = `variants[${index}][quantity]`;
+                            });
+
+                            // Update remove buttons state
+                            updateVariantRemoveButtons();
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Variant removed',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+
+                    } catch (error) {
+                        console.error('Error in removeVariantSize:', error);
                         Swal.fire({
                             icon: 'error',
-                            title: 'Cannot Remove',
-                            text: 'A product must have at least one size variant',
+                            title: 'Error',
+                            text: 'Failed to remove variant',
                             confirmButtonColor: '#d33'
                         });
-                        return;
                     }
-                    
-                    // Find and remove the table row
-                    let rowToRemove = null;
+                }
+
+                // Update state of variant remove buttons
+                function updateVariantRemoveButtons() {
+                    const rows = document.querySelectorAll('#sizeTableBody tr');
+                    const disableRemove = rows.length <= 1;
+
                     rows.forEach(row => {
-                        const button = row.querySelector('button[data-variant]');
-                        if (button && button.dataset.variant === variant) {
-                            rowToRemove = row;
+                        const btn = row.querySelector('.remove-variant-btn');
+                        if (btn) {
+                            btn.disabled = disableRemove;
+                            if (disableRemove) {
+                                btn.classList.add('disabled-remove');
+                            } else {
+                                btn.classList.remove('disabled-remove');
+                            }
                         }
-                    });
-                    
-                    if (rowToRemove) {
-                        rowToRemove.remove();
-                        
-                        // Update variant indexes in the form
-                        const remainingRows = document.querySelectorAll('#sizeTableBody tr');
-                        remainingRows.forEach((row, index) => {
-                            // Update all input names with new index
-                            const sizeSelect = row.querySelector('.size-select');
-                            const regularPrice = row.querySelector('.regular-price');
-                            const salePrice = row.querySelector('.sale-price');
-                            const quantity = row.querySelector('.quantity');
-                            
-                            if (sizeSelect) sizeSelect.name = `variants[${index}][size]`;
-                            if (regularPrice) regularPrice.name = `variants[${index}][regularPrice]`;
-                            if (salePrice) salePrice.name = `variants[${index}][salePrice]`;
-                            if (quantity) quantity.name = `variants[${index}][quantity]`;
-                        });
-                        
-                        // Update remove buttons state
-                        updateVariantRemoveButtons();
-                        
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Variant removed',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                    
-                } catch (error) {
-                    console.error('Error in removeVariantSize:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to remove variant',
-                        confirmButtonColor: '#d33'
                     });
                 }
-            }
-            
-            // Update state of variant remove buttons
-            function updateVariantRemoveButtons() {
-                const rows = document.querySelectorAll('#sizeTableBody tr');
-                const disableRemove = rows.length <= 1;
-                
-                rows.forEach(row => {
-                    const btn = row.querySelector('.remove-variant-btn');
-                    if (btn) {
-                        btn.disabled = disableRemove;
-                        if (disableRemove) {
-                            btn.classList.add('disabled-remove');
-                        } else {
-                            btn.classList.remove('disabled-remove');
-                        }
-                    }
-                });
-            }
-        </script>
+            </script>
 </body>
 
 </html>

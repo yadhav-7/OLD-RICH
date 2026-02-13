@@ -3,15 +3,14 @@ const mongoose = require('mongoose');
 
 const addAddress = async (req, res) => {
     try {
-        console.log('req.body.addressData',req.body.addressData)
-        console.log('req.body-----------',req.body)
+        
         const user = req.session.user;
-        console.log(1)
+       
         if (!user) {
             return res.status(401).json({ message: 'User not authenticated' });
         }
 
-        console.log(2)
+        
 
         const {
             name,
@@ -25,22 +24,12 @@ const addAddress = async (req, res) => {
             pincode
         } =req.body || req.body.addressData
 
-        console.log(3)
-        console.log('name',name)
-        console.log('phone',phone)
-        console.log('addressType',addressType)
-        console.log('country',country)
-        console.log('state',state)
-        console.log('city',city)
-         console.log('street',street)
-         console.log('pincode',pincode)
+
 
         if (!name || !phone || !addressType || !country || !state || !city || !street || !pincode) {
             return res.status(400).json({ message: 'All required fields must be provided' });
         }
-        console.log(4)
-
-        // Check for duplicate
+      
         const duplicateAddress = await Address.findOne({
             userId: user,
             address: {
@@ -55,14 +44,12 @@ const addAddress = async (req, res) => {
                     phone: phone
                 }
             }
-        });
-
-        console.log(5)
+        })
 
         if (duplicateAddress) {
             return res.status(409).json({ message: 'This address already exists' });
         }
-console.log(6)
+
         const newAddress = {
             name,
             phone,
@@ -75,13 +62,13 @@ console.log(6)
             pincode: Number(pincode),
             isDefault: false
         };
-console.log(7)
+
         const updatedUser = await Address.findOneAndUpdate(
             { userId: user },
             { $push: { address: newAddress } },
             { new: true, upsert: true }
         );
-console.log(8)
+
         return res.status(201).json({
             message: 'Address added successfully',
             address: newAddress
@@ -94,7 +81,7 @@ console.log(8)
             error: error.message
         });
     }
-};
+}
 
 
 
@@ -147,15 +134,15 @@ console.log('addressId',addressId)
 
 const editAddress = async (req, res) => {
     try {
-        console.log(1)
+        
         const addressId = req.query.addressId;
-        console.log(2)
+      
         const userId = req.session.user;
-console.log(3)
+
         if (!addressId || !userId) {
             return res.status(400).json({ error: 'Missing required identifiers' });
         }
-console.log(4)
+
         const {
             addressType,
             name,
@@ -167,11 +154,11 @@ console.log(4)
             phone,
             altPhone
         } = req.body;
-console.log(5)
+
         if (!addressType || !name || !street || !city || !state || !pincode || !country || !phone) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
-console.log(6)
+
         const updateFields = {
             'address.$.addressType': addressType.trim(),
             'address.$.name': name.trim(),
@@ -182,20 +169,28 @@ console.log(6)
             'address.$.country': country.trim(),
             'address.$.phone': phone.trim()
         };
-console.log(7)
+
         if (altPhone) updateFields['address.$.altPhone'] = altPhone.trim();
-console.log(8)
+
         const updated = await Address.findOneAndUpdate(
             { userId, "address._id": addressId },
             { $set: updateFields },
             { new: true }
         );
-console.log(9)
+
+         let updatedDoc 
+
+        for(let i of updated.address){
+            if(addressId===i._id)updatedDoc=i
+        }
+       
+        console.log('updated',updatedDoc)
+
         if (!updated) {
             return res.status(404).json({ error: 'Address not found or not yours' });
         }
-console.log(10)
-        return res.status(200).json({ message: 'Address updated successfully', data: updated });
+
+        return res.status(200).json({ message: 'Address updated successfully', data: [updatedDoc] });
 
     } catch (error) {
         console.error("Update error:", error.message);

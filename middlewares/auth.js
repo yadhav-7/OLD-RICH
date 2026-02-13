@@ -1,23 +1,30 @@
 const User = require('../models/userSchema')
-const userAuth = (req, res, next) => {
+const userAuth = async (req, res, next) => {
+  try {
     if (req.session.user) {
-        User.findById(req.session.user)
-            .then(data => {
-                if (data && !data.isBlock) {
-                    next()
-                }else {
-                    res.redirect('/login')
-                }
-            })
-            .catch(error => {
-                console.log('Error in user auth middleware')
-                res.status(500).send('Internal Server error')
-            })
-        
+      const user = await User.findById(req.session.user);
+
+      if (user && !user.isBlock) {
+        return next();
+      } else {
+        // If request comes via fetch, send JSON response
+        if (req.xhr || req.headers.accept?.includes('json')) {
+          return res.status(401).json({ redirect: '/login' });
+        }
+        return res.redirect('/login');
+      }
     } else {
-        res.redirect('/login')
+      if (req.xhr || req.headers.accept?.includes('json')) {
+        return res.status(401).json({ redirect: '/login' });
+      }
+      return res.redirect('/login');
     }
-}
+  } catch (error) {
+    console.log('Error in userAuth middleware:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
 
 
 const guestAuth = async (req, res, next) => {
@@ -50,7 +57,7 @@ const adminAuth = async(req, res, next) => {
     
         try {
             
-            
+            console.log('yes adminAuth is working',req.url)
             const userId = req.session.admin
             if(!userId){
                 return res.redirect('/admin/login')

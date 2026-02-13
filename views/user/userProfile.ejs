@@ -11,8 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script> -->
 
 
-
-
+    <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
@@ -317,11 +316,12 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 </head>
 
 <body>
     <%- include('../../views/partials/user/header',{title:'Home-page'}) %>
+ 
         <div class="container py-5">
             <div class="profile-header">
                 <div class="row align-items-center">
@@ -346,7 +346,7 @@
 
                     </div>
                     <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <button class="btn btn-primary me-2 mb-2" data-bs-toggle="modal"
+                        <button class="btn btn-success me-2 mb-2" data-bs-toggle="modal"
                             data-bs-target="#editProfileModal">
                             <i class="fas fa-edit me-1"></i> Edit Profile
                         </button>
@@ -468,82 +468,82 @@
                     </div>
 
                     <style>
-                    .wallet-card {
-                        background: #f5f6f7;
-                        border-radius: 8px;
-                        padding: 24px;
-                        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-                        border: #000;
+                        .wallet-card {
+                            background: #f5f6f7;
+                            border-radius: 8px;
+                            padding: 24px;
+                            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                            border: #000;
 
-                        width: 546px;
-                        height: 180px;
+                            width: 546px;
+                            height: 180px;
 
-                        display: flex;
-                        flex-direction: column;
-                        gap: 12px;
-                        align-items: center;
-                        justify-content: center;
-                    }
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                            align-items: center;
+                            justify-content: center;
+                        }
 
 
-                    .wallet-icon {
-                        width: 40px;
-                        height: 40px;
-                        background: #f3f3ed;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 20px;
-                        color: #444;
-                    }
+                        .wallet-icon {
+                            width: 40px;
+                            height: 40px;
+                            background: #f3f3ed;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            color: #444;
+                        }
 
-                    .wallet-content {
-                        flex: 1;
-                    }
+                        .wallet-content {
+                            flex: 1;
+                        }
 
-                    .wallet-title {
-                        font-weight: 700;
-                        margin: 0;
-                        color: #222;
-                    }
+                        .wallet-title {
+                            font-weight: 700;
+                            margin: 0;
+                            color: #222;
+                        }
 
-                    .wallet-text {
-                        margin: 2px 0 8px;
-                        color: #555;
-                        font-size: 14px;
-                    }
+                        .wallet-text {
+                            margin: 2px 0 8px;
+                            color: #555;
+                            font-size: 14px;
+                        }
 
-                    .wallet-link {
-                        font-size: 14px;
-                        color: #000;
-                        font-weight: 500;
-                        text-decoration: none;
-                    }
-                </style>
-                <div class="wallet-card">
-                    <a href="/wallet" class="wallet-link">
-                        <div class="wallet-icon">
-                            <i class="bi bi-wallet2"></i>
-                        </div>
-                        <div class="wallet-content">
-                            <h6 class="wallet-title">Your Wallet</h6>
-                            <p class="wallet-text">Add or check balance</p>
-                            <a href="/wallet" class="wallet-link">View wallet &gt;</a>
-                        </div>
-                    </a>
+                        .wallet-link {
+                            font-size: 14px;
+                            color: #000;
+                            font-weight: 500;
+                            text-decoration: none;
+                        }
+                    </style>
+                    <div class="wallet-card">
+                        <a href="/wallet" class="wallet-link">
+                            <div class="wallet-icon">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div class="wallet-content">
+                                <h6 class="wallet-title">Your Wallet</h6>
+                                <p class="wallet-text">Add or check balance</p>
+                                <a href="/wallet" class="wallet-link">View wallet &gt;</a>
+                            </div>
+                        </a>
+                    </div>
+
+
                 </div>
 
-                
-                </div>
-                
 
 
                 <div class="tab-pane fade" id="address">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-home me-2"></i> Saved Addresses</span>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            <button class="btn btn-success btn-sm " data-bs-toggle="modal"
                                 data-bs-target="#addAddressModal">
                                 <i class="fas fa-plus me-1"></i> Add New Address
                             </button>
@@ -612,11 +612,12 @@
                                         <hr class="dropdown-divider">
                                     </li>
 
-                                    <li><a class="dropdown-item" href="#" data-filter="Pending">Pending</a></li>
-                                    <li><a class="dropdown-item" href="#" data-filter="Delivered">Delivered</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter='Pending'>Pending</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter='Delivered'>Delivered</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="Shipped">Shipped</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="Processing">Processing</a></li>
                                     <li><a class="dropdown-item" href="#" data-filter="cancelled">Cancelled</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="Failed">Failed</a></li>
                                     <li><a class="dropdown-item" href="#"
                                             data-filter="returnRequested">returnRequested</a></li>
                                     <li><a class="dropdown-item" href="#"
@@ -660,26 +661,33 @@
 
 
                                             <div class="mt-2 mt-sm-0">
-                                                <a href="/orderDetailPage?orderId=<%= order.orderId %>">
-                                                    <button class="btn btn-sm btn-outline-primary me-2">
-                                                        <i class="fas fa-eye me-1"></i> Details
-                                                    </button>
-                                                </a>
-                                                <% if(order.status !=='Delivered' && order.status !=='cancelled' &&
-                                                    order.status!=='returnRequested' &&order.status!=='returned'
-                                                    &&order.status!=='reutrnRejected' ) { %>
-                                                    <button class="btn btn-sm btn-outline-danger"
-                                                        id="cancelBtn<%= index %>"
-                                                        onclick="confirmCancelOrder('<%= order.orderId%>','<%= index %>')">
-                                                        <i class="fas fa-times me-1"></i> Cancel
-                                                    </button>
-                                                    <% } else if(order.status==='Delivered' ) { %>
-                                                        <button id="returnBtn<%= index %>"
-                                                            class="btn btn-sm btn-outline-secondary"
-                                                            onclick="returnOrder('<%= order.orderId %>', '<%= index %>')">
-                                                            <i class="fas fa-times me-1"></i> return
+                                                <% if(order.status!=='Failed' ){%>
+                                                    <a href="/orderDetailPage?orderId=<%= order.orderId %>">
+                                                        <button class="btn btn-sm btn-outline-primary me-2">
+                                                            <i class="fas fa-eye me-1"></i> Details
                                                         </button>
-                                                        <% } %>
+                                                    </a>
+                                                    <% } %>
+                                                        <% if(order.status !=='Delivered' && order.status !=='cancelled'
+                                                            && order.status!=='returnRequested'
+                                                            &&order.status!=='returned'
+                                                            &&order.status!=='reutrnRejected' &&order.status!=='Failed'
+                                                            ) { %>
+                                                            <button class="btn btn-sm btn-outline-danger"
+                                                                id="cancelBtn<%= index %>"
+                                                                onclick="confirmCancelOrder('<%= order.orderId%>','<%= index %>')">
+                                                                <i class="fas fa-times me-1"></i> Cancel
+                                                            </button>
+                                                            <% } else if(order.status==='Delivered' ) { %>
+                                                                <button id="returnBtn<%= index %>"
+                                                                    class="btn btn-sm btn-outline-secondary"
+                                                                    onclick="returnOrder('<%= order.orderId %>', '<%= index %>')">
+                                                                    <i class="fas fa-times me-1"></i> return
+                                                                </button>
+                                                                <% }else if(order.status==='Failed' ){%>
+                                                                    <a href="/paymentFaildRetry?orderId=<%= order.orderId %>"
+                                                                        class="btn btn-danger btn-sm">Retry Payment</a>
+                                                                    <% } %>
 
                                             </div>
                                         </div>
@@ -691,8 +699,7 @@
                                             <div class="pagination">
                                                 <!-- Previous Button -->
                                                 <% if(currentPage> 1) { %>
-                                                    <button
-                                                        onclick="paginationForOrderSection('<%= currentPage - 1 %>')"
+                                                    <button onclick="paginationForOrderSection(<%= currentPage - 1 %>)"
                                                         class="page-btn" aria-label="Previous Page">&lt;</button>
                                                     <% } %>
 
@@ -705,7 +712,7 @@
                                                         <!-- Next Button -->
                                                         <% if(currentPage < totalPage) { %>
                                                             <button
-                                                                onclick="paginationForOrderSection('<%= currentPage + 1 %>')"
+                                                                onclick="paginationForOrderSection(<%= currentPage + 1 %>)"
                                                                 class="page-btn" aria-label="Next Page">&gt;</button>
                                                             <% } %>
                                             </div>
@@ -727,24 +734,15 @@
 
                     </div>
 
-                    <!-- PASSWORD AND SECURITY -->
+                  
+
+                </div>
+
+
+                  <!-- PASSWORD AND SECURITY -->
 
                     <div class="tab-pane fade" id="security">
 
-                        <!-- Flash Toast Message -->
-                        <% if (flash) { %>
-                            <script>
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: '<%= flash.type %>', // 'success', 'error', etc.
-                                    title: '<%= flash.message %>',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true
-                                });
-                            </script>
-                            <% } %>
 
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -813,8 +811,6 @@
                                     </div>
                                 </div>
                     </div>
-
-                </div>
             </div>
 
             <!-- Edit Profile Modal -->
@@ -839,6 +835,7 @@
 
 
                                         <button type="button"
+                                        id="openFiles"
                                             class="btn btn-success btn-sm position-absolute bottom-0 end-0 rounded-circle">
                                             <i class="fas fa-camera"></i>
                                             <input type="file" id="profilePhotoUpload" accept="image/*" class="d-none">
@@ -1212,8 +1209,7 @@
                 </div>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
             <script>
 
@@ -1637,7 +1633,7 @@
                     }
 
                     // Open file input on camera button click
-                    const cameraBtn = document.querySelector('.btn-success.btn-sm');
+                    const cameraBtn = document.querySelector('#openFiles');
                     if (cameraBtn && fileInput) {
                         cameraBtn.addEventListener('click', () => fileInput.click());
                     }
@@ -1891,8 +1887,8 @@
                                 city: document.getElementById('city').value.trim(),
                                 street: document.getElementById('street').value.trim(),
                                 pincode: document.getElementById('pincode').value.trim()
-                            };
-
+                            }
+                            
                             try {
                                 const response = await fetch('/addAddress', {
                                     method: 'POST',
@@ -1913,9 +1909,10 @@
                                             timer: 1000
                                         });
                                     }
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 1000);
+                                    
+                                    const addModal = bootstrap.Modal.getInstance(document.getElementById('addAddressModal'));
+                                    if (addModal) addModal.hide()
+                                    await reloadAddressSection()
                                 } else {
                                     throw new Error(result.message || 'Failed to add address');
                                 }
@@ -2008,7 +2005,7 @@
                                     }
                                     const editModal = bootstrap.Modal.getInstance(document.getElementById('editAddressModal'));
                                     if (editModal) editModal.hide();
-                                    window.location.reload();
+                                   await reloadAddressSection()
                                 } else {
                                     if (typeof Swal !== 'undefined') {
                                         await Swal.fire('Error!', result.message || 'Failed to update address.', 'error');
@@ -2448,15 +2445,17 @@
                 };
 
                 //Filter orders
-                let filter
+                let filter = ''
+                let page = document.querySelectorAll('.page-btn').value
                 document.querySelectorAll('.dropdown-menu .dropdown-item')
                     .forEach((item) => {
                         item.addEventListener('click', async function (e) {
                             e.preventDefault();
                             try {
-                                filter = e.target.getAttribute('data-filter')
+                                filter = e.target.getAttribute('data-filter') || ''
 
-                                const response = await fetch(`/userProfile?filter=${encodeURIComponent(filter)}`, {
+
+                                const response = await fetch(`/userProfile?filter=${encodeURIComponent(filter)}&page=${encodeURIComponent(page)}`, {
                                     headers: {
                                         'Accept': 'application/json',
                                         'Content-Type': 'application/json'
@@ -2606,14 +2605,12 @@
                 //Filter orders
                 async function paginationForOrderSection(page) {
                     try {
-
-                        const response = await fetch(`/userProfile?page=${encodeURIComponent(page)}&filter=${filter}`, {
+                        const response = await fetch(`/userProfile?page=${encodeURIComponent(page)}&filter=${encodeURIComponent(filter)}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
                             }
-                        });
-
+                        })
                         if (!response.ok) {
                             Swal.fire({
                                 toast: true,
@@ -2624,13 +2621,12 @@
                                 timer: 2000,
                                 timerProgressBar: true
                             });
-                            return;
+                            return
                         }
-
                         const data = await response.json();
                         const orders = data.order || [];
                         const container = document.querySelector('#orders .card-body');
-                        container.innerHTML = '';
+                        container.innerHTML = ''
 
                         if (orders.length === 0) {
                             container.innerHTML = `
@@ -2640,8 +2636,8 @@
           <p class="mb-4">No orders on page <b>${page}</b>.</p>
           <a href="/shop" class="btn btn-primary"><i class="fas fa-store me-1"></i> Start Shopping</a>
         </div>
-      `;
-                            return;
+      `
+                            return
                         }
 
                         // same getStatusBadgeClass() as before

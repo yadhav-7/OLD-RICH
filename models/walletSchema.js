@@ -41,12 +41,12 @@ const walletSchema = new Schema({
                 ref: "Order",
                 default: null
             },
-            productId: {
+            productId: [{
                 type: Schema.Types.ObjectId,
                 ref: 'Product',
                 default: null 
-            },
-            quantity: {
+            }],
+            productQuantity: {
                 type: Number,
                 default: null
             },

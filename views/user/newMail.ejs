@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Update Email Address</title>
+      <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+
   <style>
     * {
       box-sizing: border-box;
@@ -169,6 +171,16 @@
   </form>
 
   <script>
+
+     window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      alert('wirjijg')
+      // Hide content instantly
+      document.body.style.display = "none";
+      // Force reload from server
+      window.location.href='/home'
+    }
+  })
     const form = document.getElementById('emailForm');
     const emailInput = document.getElementById('email');
     const errorMsg = document.getElementById('errorMsg');

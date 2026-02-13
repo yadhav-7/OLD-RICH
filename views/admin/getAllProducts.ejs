@@ -7,16 +7,18 @@
   <title>Admin Products</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+ <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
+ <style>
     :root {
-      --primary-color: #4361ee;
-      --primary-light: #eef2ff;
-      --secondary-color: #3f37c9;
-      --danger-color: #f72585;
+      --primary-color: #ffc107;
+      --primary-light: #fff9e6;
+      --secondary-color: #e6b800;
+      --danger-color: #dc3545;
       --danger-light: #fde8ef;
-      --success-color: #4cc9f0;
+      --success-color: #28a745;
       --success-light: #e6f7fd;
-      --warning-color: #ff9e00;
+      --warning-color: #ffc107;
       --warning-light: #fff4e6;
       --info-color: #6c757d;
       --info-light: #f8f9fa;
@@ -79,6 +81,16 @@
       font-size: 1.5rem;
       font-weight: 600;
       color: var(--dark-color);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-title i {
+      color: var(--primary-color);
+      background: var(--primary-light);
+      padding: 10px;
+      border-radius: 10px;
+      margin-right: 10px;
     }
 
     .search-container {
@@ -109,7 +121,7 @@
 
     .search-input:focus {
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      box-shadow: 0 0 0 3px var(--primary-light);
     }
 
     .search-icon {
@@ -117,7 +129,7 @@
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-light);
+      color: var(--primary-color);
       font-size: 1rem;
     }
 
@@ -167,14 +179,15 @@
     }
 
     .products-table th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 500;
+      background-color: var(--primary-light);
+      color: var(--dark-color);
+      font-weight: 600;
       position: sticky;
       top: 0;
       text-transform: uppercase;
       font-size: 0.8rem;
       letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--primary-color);
     }
 
     .products-table tr:last-child td {
@@ -196,7 +209,7 @@
 
     .status-active {
       background-color: var(--success-light);
-      color: #28a745;
+      color: var(--success-color);
     }
 
     .status-blocked {
@@ -242,7 +255,7 @@
 
     .remove-offer {
       background-color: var(--warning-color);
-      color: white;
+      color: var(--dark-color);
     }
 
     .block {
@@ -251,13 +264,13 @@
     }
 
     .unblock {
-      background-color: #48c774;
+      background-color: var(--success-color);
       color: white;
     }
 
     .edit {
       background-color: var(--primary-color);
-      color: white;
+      color: var(--dark-color);
     }
 
     .view-variants {
@@ -298,12 +311,13 @@
 
     .page-link:hover {
       background-color: var(--primary-light);
-      color: var(--primary-color);
+      color: var(--dark-color);
+      border-color: var(--primary-color);
     }
 
     .page-link.active {
       background-color: var(--primary-color);
-      color: white;
+      color: var(--dark-color);
       border-color: var(--primary-color);
     }
 
@@ -345,11 +359,12 @@
 
     .variant-modal-header {
       padding: 16px 25px;
-      background-color: var(--primary-color);
-      color: white;
+      background-color: var(--primary-light);
+      color: var(--dark-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .variant-modal-title {
@@ -360,7 +375,7 @@
     .variant-modal-close {
       background: none;
       border: none;
-      color: white;
+      color: var(--dark-color);
       font-size: 1.75rem;
       cursor: pointer;
       line-height: 1;
@@ -369,6 +384,7 @@
 
     .variant-modal-close:hover {
       transform: rotate(90deg);
+      color: var(--danger-color);
     }
 
     .variant-modal-body {
@@ -392,7 +408,8 @@
       text-transform: uppercase;
       font-size: 0.8rem;
       letter-spacing: 0.5px;
-      color: var(--primary-color);
+      color: var(--dark-color);
+      border-bottom: 2px solid var(--primary-color);
     }
 
     .variant-table th,
@@ -430,7 +447,7 @@
 
     .variant-edit {
       background-color: var(--primary-color);
-      color: white;
+      color: var(--dark-color);
     }
 
     .variant-delete {
@@ -572,10 +589,14 @@
     <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
       <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
 
+
+
         <div class="main-content">
           <div class="header">
             <div class="header-top">
-              <h1 class="header-title">Products Management</h1>
+              <h1 class="header-title">
+                <i class="fas fa-boxes"></i> Products Management
+              </h1>
               <div class="search-container">
                 <div class="search-input-group">
                   <i class="fas fa-search search-icon"></i>
@@ -592,10 +613,7 @@
             <p>Loading products...</p>
           </div>
 
-
-
           <div class="products-table-container" id="productsTableContainer">
-            <!-- At the very bottom of the page, after SweetAlert is loaded -->
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
             <% if(data && data.length> 0) { %>
@@ -621,20 +639,19 @@
                       </td>
                       <td>
                         <% if(data[i].isBlocked) { %>
-  <span class="status-badge status-blocked" id="status-<%= data[i]._id %>">Blocked</span>
-<% } else { %>
-  <span class="status-badge status-active" id="status-<%= data[i]._id %>">Active</span>
-<% } %>
-
+                          <span class="status-badge status-blocked" id="status-<%= data[i]._id %>">Blocked</span>
+                        <% } else { %>
+                          <span class="status-badge status-active" id="status-<%= data[i]._id %>">Active</span>
+                        <% } %>
                       </td>
                       <td>
                         <% if(data[i].productOffer> 0) { %>
                           <span class="offer-badge">
                             <%= data[i].productOffer %>% OFF
                           </span>
-                          <% } else { %>
-                            <span>-</span>
-                            <% } %>
+                        <% } else { %>
+                          <span>-</span>
+                        <% } %>
                       </td>
                       <td>
                         <%= data[i].totalQuantity %>
@@ -646,50 +663,48 @@
                               <i class="fas fa-tag"></i>
                               <span>Add Offer</span>
                             </button>
-                            <% } else { %>
-                              <button class="action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
-                                <i class="fas fa-tag"></i>
-                                <span>Remove Offer</span>
-                              </button>
-                              <% } %>
+                          <% } else { %>
+                            <button class="action-btn remove-offer" onclick="removeOffer('<%= data[i]._id %>')">
+                              <i class="fas fa-tag"></i>
+                              <span>Remove Offer</span>
+                            </button>
+                          <% } %>
 
-                                <% if(data[i].isBlocked) { %>
-                                  <button class="action-btn unblock" id="btn-<%= data[i]._id %>"
-                                    onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                    <i class="fas fa-unlock"></i>
-                                    <span>Unblock</span>
-                                  </button>
-                                  <% } else { %>
-                                    <button class="action-btn block" id="btn-<%= data[i]._id %>"
-                                      onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                      <i class="fas fa-ban"></i>
-                                      <span>Block</span>
-                                    </button>
-                                    <% } %>
+                          <% if(data[i].isBlocked) { %>
+                            <button class="action-btn unblock" id="btn-<%= data[i]._id %>"
+                              onclick="unblockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                              <i class="fas fa-unlock"></i>
+                              <span>Unblock</span>
+                            </button>
+                          <% } else { %>
+                            <button class="action-btn block" id="btn-<%= data[i]._id %>"
+                              onclick="blockProduct('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                              <i class="fas fa-ban"></i>
+                              <span>Block</span>
+                            </button>
+                          <% } %>
 
-
-                                      <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
-                                        <i class="fas fa-edit"></i>
-                                        <span>Edit</span>
-                                      </a>
-                                      <button class="action-btn view-variants"
-                                        onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
-                                        <i class="fas fa-boxes"></i>
-                                        <span>Variants</span>
-                                      </button>
+                          <a href="/admin/getEditProduct?id=<%= data[i]._id %>" class="action-btn edit">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit</span>
+                          </a>
+                          <button class="action-btn view-variants"
+                            onclick="showVariantModal('<%= data[i]._id %>', '<%= data[i].productName %>')">
+                            <i class="fas fa-boxes"></i>
+                            <span>Variants</span>
+                          </button>
                         </div>
                       </td>
                     </tr>
-                    <% } %>
+                  <% } %>
                 </tbody>
-
               </table>
-              <% } else { %>
-                <div class="empty-state">
-                  <i class="fas fa-box-open"></i>
-                  <p>No products found</p>
-                </div>
-                <% } %>
+            <% } else { %>
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>No products found</p>
+              </div>
+            <% } %>
           </div>
 
           <% if(data && data.length> 0) { %>
@@ -698,17 +713,17 @@
                 <a href="/admin/getAllProducts?page=<%= currentPage - 1 %>" class="page-link">
                   <i class="fas fa-chevron-left"></i>
                 </a>
-                <% } %>
-                  <a href="#" class="page-link active">
-                    <%= currentPage %>
-                  </a>
-                  <% if(currentPage < totalPages) { %>
-                    <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
-                      <i class="fas fa-chevron-right"></i>
-                    </a>
-                    <% } %>
+              <% } %>
+              <a href="#" class="page-link active">
+                <%= currentPage %>
+              </a>
+              <% if(currentPage < totalPages) { %>
+                <a href="/admin/getAllProducts?page=<%= currentPage + 1 %>" class="page-link">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              <% } %>
             </div>
-            <% } %>
+          <% } %>
         </div>
   </div>
 
@@ -736,12 +751,33 @@
     </div>
   </div>
 
+  <!-- Toastify CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<!-- Toastify JS -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
   <script>
+      const successMsg = localStorage.getItem('success');
+  if (successMsg) {
+    Toastify({
+      text: successMsg,
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+    }).showToast();
+
+    setTimeout(() => {
+        localStorage.removeItem('success');
+      }, 1000);
+    }
+  
     // DOM Elements
     const searchInput = document.getElementById('search-input');
     const clearBtn = document.getElementById('clear-button');
     const productsTableBody = document.getElementById('productsTableBody');
-    // const productsTableContainer = document.getElementById('productsTableContainer');
 
     // Show variant modal
     async function showVariantModal(productId, productName) {
@@ -806,58 +842,57 @@
       document.getElementById('variantModal').style.display = 'none';
     }
 
-  
-   // Add offer
-async function addOffer(productId) {
-  const { value: amount } = await Swal.fire({
-    title: 'Add Product Offer',
-    input: 'number',
-    inputLabel: 'Enter offer percentage',
-    inputPlaceholder: '10',
-    inputAttributes: { min: '1', max: '100' },
-    showCancelButton: true,
-    confirmButtonText: 'Add Offer',
-    cancelButtonText: 'Cancel',
-    inputValidator: (value) => {
-      if (!value) return 'Please enter a value';
-      if (value < 1 || value > 100) return 'Please enter a value between 1 and 100';
-    }
-  });
-
-  if (!amount) return; // user cancelled or invalid input
-
-  try {
-    const response = await fetch('/admin/addProductOffer', {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ productId, percentage: amount })
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      await Swal.fire({
-        icon: 'success',
-        title: 'Offer Added',
-        text: `Successfully added ${amount}% offer to the product`,
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true
+    // Add offer
+    async function addOffer(productId) {
+      const { value: amount } = await Swal.fire({
+        title: 'Add Product Offer',
+        input: 'number',
+        inputLabel: 'Enter offer percentage',
+        inputPlaceholder: '10',
+        inputAttributes: { min: '1', max: '100' },
+        showCancelButton: true,
+        confirmButtonText: 'Add Offer',
+        cancelButtonText: 'Cancel',
+        inputValidator: (value) => {
+          if (!value) return 'Please enter a value';
+          if (value < 1 || value > 100) return 'Please enter a value between 1 and 100';
+        }
       });
 
-      // 🔄 Reload only after success popup finishes
-      window.location.reload();
-    } else {
-      throw new Error(result.message || 'Failed to add offer');
+      if (!amount) return; // user cancelled or invalid input
+
+      try {
+        const response = await fetch('/admin/addProductOffer', {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ productId, percentage: amount })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          await Swal.fire({
+            icon: 'success',
+            title: 'Offer Added',
+            text: `Successfully added ${amount}% offer to the product`,
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true
+          });
+
+          // 🔄 Reload only after success popup finishes
+          window.location.reload();
+        } else {
+          throw new Error(result.message || 'Failed to add offer');
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: err.message || 'Something went wrong'
+        });
+      }
     }
-  } catch (err) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Failed',
-      text: err.message || 'Something went wrong'
-    });
-  }
-}
 
     // Remove offer
     async function removeOffer(productId) {
@@ -900,130 +935,125 @@ async function addOffer(productId) {
       }
     }
 
-// BLOCK PRODUCT
-async function blockProduct(productId, productName) {
-  const { isConfirmed } = await Swal.fire({
-    title: 'Block Product',
-    html: `You are about to block <strong>${productName}</strong>. This product will no longer be visible to customers.`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    confirmButtonText: 'Yes, block it',
-    cancelButtonText: 'Cancel'
-  });
-
-  if (isConfirmed) {
-    try {
-      const response = await fetch('/admin/blockProduct', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: productId, productName })
+    // BLOCK PRODUCT
+    async function blockProduct(productId, productName) {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Block Product',
+        html: `You are about to block <strong>${productName}</strong>. This product will no longer be visible to customers.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Yes, block it',
+        cancelButtonText: 'Cancel'
       });
 
-      const result = await response.json();
+      if (isConfirmed) {
+        try {
+          const response = await fetch('/admin/blockProduct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: productId, productName })
+          });
 
-      if (response.ok) {
-        const btn = document.querySelector(`#btn-${productId}`);
-        btn.classList.remove('block');
-        btn.classList.add('unblock');
-        btn.innerHTML = `
-          <i class="fas fa-unlock"></i>
-          <span>Unblock</span>
-        `;
-        btn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
+          const result = await response.json();
 
-        const status = document.querySelector(`#status-${productId}`);
-if (status) {
-  status.classList.remove('status-active');
-  status.classList.add('status-blocked');
-  status.textContent = 'Blocked';
-}
+          if (response.ok) {
+            const btn = document.querySelector(`#btn-${productId}`);
+            btn.classList.remove('block');
+            btn.classList.add('unblock');
+            btn.innerHTML = `
+              <i class="fas fa-unlock"></i>
+              <span>Unblock</span>
+            `;
+            btn.setAttribute('onclick', `unblockProduct('${productId}', '${productName}')`);
 
+            const status = document.querySelector(`#status-${productId}`);
+            if (status) {
+              status.classList.remove('status-active');
+              status.classList.add('status-blocked');
+              status.textContent = 'Blocked';
+            }
 
-        await Swal.fire({
-          icon: 'success',
-          title: 'Blocked!',
-          text: 'Product has been blocked successfully.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      } else {
-        throw new Error(result.message || 'Failed to block product');
+            await Swal.fire({
+              icon: 'success',
+              title: 'Blocked!',
+              text: 'Product has been blocked successfully.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          } else {
+            throw new Error(result.message || 'Failed to block product');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Something went wrong!'
+          });
+        }
       }
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: err.message || 'Something went wrong!'
-      });
     }
-  }
-}
 
-// UNBLOCK PRODUCT
-async function unblockProduct(productId, productName) {
-  const { isConfirmed } = await Swal.fire({
-    title: 'Unblock Product',
-    html: `You are about to unblock <strong>${productName}</strong>. This product will become visible to customers again.`,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonColor: '#28a745',
-    confirmButtonText: 'Yes, unblock it',
-    cancelButtonText: 'Cancel'
-  });
-
-  if (isConfirmed) {
-    try {
-      const response = await fetch('/admin/unblockProduct', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: productId, productName })
+    // UNBLOCK PRODUCT
+    async function unblockProduct(productId, productName) {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Unblock Product',
+        html: `You are about to unblock <strong>${productName}</strong>. This product will become visible to customers again.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        confirmButtonText: 'Yes, unblock it',
+        cancelButtonText: 'Cancel'
       });
 
-      const result = await response.json();
+      if (isConfirmed) {
+        try {
+          const response = await fetch('/admin/unblockProduct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: productId, productName })
+          });
 
-      if (response.ok) {
-        const btn = document.querySelector(`#btn-${productId}`);
-        btn.classList.remove('unblock');
-        btn.classList.add('block');
-        btn.innerHTML = `
-          <i class="fas fa-ban"></i>
-          <span>Block</span>
-        `;
-        btn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
+          const result = await response.json();
 
+          if (response.ok) {
+            const btn = document.querySelector(`#btn-${productId}`);
+            btn.classList.remove('unblock');
+            btn.classList.add('block');
+            btn.innerHTML = `
+              <i class="fas fa-ban"></i>
+              <span>Block</span>
+            `;
+            btn.setAttribute('onclick', `blockProduct('${productId}', '${productName}')`);
 
-        const status = document.querySelector(`#status-${productId}`);
-if (status) {
-  status.classList.remove('status-blocked');
-  status.classList.add('status-active');
-  status.textContent = 'Active';
-}
+            const status = document.querySelector(`#status-${productId}`);
+            if (status) {
+              status.classList.remove('status-blocked');
+              status.classList.add('status-active');
+              status.textContent = 'Active';
+            }
 
-
-        await Swal.fire({
-          icon: 'success',
-          title: 'Unblocked!',
-          text: 'Product has been unblocked successfully.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      } else {
-        throw new Error(result.message || 'Failed to unblock product');
+            await Swal.fire({
+              icon: 'success',
+              title: 'Unblocked!',
+              text: 'Product has been unblocked successfully.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          } else {
+            throw new Error(result.message || 'Failed to unblock product');
+          }
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Something went wrong!'
+          });
+        }
       }
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: err.message || 'Something went wrong!'
-      });
     }
-  }
-}
-
 
     async function searchAndrender(search) {
-
       const response = await fetch(`/admin/getAllProducts?search=${encodeURIComponent(search)}`, {
         headers: {
           'Accept': 'application/json'
@@ -1035,75 +1065,73 @@ if (status) {
       const currentPage = result.currentPage
       const totalPages = result.totalPages
 
-
-      // In your searchAndrender function, before rendering:
-product.forEach(p => {
-  p.totalQuantity = p.variants?.reduce((sum, variant) => sum + (variant.quantity || 0), 0) || 0;
-});
+      // Calculate total quantity
+      product.forEach(p => {
+        p.totalQuantity = p.variants?.reduce((sum, variant) => sum + (variant.quantity || 0), 0) || 0;
+      });
 
       if (response.ok) {
         if (product.length > 0) {
           productsTableBody.innerHTML = ''
           for (let i = 0; i < product.length; i++) {
             productsTableBody.innerHTML += `
-  <tr>
-    <td><strong>${product[i].productName}</strong></td>
-    <td>${product[i].category.name}</td>
-    <td>
-      ${product[i].isBlocked
-                ? '<span class="status-badge status-blocked">Blocked</span>'
-                : '<span class="status-badge status-active">Active</span>'
-              }
-    </td>
-    <td>
-      ${product[i].productOffer > 0
-                ? `<span class="offer-badge">${product[i].productOffer}% OFF</span>`
-                : '<span>-</span>'
-              }
-    </td>
-    <td>${product[i].totalQuantity||0}</td>
-    <td>
-      <div class="action-buttons">
-        ${product[i].productOffer < 1
-                ? `<button class="action-btn add-offer" onclick="addOffer('${product[i]._id}')">
-              <i class="fas fa-tag"></i><span>Add Offer</span>
-            </button>`
-                : `<button class="action-btn remove-offer" onclick="removeOffer('${product[i]._id}')">
-              <i class="fas fa-tag"></i><span>Remove Offer</span>
-            </button>`
-              }
+              <tr>
+                <td><strong>${product[i].productName}</strong></td>
+                <td>${product[i].category.name}</td>
+                <td>
+                  ${product[i].isBlocked
+                    ? '<span class="status-badge status-blocked">Blocked</span>'
+                    : '<span class="status-badge status-active">Active</span>'
+                  }
+                </td>
+                <td>
+                  ${product[i].productOffer > 0
+                    ? `<span class="offer-badge">${product[i].productOffer}% OFF</span>`
+                    : '<span>-</span>'
+                  }
+                </td>
+                <td>${product[i].totalQuantity||0}</td>
+                <td>
+                  <div class="action-buttons">
+                    ${product[i].productOffer < 1
+                      ? `<button class="action-btn add-offer" onclick="addOffer('${product[i]._id}')">
+                          <i class="fas fa-tag"></i><span>Add Offer</span>
+                        </button>`
+                      : `<button class="action-btn remove-offer" onclick="removeOffer('${product[i]._id}')">
+                          <i class="fas fa-tag"></i><span>Remove Offer</span>
+                        </button>`
+                    }
 
-        ${product[i].isBlocked
-                ? `<button class="action-btn unblock" onclick="unblockProduct('${product[i]._id}', '${product[i].productName}')">
-              <i class="fas fa-unlock"></i><span>Unblock</span>
-            </button>`
-                : `<button class="action-btn block" onclick="blockProduct('${product[i]._id}', '${product[i].productName}')">
-              <i class="fas fa-ban"></i><span>Block</span>
-            </button>`
-              }
+                    ${product[i].isBlocked
+                      ? `<button class="action-btn unblock" onclick="unblockProduct('${product[i]._id}', '${product[i].productName}')">
+                          <i class="fas fa-unlock"></i><span>Unblock</span>
+                        </button>`
+                      : `<button class="action-btn block" onclick="blockProduct('${product[i]._id}', '${product[i].productName}')">
+                          <i class="fas fa-ban"></i><span>Block</span>
+                        </button>`
+                    }
 
-        <a href="/admin/getEditProduct?id=${product[i]._id}" class="action-btn edit">
-          <i class="fas fa-edit"></i><span>Edit</span>
-        </a>
+                    <a href="/admin/getEditProduct?id=${product[i]._id}" class="action-btn edit">
+                      <i class="fas fa-edit"></i><span>Edit</span>
+                    </a>
 
-        <button class="action-btn view-variants" onclick="showVariantModal('${product[i]._id}', '${product[i].productName}')">
-          <i class="fas fa-boxes"></i><span>Variants</span>
-        </button>
-      </div>
-    </td>
-  </tr>
-`;
-
+                    <button class="action-btn view-variants" onclick="showVariantModal('${product[i]._id}', '${product[i].productName}')">
+                      <i class="fas fa-boxes"></i><span>Variants</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
           }
         } else {
           productsTableBody.innerHTML = `
-    <tr>
-      <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
-        <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i><br>
-        No products found.
-      </td>
-    </tr>
-  `;
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px; color: #888;">
+                <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                No products found.
+              </td>
+            </tr>
+          `;
         }
       } else {
         alert('no data')
@@ -1112,15 +1140,10 @@ product.forEach(p => {
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-
       searchInput.addEventListener('keyup', function () {
-
         const search = searchInput.value
         searchAndrender(search)
-
       })
-
-
 
       // Clear search
       clearBtn.addEventListener('click', () => {
@@ -1130,5 +1153,4 @@ product.forEach(p => {
     });
   </script>
 </body>
-
 </html>
