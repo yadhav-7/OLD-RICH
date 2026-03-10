@@ -1,68 +1,42 @@
-const User = require('../../models/userSchema')
-const Wallet = require('../../models/walletSchema')
+import logger from '../../utils/logger.js'
+import walletService from '../../services/user/walletService.js'
+
 const refferalCodeEnterPage = async (req, res) => {
   try {
-    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.set('Pragma', 'no-cache')
+    res.set('Expires', '0')
 
     const userId = req.session.user
-    const user = await User.findOne({ _id: userId })
-    if (user.refferalCodeApplied === 'notUsed' || user.refferalCodeApplied === 'used') return res.redirect('/')
-    res.render('refferalCodeEnterPage')
+
+    const result = await walletService.checkReferralStatus(userId)
+
+    if (result.redirect) return res.redirect(result.url)
+    return res.render(result.render)
   } catch (error) {
-    console.error('error in refferalCodeEnterPage', error)
+    logger.error(`error in refferalCodeEnterPage ${error}`)
     return res.redirect('/pageNotFound')
   }
 }
 
 const applyRefferalCode = async (req, res) => {
   try {
-    console.log('reached at apply Refferalcode')
-    const newUserId = req.session.user
-    const newUser = await User.findOne({ _id: newUserId })
+    
+    const userId = req.session.user
+    const { code } = req.query
 
-    if (newUser.refferalCodeApplied === 'used') return res.status(401).json({ message: 'You already applied refferal code!' })
-    const code = req.query.code
+    const result = await walletService.applyReferralCode(userId, code)
 
-    if (!code) return res.status(401).json({ message: 'Please enter code!' })
-    if (code.length !== 6) return res.status(401).json({ message: 'Please enter 6 digit code!' })
+    if (!result.status) {
+      return res.status(result.statusCode).json({ message: result.message })
+    }
 
-    if (code === newUser.referCode) return res.status(401).json({ message: 'You cant use your own refferal code' })
-
-    const findUser = await User.findOne({ referralCode: code })
-
-    if (!findUser) return res.status(401).json({ message: 'Invalid Referral Code!' })
-
-    const userId = findUser._id
-
-    const wallet = await Wallet.findOne({ userId: userId })
-
-    if (!wallet) return res.status(401).json({ message: 'Wallet not found! Please contact support.' })
-
-    const newTransaction = {
-      type: 'credit',
-      amount: 100,
-      reason: 'New user registered by your reference'
-    };
-
-    wallet.transactions.push(newTransaction)
-    wallet.balance += 100
-
-    wallet.totalCredited += 100
-    newUser.refferalCodeApplied = 'used'
-
-    await newUser.save()
-
-    await wallet.save()
-
-    return res.status(200).json({
-      message: 'Referral applied successfully!',
-      wallet
-    });
-
+    return res.status(result.statusCode).json({
+      message: result.message,
+      wallet: result.wallet,
+    })
   } catch (error) {
-    console.error('Error in applyReferralCode:', error)
+    logger.error(`Error in applyReferralCode: ${error}`)
     return res.status(500).json({ message: 'Something went wrong!' })
   }
 }
@@ -70,19 +44,16 @@ const applyRefferalCode = async (req, res) => {
 const skipRefferal = async (req, res) => {
   try {
     const userId = req.session.user
-    const user = await User.findOne({ _id: userId })
-    user.refferalCodeApplied = 'notUsed'
-    await user.save()
-    return res.redirect('/')
+    const result = await walletService.skipReferral(userId)
+    return res.redirect(result.redirectUrl)
   } catch (error) {
-    console.error('error in skipRefferal', error)
+    logger.error(`error in skipRefferal ${error}`)
     return res.redirect('/pageNotFound')
   }
 }
 
-
-module.exports = {
+export default {
   refferalCodeEnterPage,
   applyRefferalCode,
-  skipRefferal
+  skipRefferal,
 }

@@ -1,62 +1,24 @@
-const Product = require('../../models/productSchema')
-const User = require('../../models/userSchema')
-const Category = require('../../models/catagory')
-const Cart = require('../../models/cartSchema')
+import productService from '../../services/user/productService.js'
+import logger from '../../utils/logger.js'
 
 const productDetails = async (req, res) => {
-    try {
-        const userId = req.session.user;
-        const userData = await User.findOne({ _id: userId });
-        const productId = req.query.productId;
-        const product = await Product.findById(productId).populate('category');
-        
-        const relatedProducts = await Product.find({category:product.category._id,_id:{$ne:product._id}})
-        console.log('relatedProducts',relatedProducts)
-        const priceOftheProduct = req.query.slcPrice
-        let cart 
-        let length
-        if(userId){
-            cart = await Cart.findOne({userId:userId})
-            if(cart&&cart.items){
-            length = cart.items?.length||0
-                 }
-            }
+  try {
+    const userId = req.session.user
+    const { productId } = req.query
+    const priceOftheProduct = req.query.slcPrice
 
+    const result = await productService.getProductDetails(
+      userId,
+      productId,
+      priceOftheProduct
+    )
 
-        let selectedVariantIndex = 0
-
-        if (priceOftheProduct && product.variants?.length) {
-            selectedVariantIndex = product.variants.findIndex(variant => {
-                if (!variant || variant.salePrice === undefined) {
-                    return false;
-                }
-                return Number(variant.salePrice) === Number(priceOftheProduct);
-            })
-
-            
-        }
-
-
-        const findCategory = product.category;
-        const categoryOffer = findCategory.categoryOffer || 0;
-        const productOffer = product.productOffer || 0;
-        const totalOffer = categoryOffer + productOffer;
-
-        res.render('product-details', {
-            user: userData,
-            product: product,
-            quantity: product.quantity,
-            totalOffer: totalOffer,
-            category: findCategory,
-            selectedVariantIndex: selectedVariantIndex,
-            length:length,
-            relatedProducts
-        });
-    } catch (error) {
-        console.error('Error from productDetails:', error);
-        res.redirect('/pageNotFound');
-    }
-};
-module.exports={
-    productDetails
+    res.render('product-details', result)
+  } catch (error) {
+    logger.error(`Error from productDetails: ${error}`)
+    return res.redirect('/pageNotFound')
+  }
+}
+export default {
+  productDetails,
 }

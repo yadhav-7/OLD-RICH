@@ -1,0 +1,187 @@
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: checkout----------------------
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Cart item IDs from client: 6977af5f991ea192de9cc9e5
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: checkout----------------------
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Cart item IDs from client: 6977af5f991ea192de9cc9e5
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: start proced to checkout
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: Internal Servar error: Error: Failed to lookup view "user/orderSuccessPage" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: Internal Servar error: TypeError: C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user\orderDetailPages.ejs:220
+    218|                                     <div class="summary-row coupon-row">
+    219|                                         <span>Coupon Discount</span>
+ >> 220|                                         <span class="coupon-applied">-₹<%= order.couponDiscount.toFixed(2) %></span>
+    221|                                     </div>
+    222|                                     <% } %>
+    223| 
+
+Cannot read properties of undefined (reading 'toFixed')
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: currentPage 1
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: currentPage 1
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: start proced to checkout
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: Internal Servar error: Error: Failed to lookup view "user/orderSuccessPage" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: data null
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: totalDoc 22
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: error in orderDetailPages TypeError: Cannot create property '_locals' on number '100'
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: Internal Servar error: TypeError: C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user\orderDetailPages.ejs:221
+    219|                                         <span>Coupon Discount</span>
+    220| <span class="coupon-applied">
+ >> 221| -₹<%= order.couponDiscount.amount ? order.couponDiscount.amount.toFixed(2) : "0.00" %>
+    222| </span>                                    </div>
+    223|                                     <% } %>
+    224| 
+
+Cannot read properties of undefined (reading 'amount')
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected

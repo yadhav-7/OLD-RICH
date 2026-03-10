@@ -1,81 +1,85 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from 'mongoose'
 
-const productSchema = new mongoose.Schema({
-  productName: {
-    type: String,
-    required: true
-  },
-  category: {
-    type: Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true
-  },
-  productOffer: {
-    type: Number,
-    default: 0
-  },
-  quantity: {
-    type: Number
-  },
-  color: {
-        type: String,
-        required: true
+const { Schema } = mongoose
+
+const productSchema = new mongoose.Schema(
+  {
+    productName: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
+    productOffer: {
+      type: Number,
+      default: 0,
+    },
+    quantity: {
+      type: Number,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+    },
+
+    variants: [
+      {
+        sku: {
+          type: String,
+          required: false,
+        },
+        size: {
+          type: String,
+          required: true,
+          enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+        },
+        regularPrice: {
+          type: Number,
+          required: true,
+        },
+        salePrice: {
+          type: Number,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
       },
+    ],
 
-      description:{
-        type:String,
-        required:true
-      },
+    productImage: {
+      type: [String],
+      required: true,
+    },
 
-  variants: [
-    {
-      sku: {
-        type: String,
-        required: false
-      },
-      size: {
-        type: String,
-        required: true,
-        enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
-      },
-      regularPrice: {
-        type: Number,
-        required: true
-      },
-      salePrice: {
-        type: Number,
-        required: true
-      },
-      quantity: {
-        type: Number,
-        required: true
-      }
-    }
-  ],
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
 
-  productImage: {
-    type: [String],
-    required: true
+    createdOn: {
+      type: Date,
+      default: Date.now,
+    },
+
+    status: {
+      type: String,
+      enum: ['Available', 'out of stock', 'Discountinued', 'notAvailable'],
+      default: 'Available',
+      required: true,
+    },
   },
+  { timestamps: true },
+)
 
-  isBlocked: {
-    type: Boolean,
-    default: false
-  },
-
-  createdOn: {
-    type: Date,
-    default: Date.now
-  },
-
-  status: {
-    type: String,
-    enum: ['Available', 'out of stock', 'Discountinued','notAvailable'],
-    default: 'Available',
-    required: true
-  }
-}, { timestamps: true });
-
-const Product = mongoose.model('Product', productSchema);
-module.exports = Product;
+const Product = mongoose.model('Product', productSchema)
+export default Product

@@ -1,285 +1,125 @@
-const Category = require('../../models/catagory')
-const Product = require('../../models/productSchema')
-const mongoose = require('mongoose')
+/* eslint-disable no-restricted-syntax, no-await-in-loop, no-continue */
+import mongoose from 'mongoose'
+import Category from '../../models/catagory.js'
+import Product from '../../models/productSchema.js'
+import logger from '../../utils/logger.js'
+import categoryService from '../../services/admin/categoryService.js'
+
 
 const categoryInfo = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const search = req.query.search?.trim() || '';
-        const limit = 5;
-        const skip = (page - 1) * limit;
+  try {
 
-        const query = {
-            name: { $regex: new RegExp(search, 'i') }
-        }
+    const result = await categoryService.categoryInfo(req.query)
+    if (!result) throw new Error('something went wrong try again')
 
-        const categoryData = await Category.find(query)
-            .sort({ createdOn: -1 })
-            .skip(skip)
-            .limit(limit)
+    const isFetch = req.headers.accept?.includes('application/json')
 
-        const totalCategories = await Category.countDocuments(query);
-        const totalPages = Math.ceil(totalCategories / limit);
-
-        const isFetch = req.headers.accept?.includes('application/json');
-
-
-        if (isFetch) {
-            return res.json({
-                category: categoryData,
-                currentPage: page,
-                totalPages: totalPages,
-                totalCategories: totalCategories
-            });
-        }
-
-        return res.render('category', {
-            cat: categoryData,
-            currentPage: page,
-            totalPages: totalPages,
-            totalCategories: totalCategories
-        });
-    } catch (error) {
-        console.error('error from categoryInfo', error);
-        res.redirect('/admin/pageError');
+    if (isFetch) {
+      return res.json({
+        category: result.category,
+        currentPage: result.currentPage,
+        totalPages: result.totalPages,
+        totalCategories: result.totalCategories,
+      })
     }
+
+    return res.render('category', {
+      cat: result.category,
+      currentPage: result.currentPage,
+      totalPages: result.totalPages,
+      totalCategories: result.totalCategories
+    })
+  } catch (error) {
+    logger.error(`error from categoryInfo ${error}`)
+    res.redirect('/admin/pageError')
+  }
 }
-
-
 
 const addCategory = async (req, res) => {
+  try {
 
-    try {
-      
-        const { categoryName, categoryDescription } = req.body
-        console.log(categoryName)
-
-
-        const existingCategory = await Category.findOne({
-            name: { $regex: categoryName, $options: 'i' }
-        })
-
-
-        if (existingCategory) {
-            return res.status(400).json({ error: 'Category already exists' })
-        }
-
-        const newCategory = new Category({
-            name: categoryName,
-            description: categoryDescription
-        })
-
-
-
-        await newCategory.save()
-
-        return res.json({ message: 'Category added successfully...' })
-
-    } catch (error) {
-        console.log('error from addCategory function', error)
-        return res.status(500).json({ error: 'Internal Server Error' })
-    }
+    const result = await categoryService.addCategory(req.body)
+    if (!result) return res.status(401).json({ message: 'Something went wrong try again later...' })
+    return res.status(result.statusCode).json({ status:result.status, message: result.message })
+  } catch (error) {
+    logger.error(`error from addCategory function ${error}`)
+    return res.status(500).json({ error: 'Internal Server Error' })
+  }
 }
-
-
 
 const addCategoryOffer = async (req, res) => {
-    try {
-        const { offerPercentage, categoryId } = req.body
-        console.log('Request Body:', { offerPercentage, categoryId })
+  try {
+    const result = await categoryService.addCategoryOffer(req.body)
+    return res.status(result.statusCode).json({ status: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`Error in addCategoryOffer: ${error}`)
+    return res
+      .status(500)
+      .json({ status: false, message: 'Internal server error!qwq' })
+  }
+}
 
-
-        if (!categoryId) {
-            return res.status(400).json({ status: false, message: 'Category ID is required' })
-        }
-        if (!offerPercentage) {
-            return res.status(400).json({ status: false, message: 'Invalid offer percentage (must be 0-100)' })
-        }
-
-
-        const percentage = parseFloat(offerPercentage)
-
-
-        console.log('categoryId', categoryId)
-        console.log('typeof categoryId', typeof categoryId)
-        const category = await Category.findById(categoryId)
-        console.log('category', category)
-
-        if (!category) {
-            return res.status(404).json({ status: false, message: 'Category not found' })
-        }
-
-
-        const products = await Product.find({ category: category._id })
-
-        console.log('products', products)
-        if (products.length > 0) {
-            for (let p of products) {
-                let productOfferRemoved = false
-                if (p.productOffer > percentage) continue
-                for (let variant of p.variants) {
-                    console.log('variant.salePrice * percentage/100', (variant.salePrice * percentage / 100))
-                    console.log('variant.salePrice', variant.salePrice)
-                    if (p.productOffer > 0) {
-                        variant.salePrice = Math.floor(variant.salePrice / (1 - p.productOffer / 100))
-                        productOfferRemoved = true
-                    }
-                    variant.salePrice = variant.salePrice - (variant.salePrice * percentage / 100)
-                }
-                if (productOfferRemoved) p.productOffer = 0
-                await p.save()
-            }
-        }
-
-
-        await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } })
-
-        return res.json({ status: true, message: `Offer of ${percentage}% added to category ${categoryId}` })
-    } catch (error) {
-        console.error('Error in addCategoryOffer:', error);
-        res.status(500).json({ status: false, message: 'Internal server error!qwq' });
-    }
-};
-
-
-
-const { ObjectId } = require('mongoose').Types;
 
 const removeCategoryOffer = async (req, res) => {
-    try {
-
-        const { categoryId } = req.body;
-        if (!categoryId || !ObjectId.isValid(categoryId)) {
-            return res.status(400).json({ status: false, message: 'Invalid or missing categoryId' });
-        }
-
-
-        const category = await Category.findById(categoryId);
-        if (!category) {
-            return res.status(404).json({ status: false, message: 'Category not found' });
-        }
-        const percentage = category.categoryOffer;
-        const products = await Product.find({ category: category._id });
-        if (products.length > 0) {
-            for (const product of products) {
-
-                if (product.productOffer > 0) continue
-                for (let variant of product.variants) {
-                    variant.salePrice = Math.floor(variant.salePrice / (1 - percentage / 100))
-                }
-                await product.save();
-            }
-        }
-
-
-        category.categoryOffer = 0
-        await category.save()
-
-        return res.json({ status: true, message: 'Category offer removed successfully' })
-    } catch (error) {
-        console.error('Error in removeCategoryOffer:', error);
-        res.status(500).json({ status: false, message: 'Internal Server Error' })
-    }
+  try {
+    const result = await categoryService.removeCategoryOffer(req.body)
+    return res.status(result.statusCode).json({ status: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`Error in removeCategoryOffer: ${error}`)
+    res.status(500).json({ status: false, message: 'Internal Server Error' })
+  }
 }
 
-const getListCategory = async (req, res) => {
-    try {
-        console.log('ListCategory');
-        let id = req.body.id;
-
-        // Update the category document
-        await Category.updateOne({ _id: id }, { $set: { isListed: true } });
-
-        const products = await Product.find({ category: id })
-
-        for (let product of products) {
-            product.status = 'Available'
-
-            await product.save()
-        }
-
-
-        // Fetch the updated document to check the isListed value
-        const updatedCategory = await Category.findById(id);
-
-        return res.json({ status: true })
-    } catch (error) {
-        console.log('error from getListCategory', error);
-        return res.status(500).json({ status: false })
-    }
+const ListCategory = async (req, res) => {
+  try {
+    const result = await categoryService.ListCategory(req.body)
+    return res.status(result.statusCode).json({ status: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`error from tListCategory ${error}`)
+    return res.status(500).json({ status: false })
+  }
 }
 
-const getUnlistCategory = async (req, res) => {
-    try {
-        console.log('unListCategory')
-        let id = req.body.id
-        await Category.updateOne({ _id: id }, { $set: { isListed: false } })
-        const products = await Product.find({ category: id })
+const unListCategory = async (req, res) => {
+  try {
+    const result = await categoryService.unListCategory(req.body)
 
-        for (let product of products) {
-            product.status = 'notAvailable'
-
-            await product.save()
-        }
-        return res.json({ status: true })
-    } catch (error) {
-        console.log('Error from getUnListCategory', error)
-        return res.status(500).json({ status: false })
-    }
+    return res.status(result.statusCode).json({ status: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`Error from unListCategory ${error}`)
+    return res.status(500).json({ status: false })
+  }
 }
 
 const getEditCategory = async (req, res) => {
-    try {
-        const id = req.query.id
-        console.log(id.name)
-        const category = await Category.findOne({ _id: id })
-        res.render('editCategory', { category: category })
-    } catch (error) {
-
-    }
+  try {
+    const result = await categoryService.getEditCategory(req.query)
+    if (!result) return res.redirect('/admin/pageError')
+    return res.render('editCategory', { category : result.category })
+  } catch (error) {
+    logger.error(`Error from getEditCategory ${error}`)
+    return res.redirect('/admin/pageError')
+  }
 }
 
 const editCategory = async (req, res) => {
-    try {
+  try {
+    const result = await categoryService.editCategory(req.params, req.body)
+    if (!result) return res.status(404).json({ status: false, message: 'Something went wrong!' })
+      return res.status(result.statusCode).json({ status: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`Error in editCategory: ${error}`)
+    return res.status(500).json({ status: true, message: 'Internal Server error' })
+  }
+}
 
-        const id = req.params.id;
-
-
-        const { name, description } = req.body;
-
-        const existsCategory = await Category.findOne({
-            name: { $regex: `^${name}$`, $options: 'i' },
-            _id: { $ne: new mongoose.Types.ObjectId(id) }
-        });
-
-        if (existsCategory) {
-            return res.status(400).json({ message: 'Category already exists, choose a different name' });
-        }
-
-        const updatedCategory = await Category.findByIdAndUpdate(id, {
-            name,
-            description
-        });
-
-        if (updatedCategory) {
-            res.json({ message: 'Category updated successfully' });
-        } else {
-            res.status(404).json({ message: 'Category not found' });
-        }
-    } catch (error) {
-        console.error('Error in editCategory:', error);
-        res.redirect('/admin/pageError');
-    }
-};
-
-
-module.exports = {
-    categoryInfo,
-    addCategory,
-    addCategoryOffer,
-    removeCategoryOffer,
-    getListCategory,
-    getUnlistCategory,
-    getEditCategory,
-    editCategory
+export default {
+  categoryInfo,
+  addCategory,
+  addCategoryOffer,
+  removeCategoryOffer,
+  ListCategory,
+  unListCategory,
+  getEditCategory,
+  editCategory,
 }

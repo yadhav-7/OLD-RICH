@@ -1,0 +1,1043 @@
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | error: Database error//
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+2026-03-10 10:06:49 | info: Server is running on http://localhost:4040
+2026-03-10 10:06:50 | info: Database is connected
+2026-03-10 10:07:38 | info: Server is running on http://localhost:4040
+2026-03-10 10:07:38 | info: Database is connected
+2026-03-10 10:16:11 | info: Server is running on http://localhost:4040
+2026-03-10 10:16:12 | info: Database is connected
+2026-03-10 10:16:23 | info: Server is running on http://localhost:4040
+2026-03-10 10:16:23 | info: Database is connected
+2026-03-10 10:16:32 | info: Server is running on http://localhost:4040
+2026-03-10 10:16:33 | info: Database is connected
+2026-03-10 10:17:21 | info: Server is running on http://localhost:4040
+2026-03-10 10:17:22 | info: Database is connected
+2026-03-10 10:17:32 | info: Server is running on http://localhost:4040
+2026-03-10 10:17:33 | info: Database is connected
+2026-03-10 10:26:41 | info: start proced to checkout
+2026-03-10 10:39:08 | info: Server is running on http://localhost:4040
+2026-03-10 10:39:09 | info: Database is connected
+2026-03-10 10:47:26 | info: Server is running on http://localhost:4040
+2026-03-10 10:47:27 | info: Database is connected
+2026-03-10 10:53:27 | info: productId 69afa4c5d65f20b5ec26da05
+2026-03-10 10:53:33 | info: start proced to checkout
+2026-03-10 10:54:25 | info: start proced to checkout
+2026-03-10 11:13:01 | info: Server is running on http://localhost:4040
+2026-03-10 11:13:03 | info: Database is connected
+2026-03-10 11:13:54 | info: Server is running on http://localhost:4040
+2026-03-10 11:13:54 | info: Database is connected
+2026-03-10 11:16:45 | info: Server is running on http://localhost:4040
+2026-03-10 11:16:46 | info: Database is connected
+2026-03-10 11:19:21 | info: Server is running on http://localhost:4040
+2026-03-10 11:19:22 | info: Database is connected
+2026-03-10 11:22:22 | info: Server is running on http://localhost:4040
+2026-03-10 11:22:23 | info: Database is connected
+2026-03-10 11:24:10 | info: Server is running on http://localhost:4040
+2026-03-10 11:24:10 | info: Database is connected
+2026-03-10 11:25:23 | info: Server is running on http://localhost:4040
+2026-03-10 11:25:24 | info: Database is connected
+2026-03-10 11:27:48 | info: Server is running on http://localhost:4040
+2026-03-10 11:27:49 | info: Database is connected
+2026-03-10 11:28:23 | info: Server is running on http://localhost:4040
+2026-03-10 11:28:24 | info: Database is connected
+2026-03-10 11:29:11 | info: Server is running on http://localhost:4040
+2026-03-10 11:29:12 | info: Database is connected
+2026-03-10 11:35:21 | info: Server is running on http://localhost:4040
+2026-03-10 11:35:22 | info: Database is connected
+2026-03-10 11:35:57 | info: Server is running on http://localhost:4040
+2026-03-10 11:35:58 | info: Database is connected
+2026-03-10 11:38:49 | info: Server is running on http://localhost:4040
+2026-03-10 11:38:49 | info: Server is running on http://localhost:4040
+2026-03-10 11:38:50 | info: Database is connected
+2026-03-10 11:38:50 | info: Database is connected
+2026-03-10 11:46:01 | error: Error in returnRequest service: ReferenceError: checkAllStatus is not defined
+2026-03-10 11:46:01 | error: error in returnReq ReferenceError: checkAllStatus is not defined
+2026-03-10 11:46:11 | error: Error in returnRequest service: ReferenceError: checkAllStatus is not defined
+2026-03-10 11:46:11 | error: error in returnReq ReferenceError: checkAllStatus is not defined
+2026-03-10 11:49:01 | info: Server is running on http://localhost:4040
+2026-03-10 11:49:02 | info: Database is connected
+2026-03-10 11:49:48 | error: Error in returnRequest service: ReferenceError: checkAllStatus is not defined
+2026-03-10 11:49:48 | error: error in returnReq ReferenceError: checkAllStatus is not defined
+2026-03-10 11:51:24 | info: Server is running on http://localhost:4040
+2026-03-10 11:51:24 | info: Server is running on http://localhost:4040
+2026-03-10 11:51:26 | info: Database is connected
+2026-03-10 11:51:27 | info: Database is connected
+2026-03-10 11:51:55 | info: Server is running on http://localhost:4040
+2026-03-10 11:51:56 | info: Database is connected
+2026-03-10 11:51:56 | info: Server is running on http://localhost:4040
+2026-03-10 11:51:57 | info: Database is connected
+2026-03-10 12:03:58 | error: Error in getCart: VersionError: No matching document found for id "697788038c35e21258f9081f" version 106 modifiedPaths "items, total"
+    at generateVersionError (C:\Users\y4917\OneDrive\Desktop\OLD RICH\node_modules\mongoose\lib\model.js:572:10)
+    at model.save (C:\Users\y4917\OneDrive\Desktop\OLD RICH\node_modules\mongoose\lib\model.js:630:28)
+    at Object.getCart (file:///C:/Users/y4917/OneDrive/Desktop/OLD%20RICH/services/user/cartService.js:44:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getCart (file:///C:/Users/y4917/OneDrive/Desktop/OLD%20RICH/controllers/user/cartCondroller.js:9:18)
+2026-03-10 12:04:24 | info: start proced to checkout
+2026-03-10 12:09:22 | info: searchData [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+2026-03-10 12:09:23 | info: searchData [object Object],[object Object],[object Object]
+2026-03-10 12:09:24 | info: searchData 
+2026-03-10 12:09:25 | info: searchData [object Object],[object Object],[object Object]
+2026-03-10 12:09:26 | info: searchData 
+2026-03-10 12:09:27 | info: searchData [object Object],[object Object],[object Object]
+2026-03-10 12:09:27 | info: searchData [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+2026-03-10 12:09:27 | info: searchData [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+2026-03-10 12:21:31 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:22:06 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:23:17 | info: Server is running on http://localhost:4040
+2026-03-10 12:23:18 | info: Database is connected
+2026-03-10 12:24:42 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:25:44 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:28:25 | info: Server is running on http://localhost:4040
+2026-03-10 12:28:26 | info: Database is connected
+2026-03-10 12:29:06 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:30:09 | info: Server is running on http://localhost:4040
+2026-03-10 12:30:11 | info: Database is connected
+2026-03-10 12:32:48 | info: Server is running on http://localhost:4040
+2026-03-10 12:32:48 | info: Server is running on http://localhost:4040
+2026-03-10 12:32:48 | info: Server is running on http://localhost:4040
+2026-03-10 12:32:48 | info: Database is connected
+2026-03-10 12:32:49 | info: Database is connected
+2026-03-10 12:32:49 | info: Database is connected
+2026-03-10 12:34:31 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:31 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:31 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:32 | info: Database is connected
+2026-03-10 12:34:33 | info: Database is connected
+2026-03-10 12:34:33 | info: Database is connected
+2026-03-10 12:34:46 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:47 | info: Database is connected
+2026-03-10 12:34:47 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:47 | info: Server is running on http://localhost:4040
+2026-03-10 12:34:48 | info: Database is connected
+2026-03-10 12:34:50 | info: Database is connected
+2026-03-10 12:35:21 | info: Server is running on http://localhost:4040
+2026-03-10 12:35:22 | info: Database is connected
+2026-03-10 12:35:22 | info: Server is running on http://localhost:4040
+2026-03-10 12:35:23 | info: Server is running on http://localhost:4040
+2026-03-10 12:35:24 | info: Database is connected
+2026-03-10 12:35:24 | info: Database is connected
+2026-03-10 12:37:06 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:38:54 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:40:17 | info: Server is running on http://localhost:4040
+2026-03-10 12:40:17 | info: Database is connected
+2026-03-10 12:40:48 | error: Internal Servar error: Error: Failed to lookup view "user/retryPayment" in views directories "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user" or "C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\admin"
+2026-03-10 12:42:22 | info: Server is running on http://localhost:4040
+2026-03-10 12:42:22 | info: Server is running on http://localhost:4040
+2026-03-10 12:42:22 | info: Server is running on http://localhost:4040
+2026-03-10 12:42:23 | info: Database is connected
+2026-03-10 12:42:23 | info: Database is connected
+2026-03-10 12:42:23 | info: Database is connected
+2026-03-10 13:13:01 | info: Server is running on http://localhost:4040
+2026-03-10 13:13:01 | info: Server is running on http://localhost:4040
+2026-03-10 13:13:01 | info: Database is connected
+2026-03-10 13:13:03 | info: Database is connected
+2026-03-10 13:14:06 | info: Server is running on http://localhost:4040
+2026-03-10 13:14:06 | info: Server is running on http://localhost:4040
+2026-03-10 13:14:07 | info: Database is connected
+2026-03-10 13:14:08 | info: Database is connected
+2026-03-10 13:31:22 | info: Server is running on http://localhost:4040
+2026-03-10 13:31:23 | info: Database is connected
+2026-03-10 13:36:02 | info: Server is running on http://localhost:4040
+2026-03-10 13:36:02 | info: Server is running on http://localhost:4040
+2026-03-10 13:36:02 | info: Server is running on http://localhost:4040
+2026-03-10 13:36:03 | info: Database is connected
+2026-03-10 13:36:04 | info: Database is connected
+2026-03-10 13:36:04 | info: Database is connected
+2026-03-10 13:37:21 | error: Error in createRazorpayOrder service: TypeError: Cart.save is not a function
+2026-03-10 13:37:21 | error: Error in createRazorpayOrder: TypeError: Cart.save is not a function
+2026-03-10 13:37:46 | error: Error in createRazorpayOrder service: TypeError: Cart.save is not a function
+2026-03-10 13:37:46 | error: Error in createRazorpayOrder: TypeError: Cart.save is not a function
+2026-03-10 13:47:08 | info: Server is running on http://localhost:4040
+2026-03-10 13:47:08 | info: Server is running on http://localhost:4040
+2026-03-10 13:47:08 | info: Server is running on http://localhost:4040
+2026-03-10 13:47:09 | info: Database is connected
+2026-03-10 13:47:10 | info: Database is connected
+2026-03-10 13:47:11 | info: Database is connected
+2026-03-10 13:47:51 | info: Server is running on http://localhost:4040
+2026-03-10 13:48:04 | info: Server is running on http://localhost:4040
+2026-03-10 13:48:05 | info: Server is running on http://localhost:4040
+2026-03-10 13:48:05 | info: Database is connected
+2026-03-10 13:48:06 | info: Database is connected
+2026-03-10 13:48:06 | info: Server is running on http://localhost:4040
+2026-03-10 13:48:07 | info: Database is connected
+2026-03-10 13:50:01 | info: Server is running on http://localhost:4040
+2026-03-10 13:50:02 | info: Database is connected
+2026-03-10 13:52:26 | info: Server is running on http://localhost:4040
+2026-03-10 13:52:26 | info: Database is connected
+2026-03-10 13:58:46 | info: Server is running on http://localhost:4040
+2026-03-10 13:58:46 | info: Server is running on http://localhost:4040
+2026-03-10 13:59:01 | info: Server is running on http://localhost:4040
+2026-03-10 13:59:02 | info: Server is running on http://localhost:4040
+2026-03-10 13:59:02 | info: Database is connected
+2026-03-10 13:59:03 | info: Server is running on http://localhost:4040
+2026-03-10 13:59:04 | info: Database is connected
+2026-03-10 13:59:04 | info: Database is connected
+2026-03-10 13:59:08 | info: Server is running on http://localhost:4040
+2026-03-10 13:59:09 | info: Database is connected
+2026-03-10 14:02:01 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:01 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:01 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:01 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:02 | info: Database is connected
+2026-03-10 14:02:03 | info: Database is connected
+2026-03-10 14:02:03 | info: Database is connected
+2026-03-10 14:02:03 | info: Database is connected
+2026-03-10 14:02:31 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:31 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:32 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:32 | info: Database is connected
+2026-03-10 14:02:32 | info: Server is running on http://localhost:4040
+2026-03-10 14:02:32 | info: Database is connected
+2026-03-10 14:02:33 | info: Database is connected
+2026-03-10 14:02:34 | info: Database is connected
+2026-03-10 14:03:53 | info: Server is running on http://localhost:4040
+2026-03-10 14:03:55 | info: Server is running on http://localhost:4040
+2026-03-10 14:03:56 | info: Server is running on http://localhost:4040
+2026-03-10 14:03:56 | info: Server is running on http://localhost:4040
+2026-03-10 14:03:56 | info: Database is connected
+2026-03-10 14:03:56 | info: Database is connected
+2026-03-10 14:03:57 | info: Database is connected
+2026-03-10 14:03:57 | info: Database is connected
+2026-03-10 14:04:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:04:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:04:44 | info: Server is running on http://localhost:4040
+2026-03-10 14:04:44 | info: Server is running on http://localhost:4040
+2026-03-10 14:04:44 | info: Database is connected
+2026-03-10 14:04:44 | info: Database is connected
+2026-03-10 14:04:44 | info: Database is connected
+2026-03-10 14:04:45 | info: Database is connected
+2026-03-10 14:05:05 | info: Server is running on http://localhost:4040
+2026-03-10 14:05:06 | info: Server is running on http://localhost:4040
+2026-03-10 14:05:06 | info: Server is running on http://localhost:4040
+2026-03-10 14:05:06 | info: Database is connected
+2026-03-10 14:05:07 | info: Database is connected
+2026-03-10 14:05:07 | info: Server is running on http://localhost:4040
+2026-03-10 14:05:08 | info: Database is connected
+2026-03-10 14:05:09 | info: Database is connected
+2026-03-10 14:07:40 | error: Internal Servar error: TypeError: C:\Users\y4917\OneDrive\Desktop\OLD RICH\views\user\checkOutPage.ejs:49
+    47|                                         <div>
+    48|                                             <p class="product-price">
+ >> 49|                                                 ₹<%= ((item.totalPrice ?? item.finalAmount) ).toFixed(2) %>
+    50|                                             </p>
+    51| 
+    52|                                             <p class="product-total-price">
+
+Cannot read properties of undefined (reading 'toFixed')
+2026-03-10 14:10:59 | info: Server is running on http://localhost:4040
+2026-03-10 14:10:59 | info: Server is running on http://localhost:4040
+2026-03-10 14:10:59 | info: Server is running on http://localhost:4040
+2026-03-10 14:11:00 | info: Database is connected
+2026-03-10 14:11:00 | info: Database is connected
+2026-03-10 14:11:01 | info: Server is running on http://localhost:4040
+2026-03-10 14:11:02 | info: Database is connected
+2026-03-10 14:11:03 | info: Database is connected
+2026-03-10 14:12:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:12:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:12:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:12:43 | info: Server is running on http://localhost:4040
+2026-03-10 14:12:44 | info: Database is connected
+2026-03-10 14:12:44 | info: Database is connected
+2026-03-10 14:12:45 | info: Database is connected
+2026-03-10 14:12:45 | info: Database is connected
+2026-03-10 14:22:20 | info: Server is running on http://localhost:4040
+2026-03-10 14:22:21 | info: Database is connected
+2026-03-10 14:31:58 | info: currentPage 1
+2026-03-10 14:32:01 | info: currentPage 2
+2026-03-10 14:32:02 | info: currentPage 3
+2026-03-10 14:32:04 | info: currentPage 2
+2026-03-10 14:32:05 | info: currentPage 1
+2026-03-10 14:33:08 | info: currentPage 1
+2026-03-10 14:37:03 | info: currentPage 1
+2026-03-10 14:37:47 | info: currentPage 1
+2026-03-10 14:41:54 | info: productId 6958b260594d0f5d7d4e093b
+2026-03-10 14:42:06 | info: productId 6958b260594d0f5d7d4e093b
+2026-03-10 14:42:29 | info: productId 6958b260594d0f5d7d4e093b
+2026-03-10 14:46:36 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:46:36 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:06 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:36 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:36 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:47:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:30 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:31 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:32 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:32 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:33 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:33 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:33 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:39 | error: Error in userAuth middleware: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:47 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:48 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:48 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:49 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:48:49 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:00 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:00 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:02 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: error in loadShopingPage service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: error from loadShopingPage Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:03 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 14:49:09 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:09 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:09 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:09 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:10 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:10 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:17 | error: error in loadHomePage serive MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:17 | error: home page error: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:19 | error: guestAuth Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:19 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:39 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:39 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:49 | error: error in loadHomePage serive MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:49 | error: home page error: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:57 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:59 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:59 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:49:59 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:00 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:00 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:00 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:01 | error: error from adminAuth MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:08 | info: Server is running on http://localhost:4040
+2026-03-10 14:50:17 | error: error from adminAuth MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:50:29 | info: Database is connected
+2026-03-10 14:50:47 | info: Server is running on http://localhost:4040
+2026-03-10 14:50:49 | info: Database is connected
+2026-03-10 14:51:58 | error: error in checkUserBlock service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:51:58 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:51:59 | error: error in loadShopingPage service MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:51:59 | error: error from loadShopingPage Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:52:01 | error: guestAuth Error: MongoServerSelectionError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:52:09 | error: guestAuth Error: MongoPoolClearedError: Connection pool for ac-pyzhcqx-shard-00-02.evhdccu.mongodb.net:27017 was cleared because another operation failed with: "70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+"
+2026-03-10 14:52:12 | error: guestAuth Error: MongoNetworkError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 14:52:38 | error: guestAuth Error: MongoNetworkError: 70280000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 15:00:41 | info: Server is running on http://localhost:4040
+2026-03-10 15:00:43 | info: Database is connected
+2026-03-10 15:03:45 | info: Server is running on http://localhost:4040
+2026-03-10 15:03:45 | info: Server is running on http://localhost:4040
+2026-03-10 15:03:45 | info: Server is running on http://localhost:4040
+2026-03-10 15:03:46 | info: Server is running on http://localhost:4040
+2026-03-10 15:03:47 | info: Database is connected
+2026-03-10 15:03:47 | info: Database is connected
+2026-03-10 15:03:48 | info: Database is connected
+2026-03-10 15:03:48 | info: Database is connected
+2026-03-10 15:05:13 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:14 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:14 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:14 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:28 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:28 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:28 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:30 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:44 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:44 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:44 | info: Server is running on http://localhost:4040
+2026-03-10 15:05:44 | info: Server is running on http://localhost:4040
+2026-03-10 15:06:14 | error: Database error//
+2026-03-10 15:06:14 | error: Database error//
+2026-03-10 15:06:14 | error: Database error//
+2026-03-10 15:06:15 | error: Database error//
+2026-03-10 15:09:24 | info: Server is running on http://localhost:4040
+2026-03-10 15:09:24 | info: Server is running on http://localhost:4040
+2026-03-10 15:09:24 | info: Server is running on http://localhost:4040
+2026-03-10 15:09:46 | info: Server is running on http://localhost:4040
+2026-03-10 15:09:55 | error: Database error//
+2026-03-10 15:09:55 | error: Database error//
+2026-03-10 15:09:55 | error: Database error//
+2026-03-10 15:10:17 | error: Database error//
+2026-03-10 15:10:49 | info: Server is running on http://localhost:4040
+2026-03-10 15:11:13 | error: Admin login service error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:11:13 | error: Admin login controller error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:11:19 | error: Database error//
+2026-03-10 15:11:34 | info: Server is running on http://localhost:4040
+2026-03-10 15:11:44 | error: error in loadHomePage serive MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:11:44 | error: home page error: Error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:11:59 | error: Admin login service error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:11:59 | error: Admin login controller error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:12:04 | error: Database error//
+2026-03-10 15:13:35 | info: Server is running on http://localhost:4040
+2026-03-10 15:13:55 | error: Admin login service error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:13:55 | error: Admin login controller error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 15:13:57 | info: Database is connected
+2026-03-10 15:19:13 | info: Generated OTP: 403680
+2026-03-10 15:19:13 | info: email vodipi4548@daerdy.com
+2026-03-10 15:19:13 | info: otp 403680
+2026-03-10 15:19:14 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2aea3d26565sm20726235ad.2 - gsmtp
+2026-03-10 15:19:47 | info: Generated OTP: 899922
+2026-03-10 15:19:47 | info: email vodipi4548@daerdy.com
+2026-03-10 15:19:47 | info: otp 899922
+2026-03-10 15:19:48 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48dfc17sm15681621b3a.64 - gsmtp
+2026-03-10 15:21:05 | info: Generated OTP: 927063
+2026-03-10 15:21:05 | info: email surupcxobfsutnpkyr@xfavaj.com
+2026-03-10 15:21:05 | info: otp 927063
+2026-03-10 15:21:06 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-c739e0cb598sm11172406a12.13 - gsmtp
+2026-03-10 15:26:58 | info: Server is running on http://localhost:4040
+2026-03-10 15:27:00 | info: Database is connected
+2026-03-10 15:27:24 | info: Generated OTP: 697760
+2026-03-10 15:27:24 | info: email yadhav06@gmail.com
+2026-03-10 15:27:24 | info: otp 697760
+2026-03-10 15:27:26 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48a3b74sm17105493b3a.45 - gsmtp
+2026-03-10 15:33:02 | info: Generated OTP: 254633
+2026-03-10 15:33:02 | info: email check@gmail.com
+2026-03-10 15:33:02 | info: otp 254633
+2026-03-10 15:33:04 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a4865c6csm12882391b3a.39 - gsmtp
+2026-03-10 15:34:35 | info: Server is running on http://localhost:4040
+2026-03-10 15:34:35 | info: Database is connected
+2026-03-10 15:34:55 | info: Generated OTP: 345199
+2026-03-10 15:34:55 | info: email cristo@gmail.com
+2026-03-10 15:34:55 | info: otp 345199
+2026-03-10 15:34:56 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a46369d3sm12863578b3a.2 - gsmtp
+2026-03-10 15:37:01 | info: Server is running on http://localhost:4040
+2026-03-10 15:37:01 | info: Server is running on http://localhost:4040
+2026-03-10 15:37:02 | info: Server is running on http://localhost:4040
+2026-03-10 15:37:03 | info: Database is connected
+2026-03-10 15:37:03 | info: Database is connected
+2026-03-10 15:37:04 | info: Database is connected
+2026-03-10 15:37:06 | info: Server is running on http://localhost:4040
+2026-03-10 15:37:08 | info: Database is connected
+2026-03-10 15:38:22 | info: Generated OTP: 973193
+2026-03-10 15:38:22 | info: email cristo@gmail.com
+2026-03-10 15:38:22 | info: otp 973193
+2026-03-10 15:38:23 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48de551sm13205784b3a.57 - gsmtp
+2026-03-10 15:42:11 | info: Generated OTP: 395478
+2026-03-10 15:42:11 | info: email check@gmail.com
+2026-03-10 15:42:11 | info: otp 395478
+2026-03-10 15:42:12 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-359f08a4f58sm2643575a91.13 - gsmtp
+2026-03-10 15:42:50 | info: Generated OTP: 635980
+2026-03-10 15:42:50 | info: email check@gmail.com
+2026-03-10 15:42:50 | info: otp 635980
+2026-03-10 15:42:51 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-359f06fa04esm2527886a91.6 - gsmtp
+2026-03-10 15:43:15 | info: Generated OTP: 615746
+2026-03-10 15:43:15 | info: email jlddkkd@gmail.com
+2026-03-10 15:43:15 | info: otp 615746
+2026-03-10 15:43:16 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2aea445491bsm30856985ad.69 - gsmtp
+2026-03-10 15:46:52 | info: Server is running on http://localhost:4040
+2026-03-10 15:47:00 | info: Server is running on http://localhost:4040
+2026-03-10 15:47:01 | info: Database is connected
+2026-03-10 15:47:24 | info: Generated OTP: 283880
+2026-03-10 15:47:24 | info: email cristo@gmail.com
+2026-03-10 15:47:24 | info: otp 283880
+2026-03-10 15:47:25 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48d3871sm13259607b3a.60 - gsmtp
+2026-03-10 15:49:41 | info: Server is running on http://localhost:4040
+2026-03-10 15:49:42 | info: Database is connected
+2026-03-10 15:50:03 | info: Generated OTP: 676125
+2026-03-10 15:50:03 | info: email cristo@gmail.com
+2026-03-10 15:50:03 | info: otp 676125
+2026-03-10 15:50:04 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 41be03b00d2f7-c739e199993sm11453777a12.34 - gsmtp
+2026-03-10 15:52:51 | info: Generated OTP: 414048
+2026-03-10 15:52:51 | info: email cristo@gmail.com
+2026-03-10 15:52:51 | info: otp 414048
+2026-03-10 15:52:52 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83fb516esm139316335ad.75 - gsmtp
+2026-03-10 15:53:13 | info: Generated OTP: 247895
+2026-03-10 15:53:13 | info: email cristo@gmail.com
+2026-03-10 15:53:13 | info: otp 247895
+2026-03-10 15:53:14 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83e57c1csm207069105ad.18 - gsmtp
+2026-03-10 15:53:40 | info: Server is running on http://localhost:4040
+2026-03-10 15:53:40 | info: Database is connected
+2026-03-10 15:53:41 | info: Generated OTP: 450822
+2026-03-10 15:53:41 | info: email cristo@gmail.com
+2026-03-10 15:53:41 | info: otp 450822
+2026-03-10 15:53:42 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83e57af3sm198197435ad.13 - gsmtp
+2026-03-10 15:53:59 | info: Generated OTP: 631499
+2026-03-10 15:53:59 | info: email cristo@gmail.com
+2026-03-10 15:53:59 | info: otp 631499
+2026-03-10 15:54:00 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83f752bfsm197523385ad.60 - gsmtp
+2026-03-10 15:57:09 | info: Generated OTP: 887129
+2026-03-10 15:57:09 | info: email jose@gmail.com
+2026-03-10 15:57:09 | info: otp 887129
+2026-03-10 15:57:10 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-359f06ff204sm2512146a91.7 - gsmtp
+2026-03-10 15:58:47 | info: Server is running on http://localhost:4040
+2026-03-10 15:58:47 | info: Database is connected
+2026-03-10 16:00:54 | info: Server is running on http://localhost:4040
+2026-03-10 16:00:54 | info: Database is connected
+2026-03-10 16:01:24 | info: Generated OTP: 666921
+2026-03-10 16:01:24 | info: email cristo@gmail.com
+2026-03-10 16:01:24 | info: otp 666921
+2026-03-10 16:01:25 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-359f05ebde1sm2660336a91.4 - gsmtp
+2026-03-10 16:01:45 | info: Server is running on http://localhost:4040
+2026-03-10 16:01:45 | info: Database is connected
+2026-03-10 16:02:18 | info: Generated OTP: 675765
+2026-03-10 16:02:18 | info: email cristo@gmail.com
+2026-03-10 16:02:18 | info: otp 675765
+2026-03-10 16:02:19 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48d372esm13471442b3a.61 - gsmtp
+2026-03-10 16:05:20 | info: Server is running on http://localhost:4040
+2026-03-10 16:05:21 | info: Database is connected
+2026-03-10 16:05:49 | info: Generated OTP: 477551
+2026-03-10 16:05:49 | info: email cristo@gmail.com
+2026-03-10 16:05:49 | info: otp 477551
+2026-03-10 16:05:50 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48d3871sm13320260b3a.60 - gsmtp
+2026-03-10 16:13:00 | info: Server is running on http://localhost:4040
+2026-03-10 16:13:30 | error: Database error//
+2026-03-10 16:14:07 | error: error in register Service MongoServerSelectionError: 5C140000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 16:14:07 | error: register error: Error: MongoServerSelectionError: 5C140000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 16:14:09 | info: Server is running on http://localhost:4040
+2026-03-10 16:14:33 | info: Database is connected
+2026-03-10 16:15:07 | info: Generated OTP: 645936
+2026-03-10 16:15:07 | info: email cristo@gmail.com
+2026-03-10 16:15:07 | info: otp 645936
+2026-03-10 16:15:08 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 98e67ed59e1d1-359f06fa001sm2583038a91.8 - gsmtp
+2026-03-10 16:18:06 | info: Server is running on http://localhost:4040
+2026-03-10 16:18:07 | info: Database is connected
+2026-03-10 16:18:46 | info: Generated OTP: 170569
+2026-03-10 16:18:46 | info: email pospsa@gmail.com
+2026-03-10 16:18:46 | info: otp 170569
+2026-03-10 16:18:48 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83e57b14sm194374605ad.19 - gsmtp
+2026-03-10 16:24:24 | info: Server is running on http://localhost:4040
+2026-03-10 16:24:54 | error: Database error//
+2026-03-10 16:25:36 | info: Server is running on http://localhost:4040
+2026-03-10 16:26:06 | error: Database error//
+2026-03-10 16:26:51 | info: Server is running on http://localhost:4040
+2026-03-10 16:27:24 | error: Database error//
+2026-03-10 16:27:51 | error: error in register Service MongoServerSelectionError: 5C140000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 16:27:51 | error: register error: Error: MongoServerSelectionError: 5C140000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 16:28:08 | info: Server is running on http://localhost:4040
+2026-03-10 16:28:41 | error: Database error//
+2026-03-10 16:30:00 | info: Server is running on http://localhost:4040
+2026-03-10 16:30:00 | info: Database is connected
+2026-03-10 16:30:19 | info: Generated OTP: 381609
+2026-03-10 16:30:19 | info: email cristo@gmail.com
+2026-03-10 16:30:19 | info: otp 381609
+2026-03-10 16:30:20 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a4656f43sm16922256b3a.16 - gsmtp
+2026-03-10 16:32:00 | info: Server is running on http://localhost:4040
+2026-03-10 16:32:01 | info: Database is connected
+2026-03-10 16:32:54 | info: Server is running on http://localhost:4040
+2026-03-10 16:32:55 | info: Database is connected
+2026-03-10 16:33:17 | info: Generated OTP: 447278
+2026-03-10 16:33:17 | info: email jldjld@gmail.com
+2026-03-10 16:33:17 | info: otp 447278
+2026-03-10 16:33:18 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-829a48a3b74sm17377587b3a.45 - gsmtp
+2026-03-10 16:35:41 | info: Server is running on http://localhost:4040
+2026-03-10 16:35:42 | info: Database is connected
+2026-03-10 16:35:53 | info: Generated OTP: 253658
+2026-03-10 16:35:53 | info: email cristo@gmail.com
+2026-03-10 16:35:53 | info: otp 253658
+2026-03-10 16:35:54 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83e7c58asm156262955ad.25 - gsmtp
+2026-03-10 16:38:03 | info: Server is running on http://localhost:4040
+2026-03-10 16:38:03 | info: Database is connected
+2026-03-10 16:38:18 | info: Generated OTP: 120433
+2026-03-10 16:38:18 | info: email cristo@gmail.com
+2026-03-10 16:38:18 | info: otp 120433
+2026-03-10 16:38:20 | error: Error sending email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ae83f7864dsm153662425ad.49 - gsmtp
+2026-03-10 16:39:21 | info: Server is running on http://localhost:4040
+2026-03-10 16:39:21 | info: Server is running on http://localhost:4040
+2026-03-10 16:39:22 | info: Database is connected
+2026-03-10 16:39:22 | info: Database is connected
+2026-03-10 16:39:24 | info: Server is running on http://localhost:4040
+2026-03-10 16:39:26 | info: Database is connected
+2026-03-10 16:39:39 | info: jldldjldldjldldjldjldjldjldjld
+2026-03-10 16:39:39 | info: process.env.NODEMAILER_EMAIL
+2026-03-10 16:39:39 | info: process.env.NODEMAILER_PASSWORD
+2026-03-10 16:39:39 | info: Generated OTP: 881406
+2026-03-10 16:39:39 | info: email lahsvxxmouoqbupg
+2026-03-10 16:39:39 | info: email cristo@gmail.com
+2026-03-10 16:39:39 | info: otp 881406
+2026-03-10 16:39:44 | info: 2
+2026-03-10 16:41:40 | info: Server is running on http://localhost:4040
+2026-03-10 16:41:40 | info: Database is connected
+2026-03-10 16:45:41 | info: Server is running on http://localhost:4040
+2026-03-10 16:45:41 | info: Server is running on http://localhost:4040
+2026-03-10 16:45:42 | info: Database is connected
+2026-03-10 16:45:42 | info: Database is connected
+2026-03-10 16:46:08 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:08 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:09 | info: Database is connected
+2026-03-10 16:46:10 | info: Database is connected
+2026-03-10 16:46:22 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:22 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:24 | info: Database is connected
+2026-03-10 16:46:24 | info: Database is connected
+2026-03-10 16:46:43 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:43 | info: Server is running on http://localhost:4040
+2026-03-10 16:46:44 | info: Database is connected
+2026-03-10 16:46:44 | info: Database is connected
+2026-03-10 16:56:02 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:02 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:03 | info: Database is connected
+2026-03-10 16:56:03 | info: Database is connected
+2026-03-10 16:56:10 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:11 | info: Database is connected
+2026-03-10 16:56:41 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:42 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:42 | info: Server is running on http://localhost:4040
+2026-03-10 16:56:42 | info: Database is connected
+2026-03-10 16:56:43 | info: Database is connected
+2026-03-10 16:56:43 | info: Database is connected
+2026-03-10 16:57:43 | info: Server is running on http://localhost:4040
+2026-03-10 16:57:43 | info: Server is running on http://localhost:4040
+2026-03-10 16:57:44 | info: Server is running on http://localhost:4040
+2026-03-10 16:57:44 | info: Database is connected
+2026-03-10 16:57:45 | info: Database is connected
+2026-03-10 16:57:46 | info: Database is connected
+2026-03-10 16:58:02 | info: currentPage 1
+2026-03-10 16:58:19 | info: currentPage 2
+2026-03-10 16:58:25 | info: currentPage 1
+2026-03-10 16:58:27 | info: currentPage 1
+2026-03-10 17:12:01 | info: jldldjldldjldldjldjldjldjldjld
+2026-03-10 17:12:01 | info: process.env.NODEMAILER_EMAIL
+2026-03-10 17:12:01 | info: process.env.NODEMAILER_PASSWORD
+2026-03-10 17:12:01 | info: Generated OTP: 955889
+2026-03-10 17:12:01 | info: email lahsvxxmouoqbupg
+2026-03-10 17:12:01 | info: email fwtpwzwewugcczsgnq@nespf.com
+2026-03-10 17:12:01 | info: otp 955889
+2026-03-10 17:12:04 | info: 2
+2026-03-10 17:13:14 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:13:14 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:13:36 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:13:36 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:14:50 | error: error in checkUserBlock service Error: read ECONNRESET
+2026-03-10 17:14:50 | error: Error from checkUserBlock: Error: Error: read ECONNRESET
+2026-03-10 17:15:35 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:35 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:35 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:15:40 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-00.evhdccu.mongodb.net
+2026-03-10 17:16:05 | error: error in loadHomePage serive MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:05 | error: home page error: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:05 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:05 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:05 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:06 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: guestAuth Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: error in checkUserBlock service MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:10 | error: Error from checkUserBlock: Error: MongoServerSelectionError: 3C4D0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 17:16:29 | info: Server is running on http://localhost:4040
+2026-03-10 17:16:39 | error: error in loadHomePage serive MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 17:16:39 | error: home page error: Error: MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+2026-03-10 17:16:59 | error: Database error//
+2026-03-10 17:17:18 | info: Server is running on http://localhost:4040
+2026-03-10 17:17:18 | info: Database is connected
+2026-03-10 17:18:41 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:18:41 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:21:31 | info: Server is running on http://localhost:4040
+2026-03-10 17:21:31 | info: Database is connected
+2026-03-10 17:22:12 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:22:12 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:22:29 | info: Server is running on http://localhost:4040
+2026-03-10 17:22:29 | info: Server is running on http://localhost:4040
+2026-03-10 17:22:31 | info: Database is connected
+2026-03-10 17:22:31 | info: Database is connected
+2026-03-10 17:23:56 | info: Server is running on http://localhost:4040
+2026-03-10 17:23:56 | info: Server is running on http://localhost:4040
+2026-03-10 17:23:56 | info: Database is connected
+2026-03-10 17:23:57 | info: Database is connected
+2026-03-10 17:24:13 | info: Server is running on http://localhost:4040
+2026-03-10 17:24:14 | info: Database is connected
+2026-03-10 17:24:33 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:24:33 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:26:59 | info: Server is running on http://localhost:4040
+2026-03-10 17:26:59 | info: Database is connected
+2026-03-10 17:27:28 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:27:28 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:29:43 | info: Server is running on http://localhost:4040
+2026-03-10 17:29:43 | info: Database is connected
+2026-03-10 17:29:50 | error: Error in getWallet service: TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:29:50 | error: error in getWallet TypeError: Cannot read properties of null (reading 'items')
+2026-03-10 17:30:05 | info: Server is running on http://localhost:4040
+2026-03-10 17:30:05 | info: Server is running on http://localhost:4040
+2026-03-10 17:30:05 | info: Server is running on http://localhost:4040
+2026-03-10 17:30:06 | info: Database is connected
+2026-03-10 17:30:06 | info: Database is connected
+2026-03-10 17:30:06 | info: Database is connected
+2026-03-10 17:32:43 | info: currentPage 1
+2026-03-10 17:34:29 | error: Error in addOrUpdateCoupon service: MongoServerError: E11000 duplicate key error collection: OLDRICH.coupons index: code_1 dup key: { code: "123YDHQ" }
+2026-03-10 17:34:40 | info: currentPage 1
+2026-03-10 17:38:00 | info: currentPage 1
+2026-03-10 17:39:17 | info: currentPage 1
+2026-03-10 17:40:00 | info: currentPage 1
+2026-03-10 17:40:29 | info: currentPage 2
+2026-03-10 17:40:31 | info: currentPage 1
+2026-03-10 17:41:13 | info: currentPage 1
+2026-03-10 17:42:04 | info: data null
+2026-03-10 17:42:04 | info: totalDoc 44
+2026-03-10 17:46:09 | info: data null
+2026-03-10 17:46:09 | info: totalDoc 44
+2026-03-10 17:49:25 | info: data Today
+2026-03-10 17:49:26 | info: totalDoc 20
+2026-03-10 17:49:45 | info: data null
+2026-03-10 17:49:46 | info: totalDoc 43
+2026-03-10 17:50:28 | info: data null
+2026-03-10 17:50:28 | info: totalDoc 37
+2026-03-10 17:51:25 | info: data null
+2026-03-10 17:51:25 | info: totalDoc 37
+2026-03-10 17:51:31 | info: data Today
+2026-03-10 17:51:32 | info: totalDoc 13
+2026-03-10 17:51:38 | info: data Last 30 Days
+2026-03-10 17:51:38 | info: totalDoc 17
+2026-03-10 17:51:40 | info: data null
+2026-03-10 17:51:40 | info: totalDoc 37
+2026-03-10 17:51:49 | info: data Last 7 Days
+2026-03-10 17:51:49 | info: totalDoc 17
+2026-03-10 17:51:52 | info: data null
+2026-03-10 17:51:52 | info: totalDoc 37
+2026-03-10 17:51:55 | info: data Last 30 Days
+2026-03-10 17:51:56 | info: totalDoc 17
+2026-03-10 17:52:00 | info: data Last 30 Days
+2026-03-10 17:52:00 | info: totalDoc 17
+2026-03-10 17:52:04 | info: data Last 7 Days
+2026-03-10 17:52:04 | info: totalDoc 17
+2026-03-10 18:02:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:02:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:02:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:03:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:03:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:03:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:03:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:03:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:04:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:04:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:04:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:04:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:04:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:05:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:05:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:05:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:05:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:05:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:06:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:06:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:06:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:06:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:06:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:07:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:07:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:07:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:07:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:07:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:08:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:08:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:08:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:08:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:08:49 | error: guestAuth Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:09:19 | error: error in checkUserBlock service MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:09:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:09:19 | error: error in loadHomePage serive MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:09:19 | error: home page error: Error: MongoServerSelectionError: getaddrinfo ENOTFOUND ac-pyzhcqx-shard-00-01.evhdccu.mongodb.net
+2026-03-10 18:09:49 | error: guestAuth Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:10:19 | error: error in checkUserBlock service MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:10:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:10:19 | error: error in loadHomePage serive MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:10:19 | error: home page error: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:10:49 | error: guestAuth Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:11:19 | error: error in checkUserBlock service MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:11:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:11:19 | error: error in loadHomePage serive MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:11:19 | error: home page error: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:11:49 | error: guestAuth Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:12:19 | error: error in checkUserBlock service MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:12:19 | error: Error from checkUserBlock: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:12:19 | error: error in loadHomePage serive MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:12:19 | error: home page error: Error: MongoServerSelectionError: E41A0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:c:\ws\deps\openssl\openssl\ssl\record\rec_layer_s3.c:1605:SSL alert number 80
+
+2026-03-10 18:19:37 | info: data null
+2026-03-10 18:19:37 | info: totalDoc 37
+2026-03-10 18:29:14 | info: data null
+2026-03-10 18:29:15 | info: totalDoc 37
+2026-03-10 18:38:45 | info: data null
+2026-03-10 18:38:45 | info: totalDoc 37
+2026-03-10 18:38:49 | info: data Last 30 Days
+2026-03-10 18:38:49 | info: totalDoc 17
+2026-03-10 18:38:53 | info: data Last 30 Days
+2026-03-10 18:38:53 | info: totalDoc 17
+2026-03-10 18:38:56 | info: data Today
+2026-03-10 18:38:56 | info: totalDoc 13
+2026-03-10 18:39:02 | info: data Last 30 Days
+2026-03-10 18:39:03 | info: totalDoc 17
+2026-03-10 18:39:04 | info: data Last 30 Days
+2026-03-10 18:39:04 | info: totalDoc 17
+2026-03-10 18:39:06 | info: data Last 30 Days
+2026-03-10 18:39:06 | info: totalDoc 17
+2026-03-10 18:39:17 | info: data Today
+2026-03-10 18:39:17 | info: totalDoc 13
+2026-03-10 18:39:19 | info: data Last 30 Days
+2026-03-10 18:39:19 | info: totalDoc 17
+2026-03-10 18:39:26 | info: data Last 30 Days
+2026-03-10 18:39:26 | info: totalDoc 17
+2026-03-10 18:39:30 | info: data Last Year
+2026-03-10 18:39:30 | info: totalDoc 37
+2026-03-10 18:40:02 | info: data Last 30 Days
+2026-03-10 18:40:02 | info: totalDoc 17
+2026-03-10 18:40:08 | info: data null
+2026-03-10 18:40:08 | info: totalDoc 37
+2026-03-10 18:40:36 | info: Server is running on http://localhost:4040
+2026-03-10 18:40:36 | info: Server is running on http://localhost:4040
+2026-03-10 18:40:36 | info: Server is running on http://localhost:4040
+2026-03-10 18:40:37 | info: Database is connected
+2026-03-10 18:40:38 | info: Database is connected
+2026-03-10 18:40:38 | info: Database is connected
+2026-03-10 18:54:42 | info: Server is running on http://localhost:4040
+2026-03-10 18:54:42 | info: Database is connected
+2026-03-10 18:56:10 | info: Server is running on http://localhost:4040
+2026-03-10 18:56:10 | info: Database is connected
+2026-03-10 18:56:20 | info: Server is running on http://localhost:4040
+2026-03-10 18:56:20 | info: Database is connected
+2026-03-10 18:56:49 | info: Server is running on http://localhost:4040
+2026-03-10 18:56:50 | info: Database is connected
+2026-03-10 18:57:13 | info: Server is running on http://localhost:4040
+2026-03-10 18:57:13 | info: Database is connected
+2026-03-10 18:58:25 | info: Server is running on http://localhost:4040
+2026-03-10 18:58:26 | info: Database is connected
+2026-03-10 18:58:57 | info: Server is running on http://localhost:4040
+2026-03-10 18:58:58 | info: Database is connected
+2026-03-10 18:59:04 | info: Server is running on http://localhost:4040
+2026-03-10 18:59:04 | info: Database is connected
+2026-03-10 18:59:33 | info: Server is running on http://localhost:4040
+2026-03-10 18:59:33 | info: Database is connected
+2026-03-10 18:59:41 | info: Server is running on http://localhost:4040
+2026-03-10 18:59:41 | info: Database is connected
+2026-03-10 19:01:41 | info: Server is running on http://localhost:4040
+2026-03-10 19:01:43 | info: Database is connected
+2026-03-10 19:01:55 | info: currentPage 1
+2026-03-10 19:06:39 | info: Server is running on http://localhost:4040
+2026-03-10 19:06:41 | info: Database is connected
+2026-03-10 19:07:31 | info: Server is running on http://localhost:4040
+2026-03-10 19:07:32 | info: Database is connected
+2026-03-10 19:18:33 | info: Server is running on http://localhost:4040
+2026-03-10 19:18:34 | info: Database is connected
+2026-03-10 19:18:45 | info: Server is running on http://localhost:4040
+2026-03-10 19:18:46 | info: Database is connected
+2026-03-10 19:30:37 | info: Server is running on http://localhost:4040
+2026-03-10 19:30:37 | info: Database is connected
+2026-03-10 19:31:16 | info: Server is running on http://localhost:4040
+2026-03-10 19:31:17 | info: Database is connected
+2026-03-10 19:31:43 | info: Server is running on http://localhost:4040
+2026-03-10 19:31:44 | info: Database is connected
+2026-03-10 19:32:20 | info: Server is running on http://localhost:4040
+2026-03-10 19:32:21 | info: Database is connected
+2026-03-10 19:52:49 | info: Server is running on http://localhost:4040
+2026-03-10 19:52:50 | info: Database is connected
+2026-03-10 19:53:16 | info: Server is running on http://localhost:4040
+2026-03-10 19:53:16 | info: Database is connected
+2026-03-10 19:54:10 | info: Server is running on http://localhost:4040
+2026-03-10 19:54:10 | info: Database is connected
+2026-03-10 19:54:28 | info: Server is running on http://localhost:4040
+2026-03-10 19:54:28 | info: Database is connected
+2026-03-10 19:54:35 | info: Server is running on http://localhost:4040
+2026-03-10 19:54:37 | info: Database is connected
+2026-03-10 20:10:29 | info: Server is running on http://localhost:4040
+2026-03-10 20:10:30 | info: Database is connected
+2026-03-10 20:10:38 | info: Server is running on http://localhost:4040
+2026-03-10 20:10:39 | info: Database is connected
+2026-03-10 20:18:45 | info: Server is running on http://localhost:4040
+2026-03-10 20:18:46 | info: Database is connected
+2026-03-10 20:51:50 | info: jldldjldldjldldjldjldjldjldjld
+2026-03-10 20:51:50 | info: process.env.NODEMAILER_EMAIL
+2026-03-10 20:51:50 | info: process.env.NODEMAILER_PASSWORD
+2026-03-10 20:51:50 | info: Generated OTP: 281603
+2026-03-10 20:51:50 | info: email lahsvxxmouoqbupg
+2026-03-10 20:51:50 | info: email seywxieebbtrgjqgic@enotj.com
+2026-03-10 20:51:50 | info: otp 281603
+2026-03-10 20:51:53 | info: 2
+2026-03-10 20:57:51 | info: Server is running on http://localhost:4040
+2026-03-10 20:57:52 | info: Database is connected
+2026-03-10 20:59:23 | info: jldldjldldjldldjldjldjldjldjld
+2026-03-10 20:59:23 | info: process.env.NODEMAILER_EMAIL
+2026-03-10 20:59:23 | info: process.env.NODEMAILER_PASSWORD
+2026-03-10 20:59:23 | info: Generated OTP: 683558
+2026-03-10 20:59:23 | info: email lahsvxxmouoqbupg
+2026-03-10 20:59:23 | info: email seywxieebbtrgjqgic@enotj.com
+2026-03-10 20:59:23 | info: otp 683558
+2026-03-10 20:59:26 | info: 2
+2026-03-10 21:00:38 | info: email lahsvxxmouoqbupg
+2026-03-10 21:00:38 | info: email seywxieebbtrgjqgic@enotj.com
+2026-03-10 21:00:38 | info: otp 448268
+2026-03-10 21:00:43 | info: 2
+2026-03-10 21:00:43 | info: resend otp 448268
+2026-03-10 21:01:48 | info: email lahsvxxmouoqbupg
+2026-03-10 21:01:48 | info: email seywxieebbtrgjqgic@enotj.com
+2026-03-10 21:01:48 | info: otp 153866
+2026-03-10 21:01:51 | info: 2
+2026-03-10 21:01:51 | info: resend otp 153866
+2026-03-10 21:46:17 | info: jldldjldldjldldjldjldjldjldjld
+2026-03-10 21:46:17 | info: process.env.NODEMAILER_EMAIL
+2026-03-10 21:46:17 | info: process.env.NODEMAILER_PASSWORD
+2026-03-10 21:46:17 | info: Generated OTP: 133468
+2026-03-10 21:46:17 | info: email lahsvxxmouoqbupg
+2026-03-10 21:46:17 | info: email mpyezquqorfvxumxfr@nespj.com
+2026-03-10 21:46:17 | info: otp 133468
+2026-03-10 21:46:20 | info: 2
+2026-03-10 21:47:14 | info: email lahsvxxmouoqbupg
+2026-03-10 21:47:14 | info: email mpyezquqorfvxumxfr@nespj.com
+2026-03-10 21:47:14 | info: otp 586230
+2026-03-10 21:47:17 | info: 2
+2026-03-10 21:47:17 | info: OTP: 586230
+2026-03-10 21:48:45 | info: email lahsvxxmouoqbupg
+2026-03-10 21:48:45 | info: email mpyezquqorfvxumxfr@nespj.com
+2026-03-10 21:48:45 | info: otp 180304
+2026-03-10 21:48:49 | info: 2
+2026-03-10 21:49:48 | info: email lahsvxxmouoqbupg
+2026-03-10 21:49:48 | info: email mpyezquqorfvxumxfr@nespj.com
+2026-03-10 21:49:48 | info: otp 980420
+2026-03-10 21:49:50 | info: 2
+2026-03-10 21:49:50 | info: OTP: 980420
+2026-03-10 23:32:12 | info: email lahsvxxmouoqbupg
+2026-03-10 23:32:12 | info: email fckuhamwydrzfywfrz@enotj.com
+2026-03-10 23:32:12 | info: otp 411665
+2026-03-10 23:32:16 | info: 2
+2026-03-10 23:32:16 | info: 411665
+2026-03-10 23:33:20 | info: email lahsvxxmouoqbupg
+2026-03-10 23:33:20 | info: email fckuhamwydrzfywfrz@enotj.com
+2026-03-10 23:33:20 | info: otp 258175
+2026-03-10 23:33:23 | info: 2
+2026-03-10 23:40:13 | info: Server is running on http://localhost:4040
+2026-03-10 23:40:13 | info: Database is connected
+2026-03-10 23:40:24 | info: Server is running on http://localhost:4040
+2026-03-10 23:40:24 | info: Database is connected
+2026-03-10 23:46:24 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:14 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:14 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:14 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:15 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:15 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:54 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:55 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:47:58 | info: productId 69b05f9721232703be3c9cc1
+2026-03-10 23:48:49 | info: start proced to checkout
+2026-03-10 23:57:14 | info: productId 69b060c021232703be3c9ee0
+2026-03-10 23:57:27 | info: start proced to checkout

@@ -1,515 +1,169 @@
-const Product = require('../../models/productSchema')
-const Category = require('../../models/catagory')
-const User = require('../../models/userSchema')
-const fs = require('fs')
-const path = require('path')
-const sharp = require('sharp')
-const { log } = require('console')
-const {uploadToCloudinary} = require('../../config/cloudinary')
+/* eslint-disable no-await-in-loop, no-restricted-syntax, no-plusplus, radix, prefer-const, no-inner-declarations */
+import fs from 'fs'
+import path from 'path'
+
+import Product from '../../models/productSchema.js'
+import Category from '../../models/catagory.js'
+
+import logger from '../../utils/logger.js'
+import productService from '../../services/admin/productService.js'
 
 const getAddProducts = async (req, res) => {
-    try {
-        const category = await Category.find({ isListed: true })
-        res.render('product-add', {
-            category: category,
-            message: null,
-            success: null
-        })
-    } catch (error) {
-        console.error('error from getAddProduct', error)
-    }
+  try {
+
+    const result = await productService.getAddProducts()
+    return res.render('product-add', {
+      category: result,
+      message: null,
+      success: null,
+    })
+  } catch (error) {
+    logger.error(`error from getAddProduct ${error}`)
+    return res.redirect('/admin/pageError')
+  }
 }
 
 const addProducts = async (req, res) => {
-    try {
-
-        const products = req.body
-        let variants = []
-        let tempVariantObj = {}
-
-        function skugen(size) {
-            return `sku${size}` + Math.floor(Math.random() * 1000000)
-        }
-
-        if (!Array.isArray(products.sizes)) {
-            products.sizes = [products.sizes];
-        }
-        for (let i = 0; i < products.sizes.length; i++) {
-
-            if (products.sizes[i] === 'S') {
-                let skuval = skugen('S')
-                tempVariantObj = {
-                    sku: skuval,
-                    size: products.sizes[i],
-                    regularPrice: products.regularPriceS,
-                    salePrice: products.salePriceS,
-                    quantity: products.stockS
-                }
-            } else if (products.sizes[i] === 'M') {
-                let skuval = skugen('M')
-                tempVariantObj = {
-                    sku: skuval,
-                    size: products.sizes[i],
-                    regularPrice: products.regularPriceM,
-                    salePrice: products.salePriceM,
-                    quantity: products.stockM
-                }
-            } else if (products.sizes[i] === 'L') {
-                let skuval = skugen('L')
-                tempVariantObj = {
-                    sku: skuval,
-                    size: products.sizes[i],
-                    regularPrice: products.regularPriceL,
-                    salePrice: products.salePriceL,
-                    quantity: products.stockL
-                }
-            } else if (products.sizes[i] === 'XL') {
-                let skuval = skugen('XL')
-                tempVariantObj = {
-                    sku: skuval,
-                    size: products.sizes[i],
-                    regularPrice: products.regularPriceXL,
-                    salePrice: products.salePriceXL,
-                    quantity: products.stockXL
-                }
-            } else if (products.sizes[i] === 'XXL') {
-                let skuval = skugen('XXL')
-                tempVariantObj = {
-                    sku: skuval,
-                    size: products.sizes[i],
-                    regularPrice: products.regularPriceXXL,
-                    salePrice: products.salePriceXXL,
-                    quantity: products.stockXXL
-                }
-            }
-
-            variants.push(tempVariantObj)
-        }
-        let totalStock = 0
-        for (let key of variants) {
-            totalStock += parseInt(key.quantity)
-        }
-       
-
-        let sts = totalStock === 0 ? 'out of stock' : 'Available'
-       
-        const productExist = await Product.findOne({
-            productName: {
-                $regex: new RegExp(`^${products.productName}$`, 'i')
-            }
-        });
-
-        let imageUrls = [];
-
-   
-
-        if (!productExist) {
-         
-
-
-         let images = [];
-
-for (const file of req.files) {
- 
-  const resizedBuffer = await sharp(file.buffer)
-    .resize(440, 440)
-    .toBuffer();
-
-  const url = await uploadToCloudinary(resizedBuffer, "products");
-
-  images.push(url)
-}
-
-
-            const categoryId = await Category.findOne({ name: products.category })
-
-            if (!categoryId) {
-                console.warn(categoryId)
-                return res.status(400).json({ error: 'category name is required' })
-            }
-
-            const newProduct = new Product({
-                productName: products.productName,
-                description: products.description,
-                category: categoryId._id,
-
-
-                createdOn: new Date(),
-
-                color: products.colour,
-                productImage: images,
-                status: sts,
-                variants
-            })
-
-
-            await newProduct.save()
-
-            const category = await Category.find({
-                isListed: true
-            })
-
-            res.render('product-add', {
-                success: 'Product Add successFull',
-                category: category,
-                message: null
-            })
-        } else {
-            const category = await Category.find({ isListed: true })
-            res.render('product-add', { message: 'Product Name Already Exists Try Another name', category, success: null })
-        }
-    } catch (error) {
-        console.error('error from add product', error)
-        res.redirect('/pageNotFound')
-    }
+  try {
+    const result = await productService.addProducts(req.body, req.files)
+    return res.render('product-add', {
+      message: result.message,
+      category: result.category,
+      success: result.success
+    })
+  } catch (error) {
+    logger.error(`error from add product ${error}`)
+    res.redirect('/admin/pageError')
+  }
 }
 
 const getAllProducts = async (req, res) => {
+  try {
+    const result = await productService.getAllProducts(req.query)
 
-    try {
+    const isFetch = req.headers.accept?.includes('application/json')
 
-
-        const search = req.query.search || ''
-        const page = parseInt(req.query.page) || 1
-
-        const limit = 6
-
-        const productData = await Product.find({
-            productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
-        }).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).populate('category').exec()
-
-        const count = await Product.find({
-            productName: { $regex: new RegExp('.*' + search + '.*', 'i') }
-        }).countDocuments()
-
-        const category = await Category.find({ isListed: true })
-
-
-        const isFetch = req.headers.accept?.includes('application/json');
-
-        const totalPage = Math.ceil(count / limit)
-
-        for (let product of productData) {
-            let productTotal = 0; // move inside the loop
-
-            if (product.variants && product.variants.length > 0) {
-                for (let variant of product.variants) {
-                    productTotal += variant.quantity;
-                }
-            } else {
-                productTotal = product.quantity || 0;
-            }
-
-            product.totalQuantity = productTotal;
-        }
-        if (isFetch) {
-            return res.json({
-                data: productData,
-                currentPage: page,
-                totalPages: totalPage
-            });
-        }
-        if (category) {
-            res.render('getAllProducts', {
-                data: productData,
-                currentPage: page,
-                totalPages: totalPage,
-                cat: category
-            })
-        } else {
-            res.render('pageNotFound')
-        }
-    } catch (error) {
-        console.log('error from getallProducts', error)
-        res.redirect('/admin/pageError')
+    if (isFetch) {
+      return res.json({
+        ...result
+      })
     }
+
+    res.render('getAllProducts', {
+      ...result
+    })
+
+  } catch (error) {
+    logger.error(`error from getallProducts ${error}`)
+    res.redirect('/admin/pageError')
+  }
 }
 
 const productVarintsModal = async (req, res) => {
-    try {
+  try {
+    const result = await productService.productVarintsModal(req.body)
 
-
-        const productId = req.body.id
-
-        const findProduct = await Product.findOne({ _id: productId })
-        const variants = findProduct.variants
-
-        if (variants) {
-            res.json({ status: true, data: variants })
-        } else {
-            res.status(500)
-        }
-
-    } catch (error) {
-        console.error('error from productVarintsModal', error)
-        res.status(500)
+    if (result) {
+      return res.json({ status: true, data: result })
+    } else {
+      return res.status(500)
     }
+  } catch (error) {
+    logger.error(`error from productVarintsModal ${error}`)
+    return res.status(500)
+  }
 }
 
 const addProductOffer = async (req, res) => {
-    try {
-        const productId = req.body.productId
-        let percentage = req.body.percentage
+  try {
+    const result = await productService.addProductOffer(req.body)
 
-        const findProduct = await Product.findOne({ _id: productId })
-
-        const findCategory = await Category.findOne({ _id: findProduct.category })
-        const categoryOffer = findCategory.categoryOffer
-
-        percentage = parseInt(percentage)
-        if (findCategory.categoryOffer > percentage) return res.status(401).json({ message: 'Category have offer more then product offer!' })
-
-        if (categoryOffer > 0) {
-            for (let variant of findProduct.variants) {
-                let offer = categoryOffer
-                variant.salePrice = Math.floor((variant.salePrice * 100) / (100 - offer));
-            }
-
-        }
-
-
-        for (let variant of findProduct.variants) {
-            variant.salePrice = Math.floor(variant.salePrice * (1 - percentage / 100))
-        }
-        findProduct.productOffer = percentage
-
-
-
-        await findProduct.save()
-
-        await findCategory.save()
-        return res.status(200).json({ success: true })
-    } catch (error) {
-        console.error('error from addProductOffer', error)
-        return res.status(500).json({ success: false, message: 'Internal server error' })
-    }
+    return res.status(result.statusCode).json({ success: result.status, message: result.message })
+  } catch (error) {
+    logger.error(`error from addProductOffer ${error}`)
+    return res
+      .status(500)
+      .json({ success: false, message: 'Internal server error' })
+  }
 }
 
-
-
 const removeProductOffer = async (req, res) => {
-    try {
-        const { productId } = req.body
-        const findProduct = await Product.findOne({ _id: productId })
-        const findCategory = await Category.findOne({ _id: findProduct.category })
+  try {
 
-        const categoryOffer = findCategory.categoryOffer
+    const result = await productService.removeProductOffer(req.body)
 
-        const percentage = findProduct.productOffer
-
-        for (let variant of findProduct.variants) {
-            variant.salePrice = Math.floor(
-                variant.salePrice + (variant.salePrice * (percentage / (100 - percentage)))
-            )
-
-            if (categoryOffer > 0) {
-                variant.salePrice = Math.floor(
-                    variant.salePrice = Math.floor(variant.salePrice * (1 - categoryOffer / 100))
-                )
-
-            }
-
-        }
-
-        await Product.updateOne({ _id: findProduct._id }, { $set: { productOffer: false } })
-
-        await findProduct.save()
-        return res.json({ success: true })
-    } catch (error) {
-        return res.redirect('/admin/pageError')
-    }
+    return res.status(result.statusCode).json({ success: result.status, message: result.message })
+  } catch (error) {
+    return res.status(500).json({ status: false, message: 'Internal server error' })
+  }
 }
 
 const blockProduct = async (req, res) => {
-    try {
-        console.warn('i reach here')
-        const productId = req.body.id
-        await Product.updateOne({ _id: productId }, { isBlocked: true , status:'notAvailable'})
-        console.log('1');
+  try {
 
-        const p = await Product.findOne({ _id: productId })
-        console.log(p.isBlocked)
-        console.log(2);
+    const result = await productService.blockProduct(req.body)
 
-        res.json({ message: true })
-    } catch (error) {
-        console.log('error from blockProduct', error)
-        res.status('500').json({ message: false })
-    }
+    return res.status(result.statusCode).json({ message: true })
+  } catch (error) {
+    logger.error(`error from blockProduct ${error}`)
+    return res.status('500').json({ message: false })
+  }
 }
 
 const unBlockProduct = async (req, res) => {
+  try {
 
-    try {
-        const productId = req.body.id
+    const result = await productService.unBlockProduct(req.body)
 
-        await Product.updateOne({ _id: productId }, { isBlocked: false , status:'Available'})
-
-        res.json({ message: true })
-    } catch (error) {
-        console.log('error from unBlockProduct', error)
-        res.status(500).json({ message: false })
-    }
+    return res.status(result.statusCode).json({ message: true })
+  } catch (error) {
+    logger.error(`error from unBlockProduct ${error}`)
+    return res.status(500).json({ message: false })
+  }
 }
 
 const getEditProduct = async (req, res) => {
-    try {
-        const id = req.query.id
+  try {
 
-        const product = await Product.findOne({ _id: id })
-        .populate('category' , 'name')
+    const result = await productService.getEditProduct(req.query)
 
-        const category = await Category.find({})
-
-        res.render('getEditProduct', {
-            product: product,
-            category: category
-        })
-    } catch (error) {
-        console.log('error from getEditProduct', error)
-        res.redirect('/admin/pageError')
-    }
+    return res.render('getEditProduct', {
+      product: result.product,
+      category: result.category,
+    })
+  } catch (error) {
+    logger.error(`error from getEditProduct ${error}`)
+    return res.redirect('/admin/pageError')
+  }
 }
-
-
 
 const editProduct = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const data = req.body;
-        console.log('Form data received:', data);
+  try {
+    const result = await productService.editProduct(req.params, req.body, req.files)
 
-        let {
-            productName,
-            description,
-            category,
-            color,
-            existingImages,
-            variants
-        } = data;
-
-        const categoryId = await Category.findOne({ name: category });
-
-        productName=productName.trim()
-        const existingProduct = await Product.findOne({
-            productName: { $regex: `^${productName}$`, $options: 'i' },
-            _id: { $ne: id }
-        })
-
-
-        if(existingProduct)return res.json({error:'Product name is already exists'})
-
-
-        // Get the current product to preserve existing images if no changes
-        const currentProduct = await Product.findById(id);
-        if (!currentProduct) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-
-        let newImages = []
-        for (const file of req.files) {
- 
-  const resizedBuffer = await sharp(file.buffer)
-    .resize(440, 440)
-    .toBuffer();
-
-  const url = await uploadToCloudinary(resizedBuffer, "products");
-
-  newImages.push(url);
-}
-        // Handle existing images
-        let finalImages = [];
-
-        if (existingImages && existingImages.trim() !== '') {
-           
-            finalImages = existingImages.split(',').filter(img => img.trim() !== '');
-            console.log('Existing images from form:', finalImages);
-        } else if (newImages.length === 0) {
-       
-            finalImages = currentProduct.productImage || [];
-        }
-
-        if (newImages.length > 0) {
-            finalImages = [...finalImages, ...newImages];
-        }
-     
-        const updateFields = {
-            productName,
-            description,
-            category: categoryId._id,
-            color,
-            productImage: finalImages
-        };
-
-
-
-        if (variants && Array.isArray(variants)) {
-            const validVariants = variants.filter(variant =>
-                variant.size && variant.regularPrice && variant.quantity
-            ).map(variant => ({
-                size: variant.size,
-                regularPrice: parseFloat(variant.regularPrice),
-                salePrice: variant.salePrice ? parseFloat(variant.salePrice) : null,
-                quantity: parseInt(variant.quantity),
-                _id: variant._id || undefined,
-
-            }))
-
-            updateFields.variants = validVariants;
-        }
-
-
-        let productStatus = updateFields.variants?.reduce((acc, curr) => {
-            return curr.quantity + acc
-        }, 0)
-
-        if (productStatus === 0) {
-            updateFields.status = 'out of stock'
-        }else if (productStatus>0){
-            updateFields.status='Available'
-        }
-
-        
-
-        await Product.findByIdAndUpdate(id, updateFields, { new: true });
-
-       return res.redirect('/admin/allProducts');
-    } catch (error) {
-        console.error('error from editProduct', error);
-        res.redirect('/admin/pageError');
+    if (result.status) {
+      return res.redirect('/admin/allProducts')
+    } else {
+      return res.status(result.statusCode).json({ status: result.status, error: result.error })
     }
+
+  } catch (error) {
+    logger.error(`error from editProduct ${error}`)
+    res.redirect('/admin/pageError')
+  }
 }
 
 
-const deleteSingleImage = async (req, res) => {
-    try {
-        const { imageNameToServer, productIdToServer } = req.body
-        const product = await Product.findByIdAndUpdate(productIdToServer, { $pull: { productImage: imageNameToServer } })
-        const imagePath = path.join('public', 'uploads', 're-image', imageNameToServer)
-        if (fs.existsSync(imagePath)) {
-            await fs.unlinkSync(imagePath)
-            console.log(`Image${imageNameToServer} delete successfully`)
-        } else {
-            console.log(`Image ${imageNameToServer} not found`)
-        }
-        res.send({ status: true })
-    } catch (error) {
-        res.redirect('/admin/pageError')
-    }
-}
 
-
-module.exports = {
-    getAddProducts,
-    addProducts,
-    getAllProducts,
-    productVarintsModal,
-    addProductOffer,
-    removeProductOffer,
-    blockProduct,
-    unBlockProduct,
-    getEditProduct,
-    editProduct,
-    deleteSingleImage,
-
+export default {
+  getAddProducts,
+  addProducts,
+  getAllProducts,
+  productVarintsModal,
+  addProductOffer,
+  removeProductOffer,
+  blockProduct,
+  unBlockProduct,
+  getEditProduct,
+  editProduct,
 }

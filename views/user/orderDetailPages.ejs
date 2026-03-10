@@ -12,1644 +12,346 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
-  
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/user/orderDetailPages.css">
 </head>
 
-<style>
-    /* Reset any conflicting styles for navbar */
-    body {
-        margin: 0;
-        padding: 0;
-    }
-    /* Order Details Styles */
-    :root {
-        --primary-green: #2e7d32;
-        --light-green: #388e3c;
-        --lighter-green: #4caf50;
-        --white: #FFFFFF;
-        --light-gray: #f8f9fa;
-        --medium-gray: #e0e0e0;
-        --dark-gray: #616161;
-        --black: #212121;
-        --error-red: #d32f2f;
-        --warning-orange: #ffa000;
-        --success-green: #4caf50;
-        --info-blue: #2196f3;
-        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        --transition: all 0.3s ease;
-        --premium-gradient: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
-        --hover-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
-    }
-
-    body {
-        font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        background-color: var(--light-gray);
-        color: var(--black);
-        margin: 0;
-        padding: 0;
-        line-height: 1.6;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto
-    }
-
-    /* Order Header */
-    .order-header {
-        background-color: var(--white);
-        padding: 25px 30px;
-        border-radius: 10px;
-        box-shadow: var(--box-shadow);
-        margin-bottom: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-left: 5px solid var(--primary-green);
-        transition: var(--transition);
-    }
-
-    .order-header:hover {
-        box-shadow: var(--hover-shadow);
-    }
-
-    .order-header-left h1 {
-        color: var(--primary-green);
-        margin: 0 0 10px 0;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        font-size: 28px;
-        font-weight: 600;
-    }
-
-    .order-info {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        font-size: 15px;
-        color: var(--dark-gray);
-    }
-
-    .order-id {
-        font-weight: 600;
-        color: var(--primary-green);
-        background-color: rgba(46, 125, 50, 0.1);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 14px;
-    }
-
-    .order-date {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .order-header-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-    }
-
-    /* Status Badges */
-    .order-status, .payment-status {
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-pending { background-color: #fff3cd; color: #856404; }
-    .status-processing { background-color: #d4edda; color: #155724; }
-    .status-shipped { background-color: #d1ecf1; color: #0c5460; }
-    .status-delivered { background-color: #d4edda; color: #155724; }
-    .status-cancelled { background-color: #f8d7da; color: #721c24; }
-    .status-return-req { background-color: #ffeaa7; color: #fdcb6e; }
-    .status-returned { background-color: #fab1a0; color: #e17055; }
-
-    .payment-pending { background-color: #fff3cd; color: #856404; }
-    .payment-completed { background-color: #d4edda; color: #155724; }
-    .payment-failed { background-color: #f8d7da; color: #721c24; }
-
-    /* Order Container */
-    .order-container {
-        display: flex;
-        gap: 30px;
-        align-items: flex-start;
-    }
-
-    /* Order Items Section */
-    .order-items-section {
-        flex: 2;
-        background-color: var(--white);
-        border-radius: 10px;
-        box-shadow: var(--box-shadow);
-        padding: 25px;
-        transition: var(--transition);
-    }
-
-    .order-items-section:hover {
-        box-shadow: var(--hover-shadow);
-    }
-
-    .section-title {
-        color: var(--primary-green);
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid var(--medium-gray);
-        font-size: 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .item-count {
-        font-size: 14px;
-        color: var(--dark-gray);
-        font-weight: 400;
-    }
-
-    .order-items {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .order-item {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 20px;
-        border: 1px solid var(--medium-gray);
-        border-radius: 8px;
-        transition: var(--transition);
-        position: relative;
-    }
-
-    .order-item:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transform: translateY(-3px);
-    }
-
-    .item-image {
-        flex-shrink: 0;
-    }
-
-    .item-image img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        border-radius: 6px;
-        border: 1px solid var(--medium-gray);
-        background-color: var(--light-gray);
-        padding: 5px;
-        transition: var(--transition);
-    }
-
-    .order-item:hover .item-image img {
-        transform: scale(1.05);
-    }
-
-    .product-image-placeholder {
-        width: 80px;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--light-gray);
-        color: var(--dark-gray);
-        border-radius: 6px;
-        border: 1px solid var(--medium-gray);
-    }
-
-    .item-details {
-        flex: 1;
-    }
-
-    .item-name {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--black);
-        margin: 0 0 8px 0;
-    }
-
-    .item-variant {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .variant-tag {
-        background-color: var(--light-gray);
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        color: var(--dark-gray);
-    }
-
-    .item-meta {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        font-size: 14px;
-    }
-
-    .item-price {
-        font-weight: 600;
-        color: var(--primary-green);
-    }
-
-    .item-quantity {
-        color: var(--dark-gray);
-    }
-
-    .item-total {
-        font-weight: 600;
-        color: var(--black);
-    }
-
-    .item-status {
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 8px;
-    }
-
-    .status-badge {
-        padding: 6px 12px;
-        border-radius: 15px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    .return-status {
-        padding: 4px 8px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 500;
-    }
-
-    .return-requested { background-color: #ffeaa7; color: #fdcb6e; }
-    .return-returned { background-color: #fab1a0; color: #e17055; }
-    .return-rejected { background-color: #f8d7da; color: #721c24; }
-
-    /* Item Actions */
-    .item-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-    }
-
-    .btn {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 5px;
-        height: 5px;
-        background: rgba(255, 255, 255, 0.5);
-        opacity: 0;
-        border-radius: 100%;
-        transform: scale(1, 1) translate(-50%);
-        transform-origin: 50% 50%;
-    }
-
-    .btn:focus:not(:active)::after {
-        animation: ripple 1s ease-out;
-    }
-
-    @keyframes ripple {
-        0% {
-            transform: scale(0, 0);
-            opacity: 0.5;
-        }
-        100% {
-            transform: scale(20, 20);
-            opacity: 0;
-        }
-    }
-
-    .btn-sm {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
-    .btn-primary {
-        background-color: var(--primary-green);
-        color: white;
-        box-shadow: 0 2px 5px rgba(46, 125, 50, 0.2);
-    }
-
-    .btn-primary:hover {
-        background-color: var(--light-green);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-    }
-
-    .btn-secondary {
-        background-color: var(--dark-gray);
-        color: white;
-        box-shadow: 0 2px 5px rgba(97, 97, 97, 0.2);
-    }
-
-    .btn-secondary:hover {
-        background-color: #424242;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(97, 97, 97, 0.3);
-    }
-
-    .btn-danger {
-        background-color: var(--error-red);
-        color: white;
-        box-shadow: 0 2px 5px rgba(211, 47, 47, 0.2);
-    }
-
-    .btn-danger:hover {
-        background-color: #c62828;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
-    }
-
-    .btn-outline {
-        background-color: transparent;
-        color: var(--primary-green);
-        border: 2px solid var(--primary-green);
-    }
-
-    .btn-outline:hover {
-        background-color: var(--primary-green);
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* Order Sidebar */
-    .order-sidebar {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-    }
-
-    .order-summary,
-    .payment-details,
-    .delivery-address {
-        background-color: var(--white);
-        border-radius: 10px;
-        box-shadow: var(--box-shadow);
-        padding: 25px;
-        transition: var(--transition);
-    }
-
-    .order-summary:hover,
-    .payment-details:hover,
-    .delivery-address:hover {
-        box-shadow: var(--hover-shadow);
-    }
-
-    .order-summary {
-        border-top: 3px solid var(--primary-green);
-    }
-
-    .summary-title {
-        color: var(--primary-green);
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid var(--medium-gray);
-        font-size: 18px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin: 15px 0;
-        font-size: 15px;
-    }
-
-    .discount-row {
-        color: var(--success-green);
-    }
-
-    .coupon-row {
-        color: var(--primary-green);
-    }
-
-    .coupon-applied {
-        color: var(--success-green);
-        font-weight: 600;
-    }
-
-    .total-row {
-        font-weight: 600;
-        font-size: 18px;
-        border-top: 1px solid var(--medium-gray);
-        padding-top: 15px;
-        margin-top: 20px;
-        color: var(--primary-green);
-    }
-
-    /* Payment Details */
-    .payment-info {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .payment-method,
-    .payment-status-detail,
-    .invoice-date {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid var(--medium-gray);
-    }
-
-    .payment-method:last-child,
-    .payment-status-detail:last-child,
-    .invoice-date:last-child {
-        border-bottom: none;
-    }
-
-    .label {
-        font-weight: 500;
-        color: var(--dark-gray);
-    }
-
-    .value {
-        font-weight: 600;
-        color: var(--black);
-    }
-
-    .value i {
-        margin-right: 5px;
-        color: var(--primary-green);
-    }
-
-    /* Delivery Address */
-    .address-info {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .address-type {
-        background-color: var(--light-gray);
-        padding: 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        color: var(--primary-green);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .address-details {
-        padding: 10px 0;
-    }
-
-    .recipient-name {
-        font-weight: 600;
-        font-size: 16px;
-        color: var(--black);
-        margin-bottom: 5px;
-    }
-
-    .address-line {
-        color: var(--dark-gray);
-        margin-bottom: 3px;
-    }
-
-    .contact-info {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .phone,
-    .alt-phone {
-        color: var(--dark-gray);
-        font-size: 14px;
-    }
-
-    .phone i,
-    .alt-phone i {
-        margin-right: 8px;
-        color: var(--primary-green);
-    }
-
-    /* Action Buttons */
-    .order-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 30px;
-        padding: 20px;
-        background-color: var(--white);
-        border-radius: 10px;
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-    }
-
-    .order-actions:hover {
-        box-shadow: var(--hover-shadow);
-    }
-
-    .btn-lg {
-        padding: 12px 24px;
-        font-size: 15px;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 992px) {
-        .order-container {
-            flex-direction: column;
-        }
-        
-        .order-sidebar {
-            width: 100%;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 15px;
-        }
-        
-        .order-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-            padding: 20px;
-        }
-        
-        .order-header-right {
-            align-items: flex-start;
-        }
-        
-        .order-info {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        
-        .order-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-        }
-        
-        .item-image {
-            align-self: center;
-        }
-        
-        .item-image img,
-        .product-image-placeholder {
-            width: 100px;
-            height: 100px;
-        }
-        
-        .item-status {
-            align-items: flex-start;
-            width: 100%;
-        }
-        
-        .item-meta {
-            flex-wrap: wrap;
-        }
-        
-        .order-actions {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .btn-lg {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .order-header h1 {
-            font-size: 24px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-        }
-        
-        .order-items-section,
-        .order-summary,
-        .payment-details,
-        .delivery-address {
-            padding: 15px;
-        }
-        
-        .item-actions {
-            flex-direction: column;
-            width: 100%;
-        }
-        
-        .btn-sm {
-            width: 100%;
-        }
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .order-items-section,
-    .order-sidebar > div {
-        animation: fadeIn 0.4s ease-out;
-    }
-
-    /* Print Styles */
-    @media print {
-        .order-actions {
-            display: none;
-        }
-        
-        body {
-            background-color: white;
-        }
-        
-        .order-header,
-        .order-items-section,
-        .order-summary,
-        .payment-details,
-        .delivery-address {
-            box-shadow: none;
-            border: 1px solid #ddd;
-        }
-    }
-
-    /* Item Status Indicator */
-    .item-status-indicator {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        display: flex;
-        gap: 5px;
-    }
-
-    .status-indicator {
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    /* Disabled buttons */
-    .btn-disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
-    /* Order Tracker Styles */
-    .order-tracker {
-        background-color: var(--white);
-        border-radius: 10px;
-        box-shadow: var(--box-shadow);
-        padding: 25px;
-        margin-bottom: 30px;
-        transition: var(--transition);
-    }
-
-    .order-tracker:hover {
-        box-shadow: var(--hover-shadow);
-    }
-
-    .tracker-title {
-        color: var(--primary-green);
-        margin-top: 0;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid var(--medium-gray);
-        font-size: 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .timeline {
-        display: flex;
-        justify-content: space-between;
-        position: relative;
-        margin: 0 20px;
-    }
-
-    .timeline::before {
-        content: '';
-        position: absolute;
-        top: 20px;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background-color: var(--medium-gray);
-        z-index: 1;
-    }
-
-    .timeline-progress {
-        position: absolute;
-        top: 20px;
-        left: 0;
-        height: 4px;
-        background-color: var(--primary-green);
-        z-index: 2;
-        transition: width 0.5s ease;
-    }
-
-    .timeline-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        z-index: 3;
-        flex: 1;
-    }
-
-    .step-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background-color: var(--white);
-        border: 4px solid var(--medium-gray);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 10px;
-        transition: var(--transition);
-    }
-
-    .step-icon.active {
-        border-color: var(--primary-green);
-        background-color: var(--primary-green);
-        color: var(--white);
-    }
-
-    .step-icon.completed {
-        border-color: var(--primary-green);
-        background-color: var(--primary-green);
-        color: var(--white);
-    }
-
-    .step-label {
-        font-size: 14px;
-        font-weight: 600;
-        text-align: center;
-        color: var(--dark-gray);
-        transition: var(--transition);
-    }
-
-    .step-label.active {
-        color: var(--primary-green);
-    }
-
-    .step-label.completed {
-        color: var(--primary-green);
-    }
-
-    .step-date {
-        font-size: 12px;
-        color: var(--dark-gray);
-        margin-top: 5px;
-        text-align: center;
-    }
-
-    /* Shipping Info */
-    .shipping-info {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: var(--light-gray);
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .shipping-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-    }
-
-    .shipping-label {
-        font-weight: 500;
-        color: var(--dark-gray);
-    }
-
-    .shipping-value {
-        font-weight: 600;
-        color: var(--black);
-    }
-
-    /* Payment Details in Summary */
-    .payment-summary {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid var(--medium-gray);
-    }
-
-    .payment-summary-row {
-        display: flex;
-        justify-content: space-between;
-        margin: 10px 0;
-        font-size: 15px;
-    }
-
-    .payment-label {
-        font-weight: 500;
-        color: var(--dark-gray);
-    }
-
-    .payment-value {
-        font-weight: 600;
-        color: var(--black);
-    }
-
-    .payment-method-icon {
-        margin-right: 8px;
-        color: var(--primary-green);
-    }
-
-    /* Loading Spinner */
-    .btn-loading {
-        pointer-events: none;
-        opacity: 0.8;
-    }
-
-    .btn-loading .btn-text {
-        visibility: hidden;
-    }
-
-    .btn-loading::before {
-        content: "";
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* Premium Invoice Button */
-    .btn-invoice {
-        background: var(--premium-gradient);
-        color: white;
-        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-invoice::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: 0.5s;
-    }
-
-    .btn-invoice:hover::before {
-        left: 100%;
-    }
-
-    .btn-invoice:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
-    }
-
-    /* Return/Cancellation Status in Tracker */
-    .step-icon.returned {
-        border-color: #e17055;
-        background-color: #e17055;
-        color: white;
-    }
-
-    .step-icon.cancelled {
-        border-color: var(--error-red);
-        background-color: var(--error-red);
-        color: white;
-    }
-
-    .step-label.returned {
-        color: #e17055;
-    }
-
-    .step-label.cancelled {
-        color: var(--error-red);
-    }
-</style>
-
 <body>
-          <%- include('../../views/partials/user/header',{title:'order details'}) %>
+    <%- include('../../views/partials/user/header',{title:'order details'}) %>
 
-
-    <!-- Order Details Content -->
-    <div class="container">
-        <!-- Order Header -->
-        <div class="order-header">
-            <div class="order-header-left">
-                <h1><i class="fas fa-receipt"></i> Order Details</h1>
-                <div class="order-info">
-                    <span class="order-id">Order #<%= order.orderId %></span>
-                    <span class="order-date">
-                        <i class="fas fa-calendar-alt"></i>
-                        <%= new Date(order.createdOn).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        }) %>
+        <!-- Order Details Content -->
+        <div class="container">
+            <!-- Order Header -->
+            <div class="order-header">
+                <div class="order-header-left">
+                    <h1><i class="fas fa-receipt"></i> Order Details</h1>
+                    <div class="order-info">
+                        <span class="order-id">Order #<%= order.orderId %></span>
+                        <span class="order-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <%= new Date(order.createdOn).toLocaleDateString('en-US', { year: 'numeric' , month: 'long'
+                                , day: 'numeric' }) %>
+                        </span>
+                    </div>
+                </div>
+                <div class="order-header-right">
+                    <span class="order-status status-<%= order.status.toLowerCase().replace(' ', '-') %>">
+                        <%= order.status %>
                     </span>
+                    <!-- Invoice Download Button - Always visible -->
+                    <a class="btn btn-invoice btn-sm" href="/generateInvoice?orderId=<%= order.orderId %>">
+                        <i class="fas fa-download"></i>
+                        <span class="btn-text">Download Invoice</span>
+                    </a>
                 </div>
             </div>
-            <div class="order-header-right">
-                <span class="order-status status-<%= order.status.toLowerCase().replace(' ', '-') %>">
-                    <%= order.status %>
-                </span>
-                <!-- Invoice Download Button - Always visible -->
-                <a class="btn btn-invoice btn-sm" href="/generateInvoice?orderId=<%= order.orderId %>">
-                    <i class="fas fa-download"></i> 
-                    <span class="btn-text">Download Invoice</span>
-                </a>
-            </div>
-        </div>
 
-        <!-- Order Tracker -->
-        <div class="order-tracker">
-            <h2 class="tracker-title">
-                <i class="fas fa-shipping-fast"></i> Order Tracking
-            </h2>
-            
-            <div class="timeline">
-                <div class="timeline-progress" id="timelineProgress"></div>
-                
-                <div class="timeline-step">
-                    <div class="step-icon <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="step-label <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">Order Placed</div>
-                    <div class="step-date">
-                        <%= new Date(order.createdOn).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric' 
-                        }) %>
-                    </div>
-                </div>
-                
-                <div class="timeline-step">
-                    <div class="step-icon <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="step-label <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">Processing</div>
-                    <% if (order.processingDate) { %>
-                    <div class="step-date">
-                        <%= new Date(order.processingDate).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric' 
-                        }) %>
-                    </div>
-                    <% } %>
-                </div>
-                
-                <div class="timeline-step">
-                    <div class="step-icon <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">
-                        <i class="fas fa-shipping-fast"></i>
-                    </div>
-                    <div class="step-label <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">Shipped</div>
-                    <% if (order.shippedDate) { %>
-                    <div class="step-date">
-                        <%= new Date(order.shippedDate).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric' 
-                        }) %>
-                    </div>
-                    <% } %>
-                </div>
-                
-                <div class="timeline-step">
-                    <div class="step-icon <%= order.status === 'Delivered' ? 'completed' : (order.status === 'returned' ? 'returned' : (order.status === 'cancelled' ? 'cancelled' : (['returnRequested', 'reutrnRejected'].includes(order.status) ? 'active' : ''))) %>">
-                        <% if (order.status === 'returned') { %>
-                            <i class="fas fa-undo"></i>
-                        <% } else if (order.status === 'cancelled') { %>
-                            <i class="fas fa-times"></i>
-                        <% } else if (['returnRequested', 'reutrnRejected'].includes(order.status)) { %>
-                            <i class="fas fa-clock"></i>
-                        <% } else { %>
-                            <i class="fas fa-check-circle"></i>
-                        <% } %>
-                    </div>
-                    <div class="step-label <%= order.status === 'Delivered' ? 'completed' : (order.status === 'returned' ? 'returned' : (order.status === 'cancelled' ? 'cancelled' : (['returnRequested', 'reutrnRejected'].includes(order.status) ? 'active' : ''))) %>">
-                        <% if (order.status === 'returned') { %>
-                            Returned
-                        <% } else if (order.status === 'cancelled') { %>
-                            Cancelled
-                        <% } else if (order.status === 'returnRequested') { %>
-                            Return Requested
-                        <% } else if (order.status === 'reutrnRejected') { %>
-                            Return Rejected
-                        <% } else { %>
-                            Delivered
-                        <% } %>
-                    </div>
-                    <% if (order.deliveredDate) { %>
-                    <div class="step-date">
-                        <%= new Date(order.deliveredDate).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric' 
-                        }) %>
-                    </div>
-                    <% } %>
-                </div>
-            </div>
-            
-           
-            <% if (order.status === 'Shipped' || order.status === 'Delivered') { %>
-            <div class="shipping-info">
-                <div class="shipping-row">
-                    <span class="shipping-label">Tracking Number:</span>
-                    <span class="shipping-value"><%= order.trackingNumber || 'TRK-' + order.orderId %></span>
-                </div>
-                <div class="shipping-row">
-                    <span class="shipping-label">Carrier:</span>
-                    <span class="shipping-value"><%= order.carrier || 'Standard Shipping' %></span>
-                </div>
-                <% if (order.estimatedDelivery) { %>
-                <div class="shipping-row">
-                    <span class="shipping-label">Estimated Delivery:</span>
-                    <span class="shipping-value">
-                        <%= new Date(order.estimatedDelivery).toLocaleDateString('en-US', { 
-                            weekday: 'long',
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        }) %>
-                    </span>
-                </div>
-                <% } %>
-            </div>
-            <% } %>
-        </div>
-
-        <div class="order-container">
-            <!-- Order Items -->
-            <div class="order-items-section">
-                <h2 class="section-title">
-                    <i class="fas fa-box"></i> Order Items
-                    <span class="item-count">(<%= order.orderedItems.length %> items)</span>
+            <!-- Order Tracker -->
+            <div class="order-tracker">
+                <h2 class="tracker-title">
+                    <i class="fas fa-shipping-fast"></i> Order Tracking
                 </h2>
-                
-                <div class="order-items">
-                    <% order.orderedItems.forEach(function(item, index) { %>
-                       
-                        <div class="order-item">
-                            <!-- Status indicator -->
-                            <div class="item-status-indicator">
-                                <span id="itemStaus<%= index %>" class="status-indicator status-<%= item.status.toLowerCase().replace(' ', '-') %>">
-                                    <%= item.status %>
-                                </span>
-                                <% if (item.returnStatus) { %>
-                                    <span class="status-indicator return-<%= item.returnStatus.toLowerCase() %>">
-                                        <%= item.returnStatus %>
-                                    </span>
-                                <% } %>
-                            </div>
-                            
-                            <div class="item-image">
-                                <% if (item.product && item.product.productImage && item.product.productImage[0]) { %>
-                                    <img src="<%= item.product.productImage[0] %>" 
-                                         alt="<%= item.productName %>"
-                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="product-image-placeholder" style="display: none;">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                <% } else { %>
-                                    <div class="product-image-placeholder">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                <% } %>
-                            </div>
-                            
-                            <div class="item-details">
-                                <h3 class="item-name"><%= item.productName %></h3>
-                                <div class="item-variant">
-                                    <% if (item.size) { %>
-                                        <span class="variant-tag">Size: <%= item.size %></span>
-                                    <% } %>
-                                    <% if (item.sku) { %>
-                                        <span class="variant-tag">SKU: <%= item.sku %></span>
-                                    <% } %>
-                                </div>
-                                <div class="item-meta">
-                                    <span class="item-price">₹<%= item.price.toFixed(2) %></span>
-                                    <span class="item-quantity">Qty: <%= item.quantity %></span>
-                                    <span class="item-total">₹<%= (item.price * item.quantity).toFixed(2) %></span>
-                                </div>
 
-                                <!-- Item Actions -->
-                                <div class="item-actions">
+                <div class="timeline">
+                    <div class="timeline-progress" id="timelineProgress"></div>
 
-                                    <% if (
-    item.status !== 'Delivered' &&
-    item.status !== 'cancelled' &&
-    item.status !== 'returnRequested' &&
-    item.status !== 'returned' &&
-    item.status !== 'reutrnRejected' &&
-    !(order.paymentMethod === 'RPAY' && order.paymentStatus === 'Pending')&&
-    !(order.paymentMethod === 'RPAY' && order.paymentStatus === 'Failed')
-) { %>
-
-    <button type="button"
-        id="cancelItem<%= index %>"
-        class="btn btn-danger btn-sm"
-        onclick="cancelItem('<%= order.orderId %>', '<%= item._id %>', '<%= index %>')">
-        <i class="fas fa-times"></i>
-        <span class="btn-text">Cancel Item</span>
-    </button>
-
-<% } %>
-
-                                    
-                                    <% if(item.status === 'Delivered' ) { %>
-                                        <button type="button" 
-                                                class="btn btn-outline btn-sm" 
-                                                onclick="returnItem( '<%= item._id %>','<%= order.orderId %>')">
-                                            <i class="fas fa-undo"></i> 
-                                            <span class="btn-text">Return Item</span>
-                                        </button>
-                                    <% } %>
-                                    
-                                    <% if(item.status === 'cancelled') { %>
-                                        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
-                                            <i class="fas fa-ban"></i> Cancelled
-                                        </button>
-                                    <% } %>
-                                    
-                                    <% if(item.returnStatus === 'Requested') { %>
-                                        <button type="button" class="btn btn-outline btn-sm btn-disabled" disabled>
-                                            <i class="fas fa-clock"></i> Return Requested
-                                        </button>
-                                    <% } %>
-                                    
-                                    <% if(item.returnStatus === 'Approved') { %>
-                                        <button type="button" class="btn btn-outline btn-sm btn-disabled" disabled>
-                                            <i class="fas fa-check-circle"></i> Return Approved
-                                        </button>
-                                    <% } %>
-                                    
-                                    <% if(item.returnStatus === 'Rejected') { %>
-                                        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
-                                            <i class="fas fa-times-circle"></i> Return Rejected
-                                        </button>
-                                    <% } %>
-                                    
-                                    <% if(item.returnStatus === 'Completed') { %>
-                                        <button type="button" class="btn btn-primary btn-sm btn-disabled" disabled>
-                                            <i class="fas fa-check-double"></i> Return Completed
-                                        </button>
-                                    <% } %>
-                                </div>
-                            </div>
+                    <div class="timeline-step">
+                        <div
+                            class="step-icon <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">
+                            <i class="fas fa-shopping-cart"></i>
                         </div>
-                    <% }); %>
+                        <div
+                            class="step-label <%= ['Processing', 'Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Pending' ? 'active' : '') %>">
+                            Order Placed</div>
+                        <div class="step-date">
+                            <%= new Date(order.createdOn).toLocaleDateString('en-US', { month: 'short' , day: 'numeric'
+                                }) %>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div
+                            class="step-icon <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div
+                            class="step-label <%= ['Shipped', 'Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Processing' ? 'active' : '') %>">
+                            Processing</div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div
+                            class="step-icon <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div
+                            class="step-label <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : (order.status === 'Shipped' ? 'active' : '') %>">
+                            Shipped</div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div
+                            class="step-icon <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : '' %> <%= order.status === 'Cancelled' ? 'cancelled' : '' %>">
+                            <i class="fas <%= order.status === 'returned' ? 'fa-undo' : 'fa-check-double' %>"></i>
+                        </div>
+                        <div
+                            class="step-label <%= ['Delivered', 'returnRequested', 'returned', 'reutrnRejected'].includes(order.status) ? 'completed' : '' %> <%= order.status === 'returned' ? 'returned' : '' %> <%= order.status === 'Cancelled' ? 'cancelled' : '' %>">
+                            <%= order.status==='returned' ? 'Returned' : (order.status==='Cancelled' ? 'Cancelled'
+                                : 'Delivered' ) %>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Order Summary & Details -->
-            <div class="order-sidebar">
-                <!-- Order Summary -->
-                <div class="order-summary">
-                    <h3 class="summary-title">
-                        <i class="fas fa-calculator"></i> Order Summary
-                    </h3>
-                    
-                    <div id="subtotal" class="summary-row">
-                        <span>Subtotal</span>
-                        <span id="subTotalValue">₹<%= order.totalPrice.toFixed(2) %></span>
-                    </div>
-                    
-                    <% if (order.discount > 0) { %>
-                        <div class="summary-row discount-row">
-                            <span>Discount</span>
-                            <span>-₹<%= order.discount.toFixed(2) %></span>
-                        </div>
-                    <% } %>
-                    
-                    <% if (order.couponApplied?.applied) { %>
-                        <div class="summary-row coupon-row">
-                            <span><i class="fas fa-ticket-alt"></i> Coupon Applied</span>
-                            <span class="coupon-applied">✓</span>
-                        </div>
-                    <% } %>
-                    
-                    <div class="summary-row">
-                        <span>Shipping</span>
-                        <span>Free</span>
-                    </div>
-                    
-                    <div id="finalAmount" class="summary-row total-row">
-                        <span>Total Amount</span>
-                        <span id="finalAmountValue">₹<%= order.finalAmount.toFixed(2) %></span>
-                    </div>
-                    
-                    <!-- Payment Details in Summary -->
-                    <div class="payment-summary">
-                        <div class="payment-summary-row">
-                            <span class="payment-label">Payment Method:</span>
-                            <span class="payment-value">
-                                <% if (order.paymentMethod === 'COD') { %>
-                                    <i class="fas fa-money-bill-wave payment-method-icon"></i> Cash on Delivery
-                                <% } else if (order.paymentMethod === 'RPAY') { %>
-                                    <i class="fas fa-credit-card payment-method-icon"></i> Online Payment
-                                <% } else if (order.paymentMethod === 'Wallet') { %>
-                                    <i class="fas fa-wallet payment-method-icon"></i> Wallet
-                                <% } %>
-                            </span>
-                        </div>
-                        
-                        <% if (order.paymentStatus) { %>
-                            <div class="payment-summary-row">
-                                <span class="payment-label">Payment Status:</span>
-                                <span class="payment-value payment-<%= order.paymentStatus.toLowerCase() %>">
-                                    <%= order.paymentStatus %>
-                                </span>
-                            </div>
-                        <% } %>
-                        
-                        <% if (order.invoiceDate) { %>
-                            <div class="payment-summary-row">
-                                <span class="payment-label">Invoice Date:</span>
-                                <span class="payment-value">
-                                    <%= new Date(order.invoiceDate).toLocaleDateString('en-US', { 
-                                        year: 'numeric', 
-                                        month: 'short', 
-                                        day: 'numeric' 
-                                    }) %>
-                                </span>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-
-                <!-- Delivery Address -->
-                <div class="delivery-address">
+            <div class="order-container">
+                <!-- Order Items -->
+                <div class="order-items-section">
                     <h3 class="section-title">
-                        <i class="fas fa-map-marker-alt"></i> Delivery Address
+                        <i class="fas fa-shopping-bag"></i> Order Items
+                        <span class="item-count">(<%= order.orderedItems.length %> items)</span>
                     </h3>
-                    
-                    <div class="address-info">
-                        <div class="address-type">
-                            <i class="fas fa-home"></i>
-                            <%= order.address.addressType %>
-                        </div>
-                        
-                        <div class="address-details">
-                            <div class="recipient-name"><%= order.address.name %></div>
-                            <div class="address-line"><%= order.address.street %></div>
-                            <div class="address-line">
-                                <%= order.address.city %>, <%= order.address.state %>
-                            </div>
-                            <div class="address-line">
-                                <%= order.address.country %> - <%= order.address.pincode %>
-                            </div>
-                            <div class="contact-info">
-                                <div class="phone">
-                                    <i class="fas fa-phone"></i>
-                                    <%= order.address.phone %>
+
+                    <div class="order-items">
+                        <% order.orderedItems.forEach((item, index)=> { %>
+                            <div class="order-item">
+                                <!-- Item Status Indicator (Floating) -->
+                                <div class="item-status-indicator">
+                                    <span id="itemStaus<%=index%>"
+                                        class="status-indicator status-<%= item.status.toLowerCase().replace(' ', '-') %>">
+                                        <%= item.status %>
+                                    </span>
+                                    <% if (item.isReturned==='returnRequested' ) { %>
+                                        <span class="return-status return-requested"><i class="fas fa-clock"></i> Return
+                                            Pending</span>
+                                        <% } else if (item.isReturned==='returned' ) { %>
+                                            <span class="return-status return-returned"><i
+                                                    class="fas fa-check-circle"></i> Returned</span>
+                                            <% } else if (item.isReturned==='reutrnRejected' ) { %>
+                                                <span class="return-status return-rejected"><i
+                                                        class="fas fa-times-circle"></i> Return Rejected</span>
+                                                <% } %>
                                 </div>
-                                <% if (order.address.altPhone) { %>
-                                    <div class="alt-phone">
-                                        <i class="fas fa-phone-alt"></i>
-                                        <%= order.address.altPhone %>
+
+                                <div class="item-image">
+                                    <% if(item.product.productImage && item.product.productImage[0]) { %>
+                                        <img src="<%= item.product.productImage[0] %>"
+                                            alt="<%= item.product.productName %>">
+                                        <% } else { %>
+                                            <div class="product-image-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                            <% } %>
+                                </div>
+
+                                <div class="item-details">
+                                    <h4 class="item-name">
+                                        <%= item.product.productName %>
+                                    </h4>
+                                    <div class="item-variant">
+                                        <span class="variant-tag">Size: <%= item.size %></span>
                                     </div>
-                                <% } %>
+                                    <div class="item-meta">
+                                        <span class="item-price">₹<%= item.price.toLocaleString('en-IN') %></span>
+                                        <span class="item-quantity">Qty: <%= item.quantity %></span>
+                                        <span class="item-total">Total: ₹<%= (item.price *
+                                                item.quantity).toLocaleString('en-IN') %></span>
+                                    </div>
+
+                                    <div class="item-actions">
+                                        <% if (order.status !== 'Failed' && (item.status==='Pending' || item.status==='Processing' ||
+                                            item.status==='Shipped')) { %>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                id="cancelItem<%= index %>"
+                                                onclick="cancelItem('<%= order._id %>', '<%= item._id %>','<%= index %>')">
+                                                <i class="fas fa-times"></i> Cancel Item
+                                            </button>
+                                            <% } else if (item.status==='cancelled' ) { %>
+                                                <button type="button" class="btn btn-danger btn-sm btn-disabled"
+                                                    disabled>
+                                                    <i class="fas fa-ban"></i> Cancelled
+                                                </button>
+                                                <% } %>
+
+                                                    <% if (order.status !== 'Failed' && item.status==='Delivered') { %>
+                                                        <!-- return button for delivered item -->
+                                                        <button type="button" class="btn btn-warning btn-sm"
+                                                            onclick="returnItem('<%= item._id %>','<%= order._id %>')">
+                                                            <i class="fas fa-undo"></i> Return Item
+                                                        </button>
+                                                        <% } %>
+
+                                                            <a href="/productDetails?productId=<%= item.product._id %>"
+                                                                class="btn btn-outline btn-sm">
+                                                                <i class="fas fa-eye"></i> View Product
+                                                            </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+
+                <!-- Order Sidebar -->
+                <div class="order-sidebar">
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3 class="summary-title">
+                            <i class="fas fa-file-invoice-dollar"></i> Order Summary
+                        </h3>
+
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subTotalValue">₹<%= order.totalPrice.toFixed(2) %></span>
+                        </div>
+
+                        <% if (order.discount> 0) { %>
+                            <div class="summary-row discount-row">
+                                <span>Discount</span>
+                                <span>-₹<%= order.discount.toFixed(2) %></span>
+                            </div>
+                            <% } %>
+
+                                <% if (order.couponApplied) { %>
+                                    <div class="summary-row coupon-row">
+                                        <span>Coupon Discount</span>
+                                        <span class="coupon-applied">
+                                            -₹<%= order.couponApplied.amount ? order.couponApplied.amount.toFixed(2)
+                                                : "0.00" %>
+                                        </span>
+                                    </div>
+                                    <% } %>
+
+                                        <div class="summary-row">
+                                            <span>Shipping</span>
+                                            <span>Free</span>
+                                        </div>
+
+                                        <div id="finalAmount" class="summary-row total-row">
+                                            <span>Total Amount</span>
+                                            <span id="finalAmountValue">₹<%= order.finalAmount.toFixed(2) %></span>
+                                        </div>
+
+                                        <!-- Payment Details in Summary -->
+                                        <div class="payment-summary">
+                                            <div class="payment-summary-row">
+                                                <span class="payment-label">Payment Method:</span>
+                                                <span class="payment-value">
+                                                    <% if (order.paymentMethod==='COD' ) { %>
+                                                        <i class="fas fa-money-bill-wave payment-method-icon"></i> Cash
+                                                        on Delivery
+                                                        <% } else if (order.paymentMethod==='RPAY' ) { %>
+                                                            <i class="fas fa-credit-card payment-method-icon"></i>
+                                                            Online Payment
+                                                            <% } else if (order.paymentMethod==='Wallet' ) { %>
+                                                                <i class="fas fa-wallet payment-method-icon"></i> Wallet
+                                                                <% } %>
+                                                </span>
+                                            </div>
+
+                                            <% if (order.paymentStatus) { %>
+                                                <div class="payment-summary-row">
+                                                    <span class="payment-label">Payment Status:</span>
+                                                    <span
+                                                        class="payment-value payment-<%= order.paymentStatus.toLowerCase() %>">
+                                                        <%= order.paymentStatus %>
+                                                    </span>
+                                                </div>
+                                                <% if (order.paymentStatus === 'Failed' && order.paymentMethod === 'RPAY') { %>
+                                                    <div class="payment-summary-row mt-3">
+                                                        <a href="/paymentFaildRetry?orderId=<%= order.orderId %>" class="btn btn-warning" style="width: 100%;"><i class="fas fa-redo-alt"></i> Retry Payment</a>
+                                                    </div>
+                                                <% } %>
+                                                <% } %>
+
+                                                    <% if (order.invoiceDate) { %>
+                                                        <div class="payment-summary-row">
+                                                            <span class="payment-label">Invoice Date:</span>
+                                                            <span class="payment-value">
+                                                                <%= new
+                                                                    Date(order.invoiceDate).toLocaleDateString('en-US',
+                                                                    { year: 'numeric' , month: 'short' , day: 'numeric'
+                                                                    }) %>
+                                                            </span>
+                                                        </div>
+                                                        <% } %>
+                                        </div>
+                    </div>
+
+                    <!-- Delivery Address -->
+                    <div class="delivery-address">
+                        <h3 class="section-title">
+                            <i class="fas fa-map-marker-alt"></i> Delivery Address
+                        </h3>
+
+                        <div class="address-info">
+                            <div class="address-type">
+                                <i class="fas fa-home"></i>
+                                <%= order.address.addressType %>
+                            </div>
+
+                            <div class="address-details">
+                                <div class="recipient-name">
+                                    <%= order.address.name %>
+                                </div>
+                                <div class="address-line">
+                                    <%= order.address.street %>
+                                </div>
+                                <div class="address-line">
+                                    <%= order.address.city %>, <%= order.address.state %>
+                                </div>
+                                <div class="address-line">
+                                    <%= order.address.country %> - <%= order.address.pincode %>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="phone">
+                                        <i class="fas fa-phone"></i>
+                                        <%= order.address.phone %>
+                                    </div>
+                                    <% if (order.address.altPhone) { %>
+                                        <div class="alt-phone">
+                                            <i class="fas fa-phone-alt"></i>
+                                            <%= order.address.altPhone %>
+                                        </div>
+                                        <% } %>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Action Buttons -->
+            <div class="order-actions">
+                <a href="/userProfile" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i>
+                    <span class="btn-text">Back</span>
+                </a>
+
+                <!-- Invoice button always visible -->
+
+                <% if (order.status !=='cancelled'&& order.status!=='Delivered'&&order.status!=='returnRequested'
+                    &&order.status!=='returned'&&order.status!=='reutrnRejected' && order.status !== 'Failed') { %>
+                    <a class="btn btn-invoice btn-lg btn-danger" href="#"
+                        onclick="confirmCancelOrder('<%= order.orderId %>')">
+                        <span class="btn-text">Cancel Order</span>
+                    </a>
+                    <% }else if(order.status==='Delivered'){ %>
+                    <a class="btn btn-invoice btn-lg btn-warning" href="#"
+                        onclick="returnOrder('<%= order.orderId %>')">
+                        <span class="btn-text">Return Order</span>
+                    </a>
+                        <% } %>
+            </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="order-actions">
-            <a href="/shop" class="btn btn-secondary btn-lg">
-                <i class="fas fa-arrow-left"></i> 
-                <span class="btn-text">Back to Orders</span>
-            </a>
-            
-            <!-- Invoice button always visible -->
-            <a class="btn btn-invoice btn-lg" href="/generateInvoice?orderId=<%= order.orderId %>">
-                <i class="fas fa-download"></i> 
-                <span class="btn-text">Download Invoice</span>
-            </a>
-        </div>
-    </div>
-
-      <script>
-        // Cancel Individual Item Function
-        const subtotal = document.getElementById('subTotalValue')
-        const finalAmount = document.getElementById('finalAmountValue')
-
-        async function cancelItem(orderId, itemId,index) {
-            const cancelBtn = document.getElementById(`cancelItem${index}`)
-            const stausBtn = document.getElementById(`itemStaus${index}`)
-            
-            // Add loading state to button
-            cancelBtn.classList.add('btn-loading');
-            
-            const { isConfirmed } = await Swal.fire({
-                title: 'Cancel Item?',
-                text: "Are you sure you want to cancel this item? This action cannot be undone.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, cancel it!',
-                cancelButtonText: 'Keep item'
-            });
-
-            if (isConfirmed) {
-                try {
-                    const response = await fetch('/cancelSingleItem?_method=PATCH', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                          orderId,
-                            itemId
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        subtotal.textContent=`₹${result.finalAmount.toFixed(2)}`
-                        finalAmount.textContent=`₹${result.total.toFixed(2)}`
-                        cancelBtn.outerHTML = `
-        <button type="button" class="btn btn-danger btn-sm btn-disabled" disabled>
-            <i class="fas fa-ban"></i> Cancelled
-        </button>
-    `;
-
-    stausBtn.textContent='cancelled'
-stausBtn.className='status-indicator status-cancelled'
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: result.message || 'Item cancelled successfully',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-
-                        // Check if all items are cancelled and update order status if needed
-                        checkAllItemsCancelled();
-
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: result.message || 'Failed to cancel item',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    }
-                } catch (error) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'An error occurred while cancelling the item',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
-                }
-            }
-            
-            // Remove loading state
-            cancelBtn.classList.remove('btn-loading');
-        }
-
-        // Function to check if all items are cancelled
-        function checkAllItemsCancelled() {
-            const allItems = document.querySelectorAll('.order-item');
-            let allCancelled = true;
-            
-            allItems.forEach(item => {
-                const statusIndicator = item.querySelector('.status-indicator');
-                if (statusIndicator && !statusIndicator.textContent.includes('cancelled')) {
-                    allCancelled = false;
-                }
-            });
-            
-            if (allCancelled) {
-                // Update order status to cancelled
-                const orderStatus = document.querySelector('.order-status');
-                if (orderStatus) {
-                    orderStatus.textContent = 'Cancelled';
-                    orderStatus.className = 'order-status status-cancelled';
-                }
-                
-                // Update timeline
-                updateTimelineForCancelled();
-            }
-        }
-
-        // Update timeline when order is cancelled
-        function updateTimelineForCancelled() {
-            const timelineSteps = document.querySelectorAll('.timeline-step');
-            timelineSteps.forEach(step => {
-                const stepIcon = step.querySelector('.step-icon');
-                const stepLabel = step.querySelector('.step-label');
-                
-                if (stepIcon && stepLabel) {
-                    stepIcon.className = 'step-icon cancelled';
-                    stepLabel.className = 'step-label cancelled';
-                    
-                    // Update the last step to show cancelled
-                    if (stepLabel.textContent.includes('Delivered') || 
-                        stepLabel.textContent.includes('Returned')) {
-                        stepIcon.innerHTML = '<i class="fas fa-times"></i>';
-                        stepLabel.textContent = 'Cancelled';
-                    }
-                }
-            });
-            
-            // Update progress bar
-            const timelineProgress = document.getElementById('timelineProgress');
-            if (timelineProgress) {
-                timelineProgress.style.width = '100%';
-                timelineProgress.style.backgroundColor = 'var(--error-red)';
-            }
-        }
-
-        // Return Individual Item Function
-        async function returnItem(itemId,orderId) {
-            try {
-                const { value: reason } = await Swal.fire({
-                    title: 'Return Item Reason',
-                    input: 'textarea',
-                    inputLabel: 'Please provide a reason for returning this item:',
-                    inputPlaceholder: 'e.g., Wrong size, Damaged product, etc.',
-                    inputAttributes: {
-                        'aria-label': 'Type your reason here'
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Submit Return',
-                    cancelButtonText: 'Cancel',
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'You need to provide a reason for the return!';
-                        }
-                    }
-                });
-
-                if (reason) {
-                    // Find and add loading state to return button
-                    const returnButtons = document.querySelectorAll(`button[onclick*="${itemId}"]`);
-                    returnButtons.forEach(btn => {
-                        if (btn.textContent.includes('Return Item')) {
-                            btn.classList.add('btn-loading');
-                        }
-                    });
-                    
-                    const response = await fetch('/returnReq?_method=PATCH', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            itemId,
-                            orderId,
-                            reason
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: result.message || 'Return request submitted successfully',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-
-                        // Reload after a short delay to show the success message
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: result.message || 'Failed to submit return request',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    }
-                    
-                    // Remove loading state
-                    returnButtons.forEach(btn => {
-                        if (btn.textContent.includes('Return Item')) {
-                            btn.classList.remove('btn-loading');
-                        }
-                    });
-                }
-            } catch (error) {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'An error occurred while processing your return request',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }
-        }
-
-        // Timeline Progress Animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const timelineProgress = document.getElementById('timelineProgress');
-            const orderStatus = '<%= order.status %>';
-            
-            let progressWidth = 0;
-            
-            if (orderStatus === 'Processing') {
-                progressWidth = 33;
-            } else if (orderStatus === 'Shipped') {
-                progressWidth = 66;
-            } else if (['Delivered', 'returnRequested', 'returned', 'reutrnRejected', 'cancelled'].includes(orderStatus)) {
-                progressWidth = 100;
-            } else {
-                progressWidth = 0;
-            }
-            
-            setTimeout(() => {
-                timelineProgress.style.width = `${progressWidth}%`;
-            }, 300);
-        });
-
-    </script>
+        <script>
+            window.ORDER_CONFIG = {
+                status: '<%= order.status %>'
+            };
+        </script>
+        <script src="/js/user/orderDetailPages.js"></script>
 </body>
+
 </html>

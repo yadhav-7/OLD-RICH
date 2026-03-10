@@ -1,0 +1,18 @@
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: checkout----------------------
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Cart item IDs from client: 6977af5f991ea192de9cc9e5
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Server is running on http://localhost:4040
+function createFormatWrap(opts) {
+    return new Format(opts);
+  } | info: Database is connected

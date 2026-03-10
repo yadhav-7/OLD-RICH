@@ -1,84 +1,59 @@
-const User = require('../../models/userSchema')
+import logger from '../../utils/logger.js'
+import customerService from '../../services/admin/customerService.js'
 
 const costomerInfo = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
+  try {
+    const result = await customerService.costomerInfo(req.query)
 
-        const limit = 5
-        
-        const skip = (page - 1) * limit;
+    const isFetch = req.headers.accept?.includes('application/json')
 
-        let search = req.query.search||''
-
-        const query = {
-            isAdmin: false,
-            $or: [
-                { username: { $regex: ".*" + search + ".*", $options: 'i' } },
-                { email: { $regex: ".*" + search + ".*", $options: 'i' } }
-            ]
-        };
-
-        const count = await User.countDocuments(query);
-        const totalPages = Math.ceil(count / limit);
-
-        
-
-        const userData = await User.find(query)
-            .sort({createdOn:-1})
-            .limit(limit)
-            .skip(skip)
-            .exec()
-
-            const isFetch = req.headers.accept?.includes('application/json')
-
-        if (isFetch) {
-            
-            return res.json({
-                data: userData,
-                currentPage: page,
-                totalPages: totalPages
-            });
-        }
-            
-        res.render('customers', {
-            data: userData,
-            currentPage: page,
-            totalUsers: count, // Use count instead of totalUsers
-            totalPages: totalPages
-        });
-    } catch (error) {
-        console.error('error from custumeInfo',error)
-        res.redirect('/pageNotFound')
+    if (isFetch) {
+      return res.json({
+        ...result
+      })
     }
+
+   return res.render('customers', {
+      ...result
+    })
+  } catch (error) {
+    logger.error(`error from custumeInfo ${error}`)
+    const isFetch = req.headers.accept?.includes('application/json')
+
+    if (isFetch) {
+      return res.status(500).json({
+        message:'Internal server error',
+        error
+      })
+    }
+    return res.redirect('/admin/pageError')
+  }
 }
 
 const blockUser = async (req, res) => {
-    try {
-        const id = req.body.userId
-        await User.updateOne({ _id: id }, { $set: { isBlock: true } })
-        console.log('req.session.admin',req.session.admin)
-        return res.status(200).json({message:true})
-    } catch (error) {
-        console.log('error from block user',error)
-        return res.redirect('/admin/pageError')
-    }
+  try {
+    const result = await customerService.blockUser(req.body.userId)
+    
+   if(result===true) return res.status(200).json({ message: true })
+
+  } catch (error) {
+    logger.error(`error from block user ${error}`)
+    return res.redirect('/admin/pageError')
+  }
 }
 
 const unBlockUser = async (req, res) => {
-    try {
-        
-        const id = req.body.userId
-        await User.updateOne({ _id: id }, { $set: { isBlock: false } })
-        return res.json({message:true})
-    } catch (error) {
-        console.log('error from unblock user',error)
-        res.status(500).json({message:false})
-    }
+  try {
+    const result = await customerService.unBlockUser(req.body.userId)
+   if(result===true) return res.json({ message: true })
+  } catch (error) {
+    logger.error(`error from unblock user ${error}`)
+    res.status(500).json({ message: false })
+  }
 }
 
-
-module.exports = {
-    costomerInfo,
-    blockUser,
-    unBlockUser
+export default {
+  costomerInfo,
+  blockUser,
+  unBlockUser,
 }

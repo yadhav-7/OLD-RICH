@@ -1,0 +1,350 @@
+    :root {
+        --primary-green: #4CAF50;
+        --light-green: #E8F5E9;
+        --dark-green: #388E3C;
+        --white: #FFFFFF;
+        --light-gray: #F5F5F5;
+        --dark-gray: #333333;
+        --medium-gray: #757575;
+        --error-red: #E53935;
+        --gold: #D4AF37;
+        --dark-blue: #285b3b;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    #brandImageLogo img {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+
+    body {
+        background-color: var(--light-gray);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 15px;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" stroke="%23D4AF37" stroke-width="0.5" x="0" y="0" width="100" height="100"/></svg>');
+    }
+
+    .register-wrapper {
+        display: flex;
+        width: 100%;
+        max-width: 900px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-section {
+        flex: 1;
+        background: linear-gradient(135deg, var(--dark-blue) 0%, #2C3E50 100%);
+        color: white;
+        padding: 30px 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .brand-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23D4AF37" opacity="0.1" d="M20,20 L80,20 L80,80 L20,80 Z M30,30 L70,30 L70,70 L30,70 Z"/></svg>');
+        background-size: 150px;
+        opacity: 0.1;
+    }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .brand-logo i {
+        font-size: 28px;
+        color: var(--gold);
+        margin-right: 12px;
+    }
+
+    .brand-logo h1 {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .brand-tagline {
+        font-size: 14px;
+        margin-bottom: 20px;
+        color: #E0E0E0;
+        line-height: 1.5;
+    }
+
+    .brand-features {
+        list-style: none;
+        margin-top: 15px;
+    }
+
+    .brand-features li {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .brand-features i {
+        color: var(--gold);
+        margin-right: 10px;
+        font-size: 16px;
+    }
+
+    .register-container {
+        flex: 1;
+        background-color: var(--white);
+        padding: 30px 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-container h2 {
+        color: var(--dark-green);
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .register-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 5px;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--dark-gray);
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .register-form input {
+        width: 100%;
+        padding: 12px 45px 12px 16px;
+        border: 1px solid #E0E0E0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .register-form input.error {
+        border-color: var(--error-red);
+    }
+
+    .register-form input:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+
+    .password-container {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 1px;
+        top: 30%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--medium-gray);
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 10;
+    }
+
+    .register-form button {
+        background-color: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .register-form button:hover {
+        background-color: var(--dark-green);
+    }
+
+    .error-message {
+        color: var(--error-red);
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+        text-align: left;
+    }
+
+    .google-register {
+        margin-bottom: 20px;
+    }
+
+    .google-register a {
+        display: inline-block;
+        background-color: var(--light-green);
+        color: var(--dark-green);
+        padding: 10px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid #C8E6C9;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .google-register a:hover {
+        background-color: #DCF2DC;
+    }
+
+    .text-center {
+        color: var(--medium-gray);
+        font-size: 13px;
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .text-center a {
+        color: var(--primary-green);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .text-center a:hover {
+        color: var(--dark-green);
+        text-decoration: underline;
+    }
+
+    .register-message {
+        color: var(--error-red);
+        font-size: 13px;
+        margin-top: 10px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .loader {
+        border: 2px solid white;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .strength-meter {
+        height: 4px;
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 3px;
+        margin-top: 5px;
+        overflow: hidden;
+    }
+
+    .strength-meter-fill {
+        height: 100%;
+        width: 0;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .password-requirements {
+        font-size: 11px;
+        color: var(--medium-gray);
+        margin-top: 5px;
+    }
+
+    .password-requirements ul {
+        padding-left: 18px;
+        margin-bottom: 0;
+    }
+
+    .password-requirements li {
+        margin-bottom: 2px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .register-wrapper {
+            flex-direction: column;
+            max-width: 450px;
+        }
+
+        .brand-section {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            justify-content: center;
+        }
+
+        .register-container {
+            padding: 25px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 10px;
+        }
+
+        .brand-section,
+        .register-container {
+            padding: 20px 15px;
+        }
+
+        .register-container h2 {
+            font-size: 22px;
+        }
+    }

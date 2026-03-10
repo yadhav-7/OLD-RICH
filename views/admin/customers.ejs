@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,363 +10,143 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="/admin/customers.css">
-     <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
-    
+    <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
+
 </head>
+
 <body>
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-    <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 
-    <div class="main-content">
-        <h1 class="page-title">Customer Management</h1>
+            <div class="main-content">
+                <h1 class="page-title">Customer Management</h1>
 
-        <div class="search-container">
-            <div class="search-wrapper">
-                <input type="text" id="search-input" class="form-control" placeholder="Search customers...">
-                <button id="clear-button" aria-label="Clear search">×</button>
-            </div>
-        </div>
-        
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone No</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-table">
-                        <% for(let i=0 ; i<data.length ; i ++){ %>
-                            <tr>
-                                <td>
-                                    <%= data[i].username %>
-                                </td>
-                                <td>
-                                    <%= data[i].email %>
-                                </td>
-                                <td>
-                                    <%= data[i].phone %>
-                                </td>
-                                <td>
-                                    <% if (data[i].isBlock) { %>
-                                        <button class="unblock-btn" id="btn-<%= data[i]._id %>"
-                                            onclick="unblockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
-                                            Unblock
-                                        </button>
-                                        <% } else { %>
-                                            <button class="block-btn" id="btn-<%= data[i]._id %>"
-                                                onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
-                                                Block
-                                            </button>
-                                            <% } %>
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Card View for mobile screens -->
-        <div class="card-container" id="card-container">
-            <% for(let i=0 ; i<data.length ; i ++){ %>
-                <div class="customer-card">
-                    <div class="customer-info">
-                        <strong>Name:</strong> <%= data[i].username %>
-                    </div>
-                    <div class="customer-info">
-                        <strong>Email:</strong> <%= data[i].email %>
-                    </div>
-                    <div class="customer-info">
-                        <strong>Phone:</strong> <%= data[i].phone %>
-                    </div>
-                    <div class="customer-info">
-                        <strong>Action:</strong>
-                        <% if (data[i].isBlock) { %>
-                            <button class="unblock-btn" id="card-btn-<%= data[i]._id %>"
-                                onclick="unblockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
-                                Unblock
-                            </button>
-                            <% } else { %>
-                                <button class="block-btn" id="card-btn-<%= data[i]._id %>"
-                                    onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
-                                    Block
-                                </button>
-                                <% } %>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search customers...">
+                        <button id="clear-button" aria-label="Clear search">×</button>
                     </div>
                 </div>
-            <% } %>
-        </div>
 
-        <div class="pagination-container">
-            <nav>
-                <ul class="pagination" id="pagination">
-                    <% if(currentPage > 1) { %>
-                        <li class="page-item">
-                            <a class="page-link" href="/admin/users?page=<%= currentPage-1 %>" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    <% } %>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-table">
+                                <% for(let i=0 ; i<data.length ; i ++){ %>
+                                    <tr>
+                                        <td>
+                                            <%= data[i].username %>
+                                        </td>
+                                        <td>
+                                            <%= data[i].email %>
+                                        </td>
+                                        <td>
+                                            <%= data[i].phone %>
+                                        </td>
+                                        <td>
+                                            <% if (data[i].isBlock) { %>
+                                                <button class="unblock-btn" id="btn-<%= data[i]._id %>"
+                                                    onclick="unblockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                                    Unblock
+                                                </button>
+                                                <% } else { %>
+                                                    <button class="block-btn" id="btn-<%= data[i]._id %>"
+                                                        onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                                        Block
+                                                    </button>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                    <li class="page-item active">
-                        <a class="page-link" href="#">
-                            <%= currentPage %>
-                        </a>
-                    </li>
+                <!-- Card View for mobile screens -->
+                <div class="card-container" id="card-container">
+                    <% for(let i=0 ; i<data.length ; i ++){ %>
+                        <div class="customer-card">
+                            <div class="customer-info">
+                                <strong>Name:</strong>
+                                <%= data[i].username %>
+                            </div>
+                            <div class="customer-info">
+                                <strong>Email:</strong>
+                                <%= data[i].email %>
+                            </div>
+                            <div class="customer-info">
+                                <strong>Phone:</strong>
+                                <%= data[i].phone %>
+                            </div>
+                            <div class="customer-info">
+                                <strong>Action:</strong>
+                                <% if (data[i].isBlock) { %>
+                                    <button class="unblock-btn" id="card-btn-<%= data[i]._id %>"
+                                        onclick="unblockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                        Unblock
+                                    </button>
+                                    <% } else { %>
+                                        <button class="block-btn" id="card-btn-<%= data[i]._id %>"
+                                            onclick="blockPermission('<%= data[i]._id %>', '<%= data[i].username %>')">
+                                            Block
+                                        </button>
+                                        <% } %>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
 
-                    <% if(currentPage < totalPages) { %>
-                        <li class="page-item">
-                            <a class="page-link" href="/admin/users?page=<%= currentPage+1 %>" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    <% } %>
-                </ul>
-            </nav>
-        </div>
-    </div>
+                <div class="pagination-container">
+                    <nav>
+                        <ul class="pagination" id="pagination">
+                            <% if(currentPage> 1) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/admin/users?page=<%= currentPage-1 %>"
+                                        aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <% } %>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">
+                                            <%= currentPage %>
+                                        </a>
+                                    </li>
 
-    <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('collapsed');
-        }
+                                    <% if(currentPage < totalPages) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/admin/users?page=<%= currentPage+1 %>"
+                                                aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
 
-        async function blockPermission(userId, userName) {
-            try {
-                const { isConfirmed } = await Swal.fire({
-                    title: `Block ${userName}?`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No',
-                });
+            <!-- Bootstrap JS Bundle with Popper -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- SweetAlert2 -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                if (isConfirmed) {
-                    const res = await fetch('/admin/blockCustomer', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId })
-                    });
-
-                    if (res.ok) {
-                        const btn = document.getElementById(`btn-${userId}`);
-                        if (btn) {
-                            btn.textContent = 'Unblock';
-                            btn.className = 'unblock-btn';
-                            btn.setAttribute('onclick', `unblockPermission('${userId}', '${userName}')`);
-                        }
-                        
-                        // Update card button
-                        const cardBtn = document.getElementById(`card-btn-${userId}`)
-                        if (cardBtn) {
-                            cardBtn.textContent = 'Unblock'
-                            cardBtn.className = 'unblock-btn'
-                            cardBtn.setAttribute('onclick', `unblockPermission('${userId}', '${userName}')`)
-                        }
-                        
-                        Swal.fire('Blocked!', '', 'success')
-                    }
+            <script>
+                function toggleSidebar() {
+                    document.body.classList.toggle('collapsed');
                 }
-            } catch (error) {
-                console.error('Error blocking user:', error)
-                 Swal.fire('something went wrong!', '', 'error')
-            }
-        }
-
-        async function unblockPermission(userId, userName) {
-            const { isConfirmed } = await Swal.fire({
-                title: `Unblock ${userName}?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-            });
-
-            if (isConfirmed) {
-                const res = await fetch('/admin/unBlockCustomer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId })
-                });
-
-                if (res.ok) {
-                    // Update table button
-                    const btn = document.getElementById(`btn-${userId}`);
-                    if (btn) {
-                        btn.textContent = 'Block';
-                        btn.className = 'block-btn';
-                        btn.setAttribute('onclick', `blockPermission('${userId}', '${userName}')`);
-                    }
-                    
-                    // Update card button
-                    const cardBtn = document.getElementById(`card-btn-${userId}`);
-                    if (cardBtn) {
-                        cardBtn.textContent = 'Block';
-                        cardBtn.className = 'block-btn';
-                        cardBtn.setAttribute('onclick', `blockPermission('${userId}', '${userName}')`);
-                    }
-                    
-                    Swal.fire('Unblocked!', '', 'success');
-                }
-            }
-        }
-
-        const searchInput = document.getElementById('search-input');
-        const clearBtn = document.getElementById('clear-button');
-        const table = document.getElementById('user-table');
-        const cardContainer = document.getElementById('card-container');
-        const pagination = document.getElementById('pagination');
-
-        // Function to fetch & render users
-        const fetchAndRenderUsers = async (search) => {
-            try {
-                const res = await fetch(`/admin/users?search=${encodeURIComponent(search)}`, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                const result = await res.json();
-                const users = result.data;
-                const currentPage = result.currentPage;
-                const totalPages = result.totalPages;
-
-                table.innerHTML = '';
-                cardContainer.innerHTML = '';
-                pagination.innerHTML = '';
-                
-                if (users.length === 0) {
-                    const emptyHTML = `
-                        <tr>
-                            <td colspan="4" class="empty-state">
-                                <i class="fas fa-users"></i>
-                                <p>No customers found</p>
-                            </td>
-                        </tr>`;
-                    table.innerHTML = emptyHTML;
-                    cardContainer.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No customers found</p></div>';
-                } else {
-                    // Render table view
-                    users.forEach(user => {
-                        table.innerHTML += `
-                            <tr>
-                                <td>${user.username}</td>
-                                <td>${user.email}</td>
-                                <td>${user.phone}</td>
-                                <td>
-                                    ${user.isBlock === false
-                                        ? `<button class="block-btn" id="btn-${user._id}" onclick="blockPermission('${user._id}', '${user.username}')">Block</button>`
-                                        : `<button class="unblock-btn" id="btn-${user._id}" onclick="unblockPermission('${user._id}', '${user.username}')">Unblock</button>`
-                                    }
-                                </td>
-                            </tr>`;
-                    });
-                    
-                    // Render card view for mobile
-                    users.forEach(user => {
-                        cardContainer.innerHTML += `
-                            <div class="customer-card">
-                                <div class="customer-info">
-                                    <strong>Name:</strong> ${user.username}
-                                </div>
-                                <div class="customer-info">
-                                    <strong>Email:</strong> ${user.email}
-                                </div>
-                                <div class="customer-info">
-                                    <strong>Phone:</strong> ${user.phone}
-                                </div>
-                                <div class="customer-info">
-                                    <strong>Action:</strong>
-                                    ${user.isBlock === false
-                                        ? `<button class="block-btn" id="card-btn-${user._id}" onclick="blockPermission('${user._id}', '${user.username}')">Block</button>`
-                                        : `<button class="unblock-btn" id="card-btn-${user._id}" onclick="unblockPermission('${user._id}', '${user.username}')">Unblock</button>`
-                                    }
-                                </div>
-                            </div>`;
-                    });
-                }
-
-                // Render pagination
-                let paginationHTML = '';
-                
-                if (currentPage > 1) {
-                    paginationHTML += `
-                        <li class="page-item">
-                            <a class="page-link" href="/admin/users?page=${currentPage - 1}${search ? '&search=' + encodeURIComponent(search) : ''}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>`;
-                }
-
-                paginationHTML += `
-                    <li class="page-item active">
-                        <a class="page-link" href="#">${currentPage}</a>
-                    </li>`;
-
-                if (currentPage < totalPages) {
-                    paginationHTML += `
-                        <li class="page-item">
-                            <a class="page-link" href="/admin/users?page=${currentPage + 1}${search ? '&search=' + encodeURIComponent(search) : ''}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>`;
-                }
-
-                pagination.innerHTML = paginationHTML;
-
-            } catch (err) {
-                console.error('Error fetching users:', err);
-                const errorHTML = `
-                    <tr>
-                        <td colspan="4" class="empty-state">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Error loading customers. Please try again.</p>
-                        </td>
-                    </tr>`;
-                table.innerHTML = errorHTML;
-                cardContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading customers. Please try again.</p></div>';
-            }
-        };
-
-        // On keyup search with debounce
-        let searchTimeout;
-        searchInput.addEventListener('keyup', () => {
-            clearTimeout(searchTimeout);
-            const searchValue = searchInput.value || '';
-            
-            searchTimeout = setTimeout(() => {
-                fetchAndRenderUsers(searchValue);
-            }, 300);
-        });
-
-        // On clear button click
-        clearBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            fetchAndRenderUsers('');
-        });
-        
-        // Handle window resize to toggle between table and card view
-        function checkViewMode() {
-            if (window.innerWidth <= 480) {
-                document.querySelector('.table-container').style.display = 'none';
-                document.querySelector('.card-container').style.display = 'block';
-            } else {
-                document.querySelector('.table-container').style.display = 'block';
-                document.querySelector('.card-container').style.display = 'none';
-            }
-        }
-        
-        // Initialize on page load and resize
-        window.addEventListener('load', checkViewMode);
-        window.addEventListener('resize', checkViewMode);
-    </script>
+            </script>
+            <script src="/js/admin/customers.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,341 @@
+:root {
+    --primary-color: #2e7d32;
+    --primary-light: #4caf50;
+    --primary-dark: #1b5e20;
+    --secondary-color: #ffffff;
+    --accent-color: #81c784;
+    --text-color: #333333;
+    --light-gray: #f5f5f5;
+    --success-color: #388e3c;
+    --warning-color: #f57c00;
+    --danger-color: #d32f2f;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius: 12px;
+}
+
+body {
+    background-color: var(--secondary-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.modal-content {
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0;
+    font-family: sans-serif;
+}
+
+.page-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    background-color: white;
+    color: #2e7d32;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-btn:hover {
+    background-color: #e8f5e9;
+}
+
+.page-btn.active {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+/* Round crop frame overlay */
+.img-container .cropper-view-box,
+.img-container .cropper-face {
+    border-radius: 50% !important;
+}
+
+/* Optional: add dark overlay for circular focus */
+.img-container .cropper-bg {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Override Bootstrap's modal-lg to make it medium size */
+#cropImageModal .modal-dialog.modal-lg {
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Optional: Adjust image container height */
+#cropImageModal .img-container {
+    min-height: 300px;
+    max-height: 400px;
+}
+
+/* Optional: If you want smoother overflow */
+#cropImageModal .img-container img {
+    object-fit: contain;
+}
+
+.border-success:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+.is-valid {
+    border-color: #28a745 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* wallet */
+.wallet-card {
+    background: #f5f6f7;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: #000;
+    width: 546px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.wallet-icon {
+    width: 40px;
+    height: 40px;
+    background: #f3f3ed;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #444;
+}
+
+.wallet-content {
+    flex: 1;
+}
+
+.wallet-title {
+    font-weight: 700;
+    margin: 0;
+    color: #222;
+}
+
+.wallet-text {
+    margin: 2px 0 8px;
+    color: #555;
+    font-size: 14px;
+}
+
+.wallet-link {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, var(--secondary-color) 60%, var(--light-gray));
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.profile-img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 6px solid var(--secondary-color);
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.profile-nav .nav-link {
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    margin-right: 0.75rem;
+    transition: all 0.3s ease;
+    background: var(--secondary-color);
+    border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.profile-nav .nav-link.active,
+.profile-nav .nav-link:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border-color: var(--primary-color);
+}
+
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+    background: var(--secondary-color);
+    border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.card-header {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.order-item {
+    border-left: 4px solid var(--primary-color);
+    background: rgba(76, 175, 80, 0.05);
+    border-radius: 8px;
+}
+
+.badge-success {
+    background-color: rgba(56, 142, 60, 0.1);
+    color: var(--success-color);
+}
+
+.badge-delivered {
+    background-color: rgba(56, 142, 60, 0.1);
+    color: var(--success-color);
+}
+
+.badge-shipped {
+    background-color: rgba(245, 124, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.verified-badge {
+    color: var(--success-color);
+}
+
+.address-card.default {
+    border: 2px solid var(--primary-color);
+    background: rgba(76, 175, 80, 0.03);
+}
+
+.empty-state {
+    background: var(--secondary-color);
+    border: 1px dashed rgba(46, 125, 50, 0.3);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-link {
+    color: var(--primary-color);
+}
+
+.alert-info {
+    background-color: rgba(129, 199, 132, 0.2);
+    border-color: rgba(129, 199, 132, 0.3);
+    color: var(--text-color);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(129, 199, 132, 0.1);
+}
+
+.dropdown-item:active {
+    background-color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.pulse-animation {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

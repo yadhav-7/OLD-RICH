@@ -1,7 +1,6 @@
-
+/* eslint-env browser */
 async function apiReq(url, method = 'GET', data = null, headers = {}) {
   try {
-
     const options = {
       method,
       headers: {
@@ -11,26 +10,22 @@ async function apiReq(url, method = 'GET', data = null, headers = {}) {
       },
     }
 
-    if (data) options.body = JSON.stringify(data);
+    if (data) options.body = JSON.stringify(data)
 
     const response = await fetch(url, options)
-
-     const result = await response.json()
-     if (response.status === 401) {
-     
+    
+    const result = await response.json()
+    if (response.status === 401) {
       window.location.href = result.redirect
-      return;
+      return
     }
 
-   
-    
     return result
-
   } catch (error) {
-    return res.status(400).json({
+    return {
       error: error.message,
-      success: false
-    })
+      success: false,
+    }
   }
 }
 

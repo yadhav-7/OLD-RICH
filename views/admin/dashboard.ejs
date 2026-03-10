@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,345 +10,124 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
-   
+
     <link rel="stylesheet" href="/admin/adminDashboard.css">
 </head>
 
 <body>
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-    <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-container container-fluid px-0">
-        <!-- Main Content -->
-        <div class="main-content">
+            <!-- Dashboard Content -->
+            <div class="dashboard-container container-fluid px-0">
+                <!-- Main Content -->
+                <div class="main-content">
 
-            <!-- Filter Section -->
-            <div class="text-center my-4">
-                <h5 class="mb-3 fw-bold">Filter Reports</h5>
+                    <!-- Filter Section -->
+                    <div class="text-center my-4">
+                        <h5 class="mb-3 fw-bold">Filter Reports</h5>
 
-                <!-- Filter Buttons -->
-                <div id="filterButtons"
-                    class="btn-group mb-3 flex-wrap justify-content-center"
-                    role="group">
-                    <button type="button" class="btn btn-outline-yellow" data-filter="daily">Daily</button>
-                    <button type="button" class="btn btn-outline-yellow" data-filter="weekly">Weekly</button>
-                    <button type="button" class="btn btn-outline-yellow" data-filter="monthly">Monthly</button>
-                    <button type="button" class="btn btn-outline-yellow" data-filter="yearly">Yearly</button>
-                    <button type="button" class="btn btn-outline-yellow" data-filter="custom">Custom</button>
-                </div>
-
-                <!-- Custom Date Inputs -->
-                <div id="customDateInputs" class="custom-inputs mt-3" style="display: none;">
-                    <div class="row g-2 justify-content-center">
-                        <div class="col-12 col-md-auto">
-                            <input type="date" id="startDate" class="form-control">
+                        <!-- Filter Buttons -->
+                        <div id="filterButtons" class="btn-group mb-3 flex-wrap justify-content-center" role="group">
+                            <button type="button" class="btn btn-outline-yellow" data-filter="daily">Daily</button>
+                            <button type="button" class="btn btn-outline-yellow" data-filter="weekly">Weekly</button>
+                            <button type="button" class="btn btn-outline-yellow" data-filter="monthly">Monthly</button>
+                            <button type="button" class="btn btn-outline-yellow" data-filter="yearly">Yearly</button>
+                            <button type="button" class="btn btn-outline-yellow" data-filter="custom">Custom</button>
                         </div>
-                        <div class="col-12 col-md-auto d-flex align-items-center justify-content-center">
-                            <span>to</span>
-                        </div>
-                        <div class="col-12 col-md-auto">
-                            <input type="date" id="endDate" class="form-control">
-                        </div>
-                        <div class="col-12 col-md-auto">
-                            <button id="applyCustomFilter" class="btn btn-yellow w-100 w-md-auto">Apply</button>
+
+                        <!-- Custom Date Inputs -->
+                        <div id="customDateInputs" class="custom-inputs mt-3" style="display: none;">
+                            <div class="row g-2 justify-content-center">
+                                <div class="col-12 col-md-auto">
+                                    <input type="date" id="startDate" class="form-control">
+                                </div>
+                                <div class="col-12 col-md-auto d-flex align-items-center justify-content-center">
+                                    <span>to</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <input type="date" id="endDate" class="form-control">
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <button id="applyCustomFilter" class="btn btn-yellow w-100 w-md-auto">Apply</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Charts Section -->
+                    <div class="additional-charts">
+                        <!-- Top Products Full Width -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-12">
+                                <div class="report">
+                                    <div class="report-header mb-3">
+                                        <h2 class="h5 m-0">Top Selling Products</h2>
+                                    </div>
+                                    <div class="chart-container">
+                                        <% if (topProducts && topProducts.length> 0) { %>
+                                            <canvas id="productsChart"></canvas>
+                                            <% } else { %>
+                                                <div class="d-flex justify-content-center align-items-center h-100">
+                                                    <p class="text-muted">No Data Available</p>
+                                                </div>
+                                                <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Category & Brands Charts Row -->
+                    <div class="row g-4 mt-2">
+                        <!-- Top Categories -->
+                        <div class="col-12 col-xl-6">
+                            <div class="report">
+                                <div class="report-header mb-3">
+                                    <h2 class="h5 m-0">Sales by Category</h2>
+                                </div>
+                                <div class="chart-container">
+                                    <% if (topCategory && topCategory.length > 0) { %>
+                                        <canvas id="categoriesChart"></canvas>
+                                    <% } else { %>
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <p class="text-muted">No Category Data Available</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Brands -->
+                        <div class="col-12 col-xl-6">
+                            <div class="report">
+                                <div class="report-header mb-3">
+                                    <h2 class="h5 m-0">Top Selling Brands</h2>
+                                </div>
+                                <div class="chart-container">
+                                    <% if (topBrands && topBrands.length > 0) { %>
+                                        <canvas id="brandsChart"></canvas>
+                                    <% } else { %>
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <p class="text-muted">No Brand Data Available</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="additional-charts">
-                <!-- Top Products -->
-                <div class="report">
-                    <div class="report-header mb-3">
-                        <h2 class="h5 m-0">Top Selling Products</h2>
-                    </div>
-                    <div class="chart-container">
-                        <% if (topProducts && topProducts.length > 0) { %>
-                            <canvas id="productsChart"></canvas>
-                        <% } else { %>
-                            <div class="d-flex justify-content-center align-items-center h-100">
-                                <p class="text-muted">No Data Available</p>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-
-                <!-- Category Chart -->
-                <div class="report">
-                    <div class="report-header mb-3">
-                        <h2 class="h5 m-0">Sales by Category</h2>
-                    </div>
-                    <div class="chart-container">
-                        <% if (topCategory && topCategory.length > 0) { %>
-                            <canvas id="categoriesChart"></canvas>
-                        <% } else { %>
-                            <div class="d-flex justify-content-center align-items-center h-100">
-                                <p class="text-muted">No Data Available</p>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize charts based on available data
-            <% if (topProducts && topProducts.length > 0) { %>
-                initializeProductsChart();
-            <% } %>
-            
-            <% if (topCategory && topCategory.length > 0) { %>
-                initializeCategoriesChart();
-            <% } %>
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Initialize date inputs with current date
-            const today = new Date();
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(today.getDate() - 7);
-            
-            document.getElementById('startDate').valueAsDate = sevenDaysAgo;
-            document.getElementById('endDate').valueAsDate = today;
-            
-            // Handle sidebar state changes
-            handleSidebarState();
-        });
-
-        // Chart initialization functions
-        function initializeProductsChart() {
-            const productsCtx = document.getElementById('productsChart').getContext('2d');
-            
-            new Chart(productsCtx, {
-                type: 'bar',
-                data: {
-                    labels: <%- JSON.stringify(topProducts.map((p) => p.productName)) %>,
-                    datasets: [
-                        {
-                            label: 'Units Sold',
-                            data: <%- JSON.stringify(topProducts.map((p) => p.totalSold)) %>,
-                            backgroundColor: 'rgba(255, 215, 0, 0.7)',
-                            borderColor: 'rgba(255, 193, 7, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Revenue',
-                            data: <%- JSON.stringify(topProducts.map((p) => p.totalRevenue)) %>,
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Top Selling Products (Units vs Revenue)',
-                            font: { size: 16 }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'Units Sold' }
-                        },
-                        y1: {
-                            beginAtZero: true,
-                            position: 'right',
-                            grid: { drawOnChartArea: false },
-                            title: { display: true, text: 'Revenue (₹)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function initializeCategoriesChart() {
-            const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
-            
-            new Chart(categoriesCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: <%- JSON.stringify(topCategory.map((c) => c.categoryName)) %>,
-                    datasets: [{
-                        label: 'Total Sold',
-                        data: <%- JSON.stringify(topCategory.map((c) => c.totalSold)) %>,
-                        backgroundColor: [
-                            'rgba(255, 215, 0, 0.7)',
-                            'rgba(255, 193, 7, 0.7)',
-                            'rgba(255, 152, 0, 0.7)',
-                            'rgba(255, 87, 34, 0.7)',
-                            'rgba(121, 85, 72, 0.7)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 215, 0, 1)',
-                            'rgba(255, 193, 7, 1)',
-                            'rgba(255, 152, 0, 1)',
-                            'rgba(255, 87, 34, 1)',
-                            'rgba(121, 85, 72, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Sales Distribution by Category',
-                            font: { size: 16 }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const index = context.dataIndex;
-                                    const sold = context.raw.toLocaleString('en-IN');
-                                    const revenue = <%- JSON.stringify(topCategory.map((c) => c.totalRevenue)) %>[index].toLocaleString('en-IN');
-                                    return `Sold: ${sold} | Revenue: ₹${revenue}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Handle sidebar state changes
-        function handleSidebarState() {
-            // Check if sidebar is collapsed
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar && sidebar.classList.contains('collapsed')) {
-                document.body.classList.add('sidebar-collapsed');
-            } else {
-                document.body.classList.remove('sidebar-collapsed');
-            }
-            
-            // Listen for sidebar toggle events
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    setTimeout(() => {
-                        if (sidebar.classList.contains('collapsed')) {
-                            document.body.classList.add('sidebar-collapsed');
-                        } else {
-                            document.body.classList.remove('sidebar-collapsed');
-                        }
-                        // Trigger window resize to update charts
-                        window.dispatchEvent(new Event('resize'));
-                    }, 300);
-                });
-            }
-        }
-
-        // Event listener setup
-        function setupEventListeners() {
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                // Reflow charts on resize
-                if (window.productsChart) {
-                    window.productsChart.resize();
-                }
-                if (window.categoriesChart) {
-                    window.categoriesChart.resize();
-                }
-            });
-            
-            // Filter buttons
-            const filterButtons = document.querySelectorAll('#filterButtons button');
-            const customDateInputs = document.getElementById('customDateInputs');
-            const applyButton = document.getElementById('applyCustomFilter');
-            let filterDate;
-            
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterDate = button.dataset.filter;
-                    
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('btn-yellow', 'text-dark');
-                        btn.classList.add('btn-outline-yellow');
-                    });
-                    
-                    // Activate clicked one
-                    button.classList.remove('btn-outline-yellow');
-                    button.classList.add('btn-yellow', 'text-dark');
-                    
-                    // Show or hide custom date section
-                    if (button.dataset.filter === 'custom') {
-                        customDateInputs.style.display = 'block';
-                        customDateInputs.style.opacity = 0;
-                        setTimeout(() => {
-                            customDateInputs.style.opacity = 1;
-                        }, 50);
-                    } else {
-                        fetchTheFilterData(filterDate);
-                        customDateInputs.style.opacity = 0;
-                        setTimeout(() => {
-                            customDateInputs.style.display = 'none';
-                        }, 300);
-                    }
-                });
-            });
-            
-            // Apply custom filter
-            applyButton.addEventListener('click', () => {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-                
-                if (!startDate || !endDate) {
-                    showToast('Please select both start and end dates.', 'error');
-                    return;
-                }
-                
-                fetchTheFilterData(startDate, endDate);
-            });
-        }
-        
-        // Helper functions
-        function fetchTheFilterData(...date) {
-            // Show loading state
-            document.body.classList.add('loading');
-            
-            // In a real application, this would be an API call or form submission
-            alert(date)
-            setTimeout(() => {
-                window.location.href = `/admin/dashboard?date=${encodeURIComponent(date)}`;
-            }, 500);
-        }
-        
-        function showToast(message, type = 'info') {
-            // Create toast element
-            const toast = document.createElement('div');
-            toast.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show position-fixed`;
-            toast.style.top = '20px';
-            toast.style.right = '20px';
-            toast.style.zIndex = '9999';
-            toast.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(toast);
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.parentNode.removeChild(toast);
-                }
-            }, 3000)
-        }
-    </script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/js/admin/dashboard.js"></script>
+            <script>
+                window.DASHBOARD_DATA = {
+                    topProducts: <%- JSON.stringify(topProducts || []) %>,
+                    topCategory: <%- JSON.stringify(topCategory || []) %>,
+                    topBrands: <%- JSON.stringify(topBrands || []) %>
+                };
+            </script>
 </body>
+
 </html>

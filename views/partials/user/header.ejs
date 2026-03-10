@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,410 +11,21 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
- 
+
   <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
-
- <style>
-:root {
-  --navbar-primary: #2a2a2a;
-  --navbar-secondary: #e63946;
-  --navbar-light: #f8f9fa;
-  --navbar-dark: #212529;
-  --navbar-transition: 0.3s;
-}
-
-/* Base navbar styles */
-nav.navbar-custom {
-  background-color: var(--navbar-light);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 15px 0;
-  transition: all var(--navbar-transition) ease;
-  font-family: 'Montserrat', sans-serif;
-}
-
-nav.navbar-custom .navbar-brand {
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: var(--navbar-primary);
-  letter-spacing: 1px;
-  transition: color var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .navbar-brand:hover {
-  color: var(--navbar-secondary);
-}
-
-/* Style dropdown items */
-.dropdown-itm {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: #2d6a4f;
-  text-decoration: none;
-  transition: 0.25s ease;
-  border-radius: 8px;
-}
-
-/* Icons inside the item */
-.dropdown-itm i {
-  font-size: 16px;
-  color: #2d6a4f;
-  transition: 0.25s ease;
-}
-
-/* Hover style */
-.dropdown-itm:hover {
-  background: #d8f3dc;      
-  color: #1b4332;             
-}
-
-/* Hover icon color change */
-.dropdown-itm:hover i {
-  color: #1b4332;
-}
-
-/* Divider spacing */
-.dropdown-divider {
-  margin: 8px 0;
-}
-
-nav.navbar-custom .nav-link {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--navbar-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0 10px;
-  position: relative;
-  padding: 5px 0;
-  transition: color var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: var(--navbar-secondary);
-  transition: width var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .nav-link:hover::after,
-nav.navbar-custom .nav-link.active::after {
-  width: 100%;
-}
-
-nav.navbar-custom .nav-link:hover,
-nav.navbar-custom .nav-link.active {
-  color: var(--navbar-secondary);
-}
-
-nav.navbar-custom .nav-icons {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-nav.navbar-custom .nav-icon {
-  color: var(--navbar-primary);
-  font-size: 1.2rem;
-  position: relative;
-  transition: color var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .nav-icon:hover {
-  color: var(--navbar-secondary);
-}
-
-nav.navbar-custom .cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: var(--navbar-secondary);
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 0.7rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-nav.navbar-custom .auth-links {
-  display: flex;
-  gap: 15px;
-  margin-left: 20px;
-}
-
-nav.navbar-custom .auth-link {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--navbar-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-decoration: none;
-  transition: color var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .auth-link:hover {
-  color: var(--navbar-secondary);
-}
-
-nav.navbar-custom .dropdown-menu {
-  border: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
-}
-
-nav.navbar-custom .dropdown-itm {
-  font-weight: 500;
-  padding: 8px 15px;
-  transition: all var(--navbar-transition) ease;
-}
-
-nav.navbar-custom .dropdown-itm:hover {
-  background-color: var(--navbar-light);
-  color: var(--navbar-secondary);
-  padding-left: 20px;
-}
-
-nav.navbar-custom .navbar-toggler {
-  border: none;
-  padding: 5px;
-  font-size: 1.5rem;
-}
-
-nav.navbar-custom .navbar-toggler:focus {
-  box-shadow: none;
-}
-
-/* Bootstrap overrides (scoped to navbar only) */
-nav.navbar-custom .navbar-toggler-icon {
-  background-image: none;
-  line-height: 1.5;
-}
-
-/* ========== RESPONSIVE BREAKPOINTS ========== */
-
-/* Extra small devices (phones, 320px and up) */
-@media (min-width: 320px) {
-  nav.navbar-custom .navbar-brand {
-    font-size: 1.5rem;
-  }
-  
-  nav.navbar-custom .nav-link {
-    font-size: 0.8rem;
-    margin: 0 5px;
-  }
-  
-  .nav-icons {
-    gap: 15px;
-  }
-  
-  .auth-links {
-    gap: 10px;
-  }
-  
-  .auth-link {
-    font-size: 0.8rem;
-  }
-}
-
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) {
-  nav.navbar-custom .navbar-brand {
-    font-size: 1.6rem;
-  }
-  
-  nav.navbar-custom .nav-link {
-    font-size: 0.85rem;
-    margin: 0 8px;
-  }
-  
-  .nav-icons {
-    gap: 18px;
-  }
-  
-  .auth-links {
-    gap: 12px;
-  }
-  
-  .auth-link {
-    font-size: 0.85rem;
-  }
-}
-
-/* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-  nav.navbar-custom .navbar-brand {
-    font-size: 1.7rem;
-  }
-  
-  nav.navbar-custom .nav-link {
-    font-size: 0.9rem;
-    margin: 0 10px;
-  }
-  
-  .nav-icons {
-    gap: 20px;
-  }
-  
-  .auth-links {
-    gap: 15px;
-  }
-  
-  .auth-link {
-    font-size: 0.9rem;
-  }
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-  nav.navbar-custom .navbar-brand {
-    font-size: 1.8rem;
-  }
-}
-
-/* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-  nav.navbar-custom .container {
-    max-width: 1140px;
-  }
-}
-
-/* XXL devices (larger desktops, 1400px and up) */
-@media (min-width: 1400px) {
-  nav.navbar-custom .container {
-    max-width: 1320px;
-  }
-  
-  nav.navbar-custom .nav-link {
-    margin: 0 15px;
-  }
-}
-
-/* Mobile styles (max-width: 991.98px) */
-@media (max-width: 991.98px) {
-  nav.navbar-custom .navbar-collapse {
-    padding-top: 20px;
-  }
-  
-  nav.navbar-custom .nav-link {
-    margin: 5px 0;
-    padding: 10px 0;
-    font-size: 0.95rem;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  }
-  
-  nav.navbar-custom .nav-link:last-child {
-    border-bottom: none;
-  }
-  
-  nav.navbar-custom .nav-link::after {
-    display: none;
-  }
-  
-  /* FIXED: Better layout for icons and auth links on mobile */
-  .d-flex.align-items-center {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  nav.navbar-custom .nav-icons {
-    margin: 15px 0;
-    justify-content: center;
-    gap: 30px;
-    order: 1;
-  }
-  
-  nav.navbar-custom .auth-links {
-    margin: 10px 0 15px 0;
-    justify-content: center;
-    gap: 20px;
-    order: 2;
-    width: 100%;
-  }
-  
-  .dropdown-menu {
-    text-align: center;
-  }
-  
-  .dropdown-itm {
-    justify-content: center;
-  }
-  
-  /* Mobile menu animation */
-  .navbar-collapse.collapsing {
-    transition: height 0.35s ease;
-  }
-  
-  .navbar-collapse.show {
-    animation: slideDown 0.35s ease;
-  }
-  
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-/* Extra small mobile optimization */
-@media (max-width: 375px) {
-  nav.navbar-custom .navbar-brand {
-    font-size: 1.4rem;
-  }
-  
-  .nav-icons {
-    gap: 20px;
-  }
-  
-  .auth-links {
-    flex-direction: row;
-    gap: 15px;
-  }
-  
-  .auth-link {
-    text-align: center;
-    padding: 5px 0;
-    font-size: 0.85rem;
-  }
-}
-
-/* High DPI screens */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  nav.navbar-custom {
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Print styles */
-@media print {
-  nav.navbar-custom {
-    display: none;
-  }
-}
-  </style>
+  <link rel="stylesheet" href="/user/userHeader.css">
 </head>
+
 <body>
   <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
     <div class="container">
       <a class="navbar-brand" href="/">OLDRICH</a>
-      
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <i class="bi bi-list"></i>
       </button>
-      
+
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
@@ -429,7 +41,7 @@ nav.navbar-custom .navbar-toggler-icon {
             <a class="nav-link" href="/aboutUs">ABOUT US</a>
           </li>
         </ul>
-        
+
         <div class="d-flex align-items-center">
           <div class="nav-icons">
             <a href="/wishlist" class="nav-icon">
@@ -437,13 +49,15 @@ nav.navbar-custom .navbar-toggler-icon {
             </a>
             <a href="/cart" class="nav-icon">
               <i class="bi bi-cart"></i>
-              
-              
-               <span class="cart-count"><%= locals.length || 0 %></span>
+
+
+              <span class="cart-count">
+                <%= locals.length || 0 %>
+              </span>
 
             </a>
           </div>
-          
+
           <% if(locals.user){ %>
             <div class="dropdown ms-3">
               <a href="#" class="nav-icon" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -452,16 +66,18 @@ nav.navbar-custom .navbar-toggler-icon {
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-itm" href="/userProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
                 <!-- <li><a class="dropdown-item" href="/orders"><i class="bi bi-bag me-2"></i>Orders</a></li> -->
-                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
                 <li><a class="dropdown-itm" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
               </ul>
             </div>
-          <% } else { %>
-            <div class="auth-links">
-              <a href="/login" class="auth-link">LOGIN</a>
-              <a href="/register" class="auth-link">REGISTER</a>
-            </div>
-          <% } %>
+            <% } else { %>
+              <div class="auth-links">
+                <a href="/login" class="auth-link">LOGIN</a>
+                <a href="/register" class="auth-link">REGISTER</a>
+              </div>
+              <% } %>
         </div>
       </div>
     </div>
@@ -469,64 +85,7 @@ nav.navbar-custom .navbar-toggler-icon {
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-
-     setInterval(() => {
-  fetch('/check-user-block', {
-    method: 'GET',
-    credentials: 'include' 
-  })
-    .then(res => {
-  
-      if (!res.ok) {
-     
-        window.location.href='/login'
-      }
-     
-
-      return res.json()
-    })
-    .then(data => {
-
-
-      if (data?.findUser?.isBlock === true) {
-        window.location.href='/login'
-      }
- 
-    })
-    .catch((err) => {
-    
-       console.log('error',err)
-      window.location.href='/login'
-    })
-}, 3000)
-
- 
-  const currentPath = window.location.pathname.toLowerCase();
-
-  // Remove active from all nav links
-  document.querySelectorAll(".nav-link").forEach(link => {
-    link.classList.remove("active");
-  });
-
-  // Find matching nav link
-  document.querySelectorAll(".nav-link").forEach(link => {
-    const linkPath = link.getAttribute("href");
-
-    // HOME exact match
-    if (linkPath === "/" && currentPath === "/") {
-      link.classList.add("active");
-    }
-    // Other exact matches
-    else if (linkPath !== "/" && currentPath === linkPath.toLowerCase()) {
-      link.classList.add("active");
-    }
-  })
-})
-</script>
-
-
+  <script src="/js/user/userHeader.js"></script>
 </body>
+
 </html>

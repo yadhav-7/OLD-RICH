@@ -1,25 +1,18 @@
-const Wallet = require('../../models/walletSchema')
-const User = require('../../models/userSchema')
+import walletService from '../../services/user/walletService.js'
+import logger from '../../utils/logger.js'
 
-const getWallet = async(req,res)=>{
-    try {
-        const userId = req.session.user
-        const user = await User.findById({_id:userId})
-        const wallet = await Wallet.findOne({userId:userId}).sort({createdAt:-1})
-        if(wallet&&wallet.transactions){
-            wallet.transactions?.sort((a,b)=>b.createdAt-a.createdAt)
-        }
-        res.render('wallet',{
-            user:user,
-            wallet
-        })
-    } catch (error) {
-        console.error('error in getWallet',error)
-        return res.render('/pageNOTfound')
-    }
+const getWallet = async (req, res) => {
+  try {
+    const userId = req.session.user
+    const result = await walletService.getWallet(userId)
+
+    return res.render(result.render, result.data)
+  } catch (error) {
+    logger.error(`error in getWallet ${error}`)
+    return res.redirect('/pageNotFound')
+  }
 }
 
-
-module.exports={
-    getWallet
+export default {
+  getWallet,
 }

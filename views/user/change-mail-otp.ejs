@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter New Email</title>
-        <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
-<link rel="stylesheet" href="/user/changeMailOtp.css">
-    
+    <link rel="icon" href="/userTitleLogo/Gemini_Generated_Image_kb9bqfkb9bqfkb9b (1).png" type="image/png">
+    <link rel="stylesheet" href="/user/changeMailOtp.css">
+
 </head>
+
 <body>
     <div class="container">
         <h1>Email</h1>
@@ -17,22 +19,7 @@
         </form>
     </div>
 
-    <script>
-        window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      // Hide content instantly
-      document.body.style.display = "none";
-      // Force reload from server
-      window.location.href='/';
-    }
-  })
-
-        document.getElementById('emailForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input').value;
-            alert('Email submitted: ' + email);
-            // Here you would typically send the data to your server
-        });
-    </script>
+    <script src="/js/user/changeMailOtp.js"></script>
 </body>
-</htm
+
+</html>

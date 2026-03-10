@@ -7,16 +7,16 @@
     <title>Order Management</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/admin/orderManagement.css">
+    <link rel="stylesheet" href="/admin/orderManagement.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="icon" href="/adminTitleIcon/Gemini_Generated_Image_19c76t19c76t19c7.png" type="image/png">
 
     <%- include('../../views/partials/admin/adminHeaders', {title: 'adminHeader-page' }) %>
-    <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
+        <%- include('../../views/partials/admin/adminSidebar', {title: 'adminSidebar-page' }) %>
 </head>
 
 <body>
@@ -37,7 +37,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <% if (order && order.length > 0) { %>
+                        <% if (order && order.length> 0) { %>
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -52,65 +52,80 @@
                                     </tr>
                                 </thead>
                                 <tbody id="ordersTableBody" class="tableBody">
-                                    <% let i = 1 %>
-                                    <% order.forEach(element => { %>
-                                        <tr class="order-row">
-                                            <td><%= i++ %></td>
-                                            <td><%= new Date(element.createdOn).toLocaleDateString() %></td>
-                                            <td><%= element.userId?.username %></td>
-                                            <td><%= element?.orderedItems?.length %></td>
-                                            <td><%= element.totalPrice %></td>
-                                            <td>
-                                                <span id="orderStatus<%= element.orderId %>" class="badge badge-shipped">
-                                                    <%= element.status %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-success">
-                                                    <%= element?.paymentStatus %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-outline-primary"
-                                                        onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <a href="orderDetails?orderId=<%= element?.orderId %>"
-                                                        class="btn btn-sm btn-outline-info">
-                                                        <span class="icon-wrapper position-relative">
-                                                            <% if(element.status==='returnRequested'||element.orderedItems?.some((v)=>v.status==='returnRequested')){ %>
-                                                                <span class="notification-dot"></span>
-                                                            <% } %>
-                                                            <i class="fas fa-eye"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
+                                    <% let i=1 %>
+                                        <% order.forEach(element=> { %>
+                                            <tr class="order-row">
+                                                <td>
+                                                    <%= i++ %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(element.createdOn).toLocaleDateString('en-GB') %>
+                                                </td>
+                                                <td>
+                                                    <%= element.userId?.username %>
+                                                </td>
+                                                <td>
+                                                    <%= element?.orderedItems?.length %>
+                                                </td>
+                                                <td>
+                                                    <%= element.totalPrice %>
+                                                </td>
+                                                <td>
+                                                    <span id="orderStatus<%= element.orderId %>"
+                                                        class="badge badge-shipped">
+                                                        <%= element.status %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-success">
+                                                        <%= element?.paymentStatus %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn btn-sm btn-outline-primary"
+                                                            onclick="openStatusModal('<%= element?.orderId %>','<%= element?.status%>')">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <a href="orderDetails?orderId=<%= element?.orderId %>"
+                                                            class="btn btn-sm btn-outline-info">
+                                                            <span class="icon-wrapper position-relative">
+                                                                <% if(element.status==='returnRequested'
+                                                                    ||element.orderedItems?.some((v)=>
+                                                                    v.status==='returnRequested')){ %>
+                                                                    <span class="notification-dot"></span>
+                                                                    <% } %>
+                                                                        <i class="fas fa-eye"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
                                 </tbody>
                             </table>
-                        <% } else { %>
-                            <div class="text-center mt-4">
-                                <h5 class="text-muted">No orders yet ✨</h5>
-                            </div>
-                        <% } %>
+                            <% } else { %>
+                                <div class="text-center mt-4">
+                                    <h5 class="text-muted">No orders yet ✨</h5>
+                                </div>
+                                <% } %>
                     </div>
 
-                    
+
                 </div>
             </div>
 
-              <div class="pagination" id="paginationContainer">
-  <% if(currentPage>1){ %>
-      <button onclick="pagination('previous')" id="prevBtn" class="page-btn prev">&laquo;</button>
-  <% } %>
-  <button id="currentPage" class="page-btn active"><%= currentPage %></button>
-  <% if (currentPage<totalPage) { %>
-      <button onclick="pagination('next')" id="nextBtn" class="page-btn next">&raquo;</button>
-  <% } %>
-</div>
+            <div class="pagination" id="paginationContainer">
+                <% if(currentPage>1){ %>
+                    <button onclick="pagination('previous')" id="prevBtn" class="page-btn prev">&laquo;</button>
+                    <% } %>
+                        <button id="currentPage" class="page-btn active">
+                            <%= currentPage %>
+                        </button>
+                        <% if (currentPage<totalPage) { %>
+                            <button onclick="pagination('next')" id="nextBtn" class="page-btn next">&raquo;</button>
+                            <% } %>
+            </div>
 
 
 
@@ -219,264 +234,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="/helpers/fetchService.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-           
-            const search = document.getElementById('searchInput');
-            const ordersTableBody = document.getElementById('ordersTableBody');
-            let orderStatusEl;
-            let orderId;
-
-            search.addEventListener('keyup', async function () {
-                const searchValue = search.value.trim();
-
-                try {
-                    const response = await fetch(`/admin/searchOrders?searchvalue=${encodeURIComponent(searchValue)}`);
-                    if (!response.ok) {
-                        console.error("Search failed");
-                        return;
-                    }
-
-                    const data = await response.json();
-
-                    const orders = data.searchData
-                    ordersTableBody.innerHTML = ''
-
-
-
-                    if (orders.length === 0) {
-                        ordersTableBody.innerHTML = `
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    No orders found.
-                                </td>
-                            </tr>`;
-                        return;
-                    }
-
-                    if(!searchValue){
-                        window.location.reload()
-                    }
-
-                    orders.forEach(element => {
-                        ordersTableBody.innerHTML += `
-                            <tr class="order-row">
-                                <td>${element.orderId}</td>
-                                <td>${new Date(element.createdOn).toLocaleDateString()}</td>
-                                <td>${element.userId?.username || ''}</td>
-                                <td>${element?.orderedItems?.length || 0}</td>
-                                <td>${element.totalPrice}</td>
-                                <td>
-                                    <span id="orderStatus${element.orderId}" class="badge badge-shipped">
-                                        ${element.status}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">
-                                        ${element.paymentStatus}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-sm btn-outline-primary"
-                                            onclick="openStatusModal('${element.orderId}','${element.status}')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <a href="orderDetails?orderId=${element.orderId}" 
-                                           class="btn btn-sm btn-outline-info">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    });
-
-                    renderPagination(data.currentPage,data.totalPage)
-
-                } catch (error) {
-                    console.error('Error in searchOrders', error);
-                }
-            });
-
-            // STATUS BADGE CLASS
-            function getStatusBadgeClass(status) {
-                switch (status.toLowerCase()) {
-                    case 'pending': return 'badge-pending';
-                    case 'processing': return 'badge-processing';
-                    case 'shipped': return 'badge-shipped';
-                    case 'delivered': return 'badge-delivered';
-                    case 'cancelled': return 'badge-cancelled';
-                    case 'return': return 'badge-return';
-                    default: return 'badge-secondary';
-                }
-            }
-
-            // STATUS UPDATE MODAL
-            window.openStatusModal = function (ordId, currentStatus) {
-                orderStatusEl = document.getElementById(`orderStatus${ordId}`);
-                orderId = ordId;
-                document.getElementById('orderId').value = ordId;
-                document.getElementById('currentStatus').value = currentStatus;
-                document.getElementById('newStatus').value = '';
-                $('#statusUpdateModal').modal('show');
-            };
-
-            // SUBMIT STATUS CHANGE
-            document.getElementById('statusUpdateForm').addEventListener('submit', async e => {
-                e.preventDefault();
-                const newStatus = document.getElementById('newStatus').value;
-                if (!newStatus) return;
-
-                try {
-                    const response = await fetch('/admin/changeStatus', {
-                        method: 'POST',
-                        headers: { 'Content-type': 'application/json' },
-                        body: JSON.stringify({ orderId, newStatus })
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        orderStatusEl.innerHTML = data.updatedStatus;
-                        orderStatusEl.className = `badge ${getStatusBadgeClass(data.updatedStatus)}`;
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message || 'Status updated successfully!', showConfirmButton: false, timer: 2000 });
-                    } else {
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: data.message || 'Failed to update status!', showConfirmButton: false, timer: 2000 });
-                    }
-                } catch (error) {
-                    Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error updating status!', showConfirmButton: false, timer: 2000 });
-                }
-                $('#statusUpdateModal').modal('hide');
-            });
-      
-            const currentPage = parseInt(document.getElementById('currentPage').textContent)
-
-            document.getElementById('nextBtn').addEventListener('click',async function(e) {
-                e.preventDefault()
-            
-                const page = currentPage+1
-                const response = await apiReq(`/admin/orderManagement?page=${encodeURIComponent(page)}`)
-                renderOrdersTable(response)
-                renderPagination(response.currentPage,response.totalPage)
-            })
-
-            document.getElementById('prevBtn').addEventListener('click',async function(e){
-                e.preventDefault()
-                alert('prev')
-                const page = currentPage-1
-                const response = await apiReq(`/admin/orderManagement?page=${encodeURIComponent(page)}`)
-            })
-
-            function renderOrdersTable(response) {
-                let orderData = response.order
-
-  const tbody = document.getElementById('ordersTableBody');
-  tbody.innerHTML = ''
-
-  if (!orderData || orderData.length === 0) {
-    document.querySelector('.table-responsive').innerHTML = `
-      <div class="text-center mt-4">
-        <h5 class="text-muted">No orders yet ✨</h5>
-      </div>`;
-    return;
-  }
-
-  let i = ((response.currentPage-1)*6+1)
-  orderData.forEach(element => {
-    const createdDate = new Date(element.createdOn).toLocaleDateString();
-    const returnDot =
-      element.status === 'returnRequested' ||
-      (element.orderedItems || []).some(v => v.status === 'returnRequested')
-        ? '<span class="notification-dot"></span>'
-        : '';
-
-    tbody.innerHTML += `
-      <tr class="order-row">
-        <td>${i++}</td>
-        <td>${createdDate}</td>
-        <td>${element.userId?.username || 'N/A'}</td>
-        <td>${element.orderedItems?.length || 0}</td>
-        <td>${element.totalPrice}</td>
-        <td>
-          <span id="orderStatus${element.orderId}" class="badge badge-shipped">
-            ${element.status}
-          </span>
-        </td>
-        <td><span class="badge bg-success">${element.paymentStatus}</span></td>
-        <td>
-          <div class="action-buttons">
-            <button class="btn btn-sm btn-outline-primary"
-              onclick="openStatusModal('${element.orderId}','${element.status}')">
-              <i class="fas fa-edit"></i>
-            </button>
-            <a href="orderDetails?orderId=${element.orderId}" class="btn btn-sm btn-outline-info">
-              <span class="icon-wrapper position-relative">
-                ${returnDot}
-                <i class="fas fa-eye"></i>
-              </span>
-            </a>
-          </div>
-        </td>
-      </tr>`;
-  });
-}
-
-
-function renderPagination(currentPage, totalPage) {
-  const container = document.getElementById('paginationContainer');
-  container.innerHTML = '';
-
-  if (currentPage > 1) {
-    const prevBtn = document.createElement('button');
-    prevBtn.id = 'prevBtn';
-    prevBtn.className = 'page-btn prev';
-    prevBtn.innerHTML = '&laquo;';
-    container.appendChild(prevBtn);
-  }
-
-  const currentBtn = document.createElement('button');
-  currentBtn.id = 'currentPage';
-  currentBtn.className = 'page-btn active';
-  currentBtn.textContent = currentPage;
-  container.appendChild(currentBtn);
-
-  if (currentPage < totalPage) {
-    const nextBtn = document.createElement('button');
-    nextBtn.id = 'nextBtn';
-    nextBtn.className = 'page-btn next';
-    nextBtn.innerHTML = '&raquo;';
-    container.appendChild(nextBtn);
-  }
-
-  // 🔥 reattach listeners here
-  attachPaginationEvents();
-}
-
-function attachPaginationEvents() {
-  const nextBtn = document.getElementById('nextBtn');
-  const prevBtn = document.getElementById('prevBtn');
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', async (e) => {
-      const currentPage = parseInt(document.getElementById('currentPage').textContent)
-      const response = await apiReq(`/admin/orderManagement?page=${currentPage + 1}`)
-      renderOrdersTable(response)
-      renderPagination(response.currentPage, response.totalPage)
-    })
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', async (e) => {
-      const currentPage = parseInt(document.getElementById('currentPage').textContent)
-      const response = await apiReq(`/admin/orderManagement?page=${currentPage - 1}`)
-      renderOrdersTable(response)
-      renderPagination(response.currentPage, response.totalPage)
-    })
-  }
-}
-
-            
-        });
-    </script>
+    <script src="/js/admin/ordermanage.js"></script>
 </body>
+
 </html>
